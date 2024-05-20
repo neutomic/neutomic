@@ -1,0 +1,74 @@
+{
+    "name": "neutomic/neutomic",
+    "type": "library",
+    "description": "Neutomic is a fast, asynchronous, lightweight PHP framework tailored for long-running process environments. ",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "azjezz",
+            "email": "azjezz@protonmail.com"
+        },
+        {
+            "name": "contributors",
+            "homepage": "https://github.com/neutomic/neu/graphs/contributors"
+        }
+    ],
+    "require": {
+        "php": "~8.3.0",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-pcntl": "*",
+        "psr/container": "^2.0",
+        "psr/event-dispatcher": "^1.0.0",
+        "azjezz/psl": "dev-next as 3.0.0",
+        "amphp/amp": "^3.0.1",
+        "amphp/sql": "^2.0",
+        "amphp/sql-common": "^2.0",
+        "roave/better-reflection": "^6.36",
+        "amphp/byte-stream": "^2.0",
+        "monolog/monolog": "^3.6",
+        "amphp/http-server": "^3.3",
+        "amphp/cluster": "^2.0@beta",
+        "amphp/file": "^3.1",
+        "amphp/pipeline": "^1.2",
+        "amphp/log": "^2.0",
+        "symfony/yaml": "^7.0",
+        "azjezz/assess": "^1.0.2"
+    },
+    "require-dev": {
+        "amphp/postgres": "^2.0.0",
+        "amphp/mysql": "^3.0.0",
+        "friendsofphp/php-cs-fixer": "^3.54.0",
+        "twig/twig": "^3.10.3 || 4.x-dev",
+        "php-coveralls/php-coveralls": "^2.7.0",
+        "phpunit/phpunit": "^11.1.3",
+        "squizlabs/php_codesniffer": "^3.9.2",
+        "psalm/phar": "^5.8.0",
+        "ext-zlib": "*",
+        "amphp/redis": "^2.0"
+    },
+    "conflict": {
+        "twig/twig": "<3.10.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Neu\\": "src/"
+        },
+        "files": [
+            "src/Component/Http/Message/Response/html.php",
+            "src/Component/Http/Message/Response/xml.php",
+            "src/Component/Http/Message/Response/text.php",
+            "src/Component/Http/Message/Response/json.php",
+            "src/Component/Http/Message/Response/redirect.php",
+            "src/Framework/entrypoint.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Neu\\Tests\\": "tests/",
+            "Neu\\Examples\\": "examples/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

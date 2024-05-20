@@ -1,0 +1,18 @@
+version: "2"
+
+services:
+  database:
+      image: postgres:12.2
+      environment:
+          POSTGRES_DB: main
+          POSTGRES_USER: main
+          POSTGRES_PASSWORD: main
+      volumes_from:
+          - data
+      ports: [ "5432:5432" ]
+
+  data:
+      image: busybox
+      command: "true"
+      volumes:
+          - /db
