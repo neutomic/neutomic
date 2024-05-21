@@ -9,15 +9,22 @@
     cacheDirectory=".phpunit.cache"
     displayDetailsOnTestsThatTriggerWarnings="true"
 >
-  <testsuites>
-    <testsuite name="Neu unit tests suite">
-      <directory>../tests/</directory>
-    </testsuite>
-  </testsuites>
-  <logging/>
-  <source>
-    <include>
-      <directory>../src</directory>
-    </include>
-  </source>
+    <php>
+        <env name="PROJECT_MODE" value="test"/>
+        <env name="PROJECT_DEBUG" value="true"/>
+    </php>
+
+    <testsuites>
+        <testsuite name="Neu unit tests suite">
+            <directory>../tests/</directory>
+        </testsuite>
+    </testsuites>
+
+    <logging/>
+
+    <source>
+        <include>
+            <directory>../src</directory>
+        </include>
+    </source>
 </phpunit>
