@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database;
 
 use Neu\Component\Database\Exception\ConnectionException;
@@ -120,7 +129,7 @@ interface AbstractionLayerInterface extends LinkInterface
      *
      * @param non-empty-string $table
      * @param non-empty-list<non-empty-string> $fields
-     * @param array<string, mixed> $criteria
+     * @param array<non-empty-string, mixed> $criteria
      * @param array<non-empty-string, OrderDirection> $order_by
      *
      * @throws ConnectionException If the connection to the database is lost.
@@ -128,9 +137,9 @@ interface AbstractionLayerInterface extends LinkInterface
      * @throws InvalidArgumentException If $fields is empty, or $order_by contains invalid values.
      * @throws RuntimeException If the operation fails due to unexpected condition.
      *
-     * @return null|array<string, mixed>
+     * @return null|array<non-empty-string, mixed>
      */
-    public function fetchOneAssociative(string $table, array $fields = ['*'], array $criteria = [], array $order_by = []): ?array;
+    public function fetchOneAssociative(string $table, array $fields = ['*'], array $criteria = [], array $order_by = []): null|array;
 
     /**
      * Fetch one row from the given table, where columns are index using numeric values.
@@ -148,7 +157,7 @@ interface AbstractionLayerInterface extends LinkInterface
      *
      * @param non-empty-string $table
      * @param non-empty-list<non-empty-string> $fields
-     * @param array<string, mixed> $criteria
+     * @param array<non-empty-string, mixed> $criteria
      * @param array<non-empty-string, OrderDirection> $order_by
      *
      * @throws ConnectionException If the connection to the database is lost.
@@ -158,7 +167,7 @@ interface AbstractionLayerInterface extends LinkInterface
      *
      * @return null|list<mixed>
      */
-    public function fetchOneNumeric(string $table, array $fields = ['*'], array $criteria = [], array $order_by = []): ?array;
+    public function fetchOneNumeric(string $table, array $fields = ['*'], array $criteria = [], array $order_by = []): null|array;
 
     /**
      * Fetch one, or more row from the given table, where columns are index using their names.
@@ -185,9 +194,9 @@ interface AbstractionLayerInterface extends LinkInterface
      * @throws InvalidQueryException If the operation fails due to an invalid query (such as a syntax error).
      * @throws InvalidArgumentException If $fields is empty, $order_by contains invalid values, or $offset, or $limit are negative.
      *
-     * @return list<array<string, mixed>>
+     * @return list<array<non-empty-string, mixed>>
      */
-    public function fetchAllAssociative(string $table, array $fields = ['*'], array $criteria = [], ?int $offset = null, ?int $limit = null, array $order_by = []): array;
+    public function fetchAllAssociative(string $table, array $fields = ['*'], array $criteria = [], null|int $offset = null, null|int $limit = null, array $order_by = []): array;
 
     /**
      * Fetch one, or more row from the given table, where columns are index using numeric values.
@@ -216,5 +225,5 @@ interface AbstractionLayerInterface extends LinkInterface
      *
      * @return list<list<mixed>>
      */
-    public function fetchAllNumeric(string $table, array $fields = ['*'], array $criteria = [], ?int $offset = null, ?int $limit = null, array $orderBy = []): array;
+    public function fetchAllNumeric(string $table, array $fields = ['*'], array $criteria = [], null|int $offset = null, null|int $limit = null, array $orderBy = []): array;
 }

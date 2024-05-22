@@ -2,8 +2,18 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Feedback;
 
+use Neu\Component\Console\Exception\InvalidCharacterSequenceException;
 use Neu\Component\Console\Output\OutputInterface;
 use Psl\Math;
 use Psl\Str;
@@ -13,25 +23,27 @@ use function microtime;
 use function time;
 
 /**
- * `AbstractFeedback` class handles core functionality for calculating and
+ * {@see AbstractFeedback} class handles core functionality for calculating and
  * displaying the progress information.
+ *
+ * @psalm-suppress InvalidOperand
  */
 abstract class AbstractFeedback implements FeedbackInterface
 {
     /**
-     * The `Output` used for displaying the feedback information.
+     * The output used to display the feedback.
      */
     protected OutputInterface $output;
 
     /**
      * The total number of cycles expected for the feedback to take until finished.
      */
-    protected int                                           $total = 0;
+    protected int $total = 0;
 
     /**
      * The message to be displayed with the feedback.
      */
-    protected string                                        $message = '';
+    protected string $message = '';
 
     /**
      * The interval (in milliseconds) between updates of the indicator.
@@ -46,9 +58,9 @@ abstract class AbstractFeedback implements FeedbackInterface
     protected array $characterSequence = [];
 
     /**
-     * @var null|array{0: int, 1: int}
+     * @var null|array{0: int<0, max>, 1: int<0, max>}
      */
-    protected ?array $position = null;
+    protected null|array $position = null;
 
     /**
      * The current cycle out of the given total.
@@ -67,6 +79,8 @@ abstract class AbstractFeedback implements FeedbackInterface
 
     /**
      * The max length of the characters in the character sequence.
+     *
+     * @var int<1, max>
      */
     protected int $maxLength = 1;
 
@@ -101,14 +115,10 @@ abstract class AbstractFeedback implements FeedbackInterface
     protected int $timer = -1;
 
     /**
-     * Create a new instance of the `Feedback`.
+     * Create a new {@see AbstractFeedback} instance.
      */
-    public function __construct(
-        OutputInterface $output,
-        int                                           $total = 0,
-        string                                        $message = '',
-        int $interval = 100,
-    ) {
+    public function __construct(OutputInterface $output, int $total = 0, string $message = '', int $interval = 100)
+    {
         $this->output = $output;
         $this->total = $total;
         $this->message = $message;
@@ -196,9 +206,11 @@ abstract class AbstractFeedback implements FeedbackInterface
     /**
      * Set the characters used in the output.
      *
-     * @var list<string> $characters
+     * @param list<string> $characters
+     *
+     * @throws InvalidCharacterSequenceException If the character sequence is invalid.
      */
-    public function setCharacterSequence(array $characters): self
+    public function setCharacterSequence(array $characters): static
     {
         $this->characterSequence = $characters;
         $this->setMaxLength();
@@ -211,7 +223,8 @@ abstract class AbstractFeedback implements FeedbackInterface
      */
     protected function setMaxLength(): self
     {
-        $this->maxLength = (int)Math\max(Vec\map($this->characterSequence, Str\length(...)));
+        $max = Math\max(Vec\map($this->characterSequence, Str\length(...)));
+        $this->maxLength = $max < 1 ? 1 : $max;
 
         return $this;
     }
@@ -219,7 +232,7 @@ abstract class AbstractFeedback implements FeedbackInterface
     /**
      * @inheritDoc
      */
-    public function setPosition(?array $position): void
+    public function setPosition(null|array $position): void
     {
         $this->position = $position;
     }
@@ -331,7 +344,7 @@ abstract class AbstractFeedback implements FeedbackInterface
     protected function estimateTimeRemaining(): float
     {
         $speed = $this->getSpeed();
-        if ($speed === null || 0.0 === $speed || !$this->getElapsedTime()) {
+        if (0.0 === $speed || !$this->getElapsedTime()) {
             return 0.0;
         }
 
@@ -357,7 +370,7 @@ abstract class AbstractFeedback implements FeedbackInterface
         if ($span > 1) {
             $this->iteration++;
             $this->tick = (int)$now;
-            $this->speed = (float)(($this->current / $this->iteration) / $span);
+            $this->speed = (($this->current / $this->iteration) / $span);
         }
 
         return $this->speed;

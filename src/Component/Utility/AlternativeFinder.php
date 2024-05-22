@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Utility;
 
 use Psl\Dict;
@@ -42,6 +51,7 @@ enum AlternativeFinder
                 }
 
                 $lev = (float)Str\levenshtein($subname, $parts[$i]);
+                /** @psalm-suppress RedundantCondition */
                 if ($lev <= Str\length($subname) / 3 || ('' !== $subname && Str\contains($parts[$i], $subname))) {
                     $alternatives[$collectionName] = $exists ? $alternatives[$collectionName] + $lev : $lev;
                 } elseif ($exists) {
@@ -58,7 +68,7 @@ enum AlternativeFinder
         }
 
         return Vec\keys(Dict\sort(
-            Dict\filter($alternatives, static fn(int $lev): bool => $lev < (2 * self::THRESHOLD)),
+            Dict\filter($alternatives, static fn (float|int $lev): bool => $lev < (2. * self::THRESHOLD)),
         ));
     }
 }

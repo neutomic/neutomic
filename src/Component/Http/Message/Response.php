@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Message;
 
 use Neu\Component\Http\Message\Internal\CookieStorage;
@@ -37,9 +46,9 @@ final readonly class Response implements ResponseInterface
      * @param int<100, 599> $statusCode
      * @param CookieStorage<CookieInterface> $cookies
      * @param null|BodyInterface $body
-     * @param array<string, TrailerInterface> $trailers
+     * @param array<non-empty-string, TrailerInterface> $trailers
      */
-    private function __construct(ProtocolVersion $protocolVersion, int $statusCode, HeaderStorage $headers, CookieStorage $cookies, ?BodyInterface $body = null, array $trailers = [])
+    private function __construct(ProtocolVersion $protocolVersion, int $statusCode, HeaderStorage $headers, CookieStorage $cookies, null|BodyInterface $body = null, array $trailers = [])
     {
         $this->protocolVersion = $protocolVersion;
         $this->headerStorage = $headers;
@@ -54,18 +63,17 @@ final readonly class Response implements ResponseInterface
      *
      * @param ProtocolVersion $version
      * @param int<100, 599>|StatusCode $statusCode
-     * @param array<string, list<string>> $headers
-     * @param array<string, list<string>> $cookies
+     * @param array<non-empty-string, non-empty-list<non-empty-string>> $headers
+     * @param array<non-empty-string, non-empty-list<CookieInterface>> $cookies
      * @param null|BodyInterface $body
-     * @param iterable<TrailerInterface> $trailers
+     * @param array<TrailerInterface> $trailers
      */
     public static function create(
         ProtocolVersion $version = ProtocolVersion::Http20,
         int|StatusCode $statusCode = StatusCode::OK,
         array $headers = [],
         array $cookies = [],
-        array $pushes = [],
-        ?BodyInterface $body = null,
+        null|BodyInterface $body = null,
         array $trailers = [],
     ): static {
         if ($statusCode instanceof StatusCode) {
@@ -74,7 +82,7 @@ final readonly class Response implements ResponseInterface
 
         $trailers = Dict\reindex(
             $trailers,
-            static fn(TrailerInterface $trailer): string => $trailer->getField(),
+            static fn (TrailerInterface $trailer): string => $trailer->getField(),
         );
 
         return new self(
@@ -91,7 +99,7 @@ final readonly class Response implements ResponseInterface
      * Creates a new response instance from the given status code.
      *
      * @param int<100, 599>|StatusCode $statusCode
-     * @param array<string, list<string>> $headers
+     * @param array<non-empty-string, non-empty-list<non-empty-string>> $headers
      */
     public static function fromStatusCode(int|StatusCode $statusCode, array $headers = []): static
     {
@@ -113,7 +121,7 @@ final readonly class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
-    public function getBody(): ?BodyInterface
+    public function getBody(): null|BodyInterface
     {
         return $this->body;
     }
@@ -121,7 +129,7 @@ final readonly class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
-    public function withBody(?BodyInterface $body): static
+    public function withBody(null|BodyInterface $body): static
     {
         return new self($this->protocolVersion, $this->statusCode, $this->headerStorage, $this->cookieStorage, $body, $this->trailers);
     }
@@ -169,7 +177,7 @@ final readonly class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
-    public function getCookie(string $name): ?array
+    public function getCookie(string $name): null|array
     {
         return $this->cookieStorage->getCookie($name);
     }
@@ -199,10 +207,9 @@ final readonly class Response implements ResponseInterface
      */
     public function withoutCookie(string $name): static
     {
-        $cookies = $this->cookieStorage;
-        unset($cookies[$name]);
+        $cookieStorage = $this->cookieStorage->withoutCookie($name);
 
-        return new self($this->protocolVersion, $this->statusCode, $this->headerStorage, $cookies, $this->body, $this->trailers);
+        return new self($this->protocolVersion, $this->statusCode, $this->headerStorage, $cookieStorage, $this->body, $this->trailers);
     }
 
     protected function cloneWithHeaderStorage(HeaderStorage $headerStorage): static
@@ -211,7 +218,7 @@ final readonly class Response implements ResponseInterface
     }
 
     /**
-     * @param array<string, TrailerInterface> $trailers
+     * @param array<non-empty-string, TrailerInterface> $trailers
      */
     protected function cloneWithTrailers(array $trailers): static
     {

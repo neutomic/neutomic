@@ -5,27 +5,9 @@
     <file>../src</file>
     <file>../tests</file>
 
-    <!-- // START: Enums are not supported -->
-    <exclude-pattern>*/src/Console/Output/(Type|Verbosity).php</exclude-pattern>
-    <exclude-pattern>*/src/Console/Output/Sequence/Erase.php</exclude-pattern>
-    <exclude-pattern>*/src/Console/Input/Definition/Mode.php</exclude-pattern>
-    <exclude-pattern>*/src/Console/Internal/Utility.php</exclude-pattern>
-    <exclude-pattern>*/src/Console/Command/ExitCode.php</exclude-pattern>
-    <exclude-pattern>*/src/Console/Formatter/Style/(Effect|BackgroundColor|ForegroundColor).php</exclude-pattern>
-    <!-- // END: Enums are not supported -->
-
     <arg name="basepath" value="."/>
     <arg name="colors"/>
     <arg name="parallel" value="75"/>
-
-    <exclude-pattern>*/src/Http/Message/CookieSameSite.php</exclude-pattern>
-    <exclude-pattern>*/src/Database/OrderDirection.php</exclude-pattern>
-    <exclude-pattern>*/src/Database/TransactionIsolationLevel.php</exclude-pattern>
-    <exclude-pattern>*/src/Database/Query/Type.php</exclude-pattern>
-    <exclude-pattern>*/src/Database/Query/Expression/CompositionType.php</exclude-pattern>
-    <exclude-pattern>*/src/Database/Query/Expression/Operator.php</exclude-pattern>
-    <exclude-pattern>*/src/Database/Query/Builder/Internal/JoinType.php</exclude-pattern>
-    <exclude-pattern>*/src/Http/Session/CacheLimiter.php</exclude-pattern>
 
     <rule ref="PSR1">
         <type>error</type>
@@ -41,7 +23,7 @@
 
     <rule ref="Generic.Files.LineLength">
         <properties>
-            <property name="lineLimit" value="240"/>
+            <property name="lineLimit" value="320"/>
         </properties>
     </rule>
 
@@ -59,7 +41,6 @@
                 <element key="print" value="echo"/>
                 <element key="is_null" value="null"/>
                 <element key="create_function" value="null"/>
-                <element key="assert" value="Psl\invariant"/>
             </property>
         </properties>
     </rule>

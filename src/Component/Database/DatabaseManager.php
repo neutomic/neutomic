@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database;
 
 use Neu\Component\Database\Exception\DatabaseNotFoundException;
@@ -14,6 +23,8 @@ final class DatabaseManager implements DatabaseManagerInterface
 {
     /**
      * The name for the default database.
+     *
+     * @var non-empty-string
      */
     private string $defaultDatabaseId;
 
@@ -27,7 +38,7 @@ final class DatabaseManager implements DatabaseManagerInterface
     /**
      * Create a new {@see DatabaseManager} instance.
      *
-     * @param null|string $defaultDatabaseId The id for the default database.
+     * @param non-empty-string $defaultDatabaseId The id for the default database.
      * @param ServiceLocatorInterface<DatabaseInterface> $locator The service locator used to create database instances.
      */
     public function __construct(string $defaultDatabaseId, ServiceLocatorInterface $locator)

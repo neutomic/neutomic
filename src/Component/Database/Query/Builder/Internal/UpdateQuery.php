@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database\Query\Builder\Internal;
 
 use Neu\Component\Database\AbstractionLayerInterface;
@@ -17,7 +26,7 @@ use Psl\Str;
 final readonly class UpdateQuery extends AbstractWhereQuery implements UpdateQueryInterface
 {
     /**
-     * @var list<non-empty-string>
+     * @var non-empty-string
      */
     private string $table;
 
@@ -35,6 +44,7 @@ final readonly class UpdateQuery extends AbstractWhereQuery implements UpdateQue
      * @param non-empty-string $table
      * @param null|non-empty-string $alias
      * @param list<non-empty-string> $sets
+     * @param null|CompositeExpressionInterface|non-empty-string $where
      */
     public function __construct(AbstractionLayerInterface $dbal, string $table, null|string $alias = null, array $sets = [], null|string|CompositeExpressionInterface $where = null)
     {

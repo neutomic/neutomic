@@ -2,13 +2,22 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Input\Definition;
 
 use Neu\Component\Console\Exception\MissingValueException;
 use Psl\Str;
 
 /**
- * A `Definition` is an object that designates the parameters accepted by
+ * A {@see Definition} is an object that designates the parameters accepted by
  * the user when executing commands.
  *
  * @template T
@@ -29,7 +38,7 @@ abstract class Definition implements DefinitionInterface
      *
      * @var null|non-empty-string
      */
-    protected ?string $alias = null;
+    protected null|string $alias = null;
 
     /**
      * The description of the input.
@@ -42,17 +51,22 @@ abstract class Definition implements DefinitionInterface
     protected Mode $mode = Mode::Optional;
 
     /**
-     * Flag if the `Definition` has been assigned a value.
+     * Flag if the {@see Definition} has been assigned a value.
      */
     protected bool $exists = false;
 
     /**
      * The value the user has given the input.
+     *
+     * @var null|T
      */
     protected mixed $value = null;
 
     /**
-     * Construct a new instance of an `Definition`.
+     * Construct a new instance of an {@see Definition}.
+     *
+     * @param non-empty-string $name The name of the definition.
+     * @param null|non-empty-string $alias An alias for the definition.
      */
     public function __construct(string $name, null|string $alias = null, string $description = '', Mode $mode = Mode::Optional)
     {
@@ -73,13 +87,15 @@ abstract class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
-    public function getAlias(): ?string
+    public function getAlias(): null|string
     {
         return $this->alias;
     }
 
     /**
-     * Set the alias of the `Definition`.
+     * Set the alias of the {@see Definition}.
+     *
+     * @param non-empty-string $alias
      */
     public function alias(string $alias): self
     {
@@ -130,11 +146,7 @@ abstract class Definition implements DefinitionInterface
     }
 
     /**
-     * Retrieve the value of the `Definition` as specified by the user.
-     *
-     * @throws MissingValueException If the definition has not been assigned a value.
-     *
-     * @return T
+     * @inheritDoc
      */
     public function getValue(): mixed
     {
@@ -146,7 +158,7 @@ abstract class Definition implements DefinitionInterface
     }
 
     /**
-     * Set the value of the `Definition`.
+     * Set the value of the {@see Definition}.
      *
      * @param T $value
      */

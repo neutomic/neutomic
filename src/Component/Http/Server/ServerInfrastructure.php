@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Server;
 
 use Amp\Cluster\Cluster;
@@ -22,6 +31,8 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
+ * Server infrastructure, used to create server sockets and client factories.
+ *
  * @psalm-type ServerSocketTlsBindConfiguration = array{
  *     minimum-version?: int,
  *     verify-peer?: bool,
@@ -30,7 +41,7 @@ use Psr\Log\NullLogger;
  *     security-level?: 0|1|2|3|4|5,
  *     peer-name?: non-empty-string,
  *     ciphers?: non-empty-string,
- *     alpn-protocols?: non-empty-list<non-empty-string>,
+ *     alpn-protocols?: list<non-empty-string>,
  *     certificate-authority?: array{
  *         file?: non-empty-string,
  *         path?: non-empty-string,
@@ -40,7 +51,7 @@ use Psr\Log\NullLogger;
  *         key?: non-empty-string,
  *         passphrase?: non-empty-string,
  *     },
- *     certificates?: non-empty-array<string, array{
+ *     certificates?: array<string, array{
  *         file: non-empty-string,
  *         key?: non-empty-string,
  *         passphrase?: non-empty-string,
@@ -57,6 +68,8 @@ use Psr\Log\NullLogger;
  *     port: int,
  *     bind?: ServerSocketBindConfiguration,
  * }
+ *
+ * @psalm-suppress MissingThrowsDocblock
  */
 final readonly class ServerInfrastructure
 {
@@ -111,12 +124,14 @@ final readonly class ServerInfrastructure
     private bool $debug;
 
     /**
-     * @var non-empty-list<ServerSocketConfiguration> The socket configurations.
+     * @var list<ServerSocketConfiguration> The socket configurations.
      */
     private array $serverSocketConfigurations;
 
     /**
      * The connections limit.
+     *
+     * @var positive-int
      */
     private int $connectionLimit;
 
@@ -159,16 +174,13 @@ final readonly class ServerInfrastructure
      * Create a new instance of {@see ServerInfrastructure}.
      *
      * @param bool $debug Whether to enable debug mode.
-     * @param non-empty-list<ServerSocketConfiguration> $serverSocketConfigurations The socket configurations.
-     * @param int $connectionLimit The connection limit.
-     * @param int $connectionLimitPerIP The connection limit per IP.
+     * @param list<ServerSocketConfiguration> $serverSocketConfigurations The socket configurations.
+     * @param positive-int $connectionLimit The connection limit.
+     * @param positive-int $connectionLimitPerIP The connection limit per IP.
      * @param int $streamTimeout The stream timeout.
      * @param int $connectionTimeout The connection timeout.
      * @param int $headerSizeLimit The header size limit.
      * @param int $bodySizeLimit The body size limit.
-     * @param bool $http2 Whether to enable HTTP/2.
-     * @param bool $http2Upgrade Whether to upgrade to HTTP/2.
-     * @param bool $push Whether to enable server push.
      * @param int $tlsHandshakeTimeout The TLS handshake timeout.
      * @param LoggerInterface $logger The logger.
      */
@@ -213,7 +225,7 @@ final readonly class ServerInfrastructure
     /**
      * Create server sockets that the server will listen on.
      *
-     * @return Generator<null, ServerSocket, null, HttpDriverFactory> Yielded server sockets, and returns the HTTP driver factory.
+     * @return Generator<int, ServerSocket, null, HttpDriverFactory> Yielded server sockets, and returns the HTTP driver factory.
      */
     public function createServerSockets(): Generator
     {
@@ -240,14 +252,19 @@ final readonly class ServerInfrastructure
         );
 
         foreach ($serverSocketConfigurations as $socketConfiguration) {
-            $address = new InternetAddress($socketConfiguration['host'], $socketConfiguration['port']);
+            /** @var string $host */
+            $host = $socketConfiguration['host'];
+            /** @var int<0, 65535> $port */
+            $port = $socketConfiguration['port'];
+
+            $address = new InternetAddress($host, $port);
             $bindContext = $this->createBindContext($socketConfiguration['bind'] ?? null);
 
-            $tlsContext = $bindContext?->getTlsContext()?->withApplicationLayerProtocols(
+            $tlsContext = $bindContext->getTlsContext()?->withApplicationLayerProtocols(
                 $httpDriverFactory->getApplicationLayerProtocols(),
             );
 
-            yield $serverFactory->listen($address, $bindContext?->withTlsContext($tlsContext));
+            yield $serverFactory->listen($address, $bindContext->withTlsContext($tlsContext));
         }
 
         return $httpDriverFactory;
@@ -260,7 +277,7 @@ final readonly class ServerInfrastructure
      *
      * @return BindContext The bind context.
      */
-    private function createBindContext(?array $bindConfiguration): BindContext
+    private function createBindContext(null|array $bindConfiguration): BindContext
     {
         $context = new BindContext();
         $tcpNoDelay = $bindConfiguration['tcp-no-delay'] ?? false;

@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Advisory\Adviser;
 
 use Amp\Http\Internal\HPackNghttp2;
@@ -21,7 +30,7 @@ final readonly class HPackNghttp2Adviser implements AdviserInterface
      *
      * @return Advice|null An instance of Advice if HPack is not supported, or null if it is supported.
      */
-    public function getAdvice(): ?Advice
+    public function getAdvice(): null|Advice
     {
         if (!extension_loaded('ffi') || !class_exists(FFI::class)) {
             return Advice::forPerformance(
@@ -31,6 +40,10 @@ final readonly class HPackNghttp2Adviser implements AdviserInterface
             );
         }
 
+        /**
+         * @psalm-suppress InternalClass
+         * @psalm-suppress InternalMethod
+         */
         if (!HPackNghttp2::isSupported()) {
             return Advice::forPerformance(
                 'Install and Configure nghttp2 for HPack Support',

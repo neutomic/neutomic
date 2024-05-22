@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Advisory\DependencyInjection\Hook;
 
 use Neu\Component\Advisory\Adviser\AdviserInterface;
@@ -17,15 +26,17 @@ final readonly class AddAdvisersHook implements HookInterface
 {
     /**
      * The advisory service identifier.
+     *
+     * @var non-empty-string
      */
     private string $advisory;
 
     /**
      * Create a new advisers hook.
      *
-     * @param string|null $advisory The advisory service identifier.
+     * @param non-empty-string|null $advisory The advisory service identifier.
      */
-    public function __construct(?string $advisory = null)
+    public function __construct(null|string $advisory = null)
     {
         $this->advisory = $advisory ?? AdvisoryInterface::class;
     }

@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Csrf\DependencyInjection\Factory;
 
 use Neu\Component\Csrf\CsrfTokenManager;
@@ -39,7 +48,7 @@ final readonly class CsrfTokenManagerFactory implements FactoryInterface
      * @param non-empty-string|null $storage The service identifier of the {@see CsrfTokenStorageInterface} implementation
      *                                       to use, if null, the default implementation is used.
      */
-    public function __construct(?string $generator = null, ?string $storage = null)
+    public function __construct(null|string $generator = null, null|string $storage = null)
     {
         $this->generator = $generator ?? CsrfTokenGeneratorInterface::class;
         $this->storage = $storage ?? CsrfTokenStorageInterface::class;

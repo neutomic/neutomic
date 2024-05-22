@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Cache\Driver;
 
 use Neu\Component\Cache\Exception\InvalidKeyException;
@@ -21,6 +30,7 @@ interface DriverInterface
      *
      * @throws UnavailableItemException If $key is not present in the cache.
      * @throws InvalidKeyException If the $key string is not a legal value.
+     * @throws RuntimeException If an error occurs while fetching the value.
      *
      * @return mixed The value of the item from the cache.
      */
@@ -35,6 +45,7 @@ interface DriverInterface
      *
      * @throws InvalidKeyException If the $key string is not a legal value.
      * @throws InvalidValueException If the $value cannot be stored using this driver.
+     * @throws RuntimeException If an error occurs while storing the value.
      */
     public function set(string $key, mixed $value, null|int $ttl = null): void;
 
@@ -48,6 +59,7 @@ interface DriverInterface
      * @param non-empty-string $key The unique cache key of the item to delete.
      *
      * @throws InvalidKeyException If the $key string is not a legal value.
+     * @throws RuntimeException If an error occurs while deleting the item.
      */
     public function delete(string $key): void;
 

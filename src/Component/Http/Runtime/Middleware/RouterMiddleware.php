@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Runtime\Middleware;
 
 use Neu\Component\Http\Message\RequestInterface;
@@ -12,6 +21,11 @@ use Neu\Component\Http\Router\Route\Route;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 
+/**
+ * A middleware that matches the request to a route.
+ *
+ * @psalm-suppress MissingThrowsDocblock
+ */
 final readonly class RouterMiddleware implements PrioritizedMiddlewareInterface
 {
     public const int PRIORITY = 256;

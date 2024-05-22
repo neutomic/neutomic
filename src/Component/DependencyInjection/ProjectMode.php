@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\DependencyInjection;
 
 use Neu\Component\DependencyInjection\Exception\InvalidArgumentException;
@@ -28,8 +37,9 @@ enum ProjectMode: string
      *
      * @throws InvalidArgumentException If the project mode set in the environment is invalid.
      */
-    public static function fromEnvironment(?ProjectMode $default = null): self
+    public static function fromEnvironment(null|ProjectMode $default = null): self
     {
+        /** @psalm-suppress MissingThrowsDocblock */
         $value = Env\get_var(self::ENVIRONMENT_VARIABLE);
         if (null === $value) {
             return $default ?? self::Development;

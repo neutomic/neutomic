@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Router\Matcher;
 
 use Neu\Component\Cache\StoreInterface;
@@ -36,7 +45,7 @@ final class Matcher implements MatcherInterface
     /**
      * @var null|array<non-empty-string, PrefixMap> $map
      */
-    private ?array $map = null;
+    private null|array $map = null;
 
     public function __construct(RegistryInterface $registry, StoreInterface $cache)
     {
@@ -51,7 +60,15 @@ final class Matcher implements MatcherInterface
     {
         try {
             [$route, $parameters] = $this->matchImpl($request->getMethod(), $request->getUri());
-            $parameters = array_map(static fn(string $value): string => rawurldecode($value), $parameters);
+            $parameters = array_map(
+                /**
+                 * @param non-empty-string $value
+                 *
+                 * @return non-empty-string
+                 */
+                static fn (string $value): string => rawurldecode($value) ?: $value,
+                $parameters,
+            );
 
             return new Result($route, $this->registry->getHandler($route->name), $parameters);
         } catch (NotFoundHttpException $e) {
@@ -62,7 +79,15 @@ final class Matcher implements MatcherInterface
 
             if ($allowed === [Method::Get] && $request->getMethod() === Method::Head) {
                 [$route, $parameters] = $this->matchImpl(Method::Get, $request->getUri());
-                $parameters = array_map(static fn(string $value): string => rawurldecode($value), $parameters);
+                $parameters = array_map(
+                    /**
+                     * @param non-empty-string $value
+                     *
+                     * @return non-empty-string
+                     */
+                    static fn (string $value): string => rawurldecode($value) ?: $value,
+                    $parameters,
+                );
 
                 return new Result($route, $this->registry->getHandler($route->name), $parameters);
             }
@@ -80,11 +105,9 @@ final class Matcher implements MatcherInterface
     /**
      * Return the list of HTTP Methods that are allowed for the given path.
      *
-     * @param non-empty-string $path
-     *
      * @return null|non-empty-list<Method>
      */
-    private function getAllowedMethods(UriInterface $uri): ?array
+    private function getAllowedMethods(UriInterface $uri): null|array
     {
         $path = $uri->getPath();
         if (array_key_exists($path, $this->allowedMethods)) {
@@ -109,6 +132,8 @@ final class Matcher implements MatcherInterface
 
     /**
      * @return array<non-empty-string, PrefixMap>
+     *
+     * @psalm-suppress MissingThrowsDocblock
      */
     private function getMap(): array
     {
@@ -131,12 +156,9 @@ final class Matcher implements MatcherInterface
     }
 
     /**
-     * @param Method $method
-     * @param non-empty-string $path
-     *
      * @throws NotFoundHttpException
      *
-     * @return array{0: Route, 1: array<string, string>}
+     * @return array{0: Route, 1: array<non-empty-string, non-empty-string>}
      */
     private function matchImpl(Method $method, UriInterface $uri): array
     {
@@ -156,7 +178,7 @@ final class Matcher implements MatcherInterface
      *
      * @throws NotFoundHttpException
      *
-     * @return array{0: Route, 1: array<string, string>}
+     * @return array{0: Route, 1: array<non-empty-string, non-empty-string>}
      */
     private static function matchWithMap(Method $method, UriInterface $uri, string $path, PrefixMap $map): array
     {
@@ -176,10 +198,10 @@ final class Matcher implements MatcherInterface
                 continue;
             }
 
-            /** @var array<string, string> $data */
+            /** @var array<non-empty-string, non-empty-string> $data */
             $data = [];
             foreach ($matches as $name => $match) {
-                if (is_string($name)) {
+                if (is_string($name) && $name !== '' && $match !== '') {
                     $data[$name] = $match;
                 }
             }

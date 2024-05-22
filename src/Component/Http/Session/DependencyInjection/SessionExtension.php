@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Session\DependencyInjection;
 
 use Neu\Component\DependencyInjection\ContainerBuilderInterface;
@@ -25,6 +34,8 @@ use Neu\Component\Http\Session\Storage\StorageInterface;
 use Psl\Type;
 
 /**
+ * A container extension for the session component.
+ *
  * @psalm-type Configuration = array{
  *     cookie?: array{
  *         name?: non-empty-string,
@@ -33,7 +44,7 @@ use Psl\Type;
  *         domain?: non-empty-string,
  *         secure?: bool,
  *         http-only?: bool,
- *         same-site?: CookieSameSite,
+ *         same-site?: CookieSameSite|string,
  *     },
  *     cache?: array{
  *         expires?: int,
@@ -57,40 +68,41 @@ final readonly class SessionExtension implements ExtensionInterface
 {
     public function register(ContainerBuilderInterface $container): void
     {
-        /** @var Configuration $configuration */
         $configuration = $container
             ->getConfiguration()
             ->getContainer('http')
             ->getOfTypeOrDefault('session', $this->getConfigurationType(), [])
         ;
 
-        $container->addDefinitions([
-            Definition::ofType(CacheConfiguration::class, new CacheConfigurationFactory(
-                $configuration['session']['cache']['expires'] ?? null,
-                $configuration['session']['cache']['limiter'] ?? null,
-            )),
-            Definition::ofType(CookieConfiguration::class, new CookieConfigurationFactory(
-                $configuration['session']['cookie']['name'] ?? null,
-                $configuration['session']['cookie']['lifetime'] ?? null,
-                $configuration['session']['cookie']['path'] ?? null,
-                $configuration['session']['cookie']['domain'] ?? null,
-                $configuration['session']['cookie']['secure'] ?? null,
-                $configuration['session']['cookie']['http-only'] ?? null,
-                $configuration['session']['cookie']['same-site'] ?? null,
-            )),
-            Definition::ofType(Initializer::class, new InitializerFactory(
-                $configuration['session']['initializer']['storage'] ?? null,
-                $configuration['session']['initializer']['cookie-configuration'] ?? null,
-            )),
-            Definition::ofType(Persistence::class, new PersistenceFactory(
-                $configuration['session']['persistence']['storage'] ?? null,
-                $configuration['session']['persistence']['cookie-configuration'] ?? null,
-                $configuration['session']['persistence']['cache-configuration'] ?? null,
-            )),
-            Definition::ofType(Storage::class, new StorageFactory(
-                $configuration['session']['storage']['store'] ?? null,
-            ))
-        ]);
+        $container->addDefinition(Definition::ofType(CacheConfiguration::class, new CacheConfigurationFactory(
+            $configuration['cache']['expires'] ?? null,
+            $configuration['cache']['limiter'] ?? null,
+        )));
+
+        $container->addDefinition(Definition::ofType(CookieConfiguration::class, new CookieConfigurationFactory(
+            $configuration['cookie']['name'] ?? null,
+            $configuration['cookie']['lifetime'] ?? null,
+            $configuration['cookie']['path'] ?? null,
+            $configuration['cookie']['domain'] ?? null,
+            $configuration['cookie']['secure'] ?? null,
+            $configuration['cookie']['http-only'] ?? null,
+            $configuration['cookie']['same-site'] ?? null,
+        )));
+
+        $container->addDefinition(Definition::ofType(Initializer::class, new InitializerFactory(
+            $configuration['initializer']['storage'] ?? null,
+            $configuration['initializer']['cookie-configuration'] ?? null,
+        )));
+
+        $container->addDefinition(Definition::ofType(Persistence::class, new PersistenceFactory(
+            $configuration['persistence']['storage'] ?? null,
+            $configuration['persistence']['cookie-configuration'] ?? null,
+            $configuration['persistence']['cache-configuration'] ?? null,
+        )));
+
+        $container->addDefinition(Definition::ofType(Storage::class, new StorageFactory(
+            $configuration['storage']['store'] ?? null,
+        )));
 
         $container->getDefinition(Initializer::class)->addAlias(InitializerInterface::class);
         $container->getDefinition(Persistence::class)->addAlias(PersistenceInterface::class);

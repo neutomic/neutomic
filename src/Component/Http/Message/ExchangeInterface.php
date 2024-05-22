@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Message;
 
 interface ExchangeInterface extends MessageInterface
@@ -25,15 +34,15 @@ interface ExchangeInterface extends MessageInterface
     /**
      * Retrieves all trailers currently associated with the message.
      *
-     * @return array<string, TrailerInterface> An associative array of trailers,
-     *                                         where each key is a trailer field name and each value is a TrailerInterface representing the trailer's values.
+     * @return array<non-empty-string, TrailerInterface> An associative array of trailers,
+     *                                                   where each key is a trailer field name and each value is a TrailerInterface representing the trailer's values.
      */
     public function getTrailers(): array;
 
     /**
      * Checks for the presence of a trailer by its field name.
      *
-     * @param string $field The field name of the trailer to check.
+     * @param non-empty-string $field The field name of the trailer to check.
      *
      * @return bool True if the trailer exists, false otherwise.
      */
@@ -45,11 +54,11 @@ interface ExchangeInterface extends MessageInterface
      * This method performs a case-sensitive search and returns the trailer if found. If no matching trailer
      * is found, the method returns null.
      *
-     * @param string $field The field name of the trailer to retrieve.
+     * @param non-empty-string $field The field name of the trailer to retrieve.
      *
      * @return null|TrailerInterface The trailer for the specified field name, or null if not found.
      */
-    public function getTrailer(string $field): ?TrailerInterface;
+    public function getTrailer(string $field): null|TrailerInterface;
 
     /**
      * Returns a new instance with the specified trailer added or replaced.
@@ -67,7 +76,7 @@ interface ExchangeInterface extends MessageInterface
      *
      * This method removes a trailer identified by the given field name.
      *
-     * @param string $field The field name of the trailer to remove.
+     * @param non-empty-string $field The field name of the trailer to remove.
      *
      * @return static A new instance without the specified trailer.
      */

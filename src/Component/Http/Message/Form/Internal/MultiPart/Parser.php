@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Message\Form\Internal\MultiPart;
 
 use Amp\Http\Http1\Rfc7230;
@@ -26,6 +35,18 @@ use function strtolower;
 use function substr;
 use function substr_compare;
 
+/**
+ * @internal
+ *
+ * @psalm-suppress UnusedVariable
+ * @psalm-suppress MixedMethodCall
+ * @psalm-suppress PossiblyNullArgument
+ * @psalm-suppress PossiblyNullPropertyFetch
+ * @psalm-suppress MixedArgumentTypeCoercion
+ * @psalm-suppress MissingThrowsDocblock
+ * @psalm-suppress NoValue
+ * @psalm-suppress ArgumentTypeCoercion
+ */
 final readonly class Parser
 {
     private const string BOUNDARY_REGEX = '#^\s*multipart/(?:form-data|mixed)(?:\s*;\s*boundary\s*=\s*("?)([^"]*)\1)?$#';
@@ -35,7 +56,7 @@ final readonly class Parser
     /**
      * Parse the boundary from the given content type.
      */
-    public static function parseBoundary(string $contentType): ?string
+    public static function parseBoundary(string $contentType): null|string
     {
         if (!preg_match(self::BOUNDARY_REGEX, $contentType, $matches)) {
             return null;
@@ -59,11 +80,13 @@ final readonly class Parser
             // RFC 7578, RFC 2046 Section 5.1.1
             $boundarySeparator = "--$boundary";
             while (strlen($buffer) < strlen($boundarySeparator) + 4) {
-                $buffer .= $chunk = $body->getChunk();
+                $chunk = $body->getChunk();
 
                 if ($chunk === null) {
                     throw new HttpException(StatusCode::BadRequest, message: 'Request body ended unexpectedly');
                 }
+
+                $buffer .= $chunk;
             }
 
             $offset = strlen($boundarySeparator);
@@ -75,12 +98,15 @@ final readonly class Parser
             while (substr_compare($buffer, "--\r\n", $offset)) {
                 $offset += 2;
 
+                $end = 0;
                 while (($end = strpos($buffer, "\r\n\r\n", $offset)) === false) {
-                    $buffer .= $chunk = $body->getChunk();
+                    $chunk = $body->getChunk();
 
                     if ($chunk === null) {
                         throw new HttpException(StatusCode::BadRequest, message: 'Request body ended unexpectedly');
                     }
+
+                    $buffer .= $chunk;
                 }
 
                 if ($fieldCount++ === $options->fieldCountLimit) {
@@ -95,7 +121,6 @@ final readonly class Parser
 
                 /** @var array<non-empty-string, non-empty-list<non-empty-string>> $headerMap */
                 $headerMap = [];
-                /** @var array{0: non-empty-string, 1: non-empty-string} $matches */
                 foreach ($headers as [$key, $value]) {
                     $headerMap[strtolower($key)][] = $value;
                 }
@@ -113,7 +138,7 @@ final readonly class Parser
                 $fieldName = $matches[1];
                 $queue = new Queue();
                 $filename = $matches[2] ?? null;
-                if (null !== $filename) {
+                if (null !== $filename && $filename !== '') {
                     if ($fileCount++ === $options->fileCountLimit) {
                         throw new HttpException(StatusCode::PayloadTooLarge, message: 'Maximum number of files exceeded');
                     }
@@ -156,11 +181,12 @@ final readonly class Parser
                         $buffer = substr($buffer, $position);
                     }
 
-                    $buffer .= $chunk = $body->getChunk();
-
+                    $chunk = $body->getChunk();
                     if ($chunk === null) {
                         throw new HttpException(StatusCode::BadRequest, message: 'Request body ended unexpectedly');
                     }
+
+                    $buffer .= $chunk;
                 }
 
                 $queue->push(substr($buffer, 0, $end));
@@ -169,11 +195,12 @@ final readonly class Parser
                 $offset = $end + strlen($boundarySeparator);
 
                 while (strlen($buffer) < 4) {
-                    $buffer .= $chunk = $body->getChunk();
-
+                    $chunk = $body->getChunk();
                     if ($chunk === null) {
                         throw new HttpException(StatusCode::BadRequest, message: 'Request body ended unexpectedly');
                     }
+
+                    $buffer .= $chunk;
                 }
 
                 $future->await();

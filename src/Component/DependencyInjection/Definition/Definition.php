@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\DependencyInjection\Definition;
 
 use Closure;
@@ -13,10 +22,8 @@ use Neu\Component\DependencyInjection\ProcessorInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionIntersectionType;
-use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
-use ReflectionProperty;
 use ReflectionType;
 use ReflectionUnionType;
 
@@ -32,7 +39,7 @@ final class Definition implements DefinitionInterface
     /**
      * The identifier of the service.
      *
-     * @var string
+     * @var non-empty-string
      */
     private string $id;
 
@@ -48,14 +55,14 @@ final class Definition implements DefinitionInterface
      *
      * If null, the service is created by instantiating manually.
      *
-     * @var null|FactoryInterface
+     * @var null|FactoryInterface<T>
      */
-    private ?FactoryInterface $factory = null;
+    private null|FactoryInterface $factory = null;
 
     /**
      * Processors to apply to the service.
      *
-     * @var ProcessorInterface[]
+     * @var list<ProcessorInterface>
      */
     private array $processors = [];
 
@@ -69,14 +76,12 @@ final class Definition implements DefinitionInterface
     /**
      * The instance of the service.
      *
-     * @var null|object
+     * @var null|T
      */
-    private ?object $instance = null;
+    private null|object $instance = null;
 
     /**
      * Determine if the service is currently being resolved.
-     *
-     * @var bool
      */
     private bool $resolving = false;
 
@@ -101,7 +106,7 @@ final class Definition implements DefinitionInterface
      *
      * @return static<S>
      */
-    public static function create(string $id, string $type, ?FactoryInterface $factory = null): self
+    public static function create(string $id, string $type, null|FactoryInterface $factory = null): self
     {
         $definition = new self($id, $type);
         $definition->setFactory($factory);
@@ -119,7 +124,7 @@ final class Definition implements DefinitionInterface
      *
      * @return static<S>
      */
-    public static function ofType(string $type, ?FactoryInterface $factory = null): static
+    public static function ofType(string $type, null|FactoryInterface $factory = null): static
     {
         return self::create($type, $type, $factory);
     }
@@ -159,7 +164,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
-    public function getFactory(): ?FactoryInterface
+    public function getFactory(): null|FactoryInterface
     {
         return $this->factory;
     }
@@ -167,7 +172,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
-    public function setFactory(?FactoryInterface $factory): static
+    public function setFactory(null|FactoryInterface $factory): static
     {
         $this->factory = $factory;
 
@@ -188,9 +193,13 @@ final class Definition implements DefinitionInterface
             return $reflection->implementsInterface($type);
         }
 
+        /** @psalm-suppress ArgumentTypeCoercion */
         return $reflection->isSubclassOf($type);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function hasAttribute(string $name): bool
     {
         $attributes = $this->getReflectionClass(false)->getAttributes();
@@ -297,6 +306,7 @@ final class Definition implements DefinitionInterface
     private function getFactoryClosure(): Closure
     {
         if ($this->factory !== null) {
+            /** @var (Closure(ContainerInterface): T) */
             return ($this->factory)(...);
         }
 
@@ -304,15 +314,19 @@ final class Definition implements DefinitionInterface
             $reflection = $this->getReflectionClass();
             $constructor = $reflection->getConstructor();
             if ($constructor === null) {
+                /** @var T */
                 return $reflection->newInstance();
             }
 
             $parameters = $constructor->getParameters();
+            /** @var list<mixed> $arguments */
             $arguments = [];
             foreach ($parameters as $parameter) {
+                /** @psalm-suppress MixedAssignment */
                 $arguments[] = $this->resolveConstructorArgument($container, $parameter, $parameter->getType());
             }
 
+            /** @var T */
             return $reflection->newInstanceArgs($arguments);
         };
     }
@@ -320,9 +334,7 @@ final class Definition implements DefinitionInterface
     /**
      * Get the reflection class for the service type.
      *
-     * @throws RuntimeException
-     *
-     * @return ReflectionClass
+     * @throws RuntimeException If the class is not instantiable.
      */
     private function getReflectionClass(bool $instantiable = true): ReflectionClass
     {
@@ -340,45 +352,18 @@ final class Definition implements DefinitionInterface
     }
 
     /**
-     * Get the reflection property for the service instance.
-     *
-     * @throws RuntimeException
-     *
-     * @return ReflectionProperty
-     */
-    private function getReflectionProperty(object $instance, string $name): ReflectionProperty
-    {
-        try {
-            $reflection = new ReflectionProperty($instance, $name);
-        } catch (ReflectionException $e) {
-            throw new RuntimeException('Failed to reflect property "' . $name . '" for service "' . $this->id . '"', previous: $e);
-        }
-
-        return $reflection;
-    }
-
-    private function getReflectionMethod(object $instance, string $name): ReflectionMethod
-    {
-        try {
-            $reflection = new ReflectionMethod($instance, $name);
-        } catch (ReflectionException $e) {
-            throw new RuntimeException('Failed to reflect method "' . $name . '" for service "' . $this->id . '"', previous: $e);
-        }
-
-        return $reflection;
-    }
-
-    /**
      * Resolve an argument for a constructor parameter.
      *
-     * @param ContainerInterface $container
-     * @param ReflectionParameter $parameter
-     * @param ReflectionType $type
-     *
-     * @throws ExceptionInterface
+     * @throws ExceptionInterface If the argument could not be resolved.
      */
-    private function resolveConstructorArgument(ContainerInterface $container, ReflectionParameter $parameter, ReflectionType $type): mixed
+    private function resolveConstructorArgument(ContainerInterface $container, ReflectionParameter $parameter, null|ReflectionType $type): mixed
     {
+        if ($type === null) {
+            throw new RuntimeException(
+                'Failed to resolve parameter "' . $parameter->getName() . '" because it does not have a type.'
+            );
+        }
+
         try {
             return $this->resolveParameter($container, $parameter, $type);
         } catch (RuntimeException $e) {
@@ -393,22 +378,12 @@ final class Definition implements DefinitionInterface
         }
     }
 
-    private function resolveMethodArgument(string $method, ContainerInterface $container, ReflectionParameter $parameter, ReflectionType $type): mixed
-    {
-        try {
-            return $this->resolveParameter($container, $parameter, $type);
-        } catch (RuntimeException $e) {
-            if ($parameter->isDefaultValueAvailable()) {
-                return $parameter->getDefaultValue();
-            }
 
-            throw new RuntimeException(
-                message: 'Failed to resolve method "' . $method . '" argument "' . $parameter->getName() . '" for service "' . $this->id . '"',
-                previous: $e
-            );
-        }
-    }
-
+    /**
+     * Resolve a parameter for a constructor.
+     *
+     * @throws ExceptionInterface If the parameter could not be resolved.
+     */
     private function resolveParameter(ContainerInterface $container, ReflectionParameter $parameter, ReflectionType $type): mixed
     {
         if ($type instanceof ReflectionIntersectionType) {

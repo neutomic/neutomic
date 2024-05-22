@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Tests\Component\Configuration;
 
 use Closure;
@@ -89,31 +98,31 @@ final class ContainerTest extends TestCase
     {
         yield [
             ['foo' => [1, 2, 3]],
-            static fn(ConfigurationContainerInterface $container) => $container->getString('foo'),
+            static fn (ConfigurationContainerInterface $container) => $container->getString('foo'),
             'Entry "foo" value cannot be coerced into the expected type string'
         ];
 
         yield [
             ['foo' => [1, 2, 3]],
-            static fn(ConfigurationContainerInterface $container) => $container->getInt('foo'),
+            static fn (ConfigurationContainerInterface $container) => $container->getInt('foo'),
             'Entry "foo" value cannot be coerced into the expected type int'
         ];
 
         yield [
             ['foo' => [1, 2, 3]],
-            static fn(ConfigurationContainerInterface $container) => $container->getFloat('foo'),
+            static fn (ConfigurationContainerInterface $container) => $container->getFloat('foo'),
             'Entry "foo" value cannot be coerced into the expected type float'
         ];
 
         yield [
             ['foo' => 'hello'],
-            static fn(ConfigurationContainerInterface $container) => $container->getBool('foo'),
+            static fn (ConfigurationContainerInterface $container) => $container->getBool('foo'),
             'Entry "foo" value cannot be coerced into the expected type bool'
         ];
 
         yield [
             ['foo' => 'hello'],
-            static fn(ConfigurationContainerInterface $container) => $container->getContainer('foo'),
+            static fn (ConfigurationContainerInterface $container) => $container->getContainer('foo'),
             'Entry "foo" value cannot be coerced into the expected type dict<array-key, mixed>'
         ];
     }

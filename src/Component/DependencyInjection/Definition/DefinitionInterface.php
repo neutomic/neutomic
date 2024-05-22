@@ -2,10 +2,20 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\DependencyInjection\Definition;
 
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\ExceptionInterface;
+use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\DependencyInjection\ProcessorInterface;
 
@@ -47,33 +57,33 @@ interface DefinitionInterface
      *
      * @return null|FactoryInterface<T>
      */
-    public function getFactory(): ?FactoryInterface;
+    public function getFactory(): null|FactoryInterface;
 
     /**
      * Set the factory.
      *
      * @param null|FactoryInterface<T> $factory
      */
-    public function setFactory(?FactoryInterface $factory): static;
+    public function setFactory(null|FactoryInterface $factory): static;
 
     /**
      * Get the processors.
      *
-     * @return list<ProcessorInterface<T>>
+     * @return list<ProcessorInterface>
      */
     public function getProcessors(): array;
 
     /**
      * Add a processor.
      *
-     * @param ProcessorInterface<T> $processor
+     * @param ProcessorInterface $processor
      */
     public function addProcessor(ProcessorInterface $processor): static;
 
     /**
      * Set the processors.
      *
-     * @param list<ProcessorInterface<T>> $processors
+     * @param list<ProcessorInterface> $processors
      */
     public function setProcessors(array $processors): static;
 
@@ -101,20 +111,20 @@ interface DefinitionInterface
     /**
      * Check if the definition is an instance of a specific type.
      *
-     * @template I of object
+     * @param class-string $type
      *
-     * @param class-string<I> $type
+     * @throws RuntimeException If unable to check the type.
      *
      * @return bool
-     *
-     * @psalm-assert-if-true T is I
      */
     public function isInstanceOf(string $type): bool;
 
     /**
      * Check if the type of the definition uses a specific attribute.
      *
-     * @param non-empty-string $name
+     * @param class-string $name
+     *
+     * @throws RuntimeException If unable to check the attribute.
      *
      * @return bool
      */

@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\DependencyInjection;
 
 use Psl\Vec;
@@ -57,7 +66,7 @@ final readonly class ServiceLocator implements ServiceLocatorInterface
      */
     public function has(string $id): bool
     {
-        return isset($this->services[$id]);
+        return '' !== $id && isset($this->services[$id]);
     }
 
     /**
@@ -65,7 +74,7 @@ final readonly class ServiceLocator implements ServiceLocatorInterface
      */
     public function get(string $id): object
     {
-        if (!isset($this->services[$id])) {
+        if ('' === $id || !isset($this->services[$id])) {
             throw Exception\ServiceNotFoundException::forService($id);
         }
 

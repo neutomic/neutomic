@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Runtime;
 
 use Neu\Component\EventDispatcher\EventDispatcherInterface;
@@ -53,7 +62,7 @@ final class Runtime implements RuntimeInterface
     /**
      * A semaphore to limit the number of concurrent requests handled by the runtime.
      *
-     * @var Semaphore<RequestInterface, ResponseInterface>
+     * @var Semaphore<array{Context, RequestInterface}, ResponseInterface>
      */
     private Semaphore $semaphore;
 
@@ -63,7 +72,7 @@ final class Runtime implements RuntimeInterface
      * @param EventDispatcherInterface $dispatcher The event dispatcher to trigger various lifecycle events.
      * @param HandlerResolverInterface $resolver The resolver to find appropriate handlers for requests.
      * @param MiddlewareQueueInterface $queue The middleware queue to process requests.
-     * @param int $concurrencyLimit The maximum number of concurrent requests the runtime can handle.
+     * @param int<1, max> $concurrencyLimit The maximum number of concurrent requests the runtime can handle.
      */
     public function __construct(EventDispatcherInterface $dispatcher, HandlerResolverInterface $resolver, MiddlewareQueueInterface $queue, RecoveryInterface $recovery, int $concurrencyLimit = self::DEFAULT_CONCURRENCY_LIMIT)
     {
@@ -190,7 +199,7 @@ final class Runtime implements RuntimeInterface
      *
      * @param Context $context The context during which the error occurred.
      * @param RequestInterface $request The request during which the error occurred.
-     * @param Throwable $error The error that needs handling.
+     * @param Throwable $throwable The error that needs handling.
      *
      * @throws Throwable Re-throws the error if no response is provided by the {@see ThrowableEvent}.
      *

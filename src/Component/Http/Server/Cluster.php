@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Server;
 
 use Amp\Cluster\Cluster as AmpCluster;
@@ -12,6 +21,11 @@ use Throwable;
 
 use function Amp\Cluster\countCpuCores;
 
+/**
+ * A cluster that manages multiple worker processes.
+ *
+ * @psalm-suppress MissingThrowsDocblock
+ */
 final class Cluster implements ClusterInterface
 {
     /**
@@ -27,7 +41,7 @@ final class Cluster implements ClusterInterface
     /**
      * The cluster watcher instance to manage worker processes.
      */
-    private ?ClusterWatcher $watcher = null;
+    private null|ClusterWatcher $watcher = null;
 
     /**
      * The Number of worker processes to be managed by the cluster.
@@ -41,7 +55,7 @@ final class Cluster implements ClusterInterface
      * @param LoggerInterface $logger Logger instance for logging cluster activities.
      * @param int|null $workerCount Optional number of workers to start. If null, the number of CPU cores will be used.
      */
-    public function __construct(string $entrypoint, LoggerInterface $logger, ?int $workerCount = null)
+    public function __construct(string $entrypoint, LoggerInterface $logger, null|int $workerCount = null)
     {
         $this->entrypoint = $entrypoint;
         $this->logger = $logger;
@@ -51,7 +65,7 @@ final class Cluster implements ClusterInterface
     /**
      * @inheritDoc
      */
-    public function start(?int $workers = null): void
+    public function start(null|int $workers = null): void
     {
         if (null !== $this->watcher) {
             return;
@@ -61,7 +75,7 @@ final class Cluster implements ClusterInterface
             throw new RuntimeException('Cluster cannot be started from within a worker process.');
         }
 
-        $this->watcher = new ClusterWatcher([
+        $this->watcher = $watcher = new ClusterWatcher([
             __DIR__ . '/Internal/cluster-worker.php',
             $this->entrypoint,
         ], $this->logger);
@@ -70,7 +84,7 @@ final class Cluster implements ClusterInterface
 
         $this->logger->info('Starting cluster with {workers} workers...', ['workers' => $workers]);
 
-        $this->watcher->start($workers);
+        $watcher->start($workers);
 
         $this->logger->info('Cluster started with {workers} workers.', ['workers' => $workers]);
     }
@@ -86,9 +100,11 @@ final class Cluster implements ClusterInterface
             return;
         }
 
+        $watcher = $this->watcher;
+
         $this->logger->info('Restarting cluster...');
 
-        $this->watcher->restart();
+        $watcher->restart();
 
         $this->logger->info('Cluster restarted.');
     }
@@ -102,10 +118,12 @@ final class Cluster implements ClusterInterface
             return;
         }
 
+        $watcher = $this->watcher;
+
         $this->logger->info('Stopping cluster...');
 
         try {
-            $this->watcher->stop();
+            $watcher->stop();
 
             $this->logger->info('Cluster stopped successfully.');
         } catch (Throwable $exception) {

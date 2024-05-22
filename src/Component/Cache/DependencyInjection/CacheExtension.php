@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Cache\DependencyInjection;
 
 use Amp\File\Filesystem;
@@ -28,15 +37,17 @@ use Psl\Type;
 use function array_key_first;
 
 /**
+ * A dependency injection extension for the cache component.
+ *
  * @psalm-type FilesystemDriverConfiguration = array{
  *      driver: 'filesystem',
  *      directory: non-empty-string,
- *      prune-interval?: int
+ *      prune-interval?: positive-int,
  * }
  * @psalm-type LocalDriverConfiguration = array{
  *      driver: 'local',
- *      size?: int,
- *      prune-interval?: int
+ *      size?: positive-int,
+ *      prune-interval?: positive-int,
  * }
  * @psalm-type RedisDriverConfiguration = array{
  *      driver: 'redis'|'valkey',
@@ -52,53 +63,18 @@ use function array_key_first;
  * @psalm-type DriverConfiguration = LocalDriverConfiguration|FilesystemDriverConfiguration|RedisDriverConfiguration|ServiceDriverConfiguration
  * @psalm-type Configuration = array{
  *      default?: non-empty-string,
- *      stores?: non-empty-array<non-empty-string, DriverConfiguration>
+ *      stores?: array<non-empty-string, DriverConfiguration>
  * }
+ *
+ * @psalm-suppress MissingThrowsDocblock
  */
 final class CacheExtension implements ExtensionInterface
 {
-    /**
-     * @return Type\TypeInterface<Configuration>
-     */
-    public function getConfigurationType(): Type\TypeInterface
-    {
-        return Type\shape([
-            'default' => Type\optional(Type\non_empty_string()),
-            'stores' => Type\optional(Type\dict(
-                Type\non_empty_string(),
-                Type\union(
-                    Type\shape([
-                        'driver' => Type\literal_scalar('local'),
-                        'size' => Type\optional(Type\int()),
-                        'prune-interval' => Type\optional(Type\int()),
-                    ]),
-                    Type\shape([
-                        'driver' => Type\literal_scalar('filesystem'),
-                        'directory' => Type\non_empty_string(),
-                        'prune-interval' => Type\optional(Type\int()),
-                    ]),
-                    Type\shape([
-                        'driver' => Type\union(Type\literal_scalar('redis'), Type\literal_scalar('valkey')),
-                        'uri' => Type\non_empty_string(),
-                        'timeout' => Type\optional(Type\int()),
-                        'database' => Type\optional(Type\int()),
-                        'password' => Type\optional(Type\string()),
-                    ]),
-                    Type\shape([
-                        'driver' => Type\literal_scalar('service'),
-                        'service' => Type\non_empty_string(),
-                    ])
-                ),
-            )),
-        ]);
-    }
-
     /**
      * @inheritDoc
      */
     public function register(ContainerBuilderInterface $container): void
     {
-        /** @var Configuration $configuration */
         $configuration = $container
             ->getConfiguration()
             ->getOfTypeOrDefault('cache', $this->getConfigurationType(), [])
@@ -123,9 +99,9 @@ final class CacheExtension implements ExtensionInterface
      * Register cache stores.
      *
      * @param ContainerBuilderInterface $container
-     * @param array<non-empty-string, DriverConfiguration> $stores
+     * @param non-empty-array<non-empty-string, DriverConfiguration> $stores
      *
-     * @return array<non-empty-string, non-empty-string> Map of store names to store service IDs
+     * @return non-empty-array<non-empty-string, non-empty-string> Map of store names to store service IDs
      */
     private function registerStores(ContainerBuilderInterface $container, array $stores): array
     {
@@ -135,13 +111,20 @@ final class CacheExtension implements ExtensionInterface
             $driverServiceId = 'cache.driver.' . $name;
             $storeServiceId = 'cache.' . $name;
 
-            match ($config['driver']) {
-                'local' => $this->registerLocalDriver($container, $driverServiceId, $config),
-                'filesystem' => $this->registerFilesystemDriver($container, $driverServiceId, $config),
-                'redis', 'valkey' => $this->registerRedisDriver($container, $driverServiceId, $config),
-                'service' => $this->registerServiceDriver($container, $driverServiceId, $config),
-                default => throw new InvalidConfigurationException('Unknown driver: ' . $config['driver']),
-            };
+            $driver = $config['driver'];
+            if ('local' === $driver) {
+                /** @var LocalDriverConfiguration $config */
+                $this->registerLocalDriver($container, $driverServiceId, $config);
+            } elseif ('filesystem' === $driver) {
+                /** @var FilesystemDriverConfiguration $config */
+                $this->registerFilesystemDriver($container, $driverServiceId, $config);
+            } elseif ('redis' === $driver || 'valkey' === $driver) {
+                /** @var RedisDriverConfiguration $config */
+                $this->registerRedisDriver($container, $driverServiceId, $config);
+            } else {
+                /** @var ServiceDriverConfiguration $config */
+                $this->registerServiceDriver($container, $driverServiceId, $config);
+            }
 
             $container->addDefinition(Definition::create($storeServiceId, StoreInterface::class, new StoreFactory($driverServiceId)));
 
@@ -250,15 +233,50 @@ final class CacheExtension implements ExtensionInterface
      * Register the {@see StoreManager} service.
      *
      * @param ContainerBuilderInterface $container
-     * @param string $defaultStore
-     * @param array<string, string> $storeDefinitions
+     * @param non-empty-string $defaultStore
+     * @param array<non-empty-string, non-empty-string> $storeDefinitions
      */
     private function registerStoreManager(ContainerBuilderInterface $container, string $defaultStore, array $storeDefinitions): void
     {
-        $container->addDefinition(
-            Definition::ofType(StoreManager::class, new StoreManagerFactory($defaultStore, $storeDefinitions)),
-        );
+        $definition = Definition::ofType(StoreManager::class, new StoreManagerFactory($defaultStore, $storeDefinitions));
+        $definition->addAlias(StoreManagerInterface::class);
 
-        $container->getDefinition(StoreManager::class)->addAlias(StoreManagerInterface::class);
+        $container->addDefinition($definition);
+    }
+
+    /**
+     * @return Type\TypeInterface<Configuration>
+     */
+    public function getConfigurationType(): Type\TypeInterface
+    {
+        return Type\shape([
+            'default' => Type\optional(Type\non_empty_string()),
+            'stores' => Type\optional(Type\dict(
+                Type\non_empty_string(),
+                Type\union(
+                    Type\shape([
+                        'driver' => Type\literal_scalar('local'),
+                        'size' => Type\optional(Type\positive_int()),
+                        'prune-interval' => Type\optional(Type\positive_int()),
+                    ]),
+                    Type\shape([
+                        'driver' => Type\literal_scalar('filesystem'),
+                        'directory' => Type\non_empty_string(),
+                        'prune-interval' => Type\optional(Type\positive_int()),
+                    ]),
+                    Type\shape([
+                        'driver' => Type\union(Type\literal_scalar('redis'), Type\literal_scalar('valkey')),
+                        'uri' => Type\non_empty_string(),
+                        'timeout' => Type\optional(Type\int()),
+                        'database' => Type\optional(Type\int()),
+                        'password' => Type\optional(Type\string()),
+                    ]),
+                    Type\shape([
+                        'driver' => Type\literal_scalar('service'),
+                        'service' => Type\non_empty_string(),
+                    ])
+                ),
+            )),
+        ]);
     }
 }

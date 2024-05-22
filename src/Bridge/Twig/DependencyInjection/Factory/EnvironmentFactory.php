@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Bridge\Twig\DependencyInjection\Factory;
 
 use Neu\Component\DependencyInjection\ContainerInterface;
@@ -15,6 +24,8 @@ use Twig\Loader\LoaderInterface;
  * Factory for creating a {@see Environment} instance.
  *
  * @implements FactoryInterface<Environment>
+ *
+ * @psalm-suppress MixedAssignment
  */
 final readonly class EnvironmentFactory implements FactoryInterface
 {
@@ -23,42 +34,42 @@ final readonly class EnvironmentFactory implements FactoryInterface
      *
      * @var null|bool
      */
-    private ?bool $debug;
+    private null|bool $debug;
 
     /**
      * The charset to use.
      *
      * @var null|string
      */
-    private ?string $charset;
+    private null|string $charset;
 
     /**
      * Whether to enable auto-reload.
      *
      * @var null|bool
      */
-    private ?bool $autoReload;
+    private null|bool $autoReload;
 
     /**
      * Whether to enable strict variables.
      *
      * @var null|bool
      */
-    private ?bool $strictVariables;
+    private null|bool $strictVariables;
 
     /**
      * The auto-escape strategy to use.
      *
      * @var null|string
      */
-    private ?string $autoEscape;
+    private null|string $autoEscape;
 
     /**
      * The optimizations strategy to use.
      *
      * @var null|int
      */
-    private ?int $optimizations;
+    private null|int $optimizations;
 
     /**
      * The global variables to pass to the template.
@@ -76,7 +87,7 @@ final readonly class EnvironmentFactory implements FactoryInterface
      * @param null|int $optimizations
      * @param array<string, mixed> $globals
      */
-    public function __construct(?bool $debug = null, ?string $charset = null, ?bool $autoReload = null, ?bool $strictVariables = null, ?string $autoEscape = null, ?int $optimizations = null, ?array $globals = null)
+    public function __construct(null|bool $debug = null, null|string $charset = null, null|bool $autoReload = null, null|bool $strictVariables = null, null|string $autoEscape = null, null|int $optimizations = null, null|array $globals = null)
     {
         $this->debug = $debug;
         $this->charset = $charset;
@@ -116,7 +127,7 @@ final readonly class EnvironmentFactory implements FactoryInterface
             $options['strict_variables'] = $this->strictVariables;
         }
 
-        if (Environment::MAJOR_VERSION === 3)  {
+        if (Environment::MAJOR_VERSION === 3) {
             $options['use_yield'] = true;
         }
 

@@ -59,7 +59,7 @@ Look at the demo repository [neutomic/demo](https://github.com/neutomic/demo) fo
     - [ ] Full parsing
         - [ ] Multipart
         - [ ] URL-encoded
-- [ ] CSRF protection
+- [X] CSRF protection
 - [ ] Authentication
 - [ ] Authorization
 - [ ] WebSockets support

@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Router\Internal\PrefixMatching;
 
 use Neu\Component\Http\Router\Route\Route;
@@ -15,7 +24,7 @@ final class PrefixMapOrRoute
      * @param null|PrefixMap $map
      * @param null|Route $route
      */
-    private function __construct(private ?PrefixMap $map, private mixed $route)
+    private function __construct(private null|PrefixMap $map, private mixed $route)
     {
     }
 
@@ -41,18 +50,22 @@ final class PrefixMapOrRoute
 
     public function getMap(): PrefixMap
     {
+        assert($this->map instanceof PrefixMap);
+
         /** @var PrefixMap */
         return $this->map;
     }
 
     public function getRoute(): Route
     {
+        assert($this->route instanceof Route);
+
         /** @return Route */
         return $this->route;
     }
 
     /**
-     * @return array{map: null|PrefixMap, responder: null|Route}
+     * @return array{map: null|PrefixMap, route: null|Route}
      *
      * @internal
      */
@@ -62,7 +75,7 @@ final class PrefixMapOrRoute
     }
 
     /**
-     * @param array{map: null|PrefixMap, responder: null|Route} $data
+     * @param array{map: null|PrefixMap, route: null|Route} $data
      *
      * @internal
      */

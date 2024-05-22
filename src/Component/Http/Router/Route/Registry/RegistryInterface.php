@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Router\Route\Registry;
 
 use Neu\Component\Http\Exception\RouteNotFoundException;
@@ -48,7 +57,7 @@ interface RegistryInterface
     /**
      * Retrieves a route by its name.
      *
-     * @param string $name The name of the route to retrieve.
+     * @param non-empty-string $name The name of the route to retrieve.
      *
      * @throws RouteNotFoundException If no route with the given name exists.
      *
@@ -59,7 +68,7 @@ interface RegistryInterface
     /**
      * Retrieves a handler by its name.
      *
-     * @param string $name The name of the handler to retrieve.
+     * @param non-empty-string $name The name of the handler to retrieve.
      *
      * @throws RouteNotFoundException If no handler for the given name exists.
      *

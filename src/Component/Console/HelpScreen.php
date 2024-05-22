@@ -2,9 +2,17 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console;
 
-use Neu\Component\Console\Command\AbstractCommand;
 use Neu\Component\Console\Command\CommandInterface;
 use Neu\Component\Console\Command\Configuration as CommandConfiguration;
 use Neu\Component\Console\Input\AbstractBag;
@@ -24,26 +32,15 @@ use Psl\Math;
 use Psl\Str;
 use Psl\Vec;
 
-use function array_keys;
-use function array_map;
-use function array_shift;
-use function array_values;
-use function count;
-use function implode;
-use function max;
-use function mb_strlen;
-use function str_repeat;
-use function wordwrap;
-
 /**
- * The `HelpScreen` class renders out a usage screen given the available `Flag`,
- * `Option`, and `Argument` objects available as well as available commands that
+ * The {@see HelpScreen} class renders out a usage screen given the available {@see Flag},
+ * {@see Option}, and {@see Argument} objects available as well as available commands that
  * can be executed.
  */
 final class HelpScreen
 {
     /**
-     * The optional `name` of the application when not outputting a {@see HelpScreen}
+     * The optional name of the application when not outputting a {@see HelpScreen}
      * for a specific {@see CommandInterface}.
      */
     protected string $name = '';
@@ -58,7 +55,7 @@ final class HelpScreen
     /**
      * The current command configuration the {@see HelpScreen} refers to.
      */
-    protected ?CommandConfiguration $configuration = null;
+    protected null|CommandConfiguration $configuration = null;
 
     /**
      * The available {@see Flag} objects accepted.
@@ -82,7 +79,7 @@ final class HelpScreen
     {
         $this->commands = Dict\reindex(
             $application->getRegistry()->getConfigurations(),
-            static fn(CommandConfiguration $configuration): string => $configuration->name,
+            static fn (CommandConfiguration $configuration): string => $configuration->name,
         );
 
         $this->arguments = $input->getArguments();
@@ -91,7 +88,7 @@ final class HelpScreen
     }
 
     /**
-     * Build and return the markup for the `HelpScreen`.
+     * Build and return the markup for the help screen.
      */
     public function render(): string
     {
@@ -102,38 +99,38 @@ final class HelpScreen
         }
 
         $lines[] = $this->renderUsage();
-        if (0 !== count($this->arguments->all())) {
+        if (0 !== Iter\count($this->arguments->all())) {
             $output = $this->renderSection($this->arguments);
             if ($output) {
                 $lines[] = '<fg=yellow>Arguments</>' . OutputInterface::END_OF_LINE . $output;
             }
         }
 
-        if (0 !== count($this->flags->all())) {
+        if (0 !== Iter\count($this->flags->all())) {
             $output = $this->renderSection($this->flags);
             if ($output) {
                 $lines[] = '<fg=yellow>Flags</>' . OutputInterface::END_OF_LINE . $output;
             }
         }
 
-        if (0 !== count($this->options->all())) {
+        if (0 !== Iter\count($this->options->all())) {
             $output = $this->renderSection($this->options);
             if ($output) {
                 $lines[] = '<fg=yellow>Options</>' . OutputInterface::END_OF_LINE . $output;
             }
         }
 
-        if (($this->configuration === null) && 0 !== count($this->commands)) {
+        if (($this->configuration === null) && 0 !== Iter\count($this->commands)) {
             $lines[] = $this->renderCommands();
         }
 
-        return implode(OutputInterface::END_OF_LINE . OutputInterface::END_OF_LINE, $lines) . OutputInterface::END_OF_LINE;
+        return Str\join($lines, OutputInterface::END_OF_LINE . OutputInterface::END_OF_LINE) . OutputInterface::END_OF_LINE;
     }
 
     /**
-     * Build and return the markup for the heading of the `HelpScreen`. This is
+     * Build and return the markup for the heading of the help screen. This is
      * either the name of the application (when not rendering for a specific
-     * `Command`) or the name and description of the `Command`.
+     * command) or the name of the command and its description.
      */
     protected function renderHeading(): string
     {
@@ -162,11 +159,11 @@ final class HelpScreen
             $lines[] = $name;
         }
 
-        return implode(OutputInterface::END_OF_LINE, $lines);
+        return Str\join($lines, OutputInterface::END_OF_LINE);
     }
 
     /**
-     * When rendering a for a `Command`, this method builds and returns the usage.
+     * When rendering a for a specific command, build and return the usage section.
      */
     protected function renderUsage(): string
     {
@@ -234,8 +231,7 @@ final class HelpScreen
     }
 
     /**
-     * Build and return a specific section of available `Input` objects the user
-     * may specify.
+     * Build and return a specific section of available items (i.e., arguments, flags, options).
      *
      * @template T of DefinitionInterface
      *
@@ -254,10 +250,10 @@ final class HelpScreen
             $entries[$name] = $argument->getDescription();
         }
 
-        $maxLength = max(array_map(
-            static fn(string $key): int => mb_strlen($key),
-            array_keys($entries),
-        ));
+        $maxLength = Math\max(Vec\map(
+            Vec\keys($entries),
+            static fn (string $key): int => Str\length($key),
+        )) ?? 0;
 
         $descriptionLength = Terminal::getWidth() - 6 - $maxLength;
         $output = [];
@@ -265,12 +261,12 @@ final class HelpScreen
             $formatted = '  ' . Str\pad_right($name, $maxLength);
             $formatted = Str\format('<fg=green>%s</>', $formatted);
             $description = Str\split(
-                wordwrap($description, $descriptionLength, '{{NC-BREAK}}'),
+                Str\wrap($description, $descriptionLength, '{{NC-BREAK}}'),
                 '{{NC-BREAK}}',
             );
-            $formatted .= '  ' . array_shift($description);
-            $description = array_values($description);
-            $pad = str_repeat(' ', $maxLength + 6);
+            $formatted .= '  ' . ($description[0] ?? '');
+            $description = Vec\drop($description, 1);
+            $pad = Str\repeat(' ', $maxLength + 6);
             foreach ($description as $desc) {
                 $formatted .= OutputInterface::END_OF_LINE . $pad . $desc;
             }
@@ -282,13 +278,13 @@ final class HelpScreen
     }
 
     /**
-     * Build the list of available `Command` objects that can be called and their
-     * descriptions.
+     * Build the list of available commands and their descriptions.
      */
     protected function renderCommands(): string
     {
         $this->commands = Dict\sort_by_key($this->commands);
 
+        /** @var int<0, max> $maxLength */
         $maxLength = Math\max(
             Vec\map(
                 Vec\keys($this->commands),
@@ -320,25 +316,27 @@ final class HelpScreen
                     $namespaces[] = $namespace;
                 }
 
+                /** @var int<0, max> $length */
+                $length = $maxLength - 2;
                 $formatted = $prefix . '<' . ($command->enabled ? 'fg=green' : 'bg=red;fg=white') . '>' .
-                    Str\pad_right($name, $maxLength - 2) .
+                    Str\pad_right($name, $length) .
                     '</>';
             } else {
                 $formatted = '<' . ($command->enabled ? 'fg=green' : 'bg=red;fg=white') . '>' . Str\pad_right($name, $maxLength) . '</>';
             }
 
             $description = Str\split(
-                wordwrap(
+                Str\wrap(
                     $command->description,
                     $descriptionLength,
                     '{{NC-BREAK}}',
                 ),
                 '{{NC-BREAK}}',
             );
-            $formatted .= '  ' . array_shift($description);
-            $description = array_values($description);
+            $formatted .= '  ' . ($description[0] ?? '');
+            $description = Vec\drop($description, 1);
 
-            $pad = str_repeat(' ', $maxLength + 4);
+            $pad = Str\repeat(' ', $maxLength + 4);
             foreach ($description as $desc) {
                 $formatted .= OutputInterface::END_OF_LINE . $pad . $desc;
             }
@@ -346,11 +344,11 @@ final class HelpScreen
             $output[] = '  ' . $formatted;
         }
 
-        return '<fg=yellow>Available Commands:</>' . OutputInterface::END_OF_LINE . implode(OutputInterface::END_OF_LINE, $output);
+        return '<fg=yellow>Available Commands:</>' . OutputInterface::END_OF_LINE . Str\join($output, OutputInterface::END_OF_LINE);
     }
 
     /**
-     * Set the `Argument` objects to render information for.
+     * Set the arguments to render information for.
      */
     public function setArguments(ArgumentBag $arguments): self
     {
@@ -370,9 +368,9 @@ final class HelpScreen
     }
 
     /**
-     * Set the `Command` objects to render information for.
+     * Set the {@see CommandConfiguration} objects to render information for.
      *
-     * @param array<string, AbstractCommand> $commands
+     * @param array<string, CommandConfiguration> $commands The command configurations available
      */
     public function setCommands(array $commands): self
     {
@@ -382,9 +380,7 @@ final class HelpScreen
     }
 
     /**
-     * Set the `Flag` objects to render information for.
-     *
-     * @param FlagBag $flags The `Flag` objects available
+     * Set the flags to render information for.
      */
     public function setFlags(FlagBag $flags): self
     {
@@ -394,7 +390,7 @@ final class HelpScreen
     }
 
     /**
-     * Set the `Input` the help screen should read all available parameters and
+     * Set the {@see InputInterface} the help screen should read all available parameters and
      * commands from.
      */
     public function setInput(InputInterface $input): self
@@ -417,7 +413,7 @@ final class HelpScreen
     }
 
     /**
-     * Set the `Option` objects to render information for.
+     * Set the options to render information for.
      */
     public function setOptions(OptionBag $options): self
     {

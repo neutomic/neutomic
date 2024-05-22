@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Tests\Component\Cache;
 
 use Neu\Component\Cache;
@@ -43,9 +52,9 @@ final class StoreTest extends TestCase
 
         $driver->delete('user');
 
-        $one = Psl\Async\run(static fn() => $cache->compute('user', $computer, ttl: 1));
+        $one = Psl\Async\run(static fn () => $cache->compute('user', $computer, ttl: 1));
         Psl\Async\later();
-        $two = Psl\Async\run(static fn() => $cache->compute('user', $computer, ttl: 1));
+        $two = Psl\Async\run(static fn () => $cache->compute('user', $computer, ttl: 1));
         $user = $one->await();
         static::assertSame('azjezz', $user);
         static::assertTrue($ref->value);

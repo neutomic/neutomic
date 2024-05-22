@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Session\Persistence;
 
 use Amp\File;
@@ -12,7 +21,6 @@ use Neu\Component\Http\Session\Configuration\CacheConfiguration;
 use Neu\Component\Http\Session\Configuration\CacheLimiter;
 use Neu\Component\Http\Session\Configuration\CookieConfiguration;
 use Neu\Component\Http\Session\Session;
-use Neu\Component\Http\Session\SessionConfiguration;
 use Neu\Component\Http\Session\SessionInterface;
 use Neu\Component\Http\Session\Storage\StorageInterface;
 use Psl\Env;
@@ -24,18 +32,20 @@ use function time;
 
 /**
  * Implements the {@see PersistenceInterface} and handles the persistence of session data.
+ *
+ * @psalm-suppress MissingThrowsDocblock
  */
 final class Persistence implements PersistenceInterface
 {
     /**
      * The path translated.
      */
-    private static ?string $pathTranslated = null;
+    private static null|string $pathTranslated = null;
 
     /**
      * The last modified date.
      */
-    private static ?string $lastModified = null;
+    private static null|string $lastModified = null;
 
     /**
      * @var StorageInterface The session storage interface.
@@ -60,7 +70,8 @@ final class Persistence implements PersistenceInterface
      * Creates a new {@see Persistence} instance.
      *
      * @param StorageInterface $storage The session storage.
-     * @param SessionConfiguration $configuration The session configuration.
+     * @param CookieConfiguration $cookie The session cookie configuration.
+     * @param CacheConfiguration $cache The session cache configuration.
      */
     public function __construct(StorageInterface $storage, CookieConfiguration $cookie, CacheConfiguration $cache)
     {
@@ -84,15 +95,16 @@ final class Persistence implements PersistenceInterface
         $id = $session->getId();
 
         // If session ID is empty and session has no changes, return response
-        if ('' === $id && (0 === count($session->all()) || !$session->hasChanges())) {
+        if (null === $id && (0 === count($session->all()) || !$session->hasChanges())) {
             return $response;
         }
 
         // Flush session data if session is flagged for flushing
         if ($session->isFlushed()) {
-            if ($id !== '') {
+            if ($id !== null) {
                 $this->storage->flush($id);
             }
+
             // Return response with expired cookie
             return $response->withCookie($this->cookie->name, new Cookie('', expires: 0));
         }
@@ -118,7 +130,7 @@ final class Persistence implements PersistenceInterface
      */
     protected function getPersistenceDuration(SessionInterface $session): int
     {
-        $duration = $this->cookie->lifetime;
+        $duration = $this->cookie->lifetime ?? 0;
         if ($session->has(Session::SESSION_AGE_KEY)) {
             $duration = $session->age();
         }
@@ -126,7 +138,7 @@ final class Persistence implements PersistenceInterface
         return Math\maxva($duration, 0);
     }
 
-    private function createCookie(string $id, ?int $expires): Cookie
+    private function createCookie(string $id, null|int $expires): Cookie
     {
         return (new Cookie(value: $id))
             ->withExpires(($expires !== null && $expires > 0) ? $expires : null)

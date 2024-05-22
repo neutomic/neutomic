@@ -2,12 +2,22 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database\DependencyInjection\Factory;
 
 use Amp\Postgres;
 use Amp\Postgres\PostgresConfig;
 use Amp\Postgres\PostgresConnection;
 use Amp\Sql\SqlException;
+use Error;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
@@ -27,34 +37,34 @@ final readonly class PostgresConnectionFactory implements FactoryInterface
     /**
      * The port of the Postgres server.
      */
-    private ?int $port;
+    private null|int $port;
 
     /**
      * The username for the Postgres connection.
      */
-    private ?string $user;
+    private null|string $user;
 
     /**
      * The password for the Postgres connection.
      */
-    private ?string $password;
+    private null|string $password;
 
     /**
      * The database name for the Postgres connection.
      */
-    private ?string $database;
+    private null|string $database;
 
     /**
      * The application name for the Postgres connection.
      */
-    private ?string $applicationName;
+    private null|string $applicationName;
 
     /**
      * The SSL mode for the Postgres connection.
      *
      * @var value-of<PostgresConfig::SSL_MODES>|null
      */
-    private ?string $sslMode;
+    private null|string $sslMode;
 
     /**
      * Create a new Postgres connection factory.
@@ -69,12 +79,12 @@ final readonly class PostgresConnectionFactory implements FactoryInterface
      */
     public function __construct(
         string $host,
-        ?int $port = null,
-        ?string $user = null,
-        ?string $password = null,
-        ?string $database = null,
-        ?string $applicationName = null,
-        ?string $sslMode = null,
+        null|int $port = null,
+        null|string $user = null,
+        null|string $password = null,
+        null|string $database = null,
+        null|string $applicationName = null,
+        null|string $sslMode = null,
     ) {
         $this->host = $host;
         $this->port = $port;
@@ -102,7 +112,7 @@ final readonly class PostgresConnectionFactory implements FactoryInterface
 
         try {
             return Postgres\connect($config);
-        } catch (SqlException $e) {
+        } catch (SqlException | Error $e) {
             throw new InvalidArgumentException('Failed to connect to the database: ' . $e->getMessage(), 0, $e);
         }
     }

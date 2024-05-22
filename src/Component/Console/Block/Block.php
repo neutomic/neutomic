@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Block;
 
 use Neu\Component\Console\Formatter\Formatter;
@@ -12,17 +21,61 @@ use Neu\Component\Console\Terminal;
 use Psl\Str;
 use Psl\Vec;
 
+/**
+ * The {@see Block} class is used to display a block of text in the output.
+ *
+ * @psalm-suppress MissingThrowsDocblock
+ */
 readonly class Block implements BlockInterface
 {
     private OutputInterface $output;
-    private ?string $type ;
-    private ?string $style ;
+
+    /**
+     * The type of the block.
+     *
+     * @var non-empty-string|null
+     */
+    private null|string $type ;
+
+    /**
+     * The style of the block.
+     *
+     * @var non-empty-string|null
+     */
+    private null|string $style ;
+
+    /**
+     * The prefix of the block.
+     */
     private string $prefix ;
+
+    /**
+     * Whether to add padding to the block.
+     */
     private bool $padding;
+
+    /**
+     * Whether to escape the message.
+     */
     private bool $escape ;
+
+    /**
+     * Whether to indent the block.
+     */
     private bool $indent ;
 
-    public function __construct(OutputInterface $output, ?string $type = null, ?string $style = null, string $prefix = ' ', bool $padding = false, bool $escape = false, bool $indent = false)
+    /**
+     * Create a new {@see Block} instance.
+     *
+     * @param OutputInterface $output The output instance to write to.
+     * @param non-empty-string|null $type The type of the block.
+     * @param non-empty-string|null $style The style of the block.
+     * @param string $prefix The prefix of the block.
+     * @param bool $padding Whether to add padding to the block.
+     * @param bool $escape Whether to escape the message.
+     * @param bool $indent Whether to indent the block.
+     */
+    public function __construct(OutputInterface $output, null|string $type = null, null|string $style = null, string $prefix = ' ', bool $padding = false, bool $escape = false, bool $indent = false)
     {
         $this->output = $output;
         $this->type = $type;
@@ -35,8 +88,10 @@ readonly class Block implements BlockInterface
 
     /**
      * Returns a new instance with the specified type.
+     *
+     * @param non-empty-string|null $type
      */
-    public function withType(?string $type): self
+    public function withType(null|string $type): self
     {
         return new Block(
             $this->output,
@@ -51,8 +106,10 @@ readonly class Block implements BlockInterface
 
     /**
      * Returns a new instance with the specified style.
+     *
+     * @param non-empty-string|null $style
      */
-    public function withStyle(?string $style): self
+    public function withStyle(null|string $style): self
     {
         return new Block(
             $this->output,
@@ -151,6 +208,7 @@ readonly class Block implements BlockInterface
         if ($type !== null) {
             $type = Str\format('[%s] ', $type);
             if ($indent) {
+                /** @var int<0, max> $indentWidth */
                 $indentWidth = Str\width($type);
                 $lineIndentation = Str\repeat(' ', $indentWidth);
             }
@@ -191,7 +249,7 @@ readonly class Block implements BlockInterface
                 $line .= Str\repeat(' ', $fit);
             }
 
-            if ($style) {
+            if (null !== $style) {
                 $line = Str\format('<%s>%s</>', $style, $line);
             }
 

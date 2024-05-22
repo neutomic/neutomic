@@ -6,7 +6,7 @@
     colors="true"
     stopOnFailure="true"
     bootstrap="../vendor/autoload.php"
-    cacheDirectory=".phpunit.cache"
+    cacheDirectory="../var/phpunit-cache"
     displayDetailsOnTestsThatTriggerWarnings="true"
 >
     <php>

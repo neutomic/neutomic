@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Examples\Database;
 
 use Neu\Component\Database\DatabasePoolInterface;
@@ -26,15 +35,15 @@ $updates = new Ref(0);
 $deletes = new Ref(0);
 
 for ($y = 0; $y < BATCH_COUNT; $y++) {
-    $name = static function(int $i, string $suffix = '') use($y): string {
+    $name = static function (int $i, string $suffix = '') use ($y): string {
         return $y . 'user' . $i . $suffix;
     };
 
-    $promises[] = Async\run(static function() use ($connection, $inserts, $selects, $updates, $deletes, $y, $name) {
+    $promises[] = Async\run(static function () use ($connection, $inserts, $selects, $updates, $deletes, $y, $name) {
         IO\write_line('[INSERT][%d] started', $y);
         $promises = [];
         for ($i = 0; $i < BATCH_SIZE; $i++) {
-            $promises[] = Async\run(static function() use ($connection, $name, $inserts, $y, $i) {
+            $promises[] = Async\run(static function () use ($connection, $name, $inserts, $y, $i) {
                 $connection->insert('users', [
                     'name' => $name($i)
                 ]);
@@ -51,7 +60,7 @@ for ($y = 0; $y < BATCH_COUNT; $y++) {
         IO\write_line('[SELECT][%d] started', $y);
         $promises = [];
         for ($i = 0; $i < BATCH_SIZE; $i++) {
-            $promises[] = Async\run(static function() use ($connection, $name, $selects, $y, $i) {
+            $promises[] = Async\run(static function () use ($connection, $name, $selects, $y, $i) {
                 $connection
                     ->createQueryBuilder()
                     ->select('*')
@@ -70,7 +79,7 @@ for ($y = 0; $y < BATCH_COUNT; $y++) {
         IO\write_line('[UPDATE][%d] started', $y);
         $promises = [];
         for ($i = 0; $i < BATCH_SIZE; $i++) {
-            $promises[] = Async\run(static function() use ($connection, $name, $updates, $y, $i) {
+            $promises[] = Async\run(static function () use ($connection, $name, $updates, $y, $i) {
                 $connection
                     ->createQueryBuilder()
                     ->update('users')
@@ -92,7 +101,7 @@ for ($y = 0; $y < BATCH_COUNT; $y++) {
         IO\write_line('[DELETE][%d] started', $y);
         $promises = [];
         for ($i = 0; $i < BATCH_SIZE; $i++) {
-            $promises[] = Async\run(static function() use ($connection, $name, $deletes, $y, $i) {
+            $promises[] = Async\run(static function () use ($connection, $name, $deletes, $y, $i) {
                 $connection
                     ->createQueryBuilder()
                     ->delete('users')

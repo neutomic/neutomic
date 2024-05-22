@@ -2,10 +2,20 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\DependencyInjection\Hook;
 
 use Neu\Component\Console\Attribute\Command;
 use Neu\Component\Console\Command\CommandInterface;
+use Neu\Component\Console\Command\Configuration;
 use Neu\Component\Console\Command\Registry\RegistryInterface;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
@@ -18,14 +28,19 @@ use ReflectionObject;
  */
 final readonly class RegisterCommandsHook implements HookInterface
 {
+    /**
+     * The registry service identifier.
+     *
+     * @var non-empty-string
+     */
     private string $registry;
 
     /**
      * Creates a new {@see RegisterCommandsHook} instance.
      *
-     * @param string|null $registry The registry service identifier, defaults to {@see RegistryInterface::class}.
+     * @param non-empty-string|null $registry The registry service identifier, defaults to {@see RegistryInterface::class}.
      */
-    public function __construct(?string $registry = null)
+    public function __construct(null|string $registry = null)
     {
         $this->registry = $registry ?? RegistryInterface::class;
     }
@@ -49,7 +64,7 @@ final readonly class RegisterCommandsHook implements HookInterface
     }
 
     /**
-     * @return iterable<Command>
+     * @return iterable<Configuration>
      */
     private function readConfiguration(CommandInterface $command): iterable
     {

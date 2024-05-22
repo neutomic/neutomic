@@ -2,13 +2,21 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database\DependencyInjection;
 
 use Amp\Mysql\MysqlConnection;
 use Amp\Mysql\MysqlConnectionPool;
 use Amp\Postgres\PostgresConnection;
 use Amp\Postgres\PostgresConnectionPool;
-use Neu\Component\Configuration\Exception\InvalidConfigurationException;
 use Neu\Component\Database\DatabaseInterface;
 use Neu\Component\Database\DatabaseManager;
 use Neu\Component\Database\DatabaseManagerInterface;
@@ -20,11 +28,15 @@ use Neu\Component\Database\DependencyInjection\Factory\PostgresConnectionFactory
 use Neu\Component\Database\DependencyInjection\Factory\PostgresConnectionPoolFactory;
 use Neu\Component\DependencyInjection\ContainerBuilderInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
+use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Psl\Class;
 use Psl\Type;
 
 /**
+ * A dependency injection extension for database connections.
+ *
+ * @psalm-type PostgresSslMode = 'disable'|'allow'|'prefer'|'require'|'verify-ca'|'verify-full'
  * @psalm-type MysqlConnectionConfiguration = array{
  *     platform: 'mysql'|'mysqli'|'mariadb',
  *     host: non-empty-string,
@@ -39,9 +51,8 @@ use Psl\Type;
  *     key?: string,
  *     use-local-infile?: bool,
  *     pooled?: bool,
- *     max-connections?: int,
- *     idle-timeout?: int,
- *     reset-connections?: bool
+ *     max-connections?: positive-int,
+ *     idle-timeout?: positive-int,
  * }
  * @psalm-type PostgresConnectionConfiguration = array{
  *     platform: 'pgsql'|'postgres'|'postgresql',
@@ -51,16 +62,16 @@ use Psl\Type;
  *     password?: string,
  *     database?: string,
  *     application-name?: string,
- *     ssl-mode?: string,
+ *     ssl-mode?: PostgresSslMode,
  *     pooled?: bool,
- *     max-connections?: int,
- *     idle-timeout?: int,
- *     reset-connections?: bool
+ *     max-connections?: positive-int,
+ *     idle-timeout?: positive-int,
+ *     reset-connections?: bool,
  * }
  * @psalm-type DatabaseConfiguration = MysqlConnectionConfiguration|PostgresConnectionConfiguration
  * @psalm-type Configuration = array{
  *     default?: non-empty-string,
- *     databases: non-empty-array<non-empty-string, DatabaseConfiguration>
+ *     databases?: array<non-empty-string, DatabaseConfiguration>
  * }
  */
 final class DatabaseExtension implements ExtensionInterface
@@ -72,7 +83,7 @@ final class DatabaseExtension implements ExtensionInterface
     {
         return Type\shape([
             'default' => Type\optional(Type\non_empty_string()),
-            'databases' => Type\non_empty_dict(
+            'databases' => Type\optional(Type\dict(
                 Type\non_empty_string(),
                 Type\union(
                     Type\shape([
@@ -93,9 +104,8 @@ final class DatabaseExtension implements ExtensionInterface
                         'key' => Type\optional(Type\string()),
                         'use-local-infile' => Type\optional(Type\bool()),
                         'pooled' => Type\optional(Type\bool()),
-                        'max-connections' => Type\optional(Type\int()),
-                        'idle-timeout' => Type\optional(Type\int()),
-                        'reset-connections' => Type\optional(Type\bool()),
+                        'max-connections' => Type\optional(Type\positive_int()),
+                        'idle-timeout' => Type\optional(Type\positive_int()),
                     ]),
                     Type\shape([
                         'platform' => Type\union(
@@ -109,14 +119,21 @@ final class DatabaseExtension implements ExtensionInterface
                         'password' => Type\optional(Type\string()),
                         'database' => Type\optional(Type\string()),
                         'application-name' => Type\optional(Type\string()),
-                        'ssl-mode' => Type\optional(Type\string()),
+                        'ssl-mode' => Type\optional(Type\union(
+                            Type\literal_scalar('disable'),
+                            Type\literal_scalar('allow'),
+                            Type\literal_scalar('prefer'),
+                            Type\literal_scalar('require'),
+                            Type\literal_scalar('verify-ca'),
+                            Type\literal_scalar('verify-full')
+                        )),
                         'pooled' => Type\optional(Type\bool()),
-                        'max-connections' => Type\optional(Type\int()),
-                        'idle-timeout' => Type\optional(Type\int()),
+                        'max-connections' => Type\optional(Type\positive_int()),
+                        'idle-timeout' => Type\optional(Type\positive_int()),
                         'reset-connections' => Type\optional(Type\bool()),
                     ])
                 ),
-            ),
+            )),
         ]);
     }
 
@@ -125,22 +142,20 @@ final class DatabaseExtension implements ExtensionInterface
      */
     public function register(ContainerBuilderInterface $container): void
     {
-        if (!$container->getConfiguration()->has('database')) {
-            throw new InvalidConfigurationException('The database extension requires a "database" configuration section.');
-        }
-
-        /** @var Configuration $configuration */
         $configuration = $container
             ->getConfiguration()
-            ->getOfType('database', $this->getConfigurationType())
+            ->getOfTypeOrDefault('database', $this->getConfigurationType(), [])
         ;
 
-        $databases = $configuration['databases'];
+        $databases = $configuration['databases'] ?? [];
 
         $databaseDefinitions = $this->registerDatabases($container, $databases);
-        $defaultDatabase = $configuration['default'] ?? array_key_first($databaseDefinitions);
 
-        $this->registerDatabaseManager($container, $defaultDatabase, $databaseDefinitions);
+        if ($databaseDefinitions !== []) {
+            $defaultDatabase = $configuration['default'] ?? array_key_first($databaseDefinitions);
+
+            $this->registerDatabaseManager($container, $defaultDatabase, $databaseDefinitions);
+        }
     }
 
     /**
@@ -162,11 +177,9 @@ final class DatabaseExtension implements ExtensionInterface
             if ($config['platform'] === 'mysql' || $config['platform'] === 'mysqli' || $config['platform'] === 'mariadb') {
                 /** @var MysqlConnectionConfiguration $config */
                 $this->registerMysqlConnection($container, $connectionServiceId, $config);
-            } elseif ($config['platform'] === 'pgsql' || $config['platform'] === 'postgres' || $config['platform'] === 'postgresql') {
+            } else {
                 /** @var PostgresConnectionConfiguration $config */
                 $this->registerPostgresConnection($container, $connectionServiceId, $config);
-            } else {
-                throw new InvalidConfigurationException('Unknown platform: ' . $config['platform']);
             }
 
             $container->addDefinition(Definition::create($databaseServiceId, DatabaseInterface::class, new DatabaseFactory(
@@ -185,11 +198,13 @@ final class DatabaseExtension implements ExtensionInterface
      * @param ContainerBuilderInterface $container
      * @param non-empty-string $serviceId
      * @param MysqlConnectionConfiguration $config
+     *
+     * @throws RuntimeException If the "amphp/mysql" package is not installed.
      */
     private function registerMysqlConnection(ContainerBuilderInterface $container, string $serviceId, array $config): void
     {
         if (!Class\exists(MysqlConnection::class)) {
-            throw new InvalidConfigurationException('The "amphp/mysql" package is required to use the mysql database connection.');
+            throw new RuntimeException('The "amphp/mysql" package is required to use the mysql database connection.');
         }
 
         $pooled = $config['pooled'] ?? true;
@@ -208,7 +223,6 @@ final class DatabaseExtension implements ExtensionInterface
                 useLocalInfile: $config['use-local-infile'] ?? null,
                 maxConnections: $config['max-connections'] ?? null,
                 idleTimeout: $config['idle-timeout'] ?? null,
-                resetConnections: $config['reset-connections'] ?? null,
             )));
 
             return;
@@ -235,11 +249,13 @@ final class DatabaseExtension implements ExtensionInterface
      * @param ContainerBuilderInterface $container
      * @param non-empty-string $serviceId
      * @param PostgresConnectionConfiguration $config
+     *
+     * @throws RuntimeException If the "amphp/postgres" package is not installed.
      */
     private function registerPostgresConnection(ContainerBuilderInterface $container, string $serviceId, array $config): void
     {
         if (!Class\exists(PostgresConnection::class)) {
-            throw new InvalidConfigurationException('The "amphp/postgres" package is required to use the postgres database connection.');
+            throw new RuntimeException('The "amphp/postgres" package is required to use the postgres database connection.');
         }
 
         $pooled = $config['pooled'] ?? true;
@@ -280,11 +296,13 @@ final class DatabaseExtension implements ExtensionInterface
      */
     private function registerDatabaseManager(ContainerBuilderInterface $container, string $defaultDatabase, array $databaseDefinitions): void
     {
-        $container->addDefinition(Definition::ofType(DatabaseManager::class, new DatabaseManagerFactory(
+        $definition = Definition::ofType(DatabaseManager::class, new DatabaseManagerFactory(
             defaultDatabaseId: $defaultDatabase,
             services: $databaseDefinitions,
-        )));
+        ));
 
-        $container->getDefinition(DatabaseManager::class)->addAlias(DatabaseManagerInterface::class);
+        $definition->addAlias(DatabaseManagerInterface::class);
+
+        $container->addDefinition($definition);
     }
 }

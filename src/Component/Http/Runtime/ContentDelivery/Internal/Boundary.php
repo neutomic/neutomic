@@ -2,11 +2,20 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Runtime\ContentDelivery\Internal;
 
 use Psl\SecureRandom;
 
-final class Boundary
+enum Boundary
 {
     /**
      * Length of the generated boundary string for multipart/byteranges responses.
@@ -19,21 +28,22 @@ final class Boundary
     private const string BOUNDARY_CHARACTERS = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
     /**
-     * Cached boundary string.
-     *
-     * @var null|string
-     */
-    private static null|string $boundary = null;
-
-    /**
      * Returns a boundary string for multipart/byteranges responses.
+     *
+     * @psalm-suppress MissingThrowsDocblock
+     *
+     * @return non-empty-string
      */
     public static function get(): string
     {
-        if (null === self::$boundary) {
-            self::$boundary = SecureRandom\string(self::BOUNDARY_LENGTH, self::BOUNDARY_CHARACTERS);
+        /** @var null|non-empty-string $boundary */
+        static $boundary = null;
+
+        if (null === $boundary) {
+            /** @var non-empty-string $boundary */
+            $boundary = SecureRandom\string(self::BOUNDARY_LENGTH, self::BOUNDARY_CHARACTERS);
         }
 
-        return self::$boundary;
+        return $boundary;
     }
 }

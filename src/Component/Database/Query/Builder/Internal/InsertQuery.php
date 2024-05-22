@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database\Query\Builder\Internal;
 
 use Neu\Component\Database\AbstractionLayerInterface;
@@ -10,8 +19,6 @@ use Neu\Component\Database\Query\InsertQueryInterface;
 use Neu\Component\Database\Query\Type;
 use Psl\Str;
 use Psl\Vec;
-
-use function array_merge;
 
 final readonly class InsertQuery extends AbstractExecutableQuery implements InsertQueryInterface
 {
@@ -61,7 +68,10 @@ final readonly class InsertQuery extends AbstractExecutableQuery implements Inse
      */
     public function values(array $first, array ...$rest): static
     {
-        $values = array_merge([$first], $rest);
+        $values = [$first];
+        foreach ($rest as $row) {
+            $values[] = $row;
+        }
 
         return new static($this->dbal, $this->table, $this->alias, $values);
     }

@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Formatter\Style;
 
 /**
@@ -12,12 +21,12 @@ interface StyleInterface
     /**
      * Sets style foreground color.
      */
-    public function setForeground(?ForegroundColor $color = null): self;
+    public function setForeground(null|ForegroundColor $color = null): self;
 
     /**
      * Sets style background color.
      */
-    public function setBackground(?BackgroundColor $color = null): self;
+    public function setBackground(null|BackgroundColor $color = null): self;
 
     /**
      * Sets some specific style effect.

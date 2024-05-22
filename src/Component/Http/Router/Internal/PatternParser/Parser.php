@@ -2,13 +2,21 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Router\Internal\PatternParser;
 
 use Neu\Component\Http\Exception\RuntimeException;
 
 use function array_merge;
 use function array_shift;
-use function array_values;
 use function var_export;
 
 /**
@@ -18,6 +26,8 @@ enum Parser
 {
     /**
      * @param non-empty-string $pattern
+     *
+     * @throws RuntimeException
      */
     public static function parse(string $pattern): PatternNode
     {
@@ -33,7 +43,7 @@ enum Parser
     }
 
     /**
-     * @param array<array-key, Token> $tokens
+     * @param list<Token> $tokens
      *
      * @throws RuntimeException
      *
@@ -45,8 +55,8 @@ enum Parser
 
         while ($tokens !== []) {
             $token = array_shift($tokens);
-            $type = $token->getType();
-            $text = $token->getValue();
+            $type = $token->type;
+            $text = $token->value;
 
             if ($type === TokenType::OpenBrace) {
                 [$node, $tokens] = self::parseParameter($tokens);
@@ -66,6 +76,7 @@ enum Parser
 
             if ($type === TokenType::OpenBracket) {
                 [$node, $tokens] = self::parseImpl($tokens, true);
+
                 $nodes[] = new OptionalNode($node);
                 $token = array_shift($tokens);
 
@@ -81,21 +92,23 @@ enum Parser
             }
 
             if ($recursive && $type === TokenType::CloseBracket) {
-                return array(new PatternNode($nodes), array_merge([new Token($type, $text)], $tokens));
+                return [new PatternNode($nodes), array_merge([new Token($type, $text)], $tokens)];
             }
 
             if ($type !== TokenType::String) {
-                throw new RuntimeException('Unexpected token type: ' . $type);
+                throw new RuntimeException('Unexpected token type: ' . $type->toString());
             }
 
             $nodes[] = new LiteralNode($text);
         }
 
-        return array(new PatternNode($nodes), array_values($tokens));
+        return [new PatternNode($nodes), $tokens];
     }
 
     /**
-     * @param array<array-key, Token> $tokens
+     * @param list<Token> $tokens
+     *
+     * @throws RuntimeException
      *
      * @return array{ParameterNode, list<Token>}
      */
@@ -110,10 +123,14 @@ enum Parser
             throw new RuntimeException('Expected parameter to start with a name, got ' . $token->toString());
         }
 
-        $name = $token->getValue();
+        $name = $token->value;
 
         $token = current($tokens);
-        if (null === $token || $token->getType() === TokenType::CloseBrace) {
+        if (false === $token) {
+            return [new ParameterNode($name, null), []];
+        }
+
+        if ($token->getType() === TokenType::CloseBrace) {
             return [new ParameterNode($name, null), [$token]];
         }
 
@@ -143,6 +160,6 @@ enum Parser
             throw new RuntimeException('Unbalanced braces in regexp');
         }
 
-        return [new ParameterNode($name, $regexp), array_values($tokens)];
+        return [new ParameterNode($name, $regexp), $tokens];
     }
 }

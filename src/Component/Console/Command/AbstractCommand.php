@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Command;
 
 use Neu\Component\Console\Block\BlockFactoryTrait;
@@ -16,6 +25,9 @@ use Neu\Component\Console\UserInput\UserInputFactoryTrait;
  *
  * It provides access to the application, input, and output objects, as well as
  * several traits that can be used to simplify I/O operations.
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress InaccessibleProperty
  */
 abstract readonly class AbstractCommand implements ApplicationAwareCommandInterface
 {

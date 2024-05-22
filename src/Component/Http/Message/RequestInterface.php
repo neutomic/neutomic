@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Message;
 
 use Neu\Component\Http\Message\Exception\InvalidArgumentException;
@@ -126,15 +135,15 @@ interface RequestInterface extends ExchangeInterface
      * @return null|non-empty-list<string> A list of string values for the specified name,
      *                                     or null if none found.
      */
-    public function getCookie(string $name): ?array;
+    public function getCookie(string $name): null|array;
 
     /**
      * Returns a new instance of the request with the specified cookies.
      *
      * This method replaces all current cookies with the ones provided in the dictionary. Each cookie name is associated with one or more values.
      *
-     * @param array<non-empty-string, string|non-empty-list<string>> $cookies A dictionary of cookies to set,
-     *                                                                        where each key is a cookie name and each value is a single string or a list of strings.
+     * @param array<non-empty-string, non-empty-string|non-empty-list<non-empty-string>> $cookies A dictionary of cookies to set,
+     *                                                                                            where each key is a cookie name and each value is a single string or a list of strings.
      *
      * @return static A new instance with the updated cookies.
      */
@@ -163,7 +172,7 @@ interface RequestInterface extends ExchangeInterface
      * does not previously exist, it is created. Cookie names are treated case-insensitively.
      *
      * @param non-empty-string $name The cookie name for which to append values, case-insensitive.
-     * @param non-empty-string|non-empty-list<string> $value The value or values to append.
+     * @param non-empty-string|non-empty-list<non-empty-string> $value The value or values to append.
      *
      * @throws InvalidArgumentException for invalid cookie name.
      *
@@ -212,7 +221,7 @@ interface RequestInterface extends ExchangeInterface
      *
      * @return null|non-empty-list<string> The list of values for the query parameter or null if the parameter does not exist.
      */
-    public function getQueryParameter(string $name): ?array;
+    public function getQueryParameter(string $name): null|array;
 
     /**
      * Returns a new instance of the request with the specified query parameters.
@@ -364,5 +373,5 @@ interface RequestInterface extends ExchangeInterface
      *
      * @return static A new instance with the specified session.
      */
-    public function withSession(?SessionInterface $session): static;
+    public function withSession(null|SessionInterface $session): static;
 }

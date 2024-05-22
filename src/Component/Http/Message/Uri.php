@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Message;
 
 use Neu\Component\Http\Message\Exception\InvalidArgumentException;
@@ -21,7 +30,7 @@ final readonly class Uri implements UriInterface
      *
      * @var null|non-empty-string
      */
-    private ?string $scheme;
+    private null|string $scheme;
 
 
     /**
@@ -29,42 +38,42 @@ final readonly class Uri implements UriInterface
      *
      * @var null|non-empty-string
      */
-    private ?string $userInformation ;
+    private null|string $userInformation ;
 
     /**
      * The URI host.
      *
      * @var null|non-empty-string
      */
-    private ?string $host ;
+    private null|string $host ;
 
     /**
      * The URI port.
      *
      * @var null|int<0, 65535>
      */
-    private ?int $port ;
+    private null|int $port ;
 
     /**
      * The URI path.
      *
-     * @var string
+     * @var non-empty-string
      */
-    private string $path ;
+    private string $path;
 
     /**
      * The URI query.
      *
      * @var null|non-empty-string
      */
-    private ?string $query;
+    private null|string $query;
 
     /**
      * The URI fragment.
      *
      * @var null|non-empty-string
      */
-    private ?string $fragment;
+    private null|string $fragment;
 
     /**
      * @param null|non-empty-string $scheme
@@ -80,7 +89,7 @@ final readonly class Uri implements UriInterface
         null|string $userInformation = null,
         null|string $host = null,
         null|int $port = null,
-        string $path = '',
+        string $path = '/',
         null|string $query = null,
         null|string $fragment = null
     ) {
@@ -96,30 +105,40 @@ final readonly class Uri implements UriInterface
     /**
      * Create a new URI from parts.
      *
-     * @param null|non-empty-string $scheme
-     * @param null|non-empty-string $user
-     * @param null|non-empty-string $password
-     * @param null|non-empty-string $host
-     * @param null|int<0, 65535> $port
-     * @param non-empty-string $path
-     * @param null|non-empty-string $query
-     * @param null|non-empty-string $fragment
+     * @throws InvalidArgumentException If the parts are invalid.
      *
      * @return Uri The URI generated from the parts.
      */
     public static function fromParts(
-        ?string $scheme = null,
-        ?string $user = null,
-        ?string $password = null,
-        ?string $host = null,
-        ?int $port = null,
+        null|string $scheme = null,
+        null|string $user = null,
+        null|string $password = null,
+        null|string $host = null,
+        null|int $port = null,
         string $path = '',
-        ?string $query = null,
-        ?string $fragment = null
+        null|string $query = null,
+        null|string $fragment = null
     ): self {
+        if ('' === $scheme) {
+            $scheme = null;
+        }
+
+        if ('' === $user) {
+            $user = null;
+        }
+
+        if ('' === $password) {
+            $password = null;
+        }
+
+        if ('' === $host) {
+            $host = null;
+        }
+
         if (null !== $scheme) {
             $scheme = strtolower($scheme);
         }
+
 
         if (null !== $user) {
             $userInformation = self::filterUserInformationPart($user);
@@ -136,7 +155,7 @@ final readonly class Uri implements UriInterface
 
         $port = self::normalizePortPart($scheme, $port);
         $path = self::filterPathPart($path);
-        $path = self::normalizePathPart($host, $path);
+        $path = self::normalizePathPart($path);
 
         if (null !== $query) {
             $query = self::filterQueryOrFragmentPart($query);
@@ -160,27 +179,27 @@ final readonly class Uri implements UriInterface
      */
     public static function fromUrl(string $url): self
     {
-        $parsed_url = parse_url($url);
-        if ($parsed_url === false) {
+        $parsedUrl = parse_url($url);
+        if ($parsedUrl === false) {
             throw new InvalidArgumentException('The given URL "' . $url . '" is invalid.');
         }
 
         return self::fromParts(
-            $parsed_url['scheme'] ?? null,
-            $parsed_url['user'] ?? null,
-            $parsed_url['pass'] ?? null,
-            $parsed_url['host'] ?? null,
-            $parsed_url['port'] ?? null,
-            $parsed_url['path'] ?? '',
-            $parsed_url['query'] ?? null,
-            $parsed_url['fragment'] ?? null
+            $parsedUrl['scheme'] ?? null,
+            $parsedUrl['user'] ?? null,
+            $parsedUrl['pass'] ?? null,
+            $parsedUrl['host'] ?? null,
+            $parsedUrl['port'] ?? null,
+            $parsedUrl['path'] ?? '',
+            $parsedUrl['query'] ?? null,
+            $parsedUrl['fragment'] ?? null
         );
     }
 
     /**
      * @inheritDoc
      */
-    public function getScheme(): string
+    public function getScheme(): null|string
     {
         return $this->scheme;
     }
@@ -188,11 +207,13 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    public function withScheme(string $scheme): self
+    public function withScheme(null|string $scheme): self
     {
-        $scheme = strtolower($scheme);
-        if ($scheme === $this->scheme) {
-            return clone $this;
+        if (null !== $scheme) {
+            $scheme = strtolower($scheme);
+            if ($scheme === $this->scheme) {
+                return clone $this;
+            }
         }
 
         return new self($scheme, $this->userInformation, $this->host, $this->port, $this->path, $this->query, $this->fragment);
@@ -201,10 +222,10 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    public function getAuthority(): string
+    public function getAuthority(): null|string
     {
         if (null === $this->host) {
-            return '';
+            return null;
         }
 
         $authority = $this->host;
@@ -213,7 +234,7 @@ final readonly class Uri implements UriInterface
         }
 
         if (null !== $this->port) {
-            $authority .= ':' . $this->port;
+            $authority .= ':' . ((string) $this->port);
         }
 
         return $authority;
@@ -222,7 +243,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    public function getUserInformation(): ?string
+    public function getUserInformation(): null|string
     {
         return $this->userInformation;
     }
@@ -248,7 +269,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    public function getHost(): string
+    public function getHost(): null|string
     {
         return $this->host;
     }
@@ -256,11 +277,13 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    public function withHost(string $host): self
+    public function withHost(null|string $host): self
     {
-        $host = strtolower($host);
-        if ($this->host === $host) {
-            return clone $this;
+        if (null !== $host) {
+            $host = strtolower($host);
+            if ($this->host === $host) {
+                return clone $this;
+            }
         }
 
         return new self($this->scheme, $this->userInformation, $host, $this->port, $this->path, $this->query, $this->fragment);
@@ -269,7 +292,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    public function getPort(): ?int
+    public function getPort(): null|int
     {
         return $this->port;
     }
@@ -279,9 +302,11 @@ final readonly class Uri implements UriInterface
      */
     public function withPort($port): self
     {
-        $port = self::normalizePortPart($this->scheme, $port);
-        if ($this->port === $port) {
-            return clone $this;
+        if (null !== $port) {
+            $port = self::normalizePortPart($this->scheme, $port);
+            if ($this->port === $port) {
+                return clone $this;
+            }
         }
 
         return new self($this->scheme, $this->userInformation, $this->host, $port, $this->path, $this->query, $this->fragment);
@@ -301,7 +326,7 @@ final readonly class Uri implements UriInterface
     public function withPath(string $path): self
     {
         $path = self::filterPathPart($path);
-        $path = self::normalizePathPart($this->host, $path);
+        $path = self::normalizePathPart($path);
         if ($this->path === $path) {
             return clone $this;
         }
@@ -312,7 +337,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    public function getQuery(): ?string
+    public function getQuery(): null|string
     {
         return $this->query;
     }
@@ -320,11 +345,13 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    public function withQuery(string $query): self
+    public function withQuery(null|string $query): self
     {
-        $query = self::filterQueryOrFragmentPart($query);
-        if ($this->query === $query) {
-            return clone $this;
+        if (null !== $query) {
+            $query = self::filterQueryOrFragmentPart($query);
+            if ($this->query === $query) {
+                return clone $this;
+            }
         }
 
         return new self($this->scheme, $this->userInformation, $this->host, $this->port, $this->path, $query, $this->fragment);
@@ -333,19 +360,21 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    public function getFragment(): ?string
+    public function getFragment(): null|string
     {
         return $this->fragment;
     }
 
     /**
-     * @return static
+     * @inheritDoc
      */
-    public function withFragment($fragment): self
+    public function withFragment(null|string $fragment): self
     {
-        $fragment = self::filterQueryOrFragmentPart($fragment);
-        if ($this->fragment === $fragment) {
-            return clone $this;
+        if (null !== $fragment) {
+            $fragment = self::filterQueryOrFragmentPart($fragment);
+            if ($this->fragment === $fragment) {
+                return clone $this;
+            }
         }
 
         return new self($this->scheme, $this->userInformation, $this->host, $this->port, $this->path, $this->query, $fragment);
@@ -357,18 +386,16 @@ final readonly class Uri implements UriInterface
     public function toString(): string
     {
         $uri = '';
-        if ('' !== $this->scheme) {
+        if (null !== $this->scheme) {
             $uri .= $this->scheme . ':';
         }
 
         $authority = $this->getAuthority();
-        if ('' !== $authority) {
+        if (null !== $authority) {
             $uri .= '//' . $authority;
         }
 
-        if ('' !== $this->path) {
-            $uri .= $this->path;
-        }
+        $uri .= $this->path;
 
         if (null !== $this->query) {
             $uri .= '?' . $this->query;
@@ -391,11 +418,19 @@ final readonly class Uri implements UriInterface
 
     /**
      * Normalize the given port.
+     *
+     * @throws InvalidArgumentException If the port is invalid.
+     *
+     * @return null|int<0, 65535> The normalized port.
      */
-    private static function normalizePortPart(?string $scheme, ?int $port): ?int
+    private static function normalizePortPart(null|string $scheme, null|int $port): null|int
     {
         if (null === $port || (null !== $scheme && (self::SCHEMES[$scheme] ?? null) === $port)) {
             return null;
+        }
+
+        if ($port < 0 || $port > 65535) {
+            throw new InvalidArgumentException('The given port "' . ((string) $port) . '" is invalid.');
         }
 
         return $port;
@@ -403,14 +438,20 @@ final readonly class Uri implements UriInterface
 
     /**
      * Normalize the given path.
+     *
+     * @return non-empty-string
      */
-    private static function normalizePathPart(?string $host, string $path): string
+    private static function normalizePathPart(string $path): string
     {
-        if ('' !== $path && '/' !== $path[0]) {
-            if (null !== $host) {
-                $path = '/' . $path;
-            }
-        } elseif (isset($path[1]) && '/' === $path[1]) {
+        if ('' === $path) {
+            return '/';
+        }
+
+        if ('/' !== $path[0]) {
+            $path = '/' . $path;
+        }
+
+        if (isset($path[1]) && '/' === $path[1]) {
             $path = '/' . ltrim($path, '/');
         }
 
@@ -419,37 +460,67 @@ final readonly class Uri implements UriInterface
 
     /**
      * Filter the given user information component of a URI.
+     *
+     * @throws InvalidArgumentException If the user information is invalid.
+     *
+     * @return non-empty-string The filtered user information.
      */
     private static function filterUserInformationPart(string $userInformation): string
     {
-        return preg_replace_callback(
+        $filteredUserInformation = preg_replace_callback(
             '/[:\/\?#\[\]@!\$&\'\(\)\*\+,;=]++/',
             static fn (array $match): string => rawurlencode($match[0]),
             $userInformation,
         );
+
+        if (null === $filteredUserInformation || '' === $filteredUserInformation) {
+            throw new InvalidArgumentException('The given user information "' . $userInformation . '" is invalid.');
+        }
+
+        return $filteredUserInformation;
     }
 
     /**
      * Filter the given path part of a URI.
+     *
+     * @throws InvalidArgumentException If the path is invalid.
+     *
+     * @return string The filtered path part.
      */
     private static function filterPathPart(string $path): string
     {
-        return preg_replace_callback(
+        $filteredPath = preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/]++|%(?![A-Fa-f0-9]{2}))/',
             static fn (array $match): string => rawurlencode($match[0]),
             $path,
         );
+
+        if (null === $filteredPath) {
+            throw new InvalidArgumentException('The given path "' . $path . '" is invalid.');
+        }
+
+        return $filteredPath;
     }
 
     /**
      * Filter the given query or fragment part of a URI.
+     *
+     * @throws InvalidArgumentException If the query or fragment part is invalid.
+     *
+     * @return non-empty-string The filtered query or fragment part.
      */
     private static function filterQueryOrFragmentPart(string $str): string
     {
-        return preg_replace_callback(
+        $filteredQueryOrFragmentPart = preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/\?]++|%(?![A-Fa-f0-9]{2}))/',
             static fn (array $match): string => rawurlencode($match[0]),
             $str,
         );
+
+        if (null === $filteredQueryOrFragmentPart || '' === $filteredQueryOrFragmentPart) {
+            throw new InvalidArgumentException('The given query or fragment part "' . $str . '" is invalid.');
+        }
+
+        return $filteredQueryOrFragmentPart;
     }
 }

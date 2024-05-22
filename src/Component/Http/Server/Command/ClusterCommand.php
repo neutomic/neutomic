@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Server\Command;
 
 use Amp\Cluster\Cluster;
@@ -24,6 +33,12 @@ use Psl\Async;
 use Psl\Str;
 use Revolt\EventLoop\UnsupportedFeatureException;
 
+/**
+ * Starts the HTTP server cluster, initializing multiple worker processes to handle requests.
+ *
+ * @psalm-suppress PropertyNotSetInConstructor
+ * @psalm-suppress MissingThrowsDocblock
+ */
 #[Command(
     name: 'http:server:cluster',
     description: 'Starts the HTTP server cluster, initializing multiple worker processes to handle requests.',
@@ -49,6 +64,9 @@ final readonly class ClusterCommand extends AbstractCommand
         $this->watcherConfiguration = $watcherConfiguration;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function execute(InputInterface $input, OutputInterface $output): ExitCode
     {
         $option = $input->getOption('workers');

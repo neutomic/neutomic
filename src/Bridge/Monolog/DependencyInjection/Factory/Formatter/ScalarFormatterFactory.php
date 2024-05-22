@@ -2,11 +2,21 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Bridge\Monolog\DependencyInjection\Factory\Formatter;
 
 use Monolog\Formatter\NormalizerFormatter;
 use Monolog\Formatter\ScalarFormatter;
 use Neu\Component\DependencyInjection\ContainerInterface;
+use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 
 /**
@@ -26,7 +36,7 @@ final readonly class ScalarFormatterFactory implements FactoryInterface
      *
      * @param ?string $dateFormat The date format for log messages.
      */
-    public function __construct(?string $dateFormat = null)
+    public function __construct(null|string $dateFormat = null)
     {
         $this->dateFormat = $dateFormat ?? NormalizerFormatter::SIMPLE_DATE;
     }
@@ -36,8 +46,12 @@ final readonly class ScalarFormatterFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container): object
     {
-        return new ScalarFormatter(
-            dateFormat: $this->dateFormat
-        );
+        try {
+            return new ScalarFormatter(
+                dateFormat: $this->dateFormat
+            );
+        } catch (\RuntimeException $e) {
+            throw new RuntimeException(message: 'Failed to create the scalar formatter.', previous: $e);
+        }
     }
 }

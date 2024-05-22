@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Runtime;
 
 use Neu\Component\Http\Message\RequestInterface;
@@ -23,21 +32,21 @@ interface RuntimeInterface extends HandlerInterface
     /**
      * Retrieves the maximum number of concurrent requests the runtime can handle.
      *
-     * @return int The maximum number of concurrent requests allowed.
+     * @return int<1, max> The maximum number of concurrent requests allowed.
      */
     public function getConcurrencyLimit(): int;
 
     /**
      * Retrieves the current number of active requests being processed by the runtime.
      *
-     * @return int The number of active requests.
+     * @return int<0, max> The number of active requests.
      */
     public function getActiveRequestsCount(): int;
 
     /**
      * Retrieves the current number of pending requests waiting to be processed by the runtime.
      *
-     * @return int The number of pending requests.
+     * @return int<0, max> The number of pending requests.
      */
     public function getPendingRequestsCount(): int;
 

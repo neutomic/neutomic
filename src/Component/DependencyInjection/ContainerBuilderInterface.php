@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\DependencyInjection;
 
 use Neu\Component\Configuration\ConfigurationContainerInterface;
@@ -88,7 +97,7 @@ interface ContainerBuilderInterface
     /**
      * Check if a definition exists in the container.
      *
-     * @param string $id The identifier of the definition.
+     * @param non-empty-string $id The identifier of the definition.
      *
      * @return bool True if the definition exists, false otherwise.
      */
@@ -97,7 +106,7 @@ interface ContainerBuilderInterface
     /**
      * Get a definition from the container.
      *
-     * @param string $id The identifier of the definition.
+     * @param non-empty-string $id The identifier of the definition.
      *
      * @throws Exception\ServiceNotFoundException If the definition does not exist.
      */
@@ -106,9 +115,7 @@ interface ContainerBuilderInterface
     /**
      * Get all definitions from the container.
      *
-     * @template T of object
-     *
-     * @return list<DefinitionInterface<T>> The definitions.
+     * @return array<non-empty-string, DefinitionInterface> The definitions.
      */
     public function getDefinitions(): array;
 
@@ -124,9 +131,7 @@ interface ContainerBuilderInterface
     /**
      * Add definitions to the container.
      *
-     * @template T of object
-     *
-     * @param list<DefinitionInterface<T>> $definitions The definitions to add.
+     * @param list<DefinitionInterface> $definitions The definitions to add.
      */
     public function addDefinitions(array $definitions): void;
 
@@ -146,7 +151,7 @@ interface ContainerBuilderInterface
      *
      * The processor will be added to all service definitions that are an instance of the type, current and future.
      *
-     * @param string $type The type to register the processor for.
+     * @param class-string $type The type to register the processor for.
      * @param ProcessorInterface $processor The processor to register.
      */
     public function addProcessorForInstanceOf(string $type, ProcessorInterface $processor): void;
@@ -158,7 +163,7 @@ interface ContainerBuilderInterface
      *
      * The processor will be added to all service definitions that have the attribute, current and future.
      *
-     * @param string $attribute The attribute to register the processor for.
+     * @param class-string $attribute The attribute to register the processor for.
      * @param ProcessorInterface $processor The processor to register.
      */
     public function addProcessorForAttribute(string $attribute, ProcessorInterface $processor): void;
@@ -167,6 +172,8 @@ interface ContainerBuilderInterface
      * Build the container.
      *
      * The resulting container will be a read-only snapshot of the current state of the builder.
+     *
+     * @throws Exception\ExceptionInterface If an error occurs while building the container.
      *
      * @return ContainerInterface The built container.
      */

@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console;
 
 use Neu\Component\Console\Command\ApplicationAwareCommandInterface;
@@ -25,6 +34,11 @@ use Psl\Async;
 use Psl\Env;
 use Throwable;
 
+/**
+ * The application class is the main entry point for the console application.
+ *
+ * @psalm-suppress MissingThrowsDocblock
+ */
 final class Application implements ApplicationInterface
 {
     /**
@@ -45,7 +59,7 @@ final class Application implements ApplicationInterface
     /**
      * The event dispatcher to dispatch events during the application lifecycle.
      */
-    private ?EventDispatcherInterface $dispatcher;
+    private null|EventDispatcherInterface $dispatcher;
 
     /**
      * The keyed semaphore is used to ensure that multiple commands can run concurrently, but not the same command.
@@ -54,7 +68,7 @@ final class Application implements ApplicationInterface
      */
     private Async\KeyedSequence $semaphore;
 
-    public function __construct(Configuration $configuration, RegistryInterface $registry, RecoveryInterface $errorHandler = null, EventDispatcherInterface $dispatcher = null)
+    public function __construct(Configuration $configuration, RegistryInterface $registry, null|RecoveryInterface $errorHandler = null, null|EventDispatcherInterface $dispatcher = null)
     {
         $this->configuration = $configuration;
         $this->registry = $registry;
@@ -117,7 +131,7 @@ final class Application implements ApplicationInterface
     /**
      * @inheritDoc
      */
-    public function run(?InputInterface $input = null, ?OutputInterface $output = null): int
+    public function run(null|InputInterface $input = null, null|OutputInterface $output = null): int
     {
         Env\set_var('COLUMNS', (string) Terminal::getWidth());
         Env\set_var('LINES', (string) Terminal::getHeight());
@@ -201,9 +215,14 @@ final class Application implements ApplicationInterface
         return $this->terminate($input, $output, $exitCode instanceof ExitCode ? $exitCode->value : $exitCode);
     }
 
+    /**
+     * Run the command in the context of the application.
+     *
+     * @throws CommandDisabledException If the command is disabled.
+     */
     private function runContext(
         Command\Configuration $configuration,
-        Command\Commandinterface $command,
+        Command\CommandInterface $command,
         Input\InputInterface $input,
         Output\OutputInterface $output,
     ): int {
@@ -215,19 +234,23 @@ final class Application implements ApplicationInterface
             $command->setApplication($this);
         }
 
-        $arguments = (new ArgumentBag())->add($configuration->arguments->all());
+        $arguments = new ArgumentBag();
+        $arguments->add($configuration->arguments->all());
         foreach ($input->getArguments()->getIterator() as $name => $argument) {
             $arguments->set($name, $argument);
         }
+
         $input->setArguments($arguments);
 
-        $flags = (new FlagBag())->add($configuration->flags->all());
+        $flags = new FlagBag();
+        $flags->add($configuration->flags->all());
         foreach ($input->getFlags()->getIterator() as $name => $flag) {
             $flags->set($name, $flag);
         }
         $input->setFlags($flags);
 
-        $options = (new OptionBag())->add($configuration->options->all());
+        $options = new OptionBag();
+        $options->add($configuration->options->all());
         foreach ($input->getOptions()->getIterator() as $name => $option) {
             $options->set($name, $option);
         }
@@ -248,7 +271,12 @@ final class Application implements ApplicationInterface
 
         $dispatcher = $this->dispatcher;
         if ($dispatcher === null) {
-            return $command->run($input, $output);
+            $exitCode = $command->run($input, $output);
+            if ($exitCode instanceof ExitCode) {
+                $exitCode = $exitCode->value;
+            }
+
+            return $exitCode;
         }
 
         $event = $dispatcher->dispatch(new BeforeExecuteEvent($input, $output));
@@ -266,8 +294,7 @@ final class Application implements ApplicationInterface
     }
 
     /**
-     * Bootstrap the `Application` instance with default parameters and global
-     * settings.
+     * Bootstrap the application with default parameters and global settings.
      */
     private function bootstrap(InputInterface $input): void
     {
@@ -318,9 +345,9 @@ final class Application implements ApplicationInterface
     }
 
     /**
-     * Render the help screen for the application or the `Command` passed in.
+     * Render the help screen for the application or the specified command.
      */
-    private function renderHelpScreen(InputInterface $input, OutputInterface $output, ?Command\Configuration $configuration = null): void
+    private function renderHelpScreen(InputInterface $input, OutputInterface $output, null|Command\Configuration $configuration = null): void
     {
         $helpScreen = new HelpScreen($this, $input);
         if ($configuration !== null) {
@@ -333,7 +360,7 @@ final class Application implements ApplicationInterface
     }
 
     /**
-     * Output version information of the current `Application`.
+     * Output version information of the current application.
      */
     private function renderVersionInformation(OutputInterface $output): void
     {

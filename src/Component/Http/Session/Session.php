@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Session;
 
 use Closure;
@@ -16,14 +25,16 @@ final class Session implements SessionInterface
     /**
      * The session data.
      *
-     * @param array<string, mixed> $data
+     * @var array<non-empty-string, mixed>
      */
     private array $data;
 
     /**
      * The session id.
+     *
+     * @var non-empty-string|null
      */
-    private string $id;
+    private null|string $id;
 
     /**
      * Indicates if the session has been regenerated.
@@ -33,12 +44,14 @@ final class Session implements SessionInterface
     /**
      * The original session data, before any changes.
      *
-     * @var array<string, mixed>
+     * @var array<non-empty-string, mixed>
      */
     private readonly array $originalData;
 
     /**
      * Lifetime of the session cookie.
+     *
+     * @var int<0, max>
      */
     private int $age = 0;
 
@@ -48,29 +61,44 @@ final class Session implements SessionInterface
     private bool $flushed = false;
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<non-empty-string, mixed> $data
+     * @param non-empty-string|null $id
      */
-    public function __construct(array $data, string $id = '')
+    public function __construct(array $data, null|string $id = null)
     {
         $this->data = $data;
         $this->originalData = $data;
         $this->id = $id;
 
         if (isset($data[static::SESSION_AGE_KEY])) {
-            $this->age = (int)$data[static::SESSION_AGE_KEY];
+            $age = (int)$data[static::SESSION_AGE_KEY];
+            if ($age > 0) {
+                $this->age = $age;
+            }
         }
     }
 
     /**
      * @inheritDoc
      */
-    public function getId(): string
+    public function getId(): null|string
     {
         return $this->id;
     }
 
     /**
-     * @inheritDoc
+     * Compute a value, store it in the session, and return it.
+     *
+     * If the key already exists, the value will be returned as-is.
+     *
+     * If the key does not exist, the value will be computed and stored.
+     *
+     * @template T
+     *
+     * @param non-empty-string $key The key to compute the value for.
+     * @param (Closure(): T) $computer The function to compute the value.
+     *
+     * @return T
      */
     public function compute(string $key, Closure $computer): mixed
     {
@@ -78,16 +106,40 @@ final class Session implements SessionInterface
             $this->set($key, $computer());
         }
 
+        /**
+         * @psalm-suppress MissingThrowsDocblock
+         *
+         * @var T
+         */
         return $this->get($key);
     }
 
     /**
-     * @inheritDoc
+     * Update a value in the session.
+     *
+     * The updater function will receive the current value as an argument.
+     *
+     * If the key does not exist, the updater will receive null.
+     *
+     * @template T
+     *
+     * @param non-empty-string $key
+     * @param (Closure(null|T): T) $updater
+     *
+     * @return T
      */
     public function update(string $key, Closure $updater): mixed
     {
-        $this->set($key, $updater($this->has($key) ? $this->get($key) : null));
+        /** @var T|null */
+        $previous = $this->has($key) ? $this->get($key) : null;
 
+        $this->set($key, $updater($previous));
+
+        /**
+         * @psalm-suppress MissingThrowsDocblock
+         *
+         * @var T
+         */
         return $this->get($key);
     }
 

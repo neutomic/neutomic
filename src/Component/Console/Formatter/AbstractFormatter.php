@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Formatter;
 
 use Neu\Component\Console\Formatter\Style\BackgroundColor;
@@ -13,7 +22,11 @@ use Neu\Component\Console\Terminal;
 use Psl\Iter;
 use Psl\Regex;
 use Psl\Str;
+use Psl\Str\Byte;
 
+/**
+ * @psalm-suppress MissingThrowsDocblock
+ */
 abstract class AbstractFormatter implements WrappingFormatterInterface
 {
     /**
@@ -36,7 +49,7 @@ abstract class AbstractFormatter implements WrappingFormatterInterface
     /**
      * @param array<string, StyleInterface> $styles
      */
-    public function __construct(?bool $decorated = null, array $styles = [])
+    public function __construct(null|bool $decorated = null, array $styles = [])
     {
         if (null === $decorated) {
             $decorated = Terminal::hasColorSupport();
@@ -112,11 +125,13 @@ abstract class AbstractFormatter implements WrappingFormatterInterface
      */
     public static function escapeTrailingBackslash(string $text): string
     {
-        if (Str\ends_with($text, '\\')) {
-            $len = Str\length($text);
-            $text = Str\trim_right($text, '\\');
-            $text = Str\replace("\0", '', $text);
-            $text .= Str\repeat("\0", $len - Str\length($text));
+        if (Byte\ends_with($text, '\\')) {
+            $len = Byte\length($text);
+            $text = Byte\trim_right($text, '\\');
+            $text = Byte\replace($text, "\0", '');
+            /** @var int<0, max> $remaining */
+            $remaining = $len - Byte\length($text);
+            $text .= Str\repeat("\0", $remaining);
         }
 
         return $text;

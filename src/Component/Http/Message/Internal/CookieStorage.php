@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Message\Internal;
 
 use Neu\Component\Http\Message\CookieInterface;
@@ -13,31 +22,34 @@ use function preg_match;
 use function strtolower;
 
 /**
- * @template T of string|CookieInterface
+ * @template T of non-empty-string|CookieInterface
  *
  * Internal storage for cookies.
  *
  * @internal
+ *
+ * @psalm-suppress DocblockTypeContradiction
+ * @psalm-suppress MissingThrowsDocblock
  */
 final readonly class CookieStorage
 {
     /**
      * The cookies.
      *
-     * @var array<string, list<T>>
+     * @var array<non-empty-string, non-empty-list<T>>
      */
     private array $cookies;
 
     /**
      * The cookie names, normalized to lowercase.
      *
-     * @var array<string, string>
+     * @var array<non-empty-lowercase-string, non-empty-string>
      */
     private array $cookieNames;
 
     /**
-     * @param array<string, list<T>> $cookies
-     * @param array<string, string> $cookieNames
+     * @param array<non-empty-string, non-empty-list<T>> $cookies
+     * @param array<non-empty-lowercase-string, non-empty-string> $cookieNames
      */
     private function __construct(array $cookies, array $cookieNames)
     {
@@ -48,17 +60,24 @@ final readonly class CookieStorage
     /**
      * Create a new storage from an array of cookies.
      *
-     * @template P of string|CookieInterface
+     * @template P of non-empty-string|CookieInterface
      *
-     * @param array<string, P|list<P>> $cookies
+     * @param array<non-empty-string, P|list<P>> $cookies
      *
      * @return self<P>
      */
     public static function fromCookies(array $cookies): self
     {
-        $cookieNames = $validCookies = [];
+        /** @var array<non-empty-lowercase-string, non-empty-string> $cookieNames */
+        $cookieNames = [];
+        /** @var array<non-empty-string, non-empty-list<P>> $validCookies */
+        $validCookies = [];
 
         foreach ($cookies as $cookie => $value) {
+            if ($value === []) {
+                continue;
+            }
+
             if (!is_array($value)) {
                 $value = [$value];
             }
@@ -75,7 +94,7 @@ final readonly class CookieStorage
     /**
      * Get all cookies.
      *
-     * @return array<string, list<T>>
+     * @return array<non-empty-string, non-empty-list<T>>
      */
     public function getCookies(): array
     {
@@ -85,7 +104,7 @@ final readonly class CookieStorage
     /**
      * Check if a cookie exists.
      *
-     * @param string $name The cookie name.
+     * @param non-empty-string $name The cookie name.
      */
     public function hasCookie(string $name): bool
     {
@@ -95,11 +114,11 @@ final readonly class CookieStorage
     /**
      * Get a cookie by name.
      *
-     * @param string $name The cookie name.
+     * @param non-empty-string $name The cookie name.
      *
-     * @return null|array<T> The cookie value, or null if the cookie does not exist.
+     * @return null|non-empty-list<T> The cookie value, or null if the cookie does not exist.
      */
-    public function getCookie(string $name): ?array
+    public function getCookie(string $name): null|array
     {
         $normalized = strtolower($name);
         if (!isset($this->cookieNames[$normalized])) {
@@ -114,7 +133,7 @@ final readonly class CookieStorage
     /**
      * Add a cookie to the storage.
      *
-     * @param string $name The cookie name.
+     * @param non-empty-string $name The cookie name.
      * @param T|list<T> $value The cookie value(s).
      *
      * @return self<T> The updated storage.
@@ -143,7 +162,7 @@ final readonly class CookieStorage
     /**
      * Add a value to an existing cookie.
      *
-     * @param string $name The cookie name.
+     * @param non-empty-string $name The cookie name.
      * @param T|list<T> $value The value(s) to add.
      *
      * @return self<T> The updated storage.
@@ -161,6 +180,7 @@ final readonly class CookieStorage
         }
 
         $name = $this->cookieNames[strtolower($name)];
+        $cookies = $this->cookies;
         $cookies[$name] = array_merge($this->cookies[$name], $value);
 
         return new self($cookies, $this->cookieNames);
@@ -169,7 +189,7 @@ final readonly class CookieStorage
     /**
      * Remove a cookie from the storage.
      *
-     * @param string $name The cookie name.
+     * @param non-empty-string $name The cookie name.
      *
      * @return self<T> The updated storage.
      */

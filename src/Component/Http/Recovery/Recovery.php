@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Recovery;
 
 use Neu\Component\Http\Exception\HttpExceptionInterface;
@@ -22,8 +31,10 @@ use Throwable;
  * @psalm-type ThrowablesConfiguration = array<class-string<Throwable>, array{
  *      log_level?: 'emergency'|'alert'|'critical'|'error'|'warning'|'notice'|'info'|'debug',
  *      status?: int,
- *      headers?: array<string, list<string>>,
+ *      headers?: array<non-empty-string, non-empty-list<non-empty-string>>,
  *  }>
+ *
+ * @psalm-suppress MissingThrowsDocblock
  */
 final readonly class Recovery implements RecoveryInterface
 {
@@ -49,6 +60,9 @@ final readonly class Recovery implements RecoveryInterface
         $this->throwables = $throwables;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function recover(Context $context, RequestInterface $request, Throwable $throwable): ResponseInterface
     {
         $log_level = LogLevel::ERROR;
@@ -66,6 +80,10 @@ final readonly class Recovery implements RecoveryInterface
         $configuration = $this->throwables[$throwable::class] ?? [];
         $log_level = $configuration['log_level'] ?? $log_level;
         $status = $configuration['status'] ?? $status;
+        if (!$status instanceof StatusCode) {
+            $status = StatusCode::tryFrom($status) ?? StatusCode::InternalServerError;
+        }
+
         $headers = $configuration['headers'] ?? [];
 
         $this->logger->log($log_level, 'An exception of type {type} occurred: {message}.', [
@@ -271,18 +289,18 @@ final readonly class Recovery implements RecoveryInterface
     {
         $frames = Vec\filter(
             $throwable->getTrace(),
-            static fn(array $frame): bool => isset($frame['function'], $frame['file']),
+            static fn (array $frame): bool => isset($frame['function'], $frame['file']),
         );
 
         $output = '<div class="trace-list">';
         foreach ($frames as $frame) {
-            $file = Html\encode_special_characters((string) $frame['file']);
-            $line = Html\encode_special_characters((string) $frame['line'] ?? '');
-            $function = Html\encode_special_characters((string) $frame['function']);
+            $file = Html\encode_special_characters($frame['file'] ?? 'internal');
+            $line = Html\encode_special_characters((string) ($frame['line'] ?? '00'));
+            $function = Html\encode_special_characters($frame['function'] ?? 'unknown');
 
             if (isset($frame['class'])) {
                 $class = $this->shortenType($frame['class']);
-                $call = $class . Html\encode_special_characters($frame['type']) . $function . '(...)';
+                $call = $class . Html\encode_special_characters($frame['type'] ?? '') . $function . '(...)';
             } else {
                 $call = $this->shortenType($function) . '(...)';
             }

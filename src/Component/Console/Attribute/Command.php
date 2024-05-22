@@ -2,10 +2,20 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Attribute;
 
 use Attribute;
 use Neu\Component\Console\Command\Configuration;
+use Neu\Component\Console\Exception\InvalidArgumentException;
 use Neu\Component\Console\Input\Bag\ArgumentBag;
 use Neu\Component\Console\Input\Bag\FlagBag;
 use Neu\Component\Console\Input\Bag\OptionBag;
@@ -26,7 +36,7 @@ final readonly class Command
     /**
      * The description of the command used when rendering its help screen.
      *
-     * @var non-empty-string
+     * @var string
      */
     public string $description;
 
@@ -66,12 +76,12 @@ final readonly class Command
      * Create a new command attribute instance.
      *
      * @param non-empty-string $name
-     * @param non-empty-string $description
+     * @param string $description
      * @param list<non-empty-string> $aliases
      */
     public function __construct(
         string $name,
-        string $description,
+        string $description = '',
         array $aliases = [],
         FlagBag $flags = new FlagBag(),
         OptionBag $options = new OptionBag(),
@@ -91,6 +101,8 @@ final readonly class Command
 
     /**
      * Retrieve the command configuration.
+     *
+     * @throws InvalidArgumentException If the name or alias contains invalid characters.
      */
     public function getConfiguration(): Configuration
     {

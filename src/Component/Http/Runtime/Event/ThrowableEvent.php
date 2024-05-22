@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Runtime\Event;
 
 use Neu\Component\Http\Exception\HttpExceptionInterface;
@@ -38,7 +47,7 @@ final readonly class ThrowableEvent implements StoppableEventInterface
      *
      * If null, the throwable will be rethrown.
      */
-    public ?ResponseInterface $response;
+    public null|ResponseInterface $response;
 
     /**
      * Constructs a new {@see ThrowableEvent} instance.
@@ -47,9 +56,9 @@ final readonly class ThrowableEvent implements StoppableEventInterface
      * @param Throwable $throwable The throwable that occurred.
      * @param ResponseInterface|null $response Optional initial response to be sent.
      */
-    public function __construct(Context $context, RequestInterface $request, Throwable $throwable, ?ResponseInterface $response = null)
+    public function __construct(Context $context, RequestInterface $request, Throwable $throwable, null|ResponseInterface $response = null)
     {
-            $this->context = $context;
+        $this->context = $context;
         $this->request = $request;
         $this->throwable = $throwable;
         $this->response = $response;

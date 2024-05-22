@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Server;
 
 use Amp\Http\Server\Driver\HttpDriver;
@@ -17,6 +26,11 @@ use Psr\Log\NullLogger;
 use Revolt\EventLoop;
 use Throwable;
 
+/**
+ * A server that listens for incoming HTTP requests and dispatches them to the appropriate handler.
+ *
+ * @psalm-suppress MissingThrowsDocblock
+ */
 final class Server implements ServerInterface
 {
     /**
@@ -52,7 +66,7 @@ final class Server implements ServerInterface
     /**
      * Stores active HTTP drivers keyed by client ID.
      *
-     * @var array<string, HttpDriver>
+     * @var array<int, HttpDriver>
      */
     private array $drivers = [];
 
@@ -194,7 +208,7 @@ final class Server implements ServerInterface
 
             Async\concurrently(Vec\map(
                 $this->drivers,
-                static fn(HttpDriver $driver) => $driver->stop(...),
+                static fn (HttpDriver $driver) => $driver->stop(...),
             ));
 
             $this->logger->notice('Server stopped successfully.');

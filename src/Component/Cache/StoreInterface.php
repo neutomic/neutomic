@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Cache;
 
 use Closure;
@@ -50,7 +59,7 @@ interface StoreInterface
      *
      * @return T
      */
-    public function compute(string $key, Closure $computer, ?int $ttl = null): mixed;
+    public function compute(string $key, Closure $computer, null|int $ttl = null): mixed;
 
     /**
      * Update the value associated with the unique key.
@@ -75,7 +84,7 @@ interface StoreInterface
      *
      * @return T
      */
-    public function update(string $key, Closure $computer, ?int $ttl = null): mixed;
+    public function update(string $key, Closure $computer, null|int $ttl = null): mixed;
 
     /**
      * Delete an item from the cache by its unique key.
@@ -87,6 +96,7 @@ interface StoreInterface
      * @param non-empty-string $key The unique cache key of the item to delete.
      *
      * @throws Exception\InvalidKeyException If the $key string is not a legal value.
+     * @throws Exception\RuntimeException If an error occurs while deleting the item.
      */
     public function delete(string $key): void;
 }

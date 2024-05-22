@@ -2,19 +2,28 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Message;
 
 final readonly class Cookie implements CookieInterface
 {
     public function __construct(
         private string $value,
-        private ?int $expires = null,
-        private ?int $maxAge = null,
-        private ?string $path = null,
-        private ?string $domain = null,
-        private ?bool $secure = null,
-        private ?bool $httpOnly = null,
-        private ?CookieSameSite $sameSite = null,
+        private null|int $expires = null,
+        private null|int $maxAge = null,
+        private null|string $path = null,
+        private null|string $domain = null,
+        private null|bool $secure = null,
+        private null|bool $httpOnly = null,
+        private null|CookieSameSite $sameSite = null,
     ) {
     }
 
@@ -29,7 +38,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    public function getExpires(): ?int
+    public function getExpires(): null|int
     {
         return $this->expires;
     }
@@ -37,7 +46,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    public function getMaxAge(): ?int
+    public function getMaxAge(): null|int
     {
         return $this->maxAge;
     }
@@ -45,7 +54,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    public function getPath(): ?string
+    public function getPath(): null|string
     {
         return $this->path;
     }
@@ -53,7 +62,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    public function getDomain(): ?string
+    public function getDomain(): null|string
     {
         return $this->domain;
     }
@@ -61,7 +70,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    public function getSecure(): ?bool
+    public function getSecure(): null|bool
     {
         return $this->secure;
     }
@@ -69,7 +78,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    public function getHttpOnly(): ?bool
+    public function getHttpOnly(): null|bool
     {
         return $this->httpOnly;
     }
@@ -77,7 +86,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    public function getSameSite(): ?CookieSameSite
+    public function getSameSite(): null|CookieSameSite
     {
         return $this->sameSite;
     }
@@ -102,7 +111,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    public function withExpires(?int $expires): static
+    public function withExpires(null|int $expires): static
     {
         return new self(
             value: $this->value,
@@ -119,7 +128,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    public function withMaxAge(?int $maxAge): static
+    public function withMaxAge(null|int $maxAge): static
     {
         return new self(
             value: $this->value,
@@ -136,7 +145,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    public function withPath(?string $path): static
+    public function withPath(null|string $path): static
     {
         return new self(
             value: $this->value,
@@ -153,7 +162,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    public function withDomain(?string $domain): static
+    public function withDomain(null|string $domain): static
     {
         return new self(
             value: $this->value,
@@ -170,7 +179,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    public function withSecure(?bool $secure): static
+    public function withSecure(null|bool $secure): static
     {
         return new self(
             value: $this->value,
@@ -187,7 +196,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    public function withHttpOnly(?bool $httpOnly): static
+    public function withHttpOnly(null|bool $httpOnly): static
     {
         return new self(
             value: $this->value,
@@ -204,7 +213,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    public function withSameSite(?CookieSameSite $sameSite): static
+    public function withSameSite(null|CookieSameSite $sameSite): static
     {
         return new self(
             value: $this->value,

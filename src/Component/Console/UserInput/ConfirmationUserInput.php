@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\UserInput;
 
 use Psl\Iter;
@@ -15,18 +24,19 @@ final class ConfirmationUserInput extends AbstractUserInput
     /**
      * The message to be appended to the prompt message containing the accepted
      * values.
+     *
+     * @var non-empty-string
      */
     protected string $message = ' [y/n]: ';
+
     /**
      * Input values accepted to continue.
      *
-     * @var array<string, bool>
+     * @var array<non-empty-string, bool>
      */
     protected array $acceptedValues = [
-        '1' => true,
         'y' => true,
         'yes' => true,
-        '0' => false,
         'n' => false,
         'no' => false,
     ];
@@ -37,38 +47,46 @@ final class ConfirmationUserInput extends AbstractUserInput
     public function prompt(string $message): bool
     {
         $cursor = null;
-        if ($this->position !== null) {
+        $position = $this->position;
+        $this->position = null;
+        if ($position !== null) {
+            [$column, $row] = $position;
+
             $cursor = $this->output->getCursor();
             $cursor->save();
-            [$column, $row] = $this->position;
             $cursor->move($column, $row);
         }
 
-        $this->output->write($message . ' ' . $this->message);
-        if ($this->default !== '' && !$this->input->isInteractive()) {
-            $input = $this->default;
-        } else {
-            $input = Str\lowercase($this->input->getUserInput());
+        try {
+            $this->output->write($message . ' ' . $this->message);
+            if (!$this->input->isInteractive() && $this->default !== null) {
+                $input = $this->default;
+            } else {
+                $input = Str\lowercase($this->input->getUserInput());
+            }
+
+            if ('' === $input && null !== $this->default) {
+                $input = $this->default;
+            }
+
+            if ('' === $input || !Iter\contains_key($this->acceptedValues, $input)) {
+                return $this->prompt($message);
+            }
+
+            $this->output->writeLine('');
+
+            return $this->acceptedValues[$input];
+        } finally {
+            // restore the cursor position
+            $this->position = $position;
+            $cursor?->restore();
         }
-
-        if ('' === $input && null !== $this->default) {
-            $input = $this->default;
-        }
-
-        if (!Iter\contains_key($this->acceptedValues, $input)) {
-            return $this->prompt($message);
-        }
-
-        $cursor?->restore();
-        $this->output->writeLine('');
-
-        return $this->acceptedValues[$input];
     }
 
     /**
      * @inheritDoc
      */
-    public function setDefault(?string $default): self
+    public function setDefault(null|string $default): self
     {
         parent::setDefault($default);
         if (null === $default) {

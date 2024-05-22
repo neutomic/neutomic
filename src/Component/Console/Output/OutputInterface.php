@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Output;
 
 use Neu\Component\Console\Formatter\FormatterInterface;
@@ -69,7 +78,7 @@ interface OutputInterface
     /**
      * Get the stream resource.
      *
-     * @return resource|null The stream resource or null if not available
+     * @return object|resource|null The stream object or resource, or null if not available
      */
     public function getStream(): mixed;
 }

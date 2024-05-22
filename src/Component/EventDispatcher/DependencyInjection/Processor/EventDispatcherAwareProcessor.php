@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\EventDispatcher\DependencyInjection\Processor;
 
 use Neu\Component\DependencyInjection\ContainerInterface;
@@ -15,14 +24,17 @@ use Neu\Component\EventDispatcher\EventDispatcherInterface;
  */
 final class EventDispatcherAwareProcessor implements ProcessorInterface
 {
+    /**
+     * @var non-empty-string
+     */
     private string $eventDispatcher;
 
     /**
      * Creates a new {@see EventDispatcherAwareProcessor} instance.
      *
-     * @param string|null $eventDispatcher The event dispatcher service identifier, defaults to {@see EventDispatcherInterface::class}.
+     * @param non-empty-string|null $eventDispatcher The event dispatcher service identifier, defaults to {@see EventDispatcherInterface::class}.
      */
-    public function __construct(?string $eventDispatcher = null)
+    public function __construct(null|string $eventDispatcher = null)
     {
         $this->eventDispatcher = $eventDispatcher ?? EventDispatcherInterface::class;
     }

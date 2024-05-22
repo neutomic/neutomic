@@ -2,11 +2,21 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Bridge\Monolog\DependencyInjection\Factory\Formatter;
 
 use Monolog\Formatter\LineFormatter;
 use Monolog\Formatter\NormalizerFormatter;
 use Neu\Component\DependencyInjection\ContainerInterface;
+use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 
 /**
@@ -50,7 +60,7 @@ final readonly class LineFormatterFactory implements FactoryInterface
      * @param ?bool $ignoreEmptyContextAndExtra Whether to ignore empty context and extra data.
      * @param ?bool $includeStacktraces Whether to include stack traces in the log entries.
      */
-    public function __construct(?string $format = null, ?string $dateFormat = null, ?bool $allowInlineLineBreaks = null, ?bool $ignoreEmptyContextAndExtra = null, ?bool $includeStacktraces = null)
+    public function __construct(null|string $format = null, null|string $dateFormat = null, null|bool $allowInlineLineBreaks = null, null|bool $ignoreEmptyContextAndExtra = null, null|bool $includeStacktraces = null)
     {
         $this->format = $format ?? LineFormatter::SIMPLE_FORMAT;
         $this->dateFormat = $dateFormat ?? NormalizerFormatter::SIMPLE_DATE;
@@ -64,12 +74,16 @@ final readonly class LineFormatterFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container): object
     {
-        return new LineFormatter(
-            format: $this->format,
-            dateFormat: $this->dateFormat,
-            allowInlineLineBreaks: $this->allowInlineLineBreaks,
-            ignoreEmptyContextAndExtra: $this->ignoreEmptyContextAndExtra,
-            includeStacktraces: $this->includeStacktraces,
-        );
+        try {
+            return new LineFormatter(
+                format: $this->format,
+                dateFormat: $this->dateFormat,
+                allowInlineLineBreaks: $this->allowInlineLineBreaks,
+                ignoreEmptyContextAndExtra: $this->ignoreEmptyContextAndExtra,
+                includeStacktraces: $this->includeStacktraces,
+            );
+        } catch (\RuntimeException $e) {
+            throw new RuntimeException(message: 'Failed to create the line formatter.', previous: $e);
+        }
     }
 }

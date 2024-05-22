@@ -2,8 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Neu\Examples\Database;
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
+namespace Neu\Examples\Database;
 
 use Neu\Component\Database\DatabaseInterface;
 use Neu\Component\Database\OrderDirection;

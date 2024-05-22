@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Input;
 
 use Neu\Component\Console\Exception\InvalidInputDefinitionException;
@@ -36,8 +45,10 @@ interface InputInterface
 
     /**
      * Parse and retrieve the active command name from the raw input.
+     *
+     * @return null|non-empty-string The active command name or null if none.
      */
-    public function getActiveCommand(): ?string;
+    public function getActiveCommand(): null|string;
 
     /**
      * Retrieve an {@see Argument} by its key or alias.
@@ -78,9 +89,11 @@ interface InputInterface
     /**
      * Read in and return input from the user.
      *
+     * @param positive-int|null $length The number of bytes to read from the input stream.
+     *
      * @throws NonInteractiveInputException
      */
-    public function getUserInput(?int $length = null): string;
+    public function getUserInput(null|int $length = null): string;
 
     /**
      * Parse input for all {@see Flag}, {@see Option}, and {@see Argument} candidates.
@@ -120,7 +133,7 @@ interface InputInterface
     /**
      * Get the raw input stream.
      *
-     * @return resource|null The raw input stream, if available.
+     * @return object|resource|null The raw input stream object or resource, or null if not available.
      */
     public function getStream(): mixed;
 }

@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Message;
 
 interface CookieInterface
@@ -18,49 +27,49 @@ interface CookieInterface
      *
      * If the attribute is not present, this method MUST return null.
      */
-    public function getExpires(): ?int;
+    public function getExpires(): null|int;
 
     /**
      * Retrieve the max-age attribute of the cookie.
      *
      * If the attribute is not present, this method MUST return null.
      */
-    public function getMaxAge(): ?int;
+    public function getMaxAge(): null|int;
 
     /**
      * Retrieve the path attribute of the cookie.
      *
      * If the attribute is not present, this method MUST return null.
      */
-    public function getPath(): ?string;
+    public function getPath(): null|string;
 
     /**
      * Retrieve the domain attribute of the cookie.
      *
      * If the attribute is not present, this method MUST return null.
      */
-    public function getDomain(): ?string;
+    public function getDomain(): null|string;
 
     /**
      * Retrieve the secure attribute of the cookie.
      *
      * If the attribute is not present, this method MUST return null.
      */
-    public function getSecure(): ?bool;
+    public function getSecure(): null|bool;
 
     /**
      * Retrieve the http-only attribute of the cookie.
      *
      * If the attribute is not present, this method MUST return null.
      */
-    public function getHttpOnly(): ?bool;
+    public function getHttpOnly(): null|bool;
 
     /**
      * Retrieve the same-site attribute of the cookie.
      *
      * If the attribute is not present, this method MUST return null.
      */
-    public function getSameSite(): ?CookieSameSite;
+    public function getSameSite(): null|CookieSameSite;
 
     /**
      * Returns an instance with the specified value.
@@ -76,7 +85,7 @@ interface CookieInterface
      * A null value provided is equivalent to removing the `expires`
      * attribute.
      */
-    public function withExpires(?int $expires): static;
+    public function withExpires(null|int $expires): static;
 
     /**
      * Returns an instance with the specified max-age attribute value.
@@ -86,7 +95,7 @@ interface CookieInterface
      *
      * Providing zero or negative value will make the cookie expired immediately.
      */
-    public function withMaxAge(?int $maxAge): static;
+    public function withMaxAge(null|int $maxAge): static;
 
     /**
      * Returns an instance with the specified path attribute value.
@@ -94,7 +103,7 @@ interface CookieInterface
      * A null value provided is equivalent to removing the `path`
      * attribute.
      */
-    public function withPath(?string $path): static;
+    public function withPath(null|string $path): static;
 
     /**
      * Returns an instance with the specified domain attribute value.
@@ -102,21 +111,21 @@ interface CookieInterface
      * A null value provided is equivalent to removing the `domain`
      * attribute.
      */
-    public function withDomain(?string $domain): static;
+    public function withDomain(null|string $domain): static;
 
     /**
      * Returns an instance with the specified secure attribute value.
      *
      * A null value provided is equivalent to removing the `secure` attribute.
      */
-    public function withSecure(?bool $secure): static;
+    public function withSecure(null|bool $secure): static;
 
     /**
      * Returns an instance with the specified http-only attribute value.
      *
      * A null value provided is equivalent to removing the `http-only` attribute.
      */
-    public function withHttpOnly(?bool $httpOnly): static;
+    public function withHttpOnly(null|bool $httpOnly): static;
 
     /**
      * Returns an instance with the specified same-site attribute value.
@@ -124,5 +133,5 @@ interface CookieInterface
      * A null value provided is equivalent to removing the `same-site`
      * attribute.
      */
-    public function withSameSite(?CookieSameSite $sameSite): static;
+    public function withSameSite(null|CookieSameSite $sameSite): static;
 }

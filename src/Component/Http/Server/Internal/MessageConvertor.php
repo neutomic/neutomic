@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Server\Internal;
 
 use Amp;
@@ -26,13 +35,17 @@ use Psl\Vec;
 
 /**
  * Represents a message convertor that converts between Amp and Neu HTTP messages.
+ *
+ * @psalm-suppress MissingThrowsDocblock
+ * @psalm-suppress ArgumentTypeCoercion
+ * @psalm-suppress InvalidArgument
  */
 final readonly class MessageConvertor
 {
     /**
      * Converts an Amp HTTP server request to a Neu HTTP server request.
      *
-     * @param Request $request The Amp HTTP server request to convert.
+     * @param AmpRequest $request The Amp HTTP server request to convert.
      *
      * @return array{Context, RequestInterface}
      */
@@ -53,12 +66,12 @@ final readonly class MessageConvertor
             ->withQueryParameters($request->getQueryParameters())
             ->withAddedAttributes($request->getAttributes())
             ->withAttribute('client', $request->getClient())
-            ;
+        ;
 
         if ($ampTrailers = $request->getTrailers()) {
             foreach ($ampTrailers->getFields() as $field) {
                 $neuRequest = $neuRequest->withTrailer(Trailer::create($field, Amp\async(
-                    static fn(): array => $ampTrailers->await()->getHeaderArray($field),
+                    static fn (): array => $ampTrailers->await()->getHeaderArray($field),
                 )));
             }
         }
@@ -69,18 +82,16 @@ final readonly class MessageConvertor
             $request->getClient()->getRemoteAddress()->toString(),
             $request->getClient()->getLocalAddress()->toString(),
             $request->getClient()->getTlsInfo(),
-            static function (ResponseInterface $response): void {
+            static function (ResponseInterface $_): never {
                 throw new RuntimeException('Unable to send informational response, feature not supported.');
             },
         );
 
         $body = $request->getBody();
-        if (null !== $body) {
-            $neuRequest = $neuRequest->withBody(RequestBody::fromReadableStream(
-                $body,
-                $body->increaseSizeLimit(...),
-            ));
-        }
+        $neuRequest = $neuRequest->withBody(RequestBody::fromReadableStream(
+            $body,
+            $body->increaseSizeLimit(...),
+        ));
 
         return [$context, $neuRequest];
     }
@@ -111,33 +122,39 @@ final readonly class MessageConvertor
         foreach ($response->getCookies() as $name => $cookies) {
             foreach ($cookies as $cookie) {
                 $attribute = CookieAttributes::empty();
-                if ($cookie->getDomain()) {
-                    $attribute = $attribute->withDomain($cookie->getDomain());
+                $domain = $cookie->getDomain();
+                if ($domain !== null) {
+                    $attribute = $attribute->withDomain($domain);
                 }
 
-                if ($cookie->getPath()) {
-                    $attribute = $attribute->withPath($cookie->getPath());
+                $path = $cookie->getPath();
+                if ($path !== null) {
+                    $attribute = $attribute->withPath($path);
                 }
 
                 $expires = $cookie->getExpires();
                 if (null !== $expires) {
-                    $attribute = $attribute->withExpiry(new DateTimeImmutable('@' . $expires));
+                    $attribute = $attribute->withExpiry(new DateTimeImmutable('@' . ((string) $expires)));
                 }
 
-                if ($cookie->getMaxAge()) {
-                    $attribute = $attribute->withMaxAge($cookie->getMaxAge());
+                $maxAge = $cookie->getMaxAge();
+                if (null !== $maxAge) {
+                    $attribute = $attribute->withMaxAge($maxAge);
                 }
 
-                if ($cookie->getSecure()) {
-                    $attribute = $attribute->withSecure();
+                $secure = $cookie->getSecure();
+                if (null !== $secure) {
+                    $attribute = $secure ? $attribute->withSecure() : $attribute->withoutSecure();
                 }
 
-                if ($cookie->getHttpOnly()) {
-                    $attribute = $attribute->withHttpOnly();
+                $httpOnly = $cookie->getHttpOnly();
+                if (null !== $httpOnly) {
+                    $attribute = $httpOnly ? $attribute->withHttpOnly() : $attribute->withoutHttpOnly();
                 }
 
-                if ($cookie->getSameSite()) {
-                    $attribute = $attribute->withSameSite($cookie->getSameSite()->value);
+                $sameSite = $cookie->getSameSite();
+                if (null !== $sameSite) {
+                    $attribute = $attribute->withSameSite($sameSite->value);
                 }
 
                 $ampResponse->setCookie(new ResponseCookie(
@@ -150,7 +167,7 @@ final readonly class MessageConvertor
 
         $trailers = $response->getTrailers();
         if ([] !== $trailers) {
-            /** @var Amp\Future<array<string, list<string>> $future */
+            /** @var Amp\Future<array<non-empty-string, non-empty-list<non-empty-string>>> $future */
             $future = Amp\async(static function () use ($trailers): array {
                 $result = [];
                 foreach ($trailers as $trailer) {

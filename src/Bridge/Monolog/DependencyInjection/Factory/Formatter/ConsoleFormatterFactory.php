@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Bridge\Monolog\DependencyInjection\Factory\Formatter;
 
 use Amp\Log\ConsoleFormatter;
@@ -44,7 +53,7 @@ final readonly class ConsoleFormatterFactory implements FactoryInterface
      * @param bool $allowInlineLineBreaks Whether to allow inline line breaks in log messages.
      * @param bool $ignoreEmptyContextAndExtra Whether to ignore empty context and extra data in log messages.
      */
-    public function __construct(?string $format = null, ?string $dateFormat = null, ?bool $allowInlineLineBreaks = null, ?bool $ignoreEmptyContextAndExtra = null)
+    public function __construct(null|string $format = null, null|string $dateFormat = null, null|bool $allowInlineLineBreaks = null, null|bool $ignoreEmptyContextAndExtra = null)
     {
         $this->format = $format ?? ConsoleFormatter::DEFAULT_FORMAT;
         $this->dateFormat = $dateFormat ?? NormalizerFormatter::SIMPLE_DATE;

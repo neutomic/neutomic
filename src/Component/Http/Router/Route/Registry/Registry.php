@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Router\Route\Registry;
 
 use Neu\Component\Http\Exception\RouteNotFoundException;
@@ -19,11 +28,15 @@ final class Registry implements RegistryInterface
 {
     /**
      * An associative array storing routes keyed by their name.
+     *
+     * @var array<non-empty-string, Route>
      */
     private array $routes = [];
 
     /**
      * An associative array storing handlers keyed by route name.
+     *
+     * @var array<non-empty-string, HandlerInterface>
      */
     private array $handlers = [];
 
@@ -98,6 +111,8 @@ final class Registry implements RegistryInterface
 
     /**
      * Builds a custom exception for missing routes or handlers.
+     *
+     * @param non-empty-string $name The name of the missing route or handler.
      */
     private function buildException(string $name): RouteNotFoundException
     {

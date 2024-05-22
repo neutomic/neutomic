@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\DependencyInjection;
 
 use Neu\Component\DependencyInjection\Exception\InvalidArgumentException;
@@ -46,14 +55,14 @@ final readonly class Project
      *
      * @var non-empty-string|null
      */
-    public ?string $source;
+    public null|string $source;
 
     /**
      * The project configuration, typically the project directory with `config` appended.
      *
      * @var non-empty-string|null
      */
-    public ?string $config;
+    public null|string $config;
 
     /**
      * The project entry point.
@@ -73,7 +82,7 @@ final readonly class Project
      * @param non-empty-string|null $config The project configuration.
      * @param non-empty-string $entrypoint The project entry point.
      */
-    private function __construct(ProjectMode $mode, bool $debug, string $name, string $directory, ?string $source, ?string $config, string $entrypoint)
+    private function __construct(ProjectMode $mode, bool $debug, string $name, string $directory, null|string $source, null|string $config, string $entrypoint)
     {
         $this->mode = $mode;
         $this->debug = $debug;
@@ -93,6 +102,9 @@ final readonly class Project
      *
      * @param non-empty-string $directory The project directory.
      * @param non-empty-string $entrypoint The project entry point.
+     *
+     * @throws Exception\RuntimeException If the project directory does not exist.
+     * @throws Exception\InvalidArgumentException If the project mode set in the environment is invalid.
      */
     public static function create(string $directory, string $entrypoint): self
     {
@@ -102,7 +114,7 @@ final readonly class Project
             throw new Exception\RuntimeException('The project directory does not exist.');
         }
 
-        $directory = Filesystem\canonicalize($directory);
+        $directory = Filesystem\canonicalize($directory) ?? $directory;
         $name = Filesystem\get_basename($directory);
 
         $source = $directory . Filesystem\SEPARATOR . self::DEFAULT_SOURCE;
@@ -124,8 +136,9 @@ final readonly class Project
      *
      * @return ProjectMode The project mode.
      */
-    public static function getModeFromEnvironment(?ProjectMode $default = null): ProjectMode
+    public static function getModeFromEnvironment(null|ProjectMode $default = null): ProjectMode
     {
+        /** @psalm-suppress MissingThrowsDocblock */
         $value = Env\get_var(self::MODE_ENVIRONMENT_VARIABLE);
         if (null === $value) {
             return $default ?? ProjectMode::Development;
@@ -143,10 +156,13 @@ final readonly class Project
      *
      * @param bool|null $default The default debug mode to use if the environment variable is not set.
      *
+     * @throws InvalidArgumentException If the debug mode set in the environment is invalid.
+     *
      * @return bool The debug mode.
      */
-    public static function getDebugFromEnvironment(?bool $default = null): bool
+    public static function getDebugFromEnvironment(null|bool $default = null): bool
     {
+        /** @psalm-suppress MissingThrowsDocblock */
         $value = Env\get_var(self::DEBUG_ENVIRONMENT_VARIABLE);
         if (null === $value) {
             return $default ?? false;
@@ -195,6 +211,8 @@ final readonly class Project
      * Create a new project instance with a different directory.
      *
      * @param non-empty-string $directory The project directory.
+     *
+     * @throws Exception\RuntimeException If the project directory does not exist.
      */
     public function withDirectory(string $directory): self
     {
@@ -202,7 +220,7 @@ final readonly class Project
             throw new Exception\RuntimeException('The project directory does not exist.');
         }
 
-        $directory = Filesystem\canonicalize($directory);
+        $directory = Filesystem\canonicalize($directory) ?? $directory;
 
         return new self($this->mode, $this->debug, $this->name, $directory, $this->source, $this->config, $this->entrypoint);
     }
@@ -211,14 +229,18 @@ final readonly class Project
      * Create a new project instance with a different source.
      *
      * @param non-empty-string|null $source The project source.
+     *
+     * @throws Exception\RuntimeException If the project source does not exist.
      */
-    public function withSource(?string $source): self
+    public function withSource(null|string $source): self
     {
         if (null !== $source && !Filesystem\is_directory($source)) {
             throw new Exception\RuntimeException('The project source does not exist.');
         }
 
-        $source = $source ? Filesystem\canonicalize($source) : null;
+        if (null !== $source) {
+            $source = Filesystem\canonicalize($source);
+        }
 
         return new self($this->mode, $this->debug, $this->name, $this->directory, $source, $this->config, $this->entrypoint);
     }
@@ -227,14 +249,18 @@ final readonly class Project
      * Create a new project instance with a different configuration.
      *
      * @param non-empty-string|null $config The project configuration.
+     *
+     * @throws Exception\RuntimeException If the project configuration does not exist.
      */
-    public function withConfig(?string $config): self
+    public function withConfig(null|string $config): self
     {
         if (null !== $config && !Filesystem\is_file($config) && !Filesystem\is_directory($config)) {
             throw new Exception\RuntimeException('The project configuration does not exist.');
         }
 
-        $config = $config ? Filesystem\canonicalize($config) : null;
+        if (null !== $config) {
+            $config = Filesystem\canonicalize($config);
+        }
 
         return new self($this->mode, $this->debug, $this->name, $this->directory, $this->source, $config, $this->entrypoint);
     }
@@ -249,6 +275,13 @@ final readonly class Project
         return new self($this->mode, $this->debug, $this->name, $this->directory, $this->source, $this->config, $entrypoint);
     }
 
+    /**
+     * Resolve a path relative to the project directory.
+     *
+     * @param non-empty-string $path The path to resolve.
+     *
+     * @return non-empty-string The resolved path.
+     */
     public function resolve(string $path): string
     {
         // $path is absolute, return it as is
@@ -278,6 +311,7 @@ final readonly class Project
             }
         }
 
+        /** @var non-empty-string */
         return Str\Byte\replace($result, '%mode%', $this->mode->value);
     }
 }

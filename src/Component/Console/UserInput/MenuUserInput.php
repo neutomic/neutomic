@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\UserInput;
 
 use Psl\Iter;
@@ -9,10 +18,12 @@ use Psl\Str;
 use Psl\Vec;
 
 /**
- * The `Menu` class presents the user with a prompt and a list of available
+ * The {@see MenuUserInput} class presents the user with a prompt and a list of available
  * options to choose from.
  *
  * @extends AbstractUserInput<non-empty-string>
+ *
+ * @psalm-suppress MissingThrowsDocblock
  */
 final class MenuUserInput extends AbstractUserInput
 {
@@ -36,14 +47,14 @@ final class MenuUserInput extends AbstractUserInput
         $this->output->writeLine('');
         foreach ($values as $index => $item) {
             if ($this->default === $keys[$index]) {
-                $this->output->writeLine(Str\format('  [<fg=yellow>%d</>] %s (default)', $index + 1, (string)$item));
+                $this->output->writeLine(Str\format('  [<fg=yellow>%d</>] %s (default)', $index + 1, $item));
                 continue;
             }
 
-            $this->output->writeLine(Str\format('  [<fg=yellow>%d</>] %s', $index + 1, (string)$item));
+            $this->output->writeLine(Str\format('  [<fg=yellow>%d</>] %s', $index + 1, $item));
         }
 
-        if (null !== $this->default && !$this->input->isInteractive()) {
+        if (!$this->input->isInteractive() && null !== $this->default) {
             $result = $this->acceptedValues[$this->default];
         } else {
             $this->output->writeLine('');

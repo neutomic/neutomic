@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Runtime\Middleware;
 
 use Neu\Component\Http\Exception\FilesystemException;
@@ -23,6 +32,9 @@ use Psr\Log\NullLogger;
 
 /**
  * Middleware to serve static content directly from the filesystem, based on the request URI.
+ *
+ * @psalm-suppress RedundantCondition
+ * @psalm-suppress MissingThrowsDocblock
  */
 final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInterface
 {
@@ -68,6 +80,9 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
         $this->priority = $priority;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
         if ([] === $this->roots) {

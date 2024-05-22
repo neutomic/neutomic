@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Bridge\Monolog\DependencyInjection;
 
 use Amp\Log\ConsoleFormatter;
@@ -49,9 +58,11 @@ use function array_key_exists;
 use function array_key_first;
 
 /**
+ * A container extension for the Monolog library.
+ *
  * @psalm-type LoggerConfiguration = array{
- *     handlers?: non-empty-array<non-empty-string>,
- *     processors?: non-empty-array<non-empty-string>,
+ *     handlers?: list<non-empty-string>,
+ *     processors?: list<non-empty-string>,
  *     timezone?: non-empty-string,
  *     use-logging-loop-detection?: bool,
  *     use-microsecond-timestamps?: bool,
@@ -65,14 +76,14 @@ use function array_key_first;
  *     level?: string|int,
  *     bubble?: bool,
  *     formatter?: non-empty-string,
- *     processors?: non-empty-array<non-empty-string>,
+ *     processors?: list<non-empty-string>,
  * }
  * @psalm-type StdoutHandlerConfiguration = array{
  *     type: 'stdout',
  *     level?: string|int,
  *     bubble?: bool,
  *     formatter?: non-empty-string,
- *     processors?: non-empty-array<non-empty-string>,
+ *     processors?: list<non-empty-string>,
  * }
  * @psalm-type FileHandlerConfiguration = array{
  *     type: 'file',
@@ -80,7 +91,7 @@ use function array_key_first;
  *     level?: string|int,
  *     bubble?: bool,
  *     formatter?: non-empty-string,
- *     processors?: non-empty-array<non-empty-string>,
+ *     processors?: list<non-empty-string>,
  * }
  * @psalm-type HandlerConfiguration = NullHandlerConfiguration|StderrHandlerConfiguration|StdoutHandlerConfiguration|FileHandlerConfiguration
  * @psalm-type ConsoleFormatterConfiguration = array{
@@ -94,7 +105,7 @@ use function array_key_first;
  *     date-format?: string
  * }
  * @psalm-type JsonFormatterConfiguration = array{
- *     batch-mode?: 'newlines'|'json',
+ *     batch-mode?: 1|2,
  *     append-newline?: bool,
  *     ignore-empty-context-and-extra?: bool,
  *     include-stack-traces?: bool
@@ -114,8 +125,8 @@ use function array_key_first;
  * }
  * @psalm-type Configuration = array{
  *     default?: non-empty-string,
- *     channels: non-empty-array<non-empty-string, LoggerConfiguration>,
- *     handlers: array<non-empty-string, HandlerConfiguration>,
+ *     channels?: array<non-empty-string, LoggerConfiguration>,
+ *     handlers?: array<non-empty-string, HandlerConfiguration>,
  *     formatters?: array{
  *         console?: ConsoleFormatterConfiguration,
  *         html?: HtmlFormatterConfiguration,
@@ -130,6 +141,8 @@ use function array_key_first;
  *         }
  *     }
  * }
+ *
+ * @psalm-suppress MissingThrowsDocblock
  */
 final readonly class MonologExtension implements ExtensionInterface
 {
@@ -143,8 +156,8 @@ final readonly class MonologExtension implements ExtensionInterface
             'channels' => Type\optional(Type\dict(
                 Type\non_empty_string(),
                 Type\shape([
-                    'handlers' => Type\non_empty_vec(Type\non_empty_string()),
-                    'processors' => Type\optional(Type\non_empty_vec(Type\non_empty_string())),
+                    'handlers' => Type\optional(Type\vec(Type\non_empty_string())),
+                    'processors' => Type\optional(Type\vec(Type\non_empty_string())),
                     'timezone' => Type\optional(Type\non_empty_string()),
                     'use-logging-loop-detection' => Type\optional(Type\bool()),
                     'use-microsecond-timestamps' => Type\optional(Type\bool()),
@@ -212,6 +225,11 @@ final readonly class MonologExtension implements ExtensionInterface
                     'date-format' => Type\optional(Type\non_empty_string()),
                 ])),
             ])),
+            'processors' => Type\optional(Type\shape([
+                'logger-aware-processor' => Type\optional(Type\shape([
+                    'logger' => Type\optional(Type\non_empty_string()),
+                ])),
+            ])),
         ]);
     }
 
@@ -250,15 +268,13 @@ final readonly class MonologExtension implements ExtensionInterface
      */
     private function registerProcessors(ContainerBuilderInterface $container): void
     {
-        $container->addDefinitions([
-            Definition::create('monolog.processor.closure-context', ClosureContextProcessor::class, new ClosureContextProcessorFactory()),
-            Definition::create('monolog.processor.hostname', HostnameProcessor::class, new HostnameProcessorFactory()),
-            Definition::create('monolog.processor.load-average', LoadAverageProcessor::class, new LoadAverageProcessorFactory()),
-            Definition::create('monolog.processor.memory-peak-usage', MemoryPeakUsageProcessor::class, new MemoryPeakUsageProcessorFactory()),
-            Definition::create('monolog.processor.memory-usage', MemoryUsageProcessor::class, new MemoryUsageProcessorFactory()),
-            Definition::create('monolog.processor.process-id', ProcessIdProcessor::class, new ProcessIdProcessorFactory()),
-            Definition::create('monolog.processor.psr-log-message', PsrLogMessageProcessor::class, new PsrLogMessageProcessorFactory()),
-        ]);
+        $container->addDefinition(Definition::create('monolog.processor.closure-context', ClosureContextProcessor::class, new ClosureContextProcessorFactory()));
+        $container->addDefinition(Definition::create('monolog.processor.hostname', HostnameProcessor::class, new HostnameProcessorFactory()));
+        $container->addDefinition(Definition::create('monolog.processor.load-average', LoadAverageProcessor::class, new LoadAverageProcessorFactory()));
+        $container->addDefinition(Definition::create('monolog.processor.memory-peak-usage', MemoryPeakUsageProcessor::class, new MemoryPeakUsageProcessorFactory()));
+        $container->addDefinition(Definition::create('monolog.processor.memory-usage', MemoryUsageProcessor::class, new MemoryUsageProcessorFactory()));
+        $container->addDefinition(Definition::create('monolog.processor.process-id', ProcessIdProcessor::class, new ProcessIdProcessorFactory()));
+        $container->addDefinition(Definition::create('monolog.processor.psr-log-message', PsrLogMessageProcessor::class, new PsrLogMessageProcessorFactory()));
     }
 
     /**
@@ -267,37 +283,39 @@ final readonly class MonologExtension implements ExtensionInterface
      */
     private function registerFormatters(ContainerBuilderInterface $container, array $configuration): void
     {
-        // Register the formatters
-        $container->addDefinitions([
-            Definition::create('monolog.formatter.console', ConsoleFormatter::class, new ConsoleFormatterFactory(
-                $configuration['formatters']['console']['format'] ?? null,
-                $configuration['formatters']['console']['date-format'] ?? null,
-                $configuration['formatters']['console']['allow-inline-line-breaks'] ?? null,
-                $configuration['formatters']['console']['ignore-empty-context-and-extra'] ?? null,
-            )),
-            Definition::create('monolog.formatter.html', HtmlFormatter::class, new HtmlFormatterFactory(
-                $configuration['formatters']['html']['date-format'] ?? null,
-            )),
-            Definition::create('monolog.formatter.json', JsonFormatter::class, new JsonFormatterFactory(
-                $configuration['formatters']['json']['batch-mode'] ?? null,
-                $configuration['formatters']['json']['append-newline'] ?? null,
-                $configuration['formatters']['json']['ignore-empty-context-and-extra'] ?? null,
-                $configuration['formatters']['json']['include-stack-traces'] ?? null
-            )),
-            Definition::create('monolog.formatter.line', LineFormatter::class, new LineFormatterFactory(
-                $configuration['formatters']['line']['format'] ?? null,
-                $configuration['formatters']['line']['date-format'] ?? null,
-                $configuration['formatters']['line']['allow-inline-line-breaks'] ?? null,
-                $configuration['formatters']['line']['ignore-empty-context-and-extra'] ?? null,
-                $configuration['formatters']['line']['include-stack-traces'] ?? null
-            )),
-            Definition::create('monolog.formatter.normalizer', NormalizerFormatter::class, new NormalizerFormatterFactory(
-                $configuration['formatters']['normalizer']['date-format'] ?? null,
-            )),
-            Definition::create('monolog.formatter.scalar', ScalarFormatter::class, new ScalarFormatterFactory(
-                $configuration['formatters']['scalar']['date-format'] ?? null,
-            )),
-        ]);
+        $container->addDefinition(Definition::create('monolog.formatter.console', ConsoleFormatter::class, new ConsoleFormatterFactory(
+            $configuration['formatters']['console']['format'] ?? null,
+            $configuration['formatters']['console']['date-format'] ?? null,
+            $configuration['formatters']['console']['allow-inline-line-breaks'] ?? null,
+            $configuration['formatters']['console']['ignore-empty-context-and-extra'] ?? null,
+        )));
+
+        $container->addDefinition(Definition::create('monolog.formatter.html', HtmlFormatter::class, new HtmlFormatterFactory(
+            $configuration['formatters']['html']['date-format'] ?? null,
+        )));
+
+        $container->addDefinition(Definition::create('monolog.formatter.json', JsonFormatter::class, new JsonFormatterFactory(
+            $configuration['formatters']['json']['batch-mode'] ?? null,
+            $configuration['formatters']['json']['append-newline'] ?? null,
+            $configuration['formatters']['json']['ignore-empty-context-and-extra'] ?? null,
+            $configuration['formatters']['json']['include-stack-traces'] ?? null
+        )));
+
+        $container->addDefinition(Definition::create('monolog.formatter.line', LineFormatter::class, new LineFormatterFactory(
+            $configuration['formatters']['line']['format'] ?? null,
+            $configuration['formatters']['line']['date-format'] ?? null,
+            $configuration['formatters']['line']['allow-inline-line-breaks'] ?? null,
+            $configuration['formatters']['line']['ignore-empty-context-and-extra'] ?? null,
+            $configuration['formatters']['line']['include-stack-traces'] ?? null
+        )));
+
+        $container->addDefinition(Definition::create('monolog.formatter.normalizer', NormalizerFormatter::class, new NormalizerFormatterFactory(
+            $configuration['formatters']['normalizer']['date-format'] ?? null,
+        )));
+
+        $container->addDefinition(Definition::create('monolog.formatter.scalar', ScalarFormatter::class, new ScalarFormatterFactory(
+            $configuration['formatters']['scalar']['date-format'] ?? null,
+        )));
     }
 
     /**
@@ -337,7 +355,7 @@ final readonly class MonologExtension implements ExtensionInterface
             } elseif ($handler['type'] === 'stderr') {
                 /** @var StderrHandlerConfiguration $handler */
                 $this->registerStderrHandler($container, $name, $handler);
-            } elseif ($handler['type'] === 'file') {
+            } else {
                 /** @var FileHandlerConfiguration $handler */
                 $this->registerFileHandler($container, $name, $handler);
             }
@@ -345,7 +363,7 @@ final readonly class MonologExtension implements ExtensionInterface
     }
 
     /**
-     * @param ContainerBuilderInterface $containerBuilder
+     * @param ContainerBuilderInterface $container
      * @param NullHandlerConfiguration $configuration
      */
     private function registerNullHandler(ContainerBuilderInterface $container, string $name, array $configuration): void
@@ -356,7 +374,7 @@ final readonly class MonologExtension implements ExtensionInterface
     }
 
     /**
-     * @param ContainerBuilderInterface $containerBuilder
+     * @param ContainerBuilderInterface $container
      * @param StdoutHandlerConfiguration $configuration
      */
     private function registerStdoutHandler(ContainerBuilderInterface $container, string $name, array $configuration): void
@@ -370,7 +388,7 @@ final readonly class MonologExtension implements ExtensionInterface
     }
 
     /**
-     * @param ContainerBuilderInterface $containerBuilder
+     * @param ContainerBuilderInterface $container
      * @param StderrHandlerConfiguration $configuration
      */
     private function registerStderrHandler(ContainerBuilderInterface $container, string $name, array $configuration): void
@@ -384,7 +402,7 @@ final readonly class MonologExtension implements ExtensionInterface
     }
 
     /**
-     * @param ContainerBuilderInterface $containerBuilder
+     * @param ContainerBuilderInterface $container
      * @param FileHandlerConfiguration $configuration
      */
     private function registerFileHandler(ContainerBuilderInterface $container, string $name, array $configuration): void
@@ -402,7 +420,7 @@ final readonly class MonologExtension implements ExtensionInterface
      * @param ContainerBuilderInterface $container
      * @param Configuration $configuration
      *
-     * @return array<string, string>
+     * @return non-empty-array<non-empty-string, non-empty-string>
      */
     private function registerChannels(ContainerBuilderInterface $container, array $configuration): array
     {
@@ -423,7 +441,7 @@ final readonly class MonologExtension implements ExtensionInterface
             $registered[$name] = $serviceId;
         }
 
-        if ([] === $channels) {
+        if ([] === $registered) {
             $container->addDefinition(Definition::create('monolog.logger.default', Logger::class, new LoggerFactory(
                 channel: 'default',
                 handlers: ['monolog.handler.stderr'],

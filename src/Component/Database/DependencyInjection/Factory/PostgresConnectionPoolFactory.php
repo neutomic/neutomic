@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database\DependencyInjection\Factory;
 
 use Amp\Postgres;
@@ -25,55 +34,55 @@ final readonly class PostgresConnectionPoolFactory implements FactoryInterface
     /**
      * The port of the Postgres server.
      */
-    private ?int $port;
+    private null|int $port;
 
     /**
      * The username for the Postgres connection.
      */
-    private ?string $user;
+    private null|string $user;
 
     /**
      * The password for the Postgres connection.
      */
-    private ?string $password;
+    private null|string $password;
 
     /**
      * The database name for the Postgres connection.
      */
-    private ?string $database;
+    private null|string $database;
 
     /**
      * The application name for the Postgres connection.
      */
-    private ?string $applicationName;
+    private null|string $applicationName;
 
     /**
      * The SSL mode for the Postgres connection.
      *
      * @var value-of<PostgresConfig::SSL_MODES>|null
      */
-    private ?string $sslMode;
+    private null|string $sslMode;
 
     /**
      * The maximum number of connections in the pool.
      *
      * @var positive-int|null
      */
-    private ?int $maxConnections;
+    private null|int $maxConnections;
 
     /**
      * The idle timeout for connections in the pool, in seconds.
      *
      * @var positive-int|null
      */
-    private ?int $idleTimeout;
+    private null|int $idleTimeout;
 
     /**
      * Whether to reset connections before returning them to the pool.
      *
      * @var bool|null
      */
-    private ?bool $resetConnections;
+    private null|bool $resetConnections;
 
     /**
      * Create a new Postgres connection pool factory.
@@ -91,15 +100,15 @@ final readonly class PostgresConnectionPoolFactory implements FactoryInterface
      */
     public function __construct(
         string $host,
-        ?int $port = null,
-        ?string $user = null,
-        ?string $password = null,
-        ?string $database = null,
-        ?string $applicationName = null,
-        ?string $sslMode = null,
-        ?int $maxConnections = null,
-        ?int $idleTimeout = null,
-        ?bool $resetConnections = null,
+        null|int $port = null,
+        null|string $user = null,
+        null|string $password = null,
+        null|string $database = null,
+        null|string $applicationName = null,
+        null|string $sslMode = null,
+        null|int $maxConnections = null,
+        null|int $idleTimeout = null,
+        null|bool $resetConnections = null,
     ) {
         $this->host = $host;
         $this->port = $port;
@@ -128,11 +137,26 @@ final readonly class PostgresConnectionPoolFactory implements FactoryInterface
             sslMode: $this->sslMode,
         );
 
+        $maxConnections = $this->maxConnections;
+        if ($maxConnections === null) {
+            $maxConnections = SqlCommonConnectionPool::DEFAULT_MAX_CONNECTIONS;
+        }
+
+        $idleTimeout = $this->idleTimeout;
+        if ($idleTimeout === null) {
+            $idleTimeout = SqlCommonConnectionPool::DEFAULT_IDLE_TIMEOUT;
+        }
+
+        $resetConnections = $this->resetConnections;
+        if ($resetConnections === null) {
+            $resetConnections = true;
+        }
+
         return new Postgres\PostgresConnectionPool(
             $config,
-            $this->maxConnections ?? SqlCommonConnectionPool::DEFAULT_MAX_CONNECTIONS,
-            $this->idleTimeout ?? SqlCommonConnectionPool::DEFAULT_IDLE_TIMEOUT,
-            $this->resetConnections ?? true,
+            $maxConnections,
+            $idleTimeout,
+            $resetConnections,
         );
     }
 }

@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Session\Storage;
 
 use Neu\Component\Http\Session\SessionInterface;
@@ -11,7 +20,7 @@ interface StorageInterface
     /**
      * Write the given session to the storage, and return its ID.
      *
-     * If {@see SessionInterface::getId()} returns an empty string, the storage should generate a new ID, and return it.
+     * If {@see SessionInterface::getId()} returns null, the storage should generate a new ID, and return it.
      *
      * @param null|int<1, max> $ttl
      */

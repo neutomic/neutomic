@@ -2,14 +2,23 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Input\Definition;
 
 use Psl\Str;
 
 /**
- * A `Flag` is a boolean parameter (denoted by an integer) specified by a user.
+ * A {@see Flag} is a boolean parameter (denoted by an integer) specified by a user.
  *
- * @extends Definition<int>
+ * @extends Definition<int<0, max>>
  */
 final class Flag extends Definition
 {
@@ -19,13 +28,16 @@ final class Flag extends Definition
     private bool $stackable;
 
     /**
-     * The negative alias of the `Flag` (i.e., --no-foo for -foo). A negative
-     * value is only available if a 'long' `Flag` name is available.
+     * The negative alias of the {@see Flag} (i.e., --no-foo for -foo). A negative
+     * value is only available if a 'long' {@see Flag} name is available.
      */
     private string $negativeAlias = '';
 
     /**
-     * Construct a new `Flag` object.
+     * Construct a new {@see Flag} object.
+     *
+     * @param non-empty-string $name The name of the flag.
+     * @param null|non-empty-string $alias The alias of the flag.
      */
     public function __construct(string $name, null|string $alias = null, string $description = '', Mode $mode = Mode::Optional, bool $stackable = false)
     {
@@ -39,7 +51,7 @@ final class Flag extends Definition
     }
 
     /**
-     * Retrieve the negative alias of the `Flag` or null of none.
+     * Retrieve the negative alias of the {@see Flag} or null of none.
      */
     public function getNegativeAlias(): string
     {
@@ -47,25 +59,25 @@ final class Flag extends Definition
     }
 
     /**
-     * If the `Flag` is stackable, increase its value for each occurrence of the
+     * If the {@see Flag} is stackable, increase its value for each occurrence of the
      * flag.
      */
     public function increaseValue(): self
     {
         $this->exists = true;
         if ($this->stackable) {
-            if ($this->value === null) {
-                $this->value = 1;
-            } else {
-                $this->value++;
-            }
+            $value = $this->value ?? 0;
+            /** @var positive-int $value */
+            $value = $value + 1;
+
+            $this->value = $value;
         }
 
         return $this;
     }
 
     /**
-     * Retrieve whether the `Flag` is stackable or not.
+     * Retrieve whether the {@see Flag} is stackable or not.
      */
     public function isStackable(): bool
     {
@@ -73,7 +85,7 @@ final class Flag extends Definition
     }
 
     /**
-     * Set whether the `Flag` is stackable or not.
+     * Set whether the {@see Flag} is stackable or not.
      */
     public function setStackable(bool $stackable): self
     {
@@ -83,7 +95,7 @@ final class Flag extends Definition
     }
 
     /**
-     * Set an alias for the `Flag`. If the 'name' given at construction is a short
+     * Set an alias for the {@see Flag}. If the 'name' given at construction is a short
      * name and the alias set is long, the 'alias' given here will serve as the
      * 'name' and the original name will be set to the 'alias'.
      */
