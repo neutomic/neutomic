@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Session\DependencyInjection\Factory\Configuration;
 
 use Neu\Component\DependencyInjection\ContainerInterface;
@@ -20,13 +29,19 @@ use Neu\Component\Http\Session\Configuration\CacheLimiter;
 final readonly class CacheConfigurationFactory implements FactoryInterface
 {
     private int $expires;
-    private ?CacheLimiter $limiter;
+
+    private null|CacheLimiter $limiter;
 
     /**
-     * @param ConfigurationType $config
+     * @param int|null $expires
+     * @param CacheLimiter|string|null $limiter
      */
-    public function __construct(?int $expires = null, ?CacheLimiter $limiter = null)
+    public function __construct(null|int $expires = null, null|CacheLimiter|string $limiter = null)
     {
+        if (null !== $limiter && !$limiter instanceof CacheLimiter) {
+            $limiter = CacheLimiter::from($limiter);
+        }
+
         $this->expires = $expires ?? CacheConfiguration::DEFAULT_CACHE_EXPIRE;
         $this->limiter = $limiter;
     }

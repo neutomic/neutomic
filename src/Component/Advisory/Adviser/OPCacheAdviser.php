@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Advisory\Adviser;
 
 use Neu\Component\Advisory\Advice;
@@ -27,7 +36,7 @@ final readonly class OPCacheAdviser implements AdviserInterface
      *
      * @return Advice|null An instance of Advice if OPCache configuration is not optimal, or null if it is set correctly.
      */
-    public function getAdvice(): ?Advice
+    public function getAdvice(): null|Advice
     {
         if (!$this->isOpcacheInstalled()) {
             return Advice::forPerformance(
@@ -141,7 +150,7 @@ final readonly class OPCacheAdviser implements AdviserInterface
      */
     private function isOpcacheMemorySufficient(): bool
     {
-        $opcacheMemory = ini_get('opcache.memory_consumption');
+        $opcacheMemory = (string) ini_get('opcache.memory_consumption');
         $opcacheMemory = Str\to_int($opcacheMemory);
 
         return $opcacheMemory !== null && $opcacheMemory >= self::OPCACHE_MEMORY_THRESHOLD;
@@ -155,7 +164,7 @@ final readonly class OPCacheAdviser implements AdviserInterface
      */
     private function isMaxAcceleratedFilesSufficient(): bool
     {
-        $files = ini_get('opcache.max_accelerated_files');
+        $files = (string) ini_get('opcache.max_accelerated_files');
         $files = Str\to_int($files);
 
         return $files !== null && $files >= self::MAX_ACCELERATED_FILES_THRESHOLD;
@@ -168,7 +177,7 @@ final readonly class OPCacheAdviser implements AdviserInterface
      */
     private function isInternedStringsBufferSufficient(): bool
     {
-        $buffer = ini_get('opcache.interned_strings_buffer');
+        $buffer = (string) ini_get('opcache.interned_strings_buffer');
         $buffer = Str\to_int($buffer);
 
         return $buffer !== null && $buffer >= self::INTERNED_STRINGS_BUFFER_THRESHOLD;
@@ -203,7 +212,7 @@ final readonly class OPCacheAdviser implements AdviserInterface
      */
     private function isJitBufferSizeSufficient(): bool
     {
-        $size = ini_get('opcache.jit_buffer_size');
+        $size = (string) ini_get('opcache.jit_buffer_size');
         $size = Internal\Utility::parseValue($size);
 
         return $size >= self::JIT_BUFFER_SIZE_THRESHOLD;

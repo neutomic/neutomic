@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\DependencyInjection;
 
 use Neu\Component\Console\Application;
@@ -91,31 +100,36 @@ final readonly class ConsoleExtension implements ExtensionInterface
         /** @var Configuration $configurations */
         $configurations = $container->getConfiguration()->getOfTypeOrDefault('console', $this->getConfigurationType(), []);
 
-        $container->addDefinitions([
-            Definition::ofType(Configuration::class, new ConfigurationFactory(
-                $configurations['name'] ?? null,
-                $configurations['version'] ?? null,
-                $configurations['banner'] ?? null,
-                $configurations['flags']['help'] ?? null,
-                $configurations['flags']['quiet'] ?? null,
-                $configurations['flags']['verbose'] ?? null,
-                $configurations['flags']['version'] ?? null,
-                $configurations['flags']['ansi'] ?? null,
-                $configurations['flags']['no-ansi'] ?? null,
-                $configurations['flags']['no-interaction'] ?? null,
-            )),
-            Definition::ofType(Registry::class, new RegistryFactory()),
-            Definition::ofType(Recovery::class, new RecoveryFactory()),
-            Definition::ofType(Application::class, new ApplicationFactory(
-                $configurations['application']['configuration'] ?? null,
-                $configurations['application']['registry'] ?? null,
-                $configurations['application']['recovery'] ?? null,
-            )),
-        ]);
+        $configuration = Definition::ofType(Configuration::class, new ConfigurationFactory(
+            $configurations['name'] ?? null,
+            $configurations['version'] ?? null,
+            $configurations['banner'] ?? null,
+            $configurations['flags']['help'] ?? null,
+            $configurations['flags']['quiet'] ?? null,
+            $configurations['flags']['verbose'] ?? null,
+            $configurations['flags']['version'] ?? null,
+            $configurations['flags']['ansi'] ?? null,
+            $configurations['flags']['no-ansi'] ?? null,
+            $configurations['flags']['no-interaction'] ?? null,
+        ));
 
-        $container->getDefinition(Registry::class)->addAlias(RegistryInterface::class);
-        $container->getDefinition(Recovery::class)->addAlias(RecoveryInterface::class);
-        $container->getDefinition(Application::class)->addAlias(ApplicationInterface::class);
+        $container->addDefinition($configuration);
+
+        $registry = Definition::ofType(Registry::class, new RegistryFactory());
+        $registry->addAlias(RegistryInterface::class);
+        $container->addDefinition($registry);
+
+        $recovery = Definition::ofType(Recovery::class, new RecoveryFactory());
+        $recovery->addAlias(RecoveryInterface::class);
+        $container->addDefinition($recovery);
+
+        $application = Definition::ofType(Application::class, new ApplicationFactory(
+            $configurations['application']['configuration'] ?? null,
+            $configurations['application']['registry'] ?? null,
+            $configurations['application']['recovery'] ?? null,
+        ));
+        $application->addAlias(ApplicationInterface::class);
+        $container->addDefinition($application);
 
         $container->addHook(new RegisterCommandsHook(
             $configurations['hooks']['register-commands']['registry'] ?? null,

@@ -2,9 +2,17 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Router\Internal\PatternParser;
 
-use function array_filter;
 use function str_split;
 
 /**
@@ -13,7 +21,7 @@ use function str_split;
 enum Tokenizer
 {
     /**
-     * @return array<int, Token>
+     * @return list<Token>
      *
      * @internal
      */
@@ -23,8 +31,11 @@ enum Tokenizer
         $buffer = '';
         foreach (str_split($pattern) as $byte) {
             if (TokenType::isSpecialToken($byte)) {
-                $tokens[] = new Token(TokenType::String, $buffer);
-                $buffer = '';
+                if ($buffer !== '') {
+                    $tokens[] = new Token(TokenType::String, $buffer);
+                    $buffer = '';
+                }
+
                 $tokens[] = new Token(TokenType::from($byte), $byte);
             } else {
                 $buffer .= $byte;
@@ -35,9 +46,6 @@ enum Tokenizer
             $tokens[] = new Token(TokenType::String, $buffer);
         }
 
-        return array_filter(
-            $tokens,
-            static fn (Token $t): bool => !($t->getType() === TokenType::String && $t->getValue() === '')
-        );
+        return $tokens;
     }
 }

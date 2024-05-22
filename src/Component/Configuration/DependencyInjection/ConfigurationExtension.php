@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Configuration\DependencyInjection;
 
 use Amp\File;
@@ -84,7 +93,7 @@ final readonly class ConfigurationExtension implements ExtensionInterface
     {
         $entries = $container->getAll();
         array_walk_recursive($entries, static function (mixed &$entry) use ($project): void {
-            if (Type\string()->matches($entry) && Str\contains($entry, '%')) {
+            if (Type\non_empty_string()->matches($entry) && Str\contains($entry, '%')) {
                 $entry = $project->resolve($entry);
             }
         });

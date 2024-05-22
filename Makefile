@@ -16,13 +16,13 @@ coding-standard-check:                                                          
 	./vendor/bin/phpcs --basepath=. --standard=config/.phpcs.xml
 
 static-analysis:                                                                ## run static analysis checks
-	./vendor/bin/psalm.phar -c config/psalm.xml --no-cache
+	./vendor/bin/psalm -c config/psalm.xml
 
 type-coverage:                                                                  ## send static analysis type coverage metrics to https://shepherd.dev/
-	./vendor/bin/psalm.phar -c config/psalm.xml --shepherd --stats
+	./vendor/bin/psalm -c config/psalm.xml --shepherd --stats
 
 security-analysis:                                                              ## run static analysis security checks
-	./vendor/bin/psalm.phar -c config/psalm.xml --taint-analysis
+	./vendor/bin/psalm -c config/psalm.xml --taint-analysis
 
 unit-tests:                                                                     ## run unit test suite
 	php vendor/bin/phpunit -c config/phpunit.xml.dist

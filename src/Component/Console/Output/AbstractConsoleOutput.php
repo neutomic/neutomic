@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Output;
 
 use Neu\Component\Console\Formatter\FormatterInterface;
@@ -21,7 +30,7 @@ abstract class AbstractConsoleOutput implements ConsoleOutputInterface
     /**
      * Construct a new {@see AbstractConsoleOutput} object.
      */
-    public function __construct(OutputInterface $standardOutput, OutputInterface $standardErrorOutput, ?bool $decorated = null)
+    public function __construct(OutputInterface $standardOutput, OutputInterface $standardErrorOutput, null|bool $decorated = null)
     {
         $this->standardOutput = $standardOutput;
         $this->standardErrorOutput = $standardErrorOutput;

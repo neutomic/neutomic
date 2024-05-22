@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Bridge\Monolog\DependencyInjection\Factory\Handler;
 
 use Amp\ByteStream;
@@ -16,13 +25,15 @@ use Neu\Component\DependencyInjection\Factory\FactoryInterface;
  * Factory for creating a stdout stream handler.
  *
  * @implements FactoryInterface<StreamHandler>
+ *
+ * @psalm-suppress ArgumentTypeCoercion
  */
 final readonly class StdoutHandlerFactory implements FactoryInterface
 {
     /**
      * The logging level.
      */
-    private null|int|string|Level $level;
+    private int|string|Level $level;
 
     /**
      * Whether the handler should bubble.
@@ -31,8 +42,10 @@ final readonly class StdoutHandlerFactory implements FactoryInterface
 
     /**
      * The formatter service identifier.
+     *
+     * @var non-empty-string|null
      */
-    private ?string $formatter;
+    private null|string $formatter;
 
     /**
      * The processor service identifiers.
@@ -49,7 +62,7 @@ final readonly class StdoutHandlerFactory implements FactoryInterface
      * @param non-empty-string|null $formatter The formatter service identifier.
      * @param list<non-empty-string>|null $processors The processor service identifiers.
      */
-    public function __construct(null|int|string|Level $level = null, ?bool $bubble = null, ?string $formatter = null, ?array $processors = null)
+    public function __construct(null|int|string|Level $level = null, null|bool $bubble = null, null|string $formatter = null, null|array $processors = null)
     {
         $this->level = $level ?? Level::Debug;
         $this->bubble = $bubble ?? true;

@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Command\Registry;
 
 use Neu\Component\Console\Command\CommandInterface;
@@ -41,7 +50,7 @@ interface RegistryInterface
     /**
      * Checks if a configuration or command with the specified name exists.
      *
-     * @param string $name The name of the configuration or command to check.
+     * @param non-empty-string $name The name of the configuration or command to check.
      *
      * @return bool Returns true if the configuration or command exists, otherwise false.
      */
@@ -50,7 +59,7 @@ interface RegistryInterface
     /**
      * Retrieves a configuration by its name.
      *
-     * @param string $name The name of the configuration to retrieve.
+     * @param non-empty-string $name The name of the configuration to retrieve.
      *
      * @throws CommandNotFoundException If no configuration with the given name exists.
      *
@@ -61,7 +70,7 @@ interface RegistryInterface
     /**
      * Retrieves a command by its name.
      *
-     * @param string $name The name of the command to retrieve.
+     * @param non-empty-string $name The name of the command to retrieve.
      *
      * @throws CommandNotFoundException If no command with the given name exists.
      *

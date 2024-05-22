@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Table;
 
 use Neu\Component\Console\Output\OutputInterface;
@@ -18,7 +27,7 @@ abstract class AbstractTable implements TableInterface
     /**
      * Data structure that holds the width of each column.
      *
-     * @var list<int>
+     * @var array<int, int<0, max>>
      */
     protected array $columnWidths = [];
 
@@ -104,8 +113,16 @@ abstract class AbstractTable implements TableInterface
         return $this;
     }
 
+    /**
+     * Given a string, return the length of the string without any decoration.
+     *
+     * @param string $string
+     *
+     * @return int<0, max>
+     */
     private function lengthWithoutDecoration(string $string): int
     {
+        /** @var int<0, max> */
         return Str\length($this->output->format($string, Type::Plain));
     }
 }

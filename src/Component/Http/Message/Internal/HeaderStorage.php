@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Message\Internal;
 
 use Neu\Component\Http\Message\Exception\InvalidArgumentException;
@@ -14,6 +23,10 @@ use function strtolower;
  * Internal storage of message headers.
  *
  * @internal
+ *
+ * @psalm-suppress MixedArgumentTypeCoercion
+ * @psalm-suppress ArgumentTypeCoercion
+ * @psalm-suppress MissingThrowsDocblock
  */
 final readonly class HeaderStorage
 {
@@ -27,13 +40,13 @@ final readonly class HeaderStorage
     /**
      * The header names of the message, normalized to lowercase.
      *
-     * @var array<non-empty-string, non-empty-string>
+     * @var array<non-empty-lowercase-string, non-empty-string>
      */
     private array $headerNames;
 
     /**
      * @param array<non-empty-string, non-empty-list<non-empty-string>> $headers
-     * @param array<non-empty-string, non-empty-string> $headerNames
+     * @param array<non-empty-lowercase-string, non-empty-string> $headerNames
      */
     private function __construct(array $headers, array $headerNames)
     {
@@ -73,7 +86,7 @@ final readonly class HeaderStorage
     }
 
     /**
-     * @var non-empty-string $name
+     * @param non-empty-string $name
      */
     public function hasHeader(string $name): bool
     {
@@ -81,11 +94,11 @@ final readonly class HeaderStorage
     }
 
     /**
-     * @var non-empty-string $name
+     * @param non-empty-string $name
      *
      * @return non-empty-list<non-empty-string>|null
      */
-    public function getHeader(string $name): ?array
+    public function getHeader(string $name): null|array
     {
         $normalized = strtolower($name);
         if (!isset($this->headerNames[$normalized])) {
@@ -98,11 +111,11 @@ final readonly class HeaderStorage
     }
 
     /**
-     * @var non-empty-string $name
+     * @param non-empty-string $name
      *
      * @return non-empty-string|null
      */
-    public function getHeaderLine(string $name): ?string
+    public function getHeaderLine(string $name): null|string
     {
         $header = $this->getHeader($name);
         if ($header === null) {
@@ -113,8 +126,8 @@ final readonly class HeaderStorage
     }
 
     /**
-     * @var non-empty-string $name
-     * @var non-empty-string|non-empty-list<non-empty-string> $value
+     * @param non-empty-string $name
+     * @param non-empty-string|non-empty-list<non-empty-string> $value
      */
     public function withHeader(string $name, array|string $value): self
     {
@@ -136,8 +149,8 @@ final readonly class HeaderStorage
     }
 
     /**
-     * @var non-empty-string $name
-     * @var non-empty-string|non-empty-list<non-empty-string> $value
+     * @param non-empty-string $name
+     * @param non-empty-string|non-empty-list<non-empty-string> $value
      */
     public function withAddedHeader(string $name, array|string $value): self
     {
@@ -148,13 +161,14 @@ final readonly class HeaderStorage
         }
 
         $name = $this->headerNames[strtolower($name)];
+        $headers = $this->headers;
         $headers[$name] = array_merge($this->headers[$name], self::filterHeaderValue($value));
 
         return new self($headers, $this->headerNames);
     }
 
     /**
-     * @var non-empty-string $name
+     * @param non-empty-string $name
      */
     public function withoutHeader(string $name): self
     {
@@ -210,7 +224,7 @@ final readonly class HeaderStorage
      *
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
      *
-     * @param non-empty-string $value
+     * @psalm-assert-if-true non-empty-string $value
      */
     public static function isHeaderValueValid(string $value): bool
     {

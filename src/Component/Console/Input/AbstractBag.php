@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Input;
 
 use Neu\Component\Console\Bag;
@@ -22,8 +31,9 @@ class AbstractBag extends Bag\AbstractBag
         $raw = [];
         foreach ($data as $definition) {
             $raw[$definition->getName()] = $definition;
-            if ($definition->getAlias() !== '') {
-                $raw[$definition->getAlias()] = $definition;
+            $alias = $definition->getAlias();
+            if ($alias !== null) {
+                $raw[$alias] = $definition;
             }
         }
 
@@ -37,8 +47,13 @@ class AbstractBag extends Bag\AbstractBag
      */
     public function addDefinition(DefinitionInterface $definition): void
     {
-        $this->data[$definition->getName()] = $definition;
-        $this->data[$definition->getAlias()] = $definition;
+        $name = $definition->getName();
+        $alias = $definition->getAlias();
+
+        $this->data[$name] = $definition;
+        if ($alias !== null) {
+            $this->data[$alias] = $definition;
+        }
     }
 
     /**
@@ -49,7 +64,7 @@ class AbstractBag extends Bag\AbstractBag
      * @param string $key
      * @param null|T $default
      *
-     * @return T
+     * @return null|T
      */
     public function get(string|int $key, mixed $default = null): mixed
     {
@@ -63,7 +78,7 @@ class AbstractBag extends Bag\AbstractBag
             }
         }
 
-        /** @var T */
+        /** @var null|T */
         return $value;
     }
 }

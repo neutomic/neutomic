@@ -2,6 +2,15 @@
 
 use Symfony\Component\Finder\Finder;
 
+$fileHeaderComment = <<<'EOF'
+This file is part of the Neutomic package.
+
+(c) Saif Eddin Gmati <azjezz@protonmail.com>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+EOF;
+
 return (new PhpCsFixer\Config())
     ->setFinder(
         Finder::create()
@@ -15,13 +24,15 @@ return (new PhpCsFixer\Config())
     ->setCacheFile(__DIR__ . '/../var/.php-cs-fixer.cache')
     ->setRiskyAllowed(true)
     ->setRules([
+        'header_comment' => ['header' => $fileHeaderComment],
+        'nullable_type_declaration' => ['syntax' => 'union'],
         'align_multiline_comment' => true,
         'array_indentation' => true,
         'declare_strict_types' => true,
         'global_namespace_import' => [
             'import_classes' => true,
-            'import_constants' => true,
             'import_functions' => true,
+            'import_constants' => true,
         ],
         'list_syntax' => [
             'syntax' => 'short',
@@ -70,8 +81,8 @@ return (new PhpCsFixer\Config())
         'phpdoc_summary' => true,
         'phpdoc_tag_casing' => true,
         'phpdoc_trim' => true,
-        'phpdoc_trim_consecutive_blank_line_separation' => true,
         'no_empty_statement' => true,
         'semicolon_after_instruction' => true,
+        '@PSR12' => true,
     ])
     ;

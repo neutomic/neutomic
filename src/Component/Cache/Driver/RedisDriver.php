@@ -2,12 +2,20 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Cache\Driver;
 
 use Amp\Redis\Command\Option\SetOptions;
 use Amp\Redis\RedisClient;
 use Amp\Redis\RedisException;
-use Neu\Component\Cache\Exception\InvalidKeyException;
 use Neu\Component\Cache\Exception\RuntimeException;
 use Neu\Component\Cache\Exception\UnavailableItemException;
 
@@ -27,10 +35,6 @@ final class RedisDriver implements DriverInterface
      */
     public function get(string $key): mixed
     {
-        if ('' === $key) {
-            throw InvalidKeyException::forEmptyKey();
-        }
-
         try {
             if (!$this->client->has($key)) {
                 throw UnavailableItemException::for($key);
@@ -50,16 +54,8 @@ final class RedisDriver implements DriverInterface
     /**
      * @inheritDoc
      */
-    public function set(string $key, mixed $value, ?int $ttl = null): void
+    public function set(string $key, mixed $value, null|int $ttl = null): void
     {
-        if ($ttl !== null && 0 >= $ttl) {
-            return;
-        }
-
-        if ('' === $key) {
-            throw InvalidKeyException::forEmptyKey();
-        }
-
         $options = new SetOptions();
         if ($ttl !== null) {
             $options = $options->withTtl($ttl);

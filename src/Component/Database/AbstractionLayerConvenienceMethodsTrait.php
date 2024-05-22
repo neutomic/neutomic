@@ -2,24 +2,26 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database;
 
 use Neu\Component\Database\Query\Builder\Builder;
 use Neu\Component\Database\Query\Builder\BuilderInterface;
-use Neu\Component\Database\Query\SelectQueryInterface;
-use Neu\Component\Database\Query\UpdateQueryInterface;
 use Neu\Component\Database\Query\WhereQueryInterface;
 
 use function array_map;
 use function array_values;
-use function sprintf;
 
 /**
  * @require-implements AbstractionLayerInterface
- *
- * @psalm-suppress MixedAssignment
- * @psalm-suppress UnnecessaryVarAnnotation
- * @psalm-suppress MissingThrowsDocblock
  */
 trait AbstractionLayerConvenienceMethodsTrait
 {
@@ -54,6 +56,8 @@ trait AbstractionLayerConvenienceMethodsTrait
      * @throws Exception\RuntimeException If the operation fails due to unexpected condition.
      * @throws Exception\ConnectionException If the connection to the database is lost.
      * @throws Exception\InvalidQueryException If the operation fails due to an invalid query (such as a syntax error).
+     *
+     * @psalm-suppress MissingThrowsDocblock
      */
     public function insert(string $table, array $row): QueryResultInterface
     {
@@ -63,10 +67,12 @@ trait AbstractionLayerConvenienceMethodsTrait
 
         $values = [];
         $parameters = [];
+        /** @psalm-suppress MixedAssignment */
         foreach ($row as $column => $value) {
             [$name, $placeholder] = $this->buildPlaceholder($column, 'insert');
 
             $values[$column] = $placeholder;
+            /** @psalm-suppress MixedAssignment */
             $parameters[$name] = $value;
         }
 
@@ -97,10 +103,12 @@ trait AbstractionLayerConvenienceMethodsTrait
         $set = [];
         foreach ($rows as $index => $row) {
             $values = [];
+            /** @psalm-suppress MixedAssignment */
             foreach ($row as $column => $value) {
                 [$name, $placeholder] = $this->buildPlaceholder($column, 'insert', $index);
 
                 $values[$column] = $placeholder;
+                /** @psalm-suppress MixedAssignment */
                 $parameters[$name] = $value;
             }
 
@@ -129,20 +137,21 @@ trait AbstractionLayerConvenienceMethodsTrait
      * @throws Exception\ConnectionException If the connection to the database is lost.
      * @throws Exception\InvalidQueryException If the operation fails due to an invalid query (such as a syntax error).
      * @throws Exception\LogicException If $criteria, or $data are empty.
+     *
+     * @psalm-suppress InvalidArgument
      */
     public function update(string $table, array $data, array $criteria): QueryResultInterface
     {
         $query = $this->createQueryBuilder()->update($table);
         $values = [];
+        /** @psalm-suppress MixedAssignment */
         foreach ($data as $column => $value) {
             [$name, $placeholder] = $this->buildPlaceholder($column, 'update');
             $query = $query->set($column, $placeholder);
+            /** @psalm-suppress MixedAssignment */
             $values[$name] = $value;
         }
 
-        /**
-         * @var UpdateQueryInterface $query
-         */
         [$query, $values] = $this->buildCriteria($query, $criteria, $values);
 
         return $query->execute($values);
@@ -169,10 +178,8 @@ trait AbstractionLayerConvenienceMethodsTrait
      */
     public function delete(string $table, array $criteria): QueryResultInterface
     {
-        [$query, $values] = $this->buildCriteria(
-            $this->createQueryBuilder()->delete($table),
-            $criteria,
-        );
+        $query = $this->createQueryBuilder()->delete($table);
+        [$query, $values] = $this->buildCriteria($query, $criteria);
 
         return $query->execute($values);
     }
@@ -193,7 +200,7 @@ trait AbstractionLayerConvenienceMethodsTrait
      *
      * @param non-empty-string $table
      * @param non-empty-list<non-empty-string> $fields
-     * @param array<string, mixed> $criteria
+     * @param array<non-empty-string, mixed> $criteria
      * @param array<non-empty-string, OrderDirection> $order_by
      *
      * @throws Exception\ConnectionException If the connection to the database is lost.
@@ -201,17 +208,14 @@ trait AbstractionLayerConvenienceMethodsTrait
      * @throws Exception\InvalidArgumentException If $fields is empty, or $order_by contains invalid values.
      * @throws Exception\RuntimeException If the operation fails due to unexpected condition.
      *
-     * @return null|array<string, mixed>
+     * @return null|array<non-empty-string, mixed>
+     *
+     * @psalm-suppress InvalidArgument
      */
-    public function fetchOneAssociative(string $table, array $fields = ['*'], array $criteria = [], array $order_by = []): ?array
+    public function fetchOneAssociative(string $table, array $fields = ['*'], array $criteria = [], array $order_by = []): null|array
     {
-        /**
-         * @var SelectQueryInterface $query
-         */
-        [$query, $values] = $this->buildCriteria(
-            $this->createQueryBuilder()->select(...$fields)->from($table),
-            $criteria
-        );
+        $query = $this->createQueryBuilder()->select(...$fields)->from($table);
+        [$query, $values] = $this->buildCriteria($query, $criteria);
 
         foreach ($order_by as $sort => $direction) {
             $query = $query->andOrderBy($sort, $direction);
@@ -237,7 +241,7 @@ trait AbstractionLayerConvenienceMethodsTrait
      *
      * @param non-empty-string $table
      * @param non-empty-list<non-empty-string> $fields
-     * @param array<string, mixed> $criteria
+     * @param array<non-empty-string, mixed> $criteria
      * @param array<non-empty-string, OrderDirection> $order_by
      *
      * @throws Exception\ConnectionException If the connection to the database is lost.
@@ -247,7 +251,7 @@ trait AbstractionLayerConvenienceMethodsTrait
      *
      * @return null|list<mixed>
      */
-    public function fetchOneNumeric(string $table, array $fields = ['*'], array $criteria = [], array $order_by = []): ?array
+    public function fetchOneNumeric(string $table, array $fields = ['*'], array $criteria = [], array $order_by = []): null|array
     {
         $row = $this->fetchOneAssociative($table, $fields, $criteria, $order_by);
         if (null === $row) {
@@ -282,14 +286,14 @@ trait AbstractionLayerConvenienceMethodsTrait
      * @throws Exception\InvalidQueryException If the operation fails due to an invalid query (such as a syntax error).
      * @throws Exception\InvalidArgumentException If $fields is empty, $order_by contains invalid values, or $offset, or $limit are negative.
      *
-     * @return list<array<string, mixed>>
+     * @return list<array<non-empty-string, mixed>>
+     *
+     * @psalm-suppress InvalidArgument
      */
-    public function fetchAllAssociative(string $table, array $fields = ['*'], array $criteria = [], ?int $offset = null, ?int $limit = null, array $order_by = []): array
+    public function fetchAllAssociative(string $table, array $fields = ['*'], array $criteria = [], null|int $offset = null, null|int $limit = null, array $order_by = []): array
     {
-        [$query, $values] = $this->buildCriteria(
-            $this->createQueryBuilder()->select(...$fields)->from($table),
-            $criteria
-        );
+        $query = $this->createQueryBuilder()->select(...$fields)->from($table);
+        [$query, $values] = $this->buildCriteria($query, $criteria);
 
         foreach ($order_by as $sort => $direction) {
             $query = $query->andOrderBy($sort, $direction);
@@ -334,35 +338,38 @@ trait AbstractionLayerConvenienceMethodsTrait
      *
      * @return list<list<mixed>>
      */
-    public function fetchAllNumeric(string $table, array $fields = ['*'], array $criteria = [], ?int $offset = null, ?int $limit = null, array $orderBy = []): array
+    public function fetchAllNumeric(string $table, array $fields = ['*'], array $criteria = [], null|int $offset = null, null|int $limit = null, array $orderBy = []): array
     {
         return array_map(
-            static fn($row) => array_values($row),
+            static fn ($row) => array_values($row),
             $this->fetchAllAssociative($table, $fields, $criteria, $offset, $limit, $orderBy)
         );
     }
 
     /**
-     * @template T of WhereQueryInterface
+     * @template TWQ of WhereQueryInterface
      *
-     * @param T $query
+     * @param TWQ $query
      * @param array<non-empty-string, mixed> $criteria
      * @param array<non-empty-string, mixed> $values
      *
-     * @return array{T, array<non-empty-string, mixed>}
+     * @return array{TWQ, array<non-empty-string, mixed>}
      */
     private function buildCriteria(WhereQueryInterface $query, array $criteria, array $values = []): array
     {
         $expr = $this->createExpressionBuilder();
+        /** @psalm-suppress MixedAssignment */
         foreach ($criteria as $column => $criterion) {
             if ($criterion === null) {
                 $query = $query->andWhere($expr->isNull($column));
+
                 continue;
             }
 
             [$name, $placeholder] = $this->buildPlaceholder($column, 'criteria');
             $query = $query->andWhere($expr->equal($column, $placeholder));
 
+            /** @psalm-suppress MixedAssignment */
             $values[$name] = $criterion;
         }
 
@@ -374,8 +381,7 @@ trait AbstractionLayerConvenienceMethodsTrait
      */
     private function buildPlaceholder(string $column, string $prefix, int $index = 0): array
     {
-        /** @var non-empty-string $placeholder */
-        $placeholder = sprintf('%s_%s_%d', $prefix, $column, $index);
+        $placeholder = $prefix . '_' . $column . '_' . ((string) $index);
 
         return [$placeholder, ':' . $placeholder];
     }

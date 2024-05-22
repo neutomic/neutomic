@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database\Exception;
 
 use Throwable;
@@ -21,7 +30,7 @@ final class DatabaseNotFoundException extends RuntimeException
      *
      * @param non-empty-string $name
      */
-    public static function forDatabase(string $name, ?Throwable $previous = null): self
+    public static function forDatabase(string $name, null|Throwable $previous = null): self
     {
         return new self('Database "' . $name . '" was not found.', previous: $previous);
     }

@@ -2,9 +2,19 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Cache\Driver;
 
 use Neu\Component\Cache\Exception\InvalidKeyException;
+use Neu\Component\Cache\Exception\InvalidValueException;
 use Neu\Component\Cache\Exception\RuntimeException;
 use Neu\Component\Cache\Exception\UnavailableItemException;
 
@@ -13,8 +23,13 @@ use function strlen;
 use function substr;
 use function unpack;
 
+/**
+ * @psalm-suppress UndefinedConstant - The constant is defined in the trait, but Psalm does not recognize it.
+ */
 trait PackingTrait
 {
+    use SerializationTrait;
+
     /**
      * The maximum value for a 32-bit unsigned integer.
      */
@@ -45,17 +60,19 @@ trait PackingTrait
      */
     protected const int HEADER_BYTES_LENGTH = self::EXPIRATION_BYTE_LENGTH + self::KEY_LENGTH_BYTE_LENGTH + self::CONTENT_LENGTH_BYTE_LENGTH;
 
-    use SerializationTrait;
-
     /**
      * Packs a value for the cache.
      *
+     * @param non-empty-string $key The key to pack.
      * @param mixed $value The value to pack.
-     * @param null|int $expiration The expiration time of the value, or null if the value should not expire.
+     * @param null|int $ttl The expiration time of the value, or null if the value should not expire.
+     *
+     * @throws InvalidKeyException If the key is too long.
+     * @throws InvalidValueException If the value cannot be serialized.
      *
      * @return string The packed value.
      */
-    protected function pack(string $key, mixed $value, ?int $ttl = null): string
+    protected function pack(string $key, mixed $value, null|int $ttl = null): string
     {
         $serialized = $this->serialize($key, $value);
         if ($ttl !== null) {
@@ -82,6 +99,7 @@ trait PackingTrait
     /**
      * Unpacks a value from the cache.
      *
+     * @param non-empty-string $key The key of the packed value.
      * @param string $value The packed value.
      *
      * @throws RuntimeException If unpacking fails.
@@ -91,6 +109,7 @@ trait PackingTrait
      */
     protected function unpack(string $key, string $value): mixed
     {
+        /** @var false|array{expires: int, key_length: int, content_length: int, data: string} $data */
         $data = unpack('Nexpires/Nkey_length/Ncontent_length/a*data', $value);
         if ($data === false) {
             throw new RuntimeException('Failed to unpack value from cache.');
@@ -112,10 +131,13 @@ trait PackingTrait
      *
      * @param string $packedData The binary string from which to read the header.
      *
+     * @throws RuntimeException If reading the header fails.
+     *
      * @return array{expires: null|int, key_length: int, content_length: int} The header data.
      */
     protected function readHeader(string $packedData): array
     {
+        /** @var false|array{expires: null|int, key_length: int, content_length: int} $data */
         $data = unpack('Nexpires/Nkey_length/Ncontent_length', substr($packedData, 0, self::HEADER_BYTES_LENGTH));
         if ($data === false) {
             throw new RuntimeException('Failed to read header from cache.');

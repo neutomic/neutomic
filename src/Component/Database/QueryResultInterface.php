@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database;
 
 use Amp\Sql\SqlResult;
@@ -11,7 +20,7 @@ interface QueryResultInterface
     /**
      * Return the next query result if available.
      */
-    public function nextQueryResult(): ?QueryResultInterface;
+    public function nextQueryResult(): null|QueryResultInterface;
 
     /**
      * Returns the actual rows returned by the successful query, each row including the typed values for each column.
@@ -41,7 +50,7 @@ interface QueryResultInterface
      *
      * @return null|int<0, max>
      */
-    public function getRowCount(): ?int;
+    public function getRowCount(): null|int;
 
     /**
      * The number of database rows affected in the current result, or null if the number of rows is
@@ -61,7 +70,7 @@ interface QueryResultInterface
      *
      * @return null|int<0, max>
      */
-    public function getAffectedRowCount(): ?int;
+    public function getAffectedRowCount(): null|int;
 
     /**
      * Get the underlying SQL result.

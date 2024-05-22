@@ -2,17 +2,31 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database;
 
 use Amp\Postgres\PostgresConnection;
+use Amp\Sql\SqlConfig;
 use Amp\Sql\SqlConnection;
 use Amp\Sql\SqlConnectionException;
 use Amp\Sql\SqlException;
 use Amp\Sql\SqlQueryError;
+use Amp\Sql\SqlResult;
+use Amp\Sql\SqlStatement;
+use Amp\Sql\SqlTransaction;
 use Amp\Sql\SqlTransactionIsolationLevel;
 use Closure;
 use Neu\Component\Database\Exception\ConnectionException;
 use Neu\Component\Database\Exception\RuntimeException;
+use Neu\Component\Database\Exception\TransactionException;
 use Neu\Component\Database\Exception\UnsupportedFeatureException;
 use Neu\Component\Database\Notification\ListenerInterface;
 use Neu\Component\Database\Notification\Postgres\PostgresListener;
@@ -22,10 +36,33 @@ final readonly class Database extends Link implements DatabaseInterface
 {
     use AbstractionLayerConvenienceMethodsTrait;
 
-    public function __construct(
-        private SqlConnection $connection,
-    ) {
-        parent::__construct($this->connection);
+    /**
+     * The database platform.
+     */
+    private Platform $platform;
+
+    /**
+     * The SQL connection.
+     *
+     * @var SqlConnection<SqlConfig, SqlResult, SqlStatement<SqlResult>, SqlTransaction>
+     */
+    private SqlConnection $connection;
+
+    /**
+     * @param SqlConnection<SqlConfig, SqlResult, SqlStatement<SqlResult>, SqlTransaction> $connection
+     */
+    public function __construct(SqlConnection $connection)
+    {
+        if ($connection instanceof PostgresConnection) {
+            $platform = Platform::Postgres;
+        } else {
+            $platform = Platform::Mysql;
+        }
+
+        parent::__construct($platform, $connection);
+
+        $this->platform = $platform;
+        $this->connection = $connection;
     }
 
     /**
@@ -49,19 +86,28 @@ final readonly class Database extends Link implements DatabaseInterface
     }
 
     /**
-     * @inheritDoc
+     * Run the given operation in a transaction, with the given isolation level.
+     *
+     * Note: any exception throw from the `$operation` will be thrown back to the caller site.
+     *
+     * @template T
+     *
+     * @param (Closure(TransactionInterface): T) $operation
+     *
+     * @throws TransactionException If failed to commit or rollback the transaction.
+     *
+     * @return T
      */
     public function transactional(Closure $operation, TransactionIsolationLevel $isolation = TransactionIsolationLevel::ReadUncommitted): mixed
     {
         $transaction = $this->createTransaction($isolation);
         try {
             $result = $operation($transaction);
-            /** @psalm-suppress MissingThrowsDocblock */
             $transaction->commit();
 
+            /** @var T */
             return $result;
         } catch (Throwable $exception) {
-            /** @psalm-suppress MissingThrowsDocblock */
             $transaction->rollback();
 
             /** @psalm-suppress MissingThrowsDocblock */
@@ -83,7 +129,7 @@ final readonly class Database extends Link implements DatabaseInterface
 
         $transaction = $this->connection->beginTransaction();
 
-        return new Transaction($transaction);
+        return new Transaction($this->platform, $transaction);
     }
 
     /**

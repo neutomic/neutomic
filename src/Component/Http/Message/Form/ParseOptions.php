@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Message\Form;
 
 /**
@@ -34,14 +43,14 @@ final readonly class ParseOptions
      *
      * A `null` value indicates that the default server limit should be used, which can be overridden for specific scenarios.
      */
-    public ?int $bodySizeLimit;
+    public null|int $bodySizeLimit;
 
     /**
      * The allowed file extensions for uploaded files.
      *
      * A `null` value indicates that all file extensions are allowed.
      */
-    public ?array $allowedFileExtensions;
+    public null|array $allowedFileExtensions;
 
     /**
      * The maximum number of files that a form can contain. This limit helps in managing resource allocation
@@ -65,8 +74,8 @@ final readonly class ParseOptions
      */
     public function __construct(
         int $fieldCountLimit = self::DEFAULT_FIELD_COUNT_LIMIT,
-        ?int $bodySizeLimit = null,
-        ?array $allowedFileExtensions = null,
+        null|int $bodySizeLimit = null,
+        null|array $allowedFileExtensions = null,
         int $fileCountLimit = self::DEFAULT_FILE_COUNT_LIMIT,
         bool $allowFilesWithoutExtensions = true
     ) {
@@ -96,7 +105,7 @@ final readonly class ParseOptions
      *
      * @return self Returns a new instance of ParseOptions with the specified body size limit.
      */
-    public static function fromBodySizeLimit(?int $bodySizeLimit): self
+    public static function fromBodySizeLimit(null|int $bodySizeLimit): self
     {
         return new self(self::DEFAULT_FIELD_COUNT_LIMIT, $bodySizeLimit);
     }
@@ -120,7 +129,7 @@ final readonly class ParseOptions
      *
      * @return self Returns a new instance of ParseOptions with the updated body size limit.
      */
-    public function withBodySizeLimit(?int $bodySizeLimit): self
+    public function withBodySizeLimit(null|int $bodySizeLimit): self
     {
         return new self($this->fieldCountLimit, $bodySizeLimit, $this->allowedFileExtensions, $this->fileCountLimit, $this->allowFilesWithoutExtensions);
     }
@@ -132,7 +141,7 @@ final readonly class ParseOptions
      *
      * @return self Returns a new instance of ParseOptions with the updated allowed file extensions.
      */
-    public function withAllowedFileExtensions(?array $allowedFileExtensions): self
+    public function withAllowedFileExtensions(null|array $allowedFileExtensions): self
     {
         return new self($this->fieldCountLimit, $this->bodySizeLimit, $allowedFileExtensions, $this->fileCountLimit, $this->allowFilesWithoutExtensions);
     }

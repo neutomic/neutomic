@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Server\DependencyInjection\Factory;
 
 use Neu\Component\DependencyInjection\ContainerInterface;
@@ -19,43 +28,91 @@ use Psr\Log\LoggerInterface;
 final readonly class ServerInfrastructureFactory implements FactoryInterface
 {
     /**
-     * @var non-empty-array<ServerSocketConfiguration>
+     * @var list<ServerSocketConfiguration>
      */
     private array $serverSocketConfigurations;
+
+    /**
+     * The maximum number of connections allowed.
+     *
+     * @var positive-int
+     */
     private int $connectionLimit;
+
+    /**
+     * The maximum number of connections allowed per IP address.
+     *
+     * @var positive-int
+     */
     private int $connectionLimitPerIP;
+
+    /**
+     * The maximum time in seconds to wait for a stream to become readable or writable.
+     *
+     * @var int
+     */
     private int $streamTimeout;
+
+    /**
+     * The maximum time in seconds to wait for a connection to be established.
+     *
+     * @var int
+     */
     private int $connectionTimeout;
+
+    /**
+     * The maximum size in bytes of the HTTP header.
+     *
+     * @var int
+     */
     private int $headerSizeLimit;
+
+    /**
+     * The maximum size in bytes of the HTTP body.
+     *
+     * @var int
+     */
     private int $bodySizeLimit;
+
+    /**
+     * The maximum time in seconds to wait for a TLS handshake to complete.
+     *
+     * @var int
+     */
     private int $tlsHandshakeTimeout;
+
+    /**
+     * The logger service identifier.
+     *
+     * @var non-empty-string
+     */
     private string $logger;
 
     /**
      * Create a new {@see ServerInfrastructureFactory} instance.
      *
-     * @param non-empty-list<ServerSocketConfiguration>|null $serverSocketConfigurations
-     * @param int|null $connectionLimit
-     * @param int|null $connectionLimitPerIP
+     * @param list<ServerSocketConfiguration>|null $serverSocketConfigurations
+     * @param positive-int|null $connectionLimit
+     * @param positive-int|null $connectionLimitPerIP
      * @param int|null $streamTimeout
      * @param int|null $connectionTimeout
      * @param int|null $headerSizeLimit
      * @param int|null $bodySizeLimit
      * @param int|null $tlsHandshakeTimeout
-     * @param string|null $logger
+     * @param non-empty-string|null $logger
      */
     public function __construct(
-        ?array $serverSocketConfigurations = null,
-        ?int $connectionLimit = null,
-        ?int $connectionLimitPerIP = null,
-        ?int $streamTimeout = null,
-        ?int $connectionTimeout = null,
-        ?int $headerSizeLimit = null,
-        ?int $bodySizeLimit = null,
-        ?int $tlsHandshakeTimeout = null,
-        ?string $logger = null,
+        null|array $serverSocketConfigurations = null,
+        null|int $connectionLimit = null,
+        null|int $connectionLimitPerIP = null,
+        null|int $streamTimeout = null,
+        null|int $connectionTimeout = null,
+        null|int $headerSizeLimit = null,
+        null|int $bodySizeLimit = null,
+        null|int $tlsHandshakeTimeout = null,
+        null|string $logger = null,
     ) {
-        $this->serverSocketConfigurations = $serverSocketConfigurations ?? ServerInfrastructure::DEFAULT_SERVER_SOCKET_CONFIGURATIONS;
+        $this->serverSocketConfigurations = $serverSocketConfigurations ?? [];
         $this->connectionLimit = $connectionLimit ?? ServerInfrastructure::DEFAULT_CONNECTION_LIMIT;
         $this->connectionLimitPerIP = $connectionLimitPerIP ?? ServerInfrastructure::DEFAULT_CONNECTION_LIMIT_PER_IP;
         $this->streamTimeout = $streamTimeout ?? ServerInfrastructure::DEFAULT_STREAM_TIMEOUT;

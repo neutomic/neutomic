@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Runtime\DependencyInjection\Factory\Middleware;
 
 use Neu\Component\DependencyInjection\ContainerInterface;
@@ -16,15 +25,29 @@ use Neu\Component\Http\Runtime\Middleware\RouterMiddleware;
  */
 final readonly class RouterMiddlewareFactory implements FactoryInterface
 {
+    /**
+     * @var non-empty-string
+     */
     private string $matcher;
+
+    /**
+     * @var int
+     */
     private int $priority;
 
-    public function __construct(?string $matcher = null, ?int $priority = null)
+    /**
+     * @param non-empty-string|null $matcher Router matcher service identifier.
+     * @param int|null $priority Middleware priority.
+     */
+    public function __construct(null|string $matcher = null, null|int $priority = null)
     {
         $this->matcher = $matcher ?? MatcherInterface::class;
         $this->priority = $priority ?? RouterMiddleware::PRIORITY;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function __invoke(ContainerInterface $container): RouterMiddleware
     {
         return new RouterMiddleware(

@@ -2,16 +2,28 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Message;
 
 use Amp\ByteStream\Payload;
+use Amp\ByteStream\PendingReadError;
 use Amp\ByteStream\ReadableIterableStream;
 use Amp\ByteStream\ReadableStream;
+use Amp\ByteStream\StreamException;
 use Amp\Sync\LocalSemaphore;
 use Amp\Sync\Semaphore;
 use Amp\TimeoutCancellation;
 use Amp\TimeoutException as AmpTimeoutException;
 use Neu\Component\Http\Exception\RuntimeException;
+use Neu\Component\Http\Message\Exception\LogicException;
 use Neu\Component\Http\Message\Exception\TimeoutException;
 use Traversable;
 
@@ -95,14 +107,14 @@ final class Body implements BodyInterface
     /**
      * @inheritDoc
      */
-    public function getChunk(?float $timeout = null): ?string
+    public function getChunk(null|float $timeout = null): null|string
     {
         if ($this->mode === BodyMode::Closed) {
-            throw new RuntimeException('Cannot read from a closed body');
+            throw new LogicException('Cannot read from a closed body');
         }
 
         if ($this->mode === BodyMode::Buffered) {
-            throw new RuntimeException('Cannot read from a buffered body as a chunk');
+            throw new LogicException('Cannot read from a buffered body as a chunk');
         }
 
         $this->mode = BodyMode::Streamed;
@@ -113,11 +125,11 @@ final class Body implements BodyInterface
                 return $this->payload->read();
             }
 
-            try {
-                return $this->payload->read(new TimeoutCancellation($timeout));
-            } catch (AmpTimeoutException $e) {
-                throw new TimeoutException('Reading from the body timed out', 0, $e);
-            }
+            return $this->payload->read(new TimeoutCancellation($timeout));
+        } catch (AmpTimeoutException $e) {
+            throw new TimeoutException('Reading from the body timed out', 0, $e);
+        } catch (StreamException | PendingReadError $e) {
+            throw new RuntimeException('An error occurred while reading from the body', 0, $e);
         } finally {
             $lock->release();
         }
@@ -126,20 +138,19 @@ final class Body implements BodyInterface
     /**
      * @inheritDoc
      */
-    public function getContents(?float $timeout = null): string
+    public function getContents(null|float $timeout = null): string
     {
         if ($this->mode === BodyMode::Buffered) {
-            throw new RuntimeException('Cannot buffer a body more than once');
+            throw new LogicException('Cannot buffer a body more than once');
         }
 
         if ($this->mode === BodyMode::Closed) {
-            throw new RuntimeException('Cannot read from a closed body');
+            throw new LogicException('Cannot read from a closed body');
         }
 
         if ($this->mode === BodyMode::Streamed) {
-            throw new RuntimeException('Cannot read from a streamed body as a whole');
+            throw new LogicException('Cannot read from a streamed body as a whole');
         }
-
 
         $this->mode = BodyMode::Buffered;
 
@@ -149,11 +160,11 @@ final class Body implements BodyInterface
                 return $this->payload->buffer();
             }
 
-            try {
-                return $this->payload->buffer(new TimeoutCancellation($timeout));
-            } catch (AmpTimeoutException $e) {
-                throw new TimeoutException('Reading from the body timed out', 0, $e);
-            }
+            return $this->payload->buffer(new TimeoutCancellation($timeout));
+        } catch (AmpTimeoutException $e) {
+            throw new TimeoutException('Reading from the body timed out', 0, $e);
+        } catch (StreamException | PendingReadError $e) {
+            throw new RuntimeException('An error occurred while reading from the body', 0, $e);
         } finally {
             $lock->release();
         }
@@ -165,11 +176,11 @@ final class Body implements BodyInterface
     public function getIterator(): Traversable
     {
         if ($this->mode === BodyMode::Closed) {
-            throw new RuntimeException('Cannot read from a closed body');
+            throw new LogicException('Cannot read from a closed body');
         }
 
         if ($this->mode === BodyMode::Buffered) {
-            throw new RuntimeException('Cannot read from a buffered body as a chunk');
+            throw new LogicException('Cannot read from a buffered body as a chunk');
         }
 
         $this->mode = BodyMode::Streamed;
@@ -179,6 +190,8 @@ final class Body implements BodyInterface
             while (null !== $chunk = $this->payload->read()) {
                 yield $chunk;
             }
+        } catch (StreamException | PendingReadError $e) {
+            throw new RuntimeException('An error occurred while reading from the body', 0, $e);
         } finally {
             $lock->release();
         }

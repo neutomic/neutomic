@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Cache\DependencyInjection\Factory\Driver;
 
 use Amp\Redis\RedisConfig;
@@ -21,9 +30,9 @@ use function Amp\Redis\createRedisClient;
 final readonly class RedisDriverFactory implements FactoryInterface
 {
     private string $uri;
-    private ?int $timeout;
-    private ?int $database;
-    private ?string $password;
+    private null|int $timeout;
+    private null|int $database;
+    private null|string $password;
 
     /**
      * @param string $uri The URI to connect to.
@@ -31,7 +40,7 @@ final readonly class RedisDriverFactory implements FactoryInterface
      * @param null|int $database The database to select.
      * @param null|string $password The password to authenticate with.
      */
-    public function __construct(string $uri, ?int $timeout = null, ?int $database = null, ?string $password = null)
+    public function __construct(string $uri, null|int $timeout = null, null|int $database = null, null|string $password = null)
     {
         $this->uri = $uri;
         $this->timeout = $timeout;

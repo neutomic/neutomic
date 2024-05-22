@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Input;
 
 use Neu\Component\Console\Exception\NonInteractiveInputException;
@@ -10,6 +19,8 @@ use Psl\Str;
 
 /**
  * A {@see InputInterface} implementation based on {@see IO\ReadHandleInterface}.
+ *
+ * @psalm-suppress MissingThrowsDocblock
  */
 final class HandleInput extends AbstractInput
 {
@@ -33,7 +44,7 @@ final class HandleInput extends AbstractInput
     /**
      * @inheritDoc
      */
-    public function getUserInput(?int $length = null): string
+    public function getUserInput(null|int $length = null): string
     {
         if (!$this->isInteractive()) {
             throw new NonInteractiveInputException('The current terminal session is non interactive.');

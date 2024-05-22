@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Router\DependencyInjection\Hook;
 
 use Neu\Component\DependencyInjection\ContainerInterface;
@@ -20,16 +29,17 @@ final readonly class RegisterRoutesHook implements HookInterface
 {
     /**
      * The registry service identifier.
+     *
+     * @var non-empty-string
      */
     private string $registry;
 
     /**
      * Create a new {@see RegisterRoutesHook} instance.
      *
-     * @param string|null $registry The registry service identifier.
-     * @param string|null $logger The logger service identifier.
+     * @param non-empty-string|null $registry The registry service identifier.
      */
-    public function __construct(?string $registry = null)
+    public function __construct(null|string $registry = null)
     {
         $this->registry = $registry ?? RegistryInterface::class;
     }

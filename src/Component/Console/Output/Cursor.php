@@ -2,9 +2,17 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Output;
 
-use Neu\Component\Console\Exception\InvalidArgumentException;
 use Neu\Component\Console\Output\Sequence\Erase;
 use Psl\Str;
 
@@ -35,13 +43,12 @@ final readonly class Cursor
 
     /**
      * Moves the cursor to the specified position (coordinates).
+     *
+     * @param int<0, max> $column The column to move the cursor to.
+     * @param int<0, max> $row The row to move the cursor to.
      */
     public function move(int $column, int $row, Verbosity $verbosity = Verbosity::Normal): void
     {
-        if ($row < 0 || $column < 0) {
-            throw new InvalidArgumentException('Invalid coordinates.');
-        }
-
         $this->output->write(Str\format("\033[%d;%dH", $row + 1, $column), $verbosity);
     }
 
@@ -79,6 +86,8 @@ final readonly class Cursor
 
     /**
      * Move the cursor $n times up.
+     *
+     * @param int<0, max> $n The number of times to move the cursor up.
      */
     public function up(int $n = 1, Verbosity $verbosity = Verbosity::Normal): void
     {
@@ -87,6 +96,8 @@ final readonly class Cursor
 
     /**
      * Move the cursor $n times down.
+     *
+     * @param int<0, max> $n The number of times to move the cursor down.
      */
     public function down(int $n = 1, Verbosity $verbosity = Verbosity::Normal): void
     {
@@ -95,6 +106,8 @@ final readonly class Cursor
 
     /**
      * Move the cursor $n times forward.
+     *
+     * @param int<0, max> $n The number of times to move the cursor forward.
      */
     public function forward(int $n = 1, Verbosity $verbosity = Verbosity::Normal): void
     {
@@ -103,21 +116,22 @@ final readonly class Cursor
 
     /**
      * Move the cursor $n times backward.
+     *
+     * @param int<0, max> $n The number of times to move the cursor backward.
      */
     public function backward(int $n = 1, Verbosity $verbosity = Verbosity::Normal): void
     {
         $this->sequence('D', $verbosity, $n);
     }
 
-    private function sequence(string $sequence, Verbosity $verbosity = Verbosity::Normal, ?int $n = null): void
+    /**
+     * Perform a terminal sequence with $n.
+     *
+     * @param null|int<0, max> $n
+     */
+    private function sequence(string $sequence, Verbosity $verbosity = Verbosity::Normal, null|int $n = null): void
     {
         if ($n !== null) {
-            if ($n < 0) {
-                throw new InvalidArgumentException(
-                    'Expected $n to be a positive integer.',
-                );
-            }
-
             $this->output->write(Str\format("\033[%d%s", $n, $sequence), $verbosity);
         } else {
             $this->output->write(Str\format("\033[%s", $sequence), $verbosity);

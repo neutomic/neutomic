@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Bag;
 
 use ArrayIterator;
@@ -21,13 +30,18 @@ use Psl\Iter;
 abstract class AbstractBag implements Countable, IteratorAggregate
 {
     /**
+     * @var array<Tk, Tv>
+     */
+    protected array $data = [];
+
+    /**
      * Set the parameters.
      *
      * @param array<Tk, Tv> $data
      */
-    public function __construct(
-        protected array $data = [],
-    ) {
+    public function __construct(array $data = [])
+    {
+        $this->data = $data;
     }
 
     /**
@@ -43,11 +57,9 @@ abstract class AbstractBag implements Countable, IteratorAggregate
     /**
      * Remove all values within the bag.
      */
-    public function flush(): static
+    public function flush(): void
     {
         $this->data = [];
-
-        return $this;
     }
 
     /**
@@ -95,9 +107,9 @@ abstract class AbstractBag implements Countable, IteratorAggregate
      * @param Tk $key
      * @param Tv $value
      */
-    public function set(string|int $key, mixed $value): static
+    public function set(string|int $key, mixed $value): void
     {
-        return $this->add([$key => $value]);
+        $this->add([$key => $value]);
     }
 
     /**
@@ -105,13 +117,11 @@ abstract class AbstractBag implements Countable, IteratorAggregate
      *
      * @param array<Tk, Tv> $data
      */
-    public function add(array $data): static
+    public function add(array $data): void
     {
         foreach ($data as $key => $value) {
             $this->data[$key] = $value;
         }
-
-        return $this;
     }
 
     /**

@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Runtime\ContentDelivery;
 
 use Amp\File;
@@ -38,6 +47,9 @@ use function strtotime;
  * such as delivering images, documents, and other static content in a web application.
  *
  * @psalm-type Range = array{start: int, length: int}
+ *
+ * @psalm-suppress RedundantCondition - || true is necessary for the assert() calls to work.
+ * @psalm-suppress MissingThrowsDocblock
  */
 final readonly class ContentDeliverer
 {
@@ -73,7 +85,7 @@ final readonly class ContentDeliverer
      * for both full and partial content delivery depending on the client's needs.
      *
      * @param RequestInterface $request The HTTP request object, containing the client's request information.
-     * @param string $file The absolute path to the file that needs to be delivered.
+     * @param non-empty-string $file The absolute path to the file that needs to be delivered.
      *
      * @throws NotFoundHttpException If the requested file does not exist or is a directory.
      * @throws FilesystemException If an error occurs while reading the file or preparing the response.
@@ -102,6 +114,7 @@ final readonly class ContentDeliverer
         }
 
         try {
+            /** @var null|array{size: int, mtime: int} $stats */
             $stats = File\getStatus($file);
         } catch (File\FilesystemException $e) {
             // Log the error:
@@ -113,6 +126,11 @@ final readonly class ContentDeliverer
 
             // Throw an exception:
             throw new FilesystemException('Failed to get status of requested file.', 0, $e);
+        }
+
+        if ($stats === null) {
+            // This is unlikely to happen, but if it does, throw an exception:
+            throw new FilesystemException('Failed to get status of requested file.');
         }
 
         try {
@@ -130,7 +148,7 @@ final readonly class ContentDeliverer
         }
 
         $response = Response::fromStatusCode(StatusCode::OK)->withHeader('etag', [
-            '"' . Hash\hash($file . '-' . $stats['size'] . '-' . $stats['mtime'], Hash\Algorithm::Md5) . '"',
+            '"' . Hash\hash($file . '-' . ((string) $stats['size']) . '-' . ((string) $stats['mtime']), Hash\Algorithm::Md5) . '"',
         ]);
 
         $response = $this->addLastModifiedHeader($response, $stats['mtime']);
@@ -140,13 +158,13 @@ final readonly class ContentDeliverer
             return $response;
         }
 
-        if ($response->hasHeader('content-type')) {
-            $contentType = $response->getHeaderLine('content-type');
-        } else {
+        $contentType = $response->getHeaderLine('content-type');
+        if (null === $contentType) {
             $extension = Filesystem\get_extension($file);
             if (null === $extension) {
                 $contentType = 'application/octet-stream';
             } else {
+                /** @var non-empty-string $contentType */
                 $contentType = ContentTypes::EXTENSION_TO_CONTENT_TYPE_MAP[$extension] ?? 'application/octet-stream';
             }
 
@@ -163,14 +181,14 @@ final readonly class ContentDeliverer
                 $ranges = [];
             } else {
                 return $response
-                    ->withHeader('content-range', 'bytes */' . $stats['size'])
+                    ->withHeader('content-range', 'bytes */' . ((string) $stats['size']))
                     ->withStatus(StatusCode::RangeNotSatisfiable)
-                    ;
+                ;
             }
         }
 
         // Sum the total size of requested byte ranges
-        $rangesSumSize = Iter\reduce($ranges, static fn(int $carry, array $range): int => $carry + $range['length'], 0);
+        $rangesSumSize = Iter\reduce($ranges, static fn (int $carry, array $range): int => $carry + $range['length'], 0);
         // Check if the requested ranges exceed the file size
         if ($rangesSumSize > $stats['size']) {
             // If the sum of the ranges is greater than the file size, reset ranges to avoid processing
@@ -199,45 +217,60 @@ final readonly class ContentDeliverer
                 ->withHeader('content-range', $this->getContentRangeHeaderValue($range, $stats['size']))
             ;
 
-            $callback = function () use ($range, $stream) {
-                yield from $this->streamRangeFromFile($stream, $range);
-            };
+            $callback =
+                /**
+                 * @return iterable<string>
+                 */
+                function () use ($range, $stream): iterable {
+                    yield from $this->streamRangeFromFile($stream, $range);
+                }
+            ;
         } elseif ($rangesCount > 1) {
             $response = $response
                 ->withStatus(StatusCode::PartialContent)
                 ->withHeader('content-length', (string) $this->calculateMultipartSize($ranges, $contentType, $stats['size']))
                 ->withHeader('content-type', 'multipart/byteranges; boundary=' . $this->boundary);
 
-            $callback = function () use ($ranges, $stream, $contentType, $stats) {
-                $lastRange = null;
-                foreach ($ranges as $range) {
-                    if (null !== $lastRange) {
-                        yield "\r\n--" . $this->boundary . "\r\n";
-                    } else {
-                        yield "--" . $this->boundary . "\r\n";
+            $callback =
+                /**
+                 * @return iterable<string>
+                 */
+                function () use ($ranges, $stream, $contentType, $stats): iterable {
+                    $lastRange = null;
+                    foreach ($ranges as $range) {
+                        if (null !== $lastRange) {
+                            yield "\r\n--" . $this->boundary . "\r\n";
+                        } else {
+                            yield "--" . $this->boundary . "\r\n";
+                        }
+
+                        foreach ($this->getRangeHeaders($range, $contentType, $stats['size']) as $header => $value) {
+                            yield $header . ': ' . $value . "\r\n";
+                        }
+
+                        yield "\r\n";
+
+                        yield from $this->streamRangeFromFile($stream, $range);
+
+                        $lastRange = $range;
                     }
 
-                    foreach ($this->getRangeHeaders($range, $contentType, $stats['size']) as $header => $value) {
-                        yield $header . ': ' . $value . "\r\n";
-                    }
-
-                    yield "\r\n";
-
-                    yield from $this->streamRangeFromFile($stream, $range);
-
-                    $lastRange = $range;
+                    yield "\r\n--" . $this->boundary . "--\r\n";
                 }
-
-                yield "\r\n--" . $this->boundary . "--\r\n";
-            };
+            ;
         } else {
             $response = $response->withHeader('content-length', (string) $stats['size']);
 
-            $callback = static function () use ($stream) {
-                while (null !== $chunk = $stream->read(length: self::READ_CHUNK_SIZE)) {
-                    yield $chunk;
+            $callback =
+                /**
+                 * @return iterable<string>
+                 */
+                static function () use ($stream): iterable {
+                    while (null !== $chunk = $stream->read(length: self::READ_CHUNK_SIZE)) {
+                        yield $chunk;
+                    }
                 }
-            };
+            ;
         }
 
         $response = $response->withHeader('accept-ranges', 'bytes');
@@ -325,7 +358,7 @@ final readonly class ContentDeliverer
      *
      * @return null|list<Range>
      */
-    private function parseRange(string $headerValue, int $size): ?array
+    private function parseRange(string $headerValue, int $size): null|array
     {
         if ('' === $headerValue) {
             return [];
@@ -428,7 +461,7 @@ final readonly class ContentDeliverer
      */
     private function getContentRangeHeaderValue(array $range, int $size): string
     {
-        return 'bytes ' . $range['start'] . '-' . ($range['start'] + $range['length'] - 1) . '/' . $size;
+        return 'bytes ' . ((string) $range['start']) . '-' . ((string) ($range['start'] + $range['length'] - 1)) . '/' . ((string) $size);
     }
 
     /**
@@ -453,7 +486,7 @@ final readonly class ContentDeliverer
      * @return null|bool True if the file was not modified since the specified date, false if it was modified,
      *                   and null if the header is not present or the date is invalid.
      */
-    private function isUnmodifiedSince(RequestInterface $request, int $modificationTime): ?bool
+    private function isUnmodifiedSince(RequestInterface $request, int $modificationTime): null|bool
     {
         $ifUnmodifiedSince = $request->getHeaderLine('if-unmodified-since');
         if (null === $ifUnmodifiedSince || $modificationTime <= 0) {
@@ -474,7 +507,7 @@ final readonly class ContentDeliverer
      * @return null|bool True if the file was modified since the specified date, false if it was not modified,
      *                   and null if the request method is not GET or HEAD, the header is not present, or the date is invalid.
      */
-    private function isModifiedSince(RequestInterface $request, int $modificationTime): ?bool
+    private function isModifiedSince(RequestInterface $request, int $modificationTime): null|bool
     {
         $method = $request->getMethod();
         if ($method !== Method::Get && $method !== Method::Head) {
@@ -500,7 +533,9 @@ final readonly class ContentDeliverer
     private function addLastModifiedHeader(ResponseInterface $response, int $modificationTime): ResponseInterface
     {
         if ($modificationTime > 0) {
-            $response = $response->withHeader('last-modified', formatDateHeader($modificationTime));
+            /** @var non-empty-string $lastModified */
+            $lastModified = formatDateHeader($modificationTime);
+            $response = $response->withHeader('last-modified', $lastModified);
         }
 
         return $response;
@@ -532,7 +567,7 @@ final readonly class ContentDeliverer
      *
      * @return null|bool True if the ETag matches, false if it does not, and null if the header is not present or invalid.
      */
-    private function checkIfMatch(RequestInterface $request, ResponseInterface $response): ?bool
+    private function checkIfMatch(RequestInterface $request, ResponseInterface $response): null|bool
     {
         $ifMatches = $request->getHeaderLine('if-match');
         if (null === $ifMatches) {
@@ -576,7 +611,7 @@ final readonly class ContentDeliverer
      *
      * @return null|bool True if the ETag or Last-Modified matches, false if it does not, and null if the header is not present or invalid.
      */
-    private function checkIfRange(RequestInterface $request, ResponseInterface $response, int $modificationTime): ?bool
+    private function checkIfRange(RequestInterface $request, ResponseInterface $response, int $modificationTime): null|bool
     {
         $method = $request->getMethod();
         if ($method !== Method::Get && $method !== Method::Head) {
@@ -612,7 +647,7 @@ final readonly class ContentDeliverer
      *
      * @return null|bool True if the ETag does not match, false if it does, and null if the header is not present or invalid.
      */
-    private function checkIfNoneMatch(RequestInterface $request, ResponseInterface $response): ?bool
+    private function checkIfNoneMatch(RequestInterface $request, ResponseInterface $response): null|bool
     {
         $ifNoneMatch = $request->getHeaderLine('if-none-match');
         if (null === $ifNoneMatch) {
@@ -745,6 +780,7 @@ final readonly class ContentDeliverer
         // "\r\n--" + boundary + "--\r\n"
         $totalLength += 4 + Str\Byte\length($this->boundary) + 4;
 
+        /** @var int<0, max> $totalLength */
         return $totalLength;
     }
 }

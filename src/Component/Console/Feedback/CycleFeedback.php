@@ -2,20 +2,30 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Feedback;
 
 use Neu\Component\Console\Terminal;
 use Psl\Iter;
-use Psl\Math;
 use Psl\Str;
 
 /**
- * The `CycleFeedback` class displays feedback by cycling through a series of characters.
+ * The {@see CycleFeedback} class displays feedback by cycling through a series of characters.
  */
 final class CycleFeedback extends AbstractFeedback
 {
     /**
-     * @inheritDoc
+     * Characters used in displaying the feedback in the output.
+     *
+     * @var list<string>
      */
     protected array $characterSequence = [
         '-',
@@ -34,13 +44,18 @@ final class CycleFeedback extends AbstractFeedback
      */
     protected string $suffix = '';
 
-    private ?string $finishCharacter = null;
+    /**
+     * The character to display when the feedback is finished.
+     *
+     * @var null|non-empty-string
+     */
+    private null|string $finishCharacter = null;
 
 
     /**
      * Set the character to display when the feedback is finished.
      *
-     * @var non-empty-string $character
+     * @param non-empty-string $character
      */
     public function setFinishCharacter(string $character): self
     {
@@ -84,8 +99,15 @@ final class CycleFeedback extends AbstractFeedback
     protected function setMaxLength(): self
     {
         parent::setMaxLength();
+        if (null === $this->finishCharacter) {
+            return $this;
+        }
 
-        $this->maxLength = Math\maxva($this->maxLength, Str\length($this->finishCharacter ?? ''));
+        /** @var int<1, max> $finishCharacterLength */
+        $finishCharacterLength = Str\length($this->finishCharacter);
+        if ($finishCharacterLength > $this->maxLength) {
+            $this->maxLength = $finishCharacterLength;
+        }
 
         return $this;
     }

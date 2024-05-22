@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Server\DependencyInjection\Factory\Command;
 
 use Assess\Configuration;
@@ -17,6 +26,8 @@ final readonly class ClusterCommandFactory implements FactoryInterface
 {
     /**
      * The interval in seconds to poll for changes.
+     *
+     * @var float
      */
     private float $watchInterval;
 
@@ -39,7 +50,7 @@ final readonly class ClusterCommandFactory implements FactoryInterface
      * @param list<non-empty-string>|null $watchDirectories The directories to watch for changes.
      * @param list<non-empty-string>|null $watchExtensions The extensions to watch for changes.
      */
-    public function __construct(?float $watchInterval = null, ?array $watchDirectories = null, ?array $watchExtensions = null)
+    public function __construct(null|float $watchInterval = null, null|array $watchDirectories = null, null|array $watchExtensions = null)
     {
         $this->watchInterval = $watchInterval ?? Configuration::DEFAULT_POLL_INTERVAL;
         $this->watchDirectories = $watchDirectories ?? [];

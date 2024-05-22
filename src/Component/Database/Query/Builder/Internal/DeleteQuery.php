@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database\Query\Builder\Internal;
 
 use Neu\Component\Database\AbstractionLayerInterface;
@@ -14,14 +23,22 @@ use Neu\Component\Database\Query\Type;
  */
 final readonly class DeleteQuery extends AbstractWhereQuery implements DeleteQueryInterface
 {
+    /**
+     * @var non-empty-string
+     */
     private string $table;
+
+    /**
+     * @var null|non-empty-string
+     */
     private null|string $alias;
 
     /**
      * @param non-empty-string $table
      * @param null|non-empty-string $alias
+     * @param null|CompositeExpressionInterface|non-empty-string $where
      */
-    public function __construct(AbstractionLayerInterface $dbal, string $table, null|string $alias = null, CompositeExpressionInterface|string $where = null)
+    public function __construct(AbstractionLayerInterface $dbal, string $table, null|string $alias = null, CompositeExpressionInterface|string|null $where = null)
     {
         parent::__construct($dbal, $where);
 

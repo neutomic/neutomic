@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Configuration;
 
 use BackedEnum;
@@ -28,11 +37,7 @@ final readonly class ConfigurationContainer implements ConfigurationContainerInt
     /**
      * Create a new configuration container.
      *
-     * @template K of array-key
-     *
-     * @param array<K, mixed> $entries
-     *
-     * @return static<K>
+     * @param array<array-key, mixed> $entries
      */
     public static function create(array $entries = [], bool $strict = false): static
     {
@@ -101,6 +106,7 @@ final readonly class ConfigurationContainer implements ConfigurationContainerInt
             return $default;
         }
 
+        /** @psalm-suppress MissingThrowsDocblock */
         return $this->getOfType($index, $type);
     }
 
@@ -187,11 +193,22 @@ final readonly class ConfigurationContainer implements ConfigurationContainerInt
     }
 
     /**
-     * @inheritDoc
+     * Retrieve the entry value using its index and return one of the given values.
+     *
+     * @template Tc of scalar
+     *
+     * @param array-key $index
+     * @param non-empty-list<Tc> $values
+     *
+     * @throws Exception\InvalidEntryException If the entry value is not one of the given values.
+     * @throws Exception\MissingEntryException If the entry is not found does not exist.
+     *
+     * @return Tc
      */
     public function oneOf(int|string $index, array $values): mixed
     {
-        return $this->getOfType($index, Type\union(...Vec\map($values, static fn(mixed $value) => Type\literal_scalar($value))));
+        /** @var Tc */
+        return $this->getOfType($index, Type\union(...Vec\map($values, static fn (mixed $value) => Type\literal_scalar($value))));
     }
 
     /**
@@ -199,7 +216,7 @@ final readonly class ConfigurationContainer implements ConfigurationContainerInt
      */
     public function isOneOf(int|string $index, array $values): bool
     {
-        return $this->isOfType($index, Type\union(...Vec\map($values, static fn(mixed $value) => Type\literal_scalar($value))));
+        return $this->isOfType($index, Type\union(...Vec\map($values, static fn (mixed $value) => Type\literal_scalar($value))));
     }
 
     /**
@@ -222,7 +239,7 @@ final readonly class ConfigurationContainer implements ConfigurationContainerInt
     /**
      * @inheritDoc
      */
-    public function getContainer(int|string $index, ?bool $strict = null): ConfigurationContainerInterface
+    public function getContainer(int|string $index, null|bool $strict = null): ConfigurationContainerInterface
     {
         if (!$this->has($index)) {
             return new self([]);
@@ -292,7 +309,7 @@ final readonly class ConfigurationContainer implements ConfigurationContainerInt
         return new Exception\MissingEntryException('Entry ' . $index . ' does not exist within the container.');
     }
 
-    private function invalidEntry(int|string $index, string $message, ?Throwable $previous = null): Exception\InvalidEntryException
+    private function invalidEntry(int|string $index, string $message, null|Throwable $previous = null): Exception\InvalidEntryException
     {
         if (Type\string()->matches($index)) {
             $index = '"' . $index . '"';

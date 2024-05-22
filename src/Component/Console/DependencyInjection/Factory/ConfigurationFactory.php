@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\DependencyInjection\Factory;
 
 use Neu\Component\Console\Configuration;
@@ -17,58 +26,60 @@ final readonly class ConfigurationFactory implements FactoryInterface
 {
     /**
      * The name of the application.
+     *
+     * @var non-empty-string
      */
-    private ?string $name;
+    private null|string $name;
 
     /**
      * The version of the application.
      */
-    private ?string $version;
+    private null|string $version;
 
     /**
      * A decorator banner to "brand" the application.
      */
-    private ?string $banner;
+    private null|string $banner;
 
     /**
      * Whether the application should enable the help flag.
      */
-    private ?bool $helpFlag;
+    private null|bool $helpFlag;
 
     /**
      * Whether the application should enable the quiet mode flag.
      */
-    private ?bool $quietFlag;
+    private null|bool $quietFlag;
 
     /**
      * Whether the application should enable the verbose mode flag.
      */
-    private ?bool $verboseFlag;
+    private null|bool $verboseFlag;
 
     /**
      * Whether the application should enable the version flag.
      */
-    private ?bool $versionFlag;
+    private null|bool $versionFlag;
 
     /**
      * Whether the application should enable the ansi flag.
      */
-    private ?bool $ansiFlag;
+    private null|bool $ansiFlag;
 
     /**
      * Whether the application should enable the no-ansi flag.
      */
-    private ?bool $noAnsiFlag;
+    private null|bool $noAnsiFlag;
 
     /**
      * Whether the application should enable the no-interaction flag.
      */
-    private ?bool $noInteractionFlag;
+    private null|bool $noInteractionFlag;
 
     /**
      * Creates a new {@see ConfigurationFactory} instance.
      *
-     * @param ?string $name The name of the application.
+     * @param ?non-empty-string $name The name of the application.
      * @param ?string $version The version of the application.
      * @param ?string $banner A decorator banner to "brand" the application.
      * @param ?bool $helpFlag Whether the application should enable the help flag.
@@ -80,16 +91,16 @@ final readonly class ConfigurationFactory implements FactoryInterface
      * @param ?bool $noInteractionFlag Whether the application should enable the no-interaction flag.
      */
     public function __construct(
-        ?string $name = null,
-        ?string $version = null,
-        ?string $banner = null,
-        ?bool $helpFlag = null,
-        ?bool $quietFlag = null,
-        ?bool $verboseFlag = null,
-        ?bool $versionFlag = null,
-        ?bool $ansiFlag = null,
-        ?bool $noAnsiFlag = null,
-        ?bool $noInteractionFlag = null,
+        null|string $name = null,
+        null|string $version = null,
+        null|string $banner = null,
+        null|bool $helpFlag = null,
+        null|bool $quietFlag = null,
+        null|bool $verboseFlag = null,
+        null|bool $versionFlag = null,
+        null|bool $ansiFlag = null,
+        null|bool $noAnsiFlag = null,
+        null|bool $noInteractionFlag = null,
     ) {
         $this->name = $name;
         $this->version = $version;

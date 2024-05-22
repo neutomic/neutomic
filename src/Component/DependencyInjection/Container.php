@@ -2,12 +2,26 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\DependencyInjection;
 
 use Neu\Component\DependencyInjection\Definition\DefinitionInterface;
 
 use function count;
 
+/**
+ * The service container.
+ *
+ * @psalm-suppress InvalidReturnType
+ */
 final readonly class Container implements ContainerInterface
 {
     /**
@@ -20,7 +34,7 @@ final readonly class Container implements ContainerInterface
     /**
      * The service definitions.
      *
-     * @var list<DefinitionInterface>
+     * @var array<non-empty-string, DefinitionInterface>
      */
     private array $definitions;
 
@@ -39,7 +53,7 @@ final readonly class Container implements ContainerInterface
     private array $aliasIdMap;
 
     /**
-     * @param array<string, DefinitionInterface> $definitions
+     * @param array<non-empty-string, DefinitionInterface> $definitions
      */
     public function __construct(Project $project, array $definitions)
     {
@@ -75,6 +89,10 @@ final readonly class Container implements ContainerInterface
      */
     public function has(string $id): bool
     {
+        if ('' === $id) {
+            return false;
+        }
+
         if ($id === Project::class || $id === ProjectMode::class) {
             return true;
         }
@@ -87,6 +105,10 @@ final readonly class Container implements ContainerInterface
      */
     public function get(string $id): object
     {
+        if ('' === $id) {
+            throw Exception\RuntimeException::forEmptyServiceId();
+        }
+
         if ($id === Project::class) {
             return $this->project;
         }
@@ -120,6 +142,7 @@ final readonly class Container implements ContainerInterface
      */
     public function getTyped(string $id, string $type): object
     {
+        /** @psalm-suppress MissingThrowsDocblock - Psr exception is never thrown */
         $service = $this->get($id);
         if ($service instanceof $type) {
             return $service;

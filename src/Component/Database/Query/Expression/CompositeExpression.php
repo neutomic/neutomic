@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database\Query\Expression;
 
 use Psl\Iter;
@@ -75,7 +84,7 @@ final readonly class CompositeExpression implements CompositeExpressionInterface
             return (string) $this->expressions[0];
         }
 
-        $expressions = Vec\map($this->expressions, static fn(string|CompositeExpressionInterface $expression): string => (string) $expression);
+        $expressions = Vec\map($this->expressions, static fn (string|CompositeExpressionInterface $expression): string => (string) $expression);
 
         return '(' . Str\join($expressions, ') ' . $this->type->value . ' (') . ')';
     }

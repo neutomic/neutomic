@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Table;
 
 use Psl\Iter;
@@ -61,7 +70,7 @@ final class AsciiTable extends AbstractTable
         'padding' => ' ',
     ];
 
-    private ?string $borderHeaderLine = null;
+    private null|string $borderHeaderLine = null;
 
     /**
      * A dictionary containing necessary characters used for building the border of the table.
@@ -154,19 +163,21 @@ final class AsciiTable extends AbstractTable
     {
         if ($header) {
             if ($this->borderHeaderLine === null) {
-                $this->borderHeaderLine = $this->borderCharacters['center_left_corner'];
+                $borderHeaderLine = $this->borderCharacters['center_left_corner'];
 
                 foreach ($this->columnWidths as $k => $width) {
-                    $this->borderHeaderLine .= $this->borderCharacters['padding'];
-                    $this->borderHeaderLine .= Str\repeat($this->borderCharacters['header_line'], $width);
-                    $this->borderHeaderLine .= $this->borderCharacters['padding'];
+                    $borderHeaderLine .= $this->borderCharacters['padding'];
+                    $borderHeaderLine .= Str\repeat($this->borderCharacters['header_line'], $width);
+                    $borderHeaderLine .= $this->borderCharacters['padding'];
 
                     if ($k === Iter\count($this->columnWidths) - 1) {
-                        $this->borderHeaderLine .= $this->borderCharacters['center_right_corner'];
+                        $borderHeaderLine .= $this->borderCharacters['center_right_corner'];
                     } else {
-                        $this->borderHeaderLine .= $this->borderCharacters['center_center_corner'];
+                        $borderHeaderLine .= $this->borderCharacters['center_center_corner'];
                     }
                 }
+
+                $this->borderHeaderLine = $borderHeaderLine;
             }
 
             return $this->borderHeaderLine;
@@ -178,7 +189,7 @@ final class AsciiTable extends AbstractTable
             default => 'center_',
         };
 
-            $borderLine = $this->borderCharacters["{$prefix}left_corner"];
+        $borderLine = $this->borderCharacters["{$prefix}left_corner"];
 
         foreach ($this->columnWidths as $k => $width) {
             $borderLine .= $this->borderCharacters['padding'];
@@ -210,7 +221,7 @@ final class AsciiTable extends AbstractTable
     /**
      * Given a container of data, build a single row of the table.
      *
-     * @var list<string> $data
+     * @param list<string> $data
      */
     protected function buildRow(array $data): string
     {

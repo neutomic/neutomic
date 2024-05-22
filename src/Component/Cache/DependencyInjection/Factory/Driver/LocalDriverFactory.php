@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Cache\DependencyInjection\Factory\Driver;
 
 use Neu\Component\Cache\Driver\LocalDriver;
@@ -15,14 +24,21 @@ use Neu\Component\DependencyInjection\Factory\FactoryInterface;
  */
 final readonly class LocalDriverFactory implements FactoryInterface
 {
+    /**
+     * @var positive-int
+     */
     private int $pruneInterval;
-    private ?int $size;
 
     /**
-     * @param int $pruneInterval The interval in seconds to prune the cache.
-     * @param null|int $size The maximum size of the cache.
+     * @var null|positive-int
      */
-    public function __construct(?int $pruneInterval = null, ?int $size = null)
+    private null|int $size;
+
+    /**
+     * @param positive-int $pruneInterval The interval in seconds to prune the cache.
+     * @param null|positive-int $size The maximum size of the cache.
+     */
+    public function __construct(null|int $pruneInterval = null, null|int $size = null)
     {
         $this->pruneInterval = $pruneInterval ?? LocalDriver::PRUNE_INTERVAL;
         $this->size = $size;

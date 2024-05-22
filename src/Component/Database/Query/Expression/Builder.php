@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database\Query\Expression;
 
 use Psl\Str;
@@ -100,7 +109,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
-    public function like(string $expression, string $pattern, ?string $escapeCharacters = null): string
+    public function like(string $expression, string $pattern, null|string $escapeCharacters = null): string
     {
         $comparison = $this->rawComparison($expression, 'LIKE', $pattern);
         if (null === $escapeCharacters) {
@@ -113,7 +122,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
-    public function notLike(string $expression, string $pattern, ?string $escapeCharacters = null): string
+    public function notLike(string $expression, string $pattern, null|string $escapeCharacters = null): string
     {
         $comparison = $this->rawComparison($expression, 'NOT LIKE', $pattern);
         if (null === $escapeCharacters) {

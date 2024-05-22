@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Configuration;
 
 use BackedEnum;
@@ -62,6 +71,8 @@ interface ConfigurationContainerInterface extends Countable, IteratorAggregate
      * @param array-key $index The index of the entry.
      * @param TypeInterface<O> $type The type to check against.
      * @param D $default The default value to return if the entry does not exist.
+     *
+     * @throws Exception\InvalidEntryException If the entry value cannot be converted into the given type.
      *
      * @return O|D
      */
@@ -161,7 +172,7 @@ interface ConfigurationContainerInterface extends Countable, IteratorAggregate
      * @template Tc of scalar
      *
      * @param array-key $index
-     * @param list<Tc> $values
+     * @param non-empty-list<Tc> $values
      *
      * @throws Exception\InvalidEntryException If the entry value is not one of the given values.
      * @throws Exception\MissingEntryException If the entry is not found does not exist.
@@ -176,7 +187,7 @@ interface ConfigurationContainerInterface extends Countable, IteratorAggregate
      * If the entry does not exist, this method MUST return false.
      *
      * @param array-key $index
-     * @param list<scalar> $values
+     * @param non-empty-list<scalar> $values
      */
     public function isOneOf(string|int $index, array $values): bool;
 
@@ -213,10 +224,11 @@ interface ConfigurationContainerInterface extends Countable, IteratorAggregate
      *                          or null to inherit the current container's strictness.
      *
      * @throws Exception\InvalidEntryException If the entry value cannot be converted into a container.
+     * @throws Exception\MissingEntryException If the entry is not found does not exist.
      *
      * @return ConfigurationContainerInterface
      */
-    public function getContainer(string|int $index, ?bool $strict = null): ConfigurationContainerInterface;
+    public function getContainer(string|int $index, null|bool $strict = null): ConfigurationContainerInterface;
 
     /**
      * Return whether the entry value using its index is a container.

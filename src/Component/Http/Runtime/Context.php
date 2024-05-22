@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Runtime;
 
 use Amp\Socket\TlsInfo;
@@ -14,7 +23,7 @@ final readonly class Context
     /**
      * The worker ID of the context or null if the context is not worker-specific.
      */
-    private ?int $workerId;
+    private null|int $workerId;
 
     /**
      * The client ID of the context.
@@ -38,7 +47,7 @@ final readonly class Context
     /**
      * The TLS information of the client or null if the client is not encrypted.
      */
-    private ?TlsInfo $tlsInformation;
+    private null|TlsInfo $tlsInformation;
 
     /**
      * The function to send an early informational response.
@@ -57,7 +66,7 @@ final readonly class Context
      * @param TlsInfo|null $tlsInformation The TLS information of the client or null if the client is not encrypted.
      * @param (Closure(ResponseInterface): void) $sendInformationalResponse The function to send an early informational response.
      */
-    public function __construct(?int $workerId, int $clientId, string $remoteAddress, string $localAddress, ?TlsInfo $tlsInformation, Closure $sendInformationalResponse)
+    public function __construct(null|int $workerId, int $clientId, string $remoteAddress, string $localAddress, null|TlsInfo $tlsInformation, Closure $sendInformationalResponse)
     {
         $this->workerId = $workerId;
         $this->clientId = $clientId;
@@ -72,7 +81,7 @@ final readonly class Context
      *
      * @return int|null The worker ID of the context or null if the context is not worker-specific.
      */
-    public function getWorkerId(): ?int
+    public function getWorkerId(): null|int
     {
         return $this->workerId;
     }
@@ -110,7 +119,7 @@ final readonly class Context
      *
      * @return TlsInfo|null The TLS information of the client or null if the client is not encrypted.
      */
-    public function getTlsInformation(): ?TlsInfo
+    public function getTlsInformation(): null|TlsInfo
     {
         return $this->tlsInformation;
     }

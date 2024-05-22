@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console;
 
 use Neu\Component\Console\Input\HandleInput;
@@ -22,17 +31,30 @@ use function function_exists;
 use function sapi_windows_vt100_support;
 use function stream_isatty;
 
+/**
+ * The {@see Terminal} class provides information about the terminal.
+ *
+ * @psalm-suppress MissingThrowsDocblock
+ * @psalm-suppress RiskyTruthyFalsyComparison
+ */
 final class Terminal
 {
     private const int DEFAULT_HEIGHT = 24;
     private const int DEFAULT_WIDTH = 80;
 
-    private static ?int $height = null;
-    private static ?int $width = null;
+    /**
+     * @var null|int<0, max>
+     */
+    private static null|int $height = null;
 
-    private static ?bool $colorSupport = null;
+    /**
+     * @var null|int<0, max>
+     */
+    private static null|int $width = null;
 
-    private static ?bool $interactive = null;
+    private static null|bool $colorSupport = null;
+
+    private static null|bool $interactive = null;
 
     /**
      * Returns the default terminal input.
@@ -66,6 +88,8 @@ final class Terminal
 
     /**
      * Set the terminal height.
+     *
+     * @param int<0, max> $height
      */
     public static function setHeight(int $height): void
     {
@@ -74,6 +98,8 @@ final class Terminal
 
     /**
      * Get the terminal height.
+     *
+     * @return int<0, max>
      */
     public static function getHeight(): int
     {
@@ -81,6 +107,7 @@ final class Terminal
         if ($lines !== null) {
             $lines = Str\to_int($lines);
             if ($lines !== null) {
+                /** @var int<0, max> */
                 return $lines;
             }
         }
@@ -102,6 +129,8 @@ final class Terminal
 
     /**
      * Set the terminal width.
+     *
+     * @param int<0, max> $width
      */
     public static function setWidth(int $width): void
     {
@@ -110,6 +139,8 @@ final class Terminal
 
     /**
      * Get the terminal width.
+     *
+     * @return int<0, max>
      */
     public static function getWidth(): int
     {
@@ -117,6 +148,7 @@ final class Terminal
         if ($cols !== null) {
             $cols = Str\to_int($cols);
             if ($cols !== null) {
+                /** @var int<0, max> */
                 return $cols;
             }
         }
@@ -196,16 +228,18 @@ final class Terminal
         }
 
         $stream = IO\output_handle()->getStream();
-        if (OS\is_windows() && function_exists('sapi_windows_vt100_support') && @sapi_windows_vt100_support($stream)) {
-            return self::$colorSupport = true;
-        }
+        if (null !== $stream) {
+            if (OS\is_windows() && function_exists('sapi_windows_vt100_support') && @sapi_windows_vt100_support($stream)) {
+                return self::$colorSupport = true;
+            }
 
-        if (function_exists('posix_isatty') && @posix_isatty($stream)) {
-            return self::$colorSupport = true;
-        }
+            if (function_exists('posix_isatty') && @posix_isatty($stream)) {
+                return self::$colorSupport = true;
+            }
 
-        if (@stream_isatty($stream)) {
-            return self::$colorSupport = true;
+            if (@stream_isatty($stream)) {
+                return self::$colorSupport = true;
+            }
         }
 
         // Default
@@ -248,16 +282,18 @@ final class Terminal
 
         $stream = IO\input_handle()->getStream();
 
-        if (OS\is_windows() && function_exists('sapi_windows_vt100_support') && @sapi_windows_vt100_support($stream)) {
-            return self::$interactive = true;
-        }
+        if (null !== $stream) {
+            if (OS\is_windows() && function_exists('sapi_windows_vt100_support') && @sapi_windows_vt100_support($stream)) {
+                return self::$interactive = true;
+            }
 
-        if (function_exists('posix_isatty') &&  @posix_isatty($stream)) {
-            return self::$interactive = true;
-        }
+            if (function_exists('posix_isatty') &&  @posix_isatty($stream)) {
+                return self::$interactive = true;
+            }
 
-        if (@stream_isatty($stream)) {
-            return self::$interactive = true;
+            if (@stream_isatty($stream)) {
+                return self::$interactive = true;
+            }
         }
 
         return self::$interactive = false;
@@ -266,7 +302,7 @@ final class Terminal
     /**
      * Initializes dimensions using the output of a stty columns line.
      *
-     * @return array{width: ?int, height: ?int}
+     * @return array{width: ?int<0, max>, height: ?int<0, max>}
      */
     private static function getDimensionsUsingStty(): array
     {
@@ -275,6 +311,7 @@ final class Terminal
 
             if ($matches = Regex\first_match($sttyString, "/rows.(\d+);.columns.(\d+);/i")) {
                 // extract [w, h] from "rows h; columns w;"
+                /** @var array{width: int<0, max>, height: int<0, max>} */
                 return [
                     'width' => Str\to_int($matches[2]),
                     'height' => Str\to_int($matches[1]),
@@ -283,6 +320,7 @@ final class Terminal
 
             if ($matches = Regex\first_match($sttyString, "/;.(\d+).rows;.(\d+).columns/i")) {
                 // extract [w, h] from "; h rows; w columns"
+                /** @var array{width: int<0, max>, height: int<0, max>} */
                 return [
                     'width' => Str\to_int($matches[2]),
                     'height' => Str\to_int($matches[1]),

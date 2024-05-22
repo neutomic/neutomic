@@ -2,17 +2,24 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Runtime\ContentDelivery\Internal;
 
 /**
  * @internal
  */
-final readonly class ContentTypes
+enum ContentTypes
 {
     /**
-     * @var array<string, string>
-     *
-     * @internal
+     * @var array<array-key, string>
      */
     public const array EXTENSION_TO_CONTENT_TYPE_MAP = [
         '1km' => 'application/vnd.1000minds.decision-model+xml',

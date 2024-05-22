@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Input;
 
 use Iterator;
@@ -17,6 +26,8 @@ use Psl\Vec;
  * @psalm-type Token = array{raw: string, value: string}
  *
  * @implements Iterator<Token>
+ *
+ * @psalm-suppress RiskyTruthyFalsyComparison
  */
 final class Lexer implements Iterator
 {
@@ -132,6 +143,7 @@ final class Lexer implements Iterator
      */
     public function shift(): void
     {
+        /** @var string|null $key */
         $key = Iter\first($this->items);
         $this->items = Vec\values(Dict\drop($this->items, 1));
 
@@ -205,8 +217,10 @@ final class Lexer implements Iterator
 
     /**
      * Peek ahead to the next available item without progressing the lexer.
+     *
+     * @return Token|null
      */
-    public function peek(): ?array
+    public function peek(): null|array
     {
         if (Iter\count($this->items) > 0) {
             return $this->processInput($this->items[0]);

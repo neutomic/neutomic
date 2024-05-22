@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Feedback;
 
 /**
@@ -40,9 +49,9 @@ interface FeedbackInterface
      * When changing positions, the implementation should always save the cursor
      * position, then restore it.
      *
-     * @param null|array{0: int, 1: int} $position
+     * @param null|array{0: int<0, max>, 1: int<0, max>} $position
      */
-    public function setPosition(?array $position): void;
+    public function setPosition(null|array $position): void;
 
     /**
      * A template string used to construct additional information displayed before

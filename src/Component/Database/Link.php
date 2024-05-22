@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database;
 
 use Amp\Mysql\MysqlLink;
@@ -11,10 +20,14 @@ use Amp\Sql\SqlConnectionException;
 use Amp\Sql\SqlException;
 use Amp\Sql\SqlLink;
 use Amp\Sql\SqlQueryError;
+use Amp\Sql\SqlResult;
+use Amp\Sql\SqlStatement;
+use Amp\Sql\SqlTransaction;
 use Closure;
 use Neu\Component\Database\Exception\ConnectionException;
 use Neu\Component\Database\Exception\InvalidQueryException;
 use Neu\Component\Database\Exception\RuntimeException;
+use Neu\Component\Database\Exception\TransactionException;
 use Neu\Component\Database\Exception\UnsupportedFeatureException;
 use Neu\Component\Database\Notification\NotifierInterface;
 use Neu\Component\Database\Notification\Postgres\PostgresNotifier;
@@ -28,19 +41,20 @@ use function str_replace;
 
 abstract readonly class Link implements LinkInterface
 {
-    private SqlLink $link;
     private Platform $platform;
 
-    public function __construct(SqlLink $link)
+    /**
+     * @var SqlLink<SqlResult, SqlStatement<SqlResult>, SqlTransaction>
+     */
+    private SqlLink $link;
+
+    /**
+     * @param SqlLink<SqlResult, SqlStatement<SqlResult>, SqlTransaction> $link
+     */
+    public function __construct(Platform $platform, SqlLink $link)
     {
+        $this->platform = $platform;
         $this->link = $link;
-        if ($this->link instanceof PostgresLink) {
-            $this->platform = Platform::Postgres;
-        } elseif ($this->link instanceof MysqlLink) {
-            $this->platform = Platform::Mysql;
-        } else {
-            throw new UnsupportedFeatureException('Unsupported database platform.');
-        }
     }
 
     /**
@@ -85,7 +99,17 @@ abstract readonly class Link implements LinkInterface
     }
 
     /**
-     * @inheritDoc
+     * Run the given operation in a transaction, with the given isolation level.
+     *
+     * Note: any exception throw from the `$operation` will be thrown back to the caller site.
+     *
+     * @template T
+     *
+     * @param (Closure(TransactionInterface): T) $operation
+     *
+     * @throws TransactionException If failed to commit or rollback the transaction.
+     *
+     * @return T
      */
     public function transactional(Closure $operation): mixed
     {
@@ -95,6 +119,7 @@ abstract readonly class Link implements LinkInterface
             /** @psalm-suppress MissingThrowsDocblock */
             $transaction->commit();
 
+            /** @var T */
             return $result;
         } catch (Throwable $exception) {
             /** @psalm-suppress MissingThrowsDocblock */
@@ -111,6 +136,7 @@ abstract readonly class Link implements LinkInterface
     public function createTransaction(): TransactionInterface
     {
         return new Transaction(
+            $this->platform,
             $this->link->beginTransaction()
         );
     }

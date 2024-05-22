@@ -2,10 +2,19 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Runtime\Middleware;
 
 use DeflateContext;
-use Iterator;
+use Generator;
 use Neu\Component\Http\Exception\RuntimeException;
 use Neu\Component\Http\Message\Body;
 use Neu\Component\Http\Message\BodyInterface;
@@ -31,6 +40,12 @@ use const ZLIB_ENCODING_RAW;
 use const ZLIB_FINISH;
 use const ZLIB_SYNC_FLUSH;
 
+/**
+ * A middleware that compresses the response body.
+ *
+ * @psalm-suppress RedundantCondition
+ * @psalm-suppress MissingThrowsDocblock
+ */
 final readonly class CompressionMiddleware implements PrioritizedMiddlewareInterface
 {
     /**
@@ -138,6 +153,8 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
      * @param int<1, 9> $memory The memory level.
      * @param int<8, 15> $window The window size.
      * @param int $priority The priority of the middleware.
+     *
+     * @throws RuntimeException If the zlib extension is not loaded.
      */
     public function __construct(
         LoggerInterface $logger = new NullLogger(),
@@ -161,12 +178,11 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
         $this->priority = $priority;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
-        if (!extension_loaded('zlib')) {
-            throw new RuntimeException('The compression middleware requires the zlib extension');
-        }
-
         $response = $next->handle($context, $request);
 
         $body = $response->getBody();
@@ -195,7 +211,7 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
         }
 
         $contentTypes = $response->getHeaderLine('Content-Type');
-        if ('' === $contentTypes) {
+        if (null === $contentTypes) {
             assert($this->logger->debug('Skipping compression for response with empty content type') || true);
 
             return $response;
@@ -210,7 +226,7 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
 
         $weight = 0;
         $encoding = null;
-        foreach ($request->getHeader('accept-encoding') as $values) {
+        foreach (($request->getHeader('accept-encoding') ?? []) as $values) {
             $values = array_map("trim", explode(",", $values));
             foreach ($values as $value) {
                 if (preg_match(self::ENCODING_REGEX, $value, $matches)) {
@@ -225,7 +241,7 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
             }
         }
 
-        if (null === $encoding) {
+        if (null === $encoding || '' === $encoding) {
             assert($this->logger->debug('Skipping compression for response with no acceptable encoding') || true);
 
             return $response;
@@ -298,7 +314,16 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
         ));
     }
 
-    private static function read(DeflateContext $context, BodyInterface $body, string $chunk): Iterator
+    /**
+     * Read the body and compress it.
+     *
+     * @param DeflateContext $context The deflate context.
+     * @param BodyInterface $body The response body.
+     * @param string $chunk The initial chunk of the response body.
+     *
+     * @return Generator<int, string, mixed, never>
+     */
+    private static function read(DeflateContext $context, BodyInterface $body, string $chunk): Generator
     {
         $handler = static function (int $code, string $message): never {
             throw new RuntimeException('failed to compress chunk: ' . $message, $code);
@@ -314,6 +339,10 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
                     restore_error_handler();
                 }
 
+                if (false === $chunk) {
+                    throw new RuntimeException('failed to compress chunk');
+                }
+
                 yield $chunk;
             }
 
@@ -326,6 +355,10 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
             $chunk = deflate_add($context, '', ZLIB_FINISH);
         } finally {
             restore_error_handler();
+        }
+
+        if (false === $chunk) {
+            throw new RuntimeException('failed to finish compression');
         }
 
         yield $chunk;

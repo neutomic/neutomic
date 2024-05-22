@@ -2,28 +2,49 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Exception;
 
 use Neu\Component\Http\Message\Method;
 use Neu\Component\Http\Message\StatusCode;
 use Neu\Component\Http\Message\UriInterface;
+use Psl\Str;
+use Psl\Vec;
 use Throwable;
 
-use function array_map;
-
-final class MethodNotAllowedHttpException extends RuntimeException implements HttpExceptionInterface
+final class MethodNotAllowedHttpException extends HttpException
 {
     /**
-     * @param list<Method> $allowed
+     * @var non-empty-list<Method>
      */
     private array $allowed;
 
     /**
-     * @param list<Method> $allowed
+     * @param non-empty-list<Method> $allowed
      */
-    public function __construct(array $allowed, string $message = '', int $code = 0, ?Throwable $previous = null)
+    public function __construct(array $allowed, string $message = '', null|Throwable $previous = null)
     {
-        parent::__construct($message, $code, $previous);
+        $headers = [
+            'Allow' => Vec\map(
+                $allowed,
+                /**
+                 * @param Method $method
+                 *
+                 * @return non-empty-string
+                 */
+                static fn (Method $method): string => $method->value,
+            ),
+        ];
+
+        parent::__construct(StatusCode::MethodNotAllowed, $headers, $message, $previous);
 
         $this->allowed = $allowed;
     }
@@ -31,16 +52,15 @@ final class MethodNotAllowedHttpException extends RuntimeException implements Ht
     /**
      * Creates a new instance of the exception.
      *
-     * @param list<Method> $allowed
+     * @param non-empty-list<Method> $allowed
      */
-    public static function create(Method $method, UriInterface $uri, array $allowed, ?Throwable $previous = null): self
+    public static function create(Method $method, UriInterface $uri, array $allowed, null|Throwable $previous = null): self
     {
-        $allowedString = implode(', ', array_map(static fn (Method $method): string => $method->value, $allowed));
+        $allowedString = Str\join(Vec\map($allowed, static fn (Method $method): string => $method->value), '", "');
 
         return new self(
             $allowed,
             'Method "' . $method->value . '" is not allowed for "' . $uri->getPath() . '", allowed methods: ' . $allowedString,
-            0,
             $previous,
         );
     }
@@ -53,21 +73,5 @@ final class MethodNotAllowedHttpException extends RuntimeException implements Ht
     public function getAllowedMethods(): array
     {
         return $this->allowed;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getStatusCode(): StatusCode
-    {
-        return StatusCode::MethodNotAllowed;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getHeaders(): array
-    {
-        return ['Allow' =>  array_map(static fn (Method $method): string => $method->value, $this->allowed)];
     }
 }

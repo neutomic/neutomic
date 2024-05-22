@@ -2,20 +2,33 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Bridge\Monolog\DependencyInjection\Factory\Handler;
 
 use Amp\File;
+use Amp\File\FilesystemException;
 use Amp\Log\StreamHandler;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Level;
 use Monolog\Processor\ProcessorInterface;
 use Neu\Component\DependencyInjection\ContainerInterface;
+use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 
 /**
  * Factory for creating a file stream handler.
  *
  * @implements FactoryInterface<StreamHandler>
+ *
+ * @psalm-suppress ArgumentTypeCoercion
  */
 final readonly class FileHandlerFactory implements FactoryInterface
 {
@@ -39,7 +52,7 @@ final readonly class FileHandlerFactory implements FactoryInterface
      *
      * @var non-empty-string|null
      */
-    private ?string $formatter;
+    private null|string $formatter;
 
     /**
      * The processor service identifiers.
@@ -52,12 +65,12 @@ final readonly class FileHandlerFactory implements FactoryInterface
      * Create a new {@see FileHandlerFactory} instance.
      *
      * @param string $file The file path for the log.
-     * @param Level $level The logging level.
-     * @param bool $bubble Whether the handler should bubble.
-     * @param non-empty-string|null $formatter The formatter service identifier.
-     * @param list<non-empty-string> $processors The processor service identifiers.
+     * @param null|int|string|Level $level The logging level.
+     * @param null|bool $bubble Whether the handler should bubble.
+     * @param null|non-empty-string $formatter The formatter service identifier.
+     * @param null|list<non-empty-string> $processors The processor service identifiers.
      */
-    public function __construct(string $file, null|int|string|Level $level = null, ?bool $bubble = null, ?string $formatter = null, ?array $processors = null)
+    public function __construct(string $file, null|int|string|Level $level = null, null|bool $bubble = null, null|string $formatter = null, null|array $processors = null)
     {
         $this->file = $file;
         $this->level = $level ?? Level::Debug;
@@ -71,9 +84,13 @@ final readonly class FileHandlerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container): object
     {
-        $fileStream = File\openFile($this->file, mode: 'a');
-        $handler = new StreamHandler($fileStream, $this->level, $this->bubble);
+        try {
+            $fileStream = File\openFile($this->file, mode: 'a');
+        } catch (FilesystemException $e) {
+            throw new RuntimeException('Failed to open log file', 0, $e);
+        }
 
+        $handler = new StreamHandler($fileStream, $this->level, $this->bubble);
         if (null !== $this->formatter) {
             $handler->setFormatter($container->getTyped($this->formatter, FormatterInterface::class));
         }

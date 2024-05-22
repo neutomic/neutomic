@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database\Query;
 
 use Neu\Component\Database\Exception;
@@ -37,7 +46,7 @@ interface SelectQueryInterface extends QueryInterface, WhereQueryInterface
      * @param non-empty-string $table
      * @param null|non-empty-string $alias
      */
-    public function from(string $table, ?string $alias = null): static;
+    public function from(string $table, null|string $alias = null): static;
 
     /**
      * Creates and adds a join to the query.
@@ -56,7 +65,7 @@ interface SelectQueryInterface extends QueryInterface, WhereQueryInterface
      * @param non-empty-string $alias The alias of the join table.
      * @param ?non-empty-string $condition The condition for the join.
      */
-    public function innerJoin(string $from, string $join, string $alias, ?string $condition = null): static;
+    public function innerJoin(string $from, string $join, string $alias, null|string $condition = null): static;
 
     /**
      * Creates and adds a left join to the query.
@@ -75,7 +84,7 @@ interface SelectQueryInterface extends QueryInterface, WhereQueryInterface
      * @param non-empty-string $alias The alias of the join table.
      * @param ?non-empty-string $condition The condition for the join.
      */
-    public function leftJoin(string $from, string $join, string $alias, ?string $condition = null): static;
+    public function leftJoin(string $from, string $join, string $alias, null|string $condition = null): static;
 
     /**
      * Creates and adds a right join to the query.
@@ -94,7 +103,7 @@ interface SelectQueryInterface extends QueryInterface, WhereQueryInterface
      * @param non-empty-string $alias The alias of the join table.
      * @param ?non-empty-string $condition The condition for the join.
      */
-    public function rightJoin(string $from, string $join, string $alias, ?string $condition = null): static;
+    public function rightJoin(string $from, string $join, string $alias, null|string $condition = null): static;
 
     /**
      * Specifies a grouping over the results of the query.
@@ -205,9 +214,9 @@ interface SelectQueryInterface extends QueryInterface, WhereQueryInterface
      * @throws Exception\LogicException If the query state is not valid.
      * @throws Exception\RuntimeException If the operation fails due to unexpected condition.
      *
-     * @return null|array<string, mixed>
+     * @return null|array<non-empty-string, mixed>
      */
-    public function fetchOneAssociative(array $parameters = []): ?array;
+    public function fetchOneAssociative(array $parameters = []): null|array;
 
     /**
      * Fetch one row, where columns are index using numeric values.
@@ -222,7 +231,7 @@ interface SelectQueryInterface extends QueryInterface, WhereQueryInterface
      *
      * @return null|list<mixed>
      */
-    public function fetchOneNumeric(array $parameters = []): ?array;
+    public function fetchOneNumeric(array $parameters = []): null|array;
 
     /**
      * Fetch one, or more rows, where columns are index using their names.
@@ -235,7 +244,7 @@ interface SelectQueryInterface extends QueryInterface, WhereQueryInterface
      * @throws Exception\LogicException If the query state is not valid.
      * @throws Exception\RuntimeException If the operation fails due to unexpected condition.
      *
-     * @return list<array<string, mixed>>
+     * @return list<array<non-empty-string, mixed>>
      */
     public function fetchAllAssociative(array $parameters = []): array;
 

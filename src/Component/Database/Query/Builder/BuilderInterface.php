@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database\Query\Builder;
 
 use Neu\Component\Database\Query\DeleteQueryInterface;
@@ -48,7 +57,7 @@ interface BuilderInterface
      * @param non-empty-string $table
      * @param non-empty-string|null $alias
      */
-    public function delete(string $table, ?string $alias = null): DeleteQueryInterface;
+    public function delete(string $table, null|string $alias = null): DeleteQueryInterface;
 
     /**
      * Create an update query.
@@ -68,7 +77,7 @@ interface BuilderInterface
      * @param non-empty-string $table
      * @param non-empty-string|null $alias
      */
-    public function update(string $table, ?string $alias = null): UpdateQueryInterface;
+    public function update(string $table, null|string $alias = null): UpdateQueryInterface;
 
     /**
      * Create an insert query.
@@ -93,7 +102,6 @@ interface BuilderInterface
      *      ;
      *
      * @param non-empty-string $table
-     * @param non-empty-string|null $alias
      */
     public function insert(string $table): InsertQueryInterface;
 }

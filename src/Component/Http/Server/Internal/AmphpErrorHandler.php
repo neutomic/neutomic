@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Server\Internal;
 
 use Amp\Http\Server\ErrorHandler;
@@ -19,7 +28,7 @@ final readonly class AmphpErrorHandler implements ErrorHandler
         $this->logger = $logger;
     }
 
-    public function handleError(int $status, ?string $reason = null, ?Request $request = null): Response
+    public function handleError(int $status, null|string $reason = null, null|Request $request = null): Response
     {
         $context = [
             'status' => $status,

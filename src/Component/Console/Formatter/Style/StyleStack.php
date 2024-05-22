@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Formatter\Style;
 
 use Neu\Component\Console\Exception\InvalidArgumentException;
@@ -12,12 +21,13 @@ use Psl\Vec;
 final class StyleStack
 {
     /**
-     * @var StyleInterface $styles
+     * @var list<StyleInterface> $styles
      */
     private array $styles = [];
+
     private StyleInterface $defaultStyle;
 
-    public function __construct(?StyleInterface $defaultStyle = null)
+    public function __construct(null|StyleInterface $defaultStyle = null)
     {
         $this->defaultStyle = $defaultStyle ?? new Style();
     }
@@ -39,8 +49,10 @@ final class StyleStack
 
     /**
      * Pops a style from the stack.
+     *
+     * @throws InvalidArgumentException When style tags incorrectly nested
      */
-    public function pop(?StyleInterface $style = null): StyleInterface
+    public function pop(null|StyleInterface $style = null): StyleInterface
     {
         if ($style === null) {
             $lastStyle = $this->getCurrent();
@@ -78,7 +90,11 @@ final class StyleStack
 
     public function getCurrent(): StyleInterface
     {
-        return Iter\last($this->styles) ?? $this->defaultStyle;
+        if ([] === $this->styles) {
+            return $this->defaultStyle;
+        }
+
+        return Iter\last($this->styles);
     }
 
     public function getDefaultStyle(): StyleInterface

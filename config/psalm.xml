@@ -2,22 +2,28 @@
 <psalm
     errorLevel="1"
     strictBinaryOperands="true"
-    phpVersion="8.1"
+    phpVersion="8.2"
     allowStringToStandInForClass="true"
     rememberPropertyAssignmentsAfterCall="false"
     checkForThrowsDocblock="true"
-    checkForThrowsInGlobalScope="true"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="https://getpsalm.org/schema/config"
-    xsi:schemaLocation="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config ../vendor/vimeo/psalm/config.xsd"
     errorBaseline="psalm-baseline.xml"
     findUnusedBaselineEntry="true"
+    cacheDirectory="../var/psalm-cache"
+    findUnusedPsalmSuppress="true"
+    findUnusedCode="false"
 >
     <projectFiles>
-        <directory name="../src" />
+        <directory name="../src"/>
     </projectFiles>
 
     <issueHandlers>
-        <StringIncrement errorLevel="suppress" />
+        <StringIncrement errorLevel="suppress"/>
     </issueHandlers>
+
+    <plugins>
+        <pluginClass class="Psl\Psalm\Plugin"/>
+    </plugins>
 </psalm>

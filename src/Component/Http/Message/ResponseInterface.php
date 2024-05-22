@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Message;
 
 use Neu\Component\Http\Message\Exception\InvalidArgumentException;
@@ -56,10 +65,10 @@ interface ResponseInterface extends ExchangeInterface
      *
      * @param non-empty-string $name The case-insensitive name of the cookie.
      *
-     * @return null|CookieInterface A list of {@see CookieInterface} values for the specified name,
-     *                              or null if none found.
+     * @return null|list<CookieInterface> A list of {@see CookieInterface} values for the specified name,
+     *                                    or null if none found.
      */
-    public function getCookie(string $name): ?array;
+    public function getCookie(string $name): null|array;
 
     /**
      * Returns a new instance of the response with the specified cookie replaced.

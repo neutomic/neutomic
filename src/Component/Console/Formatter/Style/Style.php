@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Formatter\Style;
 
 use Psl\Env;
@@ -13,23 +22,23 @@ final class Style implements StyleInterface
     /**
      * @var null|array{open: ForegroundColor, close: string}
      */
-    private ?array $foreground = null;
+    private null|array $foreground = null;
     /**
      * @var null|array{open: BackgroundColor, close: string}
      */
-    private ?array $background = null;
+    private null|array $background = null;
 
     /**
      * @var list<array{open: Effect, close: string}>
      */
     private array $effects = [];
-    private ?string $href = null;
-    private ?bool $handlesHrefGracefully = null;
+    private null|string $href = null;
+    private null|bool $handlesHrefGracefully = null;
 
     /**
-     * @param Effect $effects
+     * @param list<Effect> $effects
      */
-    public function __construct(?BackgroundColor $background = null, ?ForegroundColor $foreground = null, array $effects = [])
+    public function __construct(null|BackgroundColor $background = null, null|ForegroundColor $foreground = null, array $effects = [])
     {
         $this->setForeground($foreground);
         $this->setBackground($background);
@@ -41,7 +50,7 @@ final class Style implements StyleInterface
     /**
      * @inheritDoc
      */
-    public function setForeground(?ForegroundColor $color = null): self
+    public function setForeground(null|ForegroundColor $color = null): self
     {
         if ($color === null) {
             $this->foreground = null;
@@ -56,7 +65,7 @@ final class Style implements StyleInterface
     /**
      * @inheritDoc
      */
-    public function setBackground(?BackgroundColor $color = null): self
+    public function setBackground(null|BackgroundColor $color = null): self
     {
         if ($color === null) {
             $this->background = null;

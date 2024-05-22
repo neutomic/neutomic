@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Command\Registry;
 
 use Neu\Component\Console\Command\CommandInterface;
@@ -15,7 +24,14 @@ use Psl\Vec;
 
 final class Registry implements RegistryInterface
 {
+    /**
+     * @var array<non-empty-string, Configuration>
+     */
     private array $configurations = [];
+
+    /**
+     * @var array<non-empty-string, CommandInterface>
+     */
     private array $commands = [];
 
     /**
@@ -92,7 +108,13 @@ final class Registry implements RegistryInterface
         return $configurations;
     }
 
-
+    /**
+     * @param non-empty-string $name
+     *
+     * @return CommandNotFoundException
+     *
+     * @psalm-suppress PossiblyInvalidPropertyFetch
+     */
     private function buildException(string $name): CommandNotFoundException
     {
         $configurations = [];
@@ -109,7 +131,7 @@ final class Registry implements RegistryInterface
         // remove hidden commands
         $alternatives = Vec\filter(
             $alternatives,
-            static fn(string $name): bool => !$configurations[$name]->hidden,
+            static fn (string $name): bool => !$configurations[$name]->hidden,
         );
         if (!Iter\is_empty($alternatives)) {
             if (1 === Iter\count($alternatives)) {

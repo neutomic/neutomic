@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Session;
 
 use Closure;
@@ -11,8 +20,10 @@ interface SessionInterface
 {
     /**
      * Retrieve the session identifier.
+     *
+     * @return non-empty-string
      */
-    public function getId(): string;
+    public function getId(): null|string;
 
     /**
      * Compute a value, store it in the session, and return it.
@@ -168,6 +179,8 @@ interface SessionInterface
      * - If {@see expireAfter()} was provided during session creation or anytime later,
      *   the persistence engine should pull the TTL value from the session itself
      *   and return it here.
+     *
+     * @return int<0, max> The expiration time in seconds or 0 if the cookie is session-based.
      */
     public function age(): int;
 }

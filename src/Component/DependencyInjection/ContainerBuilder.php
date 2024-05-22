@@ -2,18 +2,30 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\DependencyInjection;
 
 use Amp\File;
 use Neu\Component\Configuration\ConfigurationContainer;
 use Neu\Component\Configuration\ConfigurationContainerInterface;
-use Neu\Component\Console\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\Definition\DefinitionInterface;
+use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Psl\Iter;
 use ReflectionClass;
 use ReflectionException;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflector\DefaultReflector;
+use Roave\BetterReflection\SourceLocator\Exception\InvalidDirectory;
+use Roave\BetterReflection\SourceLocator\Exception\InvalidFileInfo;
+use Roave\BetterReflection\SourceLocator\Exception\InvalidFileLocation;
 use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\AutoloadSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\DirectoriesSourceLocator;
@@ -43,7 +55,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
     /**
      * The service definitions.
      *
-     * @var list<DefinitionInterface>
+     * @var array<non-empty-string, DefinitionInterface>
      */
     private array $definitions = [];
 
@@ -84,17 +96,12 @@ final class ContainerBuilder implements ContainerBuilderInterface
     private array $processorsForAttributes = [];
 
     /**
-     * The built container.
-     */
-    private ?ContainerInterface $container = null;
-
-    /**
      * Create a new container builder.
      *
      * @param Project $project The project instance.
      * @param ConfigurationContainerInterface|null $configuration The configuration container.
      */
-    public function __construct(Project $project, ?ConfigurationContainerInterface $configuration = null)
+    public function __construct(Project $project, null|ConfigurationContainerInterface $configuration = null)
     {
         $this->project = $project;
         $this->configuration = $configuration ?? new ConfigurationContainer([]);
@@ -108,7 +115,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
      *
      * @return static The created container builder.
      */
-    public static function create(Project $project, ?ConfigurationContainerInterface $configuration = null): static
+    public static function create(Project $project, null|ConfigurationContainerInterface $configuration = null): static
     {
         return new self($project, $configuration);
     }
@@ -158,8 +165,6 @@ final class ContainerBuilder implements ContainerBuilderInterface
      */
     public function addExtension(ExtensionInterface $extension): void
     {
-        $this->ensureContainerIsNotBuilt();
-
         $this->extensions[$extension::class] = $extension;
     }
 
@@ -168,8 +173,6 @@ final class ContainerBuilder implements ContainerBuilderInterface
      */
     public function addExtensions(array $extensions): void
     {
-        $this->ensureContainerIsNotBuilt();
-
         foreach ($extensions as $extension) {
             $this->addExtension($extension);
         }
@@ -180,8 +183,6 @@ final class ContainerBuilder implements ContainerBuilderInterface
      */
     public function addHook(HookInterface $hook): void
     {
-        $this->ensureContainerIsNotBuilt();
-
         $this->hooks[] = $hook;
     }
 
@@ -190,8 +191,6 @@ final class ContainerBuilder implements ContainerBuilderInterface
      */
     public function addHooks(array $hooks): void
     {
-        $this->ensureContainerIsNotBuilt();
-
         foreach ($hooks as $hook) {
             $this->hooks[] = $hook;
         }
@@ -202,7 +201,6 @@ final class ContainerBuilder implements ContainerBuilderInterface
      */
     public function addConfiguration(ConfigurationContainerInterface|array $configuration): void
     {
-        $this->ensureContainerIsNotBuilt();
         if (!$configuration instanceof ConfigurationContainerInterface) {
             $configuration = new ConfigurationContainer($configuration);
         }
@@ -239,8 +237,6 @@ final class ContainerBuilder implements ContainerBuilderInterface
      */
     public function addDefinition(DefinitionInterface $definition): void
     {
-        $this->ensureContainerIsNotBuilt();
-
         $this->definitions[$definition->getId()] = $definition;
     }
 
@@ -249,8 +245,6 @@ final class ContainerBuilder implements ContainerBuilderInterface
      */
     public function addDefinitions(array $definitions): void
     {
-        $this->ensureContainerIsNotBuilt();
-
         foreach ($definitions as $definition) {
             $this->addDefinition($definition);
         }
@@ -261,8 +255,6 @@ final class ContainerBuilder implements ContainerBuilderInterface
      */
     public function addProcessor(ProcessorInterface $processor): void
     {
-        $this->ensureContainerIsNotBuilt();
-
         $this->processors[] = $processor;
     }
 
@@ -271,8 +263,6 @@ final class ContainerBuilder implements ContainerBuilderInterface
      */
     public function addProcessorForInstanceOf(string $type, ProcessorInterface $processor): void
     {
-        $this->ensureContainerIsNotBuilt();
-
         $processorsForInstanceOf = $this->processorsForInstanceOf[$type] ?? [];
         $processorsForInstanceOf[] = $processor;
 
@@ -284,12 +274,10 @@ final class ContainerBuilder implements ContainerBuilderInterface
      */
     public function addProcessorForAttribute(string $attribute, ProcessorInterface $processor): void
     {
-        $this->ensureContainerIsNotBuilt();
+        $processorsForAttributes = $this->processorsForAttributes[$attribute] ?? [];
+        $processorsForAttributes[] = $processor;
 
-        $processors_for_attribute = $this->processorsForAttributes[$attribute] ?? [];
-        $processors_for_attribute[] = $processor;
-
-        $this->processorsForAttributes[$attribute] = $processors_for_attribute;
+        $this->processorsForAttributes[$attribute] = $processorsForAttributes;
     }
 
     /**
@@ -297,44 +285,51 @@ final class ContainerBuilder implements ContainerBuilderInterface
      */
     public function build(): ContainerInterface
     {
-        if ($this->container !== null) {
-            throw new Exception\RuntimeException('The container can only be built once.');
+        $clone = clone $this;
+
+        foreach ($clone->extensions as $extension) {
+            $extension->register($clone);
         }
 
-        foreach ($this->extensions as $extension) {
-            $extension->register($this);
+        if ($clone->autoDiscovery) {
+            $clone->discover();
         }
 
-        if ($this->autoDiscovery) {
-            $this->discover();
-        }
-
-        foreach ($this->definitions as $definition) {
-            foreach ($this->processors as $processor) {
+        foreach ($clone->definitions as $definition) {
+            foreach ($clone->processors as $processor) {
                 $definition->addProcessor($processor);
             }
 
-            foreach ($this->processorsForInstanceOf as $interface => $processors) {
+            foreach ($clone->processorsForInstanceOf as $interface => $processors) {
                 if ($definition->isInstanceOf($interface)) {
-                    $definition->addProcessor(...$processors);
+                    foreach ($processors as $processor) {
+                        $definition->addProcessor($processor);
+                    }
                 }
             }
 
-            foreach ($this->processorsForAttributes as $attribute => $processors) {
+            foreach ($clone->processorsForAttributes as $attribute => $processors) {
                 if ($definition->hasAttribute($attribute)) {
-                    $definition->addProcessor(...$processors);
+                    foreach ($processors as $processor) {
+                        $definition->addProcessor($processor);
+                    }
                 }
             }
         }
 
-        $this->container = new Container($this->project, $this->definitions);
-        foreach ($this->hooks as $hook) {
-            $hook($this->container);
+        $container = new Container($clone->project, $clone->definitions);
+        foreach ($clone->hooks as $hook) {
+            $hook($container);
         }
 
-        return $this->container;
+        return $container;
     }
 
+    /**
+     * Discover services.
+     *
+     * @throws RuntimeException If an error occurs while discovering services.
+     */
     private function discover(): void
     {
         $entrypoint = $this->project->entrypoint;
@@ -342,19 +337,23 @@ final class ContainerBuilder implements ContainerBuilderInterface
 
         $astLocator = (new BetterReflection())->astLocator();
 
-        $locators = [
-            new SingleFileSourceLocator($entrypoint, $astLocator),
-            new AutoloadSourceLocator($astLocator),
-        ];
+        try {
+            $locators = [
+                new SingleFileSourceLocator($entrypoint, $astLocator),
+                new AutoloadSourceLocator($astLocator),
+            ];
 
-        if (null !== $source) {
-            if (!File\exists($source)) {
-                throw new RuntimeException('The source "' . $source . '" does not exist.');
-            } elseif (File\isFile($source)) {
-                $locators[] = new SingleFileSourceLocator($source, $astLocator);
-            } elseif (File\isDirectory($source)) {
-                $locators[] = new DirectoriesSourceLocator([$source], $astLocator);
+            if (null !== $source) {
+                if (!File\exists($source)) {
+                    throw new RuntimeException('The source "' . $source . '" does not exist.');
+                } elseif (File\isFile($source)) {
+                    $locators[] = new SingleFileSourceLocator($source, $astLocator);
+                } elseif (File\isDirectory($source)) {
+                    $locators[] = new DirectoriesSourceLocator([$source], $astLocator);
+                }
             }
+        } catch (InvalidDirectory | InvalidFileInfo | InvalidFileLocation $exception) {
+            throw new RuntimeException('An error occurred while discovering services.', previous: $exception);
         }
 
         $sourceLocator = new AggregateSourceLocator($locators);
@@ -384,13 +383,6 @@ final class ContainerBuilder implements ContainerBuilderInterface
             }
 
             $this->addDefinition(Definition\Definition::create($name, $name));
-        }
-    }
-
-    private function ensureContainerIsNotBuilt(): void
-    {
-        if ($this->container !== null) {
-            throw new Exception\RuntimeException('The container has already been built, no further changes can be made to the builder.');
         }
     }
 }

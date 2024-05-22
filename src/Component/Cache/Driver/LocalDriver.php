@@ -2,9 +2,17 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Cache\Driver;
 
-use Neu\Component\Cache\Exception\InvalidKeyException;
 use Neu\Component\Cache\Exception\UnavailableItemException;
 
 use function array_key_exists;
@@ -16,6 +24,8 @@ final class LocalDriver extends AbstractDriver
 {
     /**
      * The interval of which to run garbage collection to remove expired items.
+     *
+     * @var positive-int
      */
     public const int PRUNE_INTERVAL = 10;
 
@@ -24,7 +34,7 @@ final class LocalDriver extends AbstractDriver
      *
      * @var null|positive-int
      */
-    private readonly ?int $size;
+    private readonly null|int $size;
 
     /**
      * @var array<non-empty-string, mixed>
@@ -42,7 +52,7 @@ final class LocalDriver extends AbstractDriver
      * @param positive-int $pruneInterval The interval, in seconds, at which to run {@see DriverInterface::prune()}.
      * @param null|positive-int $size The maximum number of items that can be held in cache at one time.
      */
-    public function __construct(int $pruneInterval = self::PRUNE_INTERVAL, ?int $size = null)
+    public function __construct(int $pruneInterval = self::PRUNE_INTERVAL, null|int $size = null)
     {
         parent::__construct($pruneInterval);
 
@@ -54,10 +64,6 @@ final class LocalDriver extends AbstractDriver
      */
     public function get(string $key): mixed
     {
-        if ('' === $key) {
-            throw InvalidKeyException::forEmptyKey();
-        }
-
         if (array_key_exists($key, $this->cache)) {
             if (!array_key_exists($key, $this->cacheExpiration)) {
                 return $this->cache[$key];
@@ -76,16 +82,8 @@ final class LocalDriver extends AbstractDriver
     /**
      * @inheritDoc
      */
-    public function set(string $key, mixed $value, ?int $ttl = null): void
+    public function set(string $key, mixed $value, null|int $ttl = null): void
     {
-        if ($ttl !== null && 0 >= $ttl) {
-            return;
-        }
-
-        if ('' === $key) {
-            throw InvalidKeyException::forEmptyKey();
-        }
-
         $this->cache[$key] = $value;
         if ($ttl !== null) {
             $this->cacheExpiration[$key] = time() + $ttl;
@@ -101,10 +99,6 @@ final class LocalDriver extends AbstractDriver
      */
     public function delete(string $key): void
     {
-        if ('' === $key) {
-            throw InvalidKeyException::forEmptyKey();
-        }
-
         unset($this->cache[$key], $this->cacheExpiration[$key]);
     }
 

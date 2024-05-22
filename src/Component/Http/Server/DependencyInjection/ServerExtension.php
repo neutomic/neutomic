@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Server\DependencyInjection;
 
 use Neu\Component\DependencyInjection\ContainerBuilderInterface;
@@ -25,44 +34,13 @@ use Neu\Component\Http\Server\ServerInterface;
 use Psl\Type;
 
 /**
- * @psalm-type ServerSocketTlsBindConfiguration = array{
- *     minimum-version?: int,
- *     verify-peer?: bool,
- *     capture-peer?: bool,
- *     verify-depth?: int,
- *     security-level?: 0|1|2|3|4|5,
- *     peer-name?: non-empty-string,
- *     ciphers?: non-empty-string,
- *     alpn-protocols?: non-empty-list<non-empty-string>,
- *     certificate-authority?: array{
- *         file?: non-empty-string,
- *         path?: non-empty-string,
- *     },
- *     certificate?: array{
- *         file: non-empty-string,
- *         key?: non-empty-string,
- *         passphrase?: non-empty-string,
- *     },
- *     certificates?: non-empty-array<string, array{
- *         file: non-empty-string,
- *         key?: non-empty-string,
- *         passphrase?: non-empty-string,
- *     }>,
- * }
- * @psalm-type ServerSocketBindConfiguration = array{
- *     tcp-no-delay?: bool,
- *     reuse-port?: bool,
- *     broadcast?: bool,
- *     tls?: ServerSocketTlsBindConfiguration,
- * }
- * @psalm-type ServerSocketConfigurationType = array{
- *     host: non-empty-string,
- *     port: int,
- *     bind?: ServerSocketBindConfiguration,
- * }
+ * A dependency injection extension for the HTTP server component.
+ *
+ * @psalm-import-type ServerSocketConfiguration from ServerInfrastructure
+ *
  * @psalm-type Configuration = array{
- *     connection-limit?: int,
- *     connection-limit-per-ip?: int,
+ *     connection-limit?: positive-int,
+ *     connection-limit-per-ip?: positive-int,
  *     stream-timeout?: int,
  *     connection-timeout?: int,
  *     header-size-limit?: int,
@@ -71,17 +49,17 @@ use Psl\Type;
  *     logger?: non-empty-string,
  *     runtime?: non-empty-string,
  *     event-dispatcher?: non-empty-string,
- *     sockets?: list<ServerSocketConfigurationType>,
+ *     sockets?: list<ServerSocketConfiguration>,
  *     cluster?: array{
- *         workers?: int,
+ *         workers?: positive-int,
  *         logger?: non-empty-string,
  *     },
  *     command?: array{
  *          cluster?: array{
  *              watch?: array{
- *                  interval?: int,
- *                  directories?: non-empty-list<non-empty-string>,
- *                  extensions?: non-empty-list<non-empty-string>,
+ *                  interval?: float,
+ *                  directories?: list<non-empty-string>,
+ *                  extensions?: list<non-empty-string>,
  *              },
  *          },
  *     },
@@ -91,59 +69,56 @@ final readonly class ServerExtension implements ExtensionInterface
 {
     public function register(ContainerBuilderInterface $container): void
     {
-        /** @var string|null $defaultLogger */
         $defaultLogger = $container
             ->getConfiguration()
             ->getContainer('http')
-            ->getOfTypeOrDefault('logger', Type\string(), null)
+            ->getOfTypeOrDefault('logger', Type\non_empty_string(), null)
         ;
 
-        /** @var Configuration $configuration */
         $configuration = $container
             ->getConfiguration()
             ->getContainer('http')
             ->getOfTypeOrDefault('server', $this->getConfigurationType(), [])
         ;
 
-        $container->addDefinitions([
-            Definition::ofType(ServerInfrastructure::class, new ServerInfrastructureFactory(
-                $configuration['sockets'] ?? null,
-                $configuration['connection-limit'] ?? null,
-                $configuration['connection-limit-per-ip'] ?? null,
-                $configuration['stream-timeout'] ?? null,
-                $configuration['connection-timeout'] ?? null,
-                $configuration['header-size-limit'] ?? null,
-                $configuration['body-size-limit'] ?? null,
-                $configuration['tls-handshake-timeout'] ?? null,
-                $configuration['logger'] ?? $defaultLogger ?? null,
-            )),
-            Definition::ofType(Server::class, new ServerFactory(
-                $configuration['runtime'] ?? null,
-                $configuration['event-dispatcher'] ?? null,
-                $configuration['logger'] ?? $defaultLogger ?? null,
-            )),
-            Definition::ofType(ClusterWorker::class, new ClusterWorkerFactory(
-                $configuration['event-dispatcher'] ?? null,
-                $configuration['cluster']['logger'] ?? $defaultLogger ?? null,
-            )),
-            Definition::ofType(Cluster::class, new ClusterFactory(
-                $configuration['cluster']['logger'] ?? $defaultLogger ?? null,
-                $configuration['cluster']['workers'] ?? null,
-            )),
-        ]);
+        $container->addDefinition(Definition::ofType(ServerInfrastructure::class, new ServerInfrastructureFactory(
+            serverSocketConfigurations: $configuration['sockets'] ?? null,
+            connectionLimit: $configuration['connection-limit'] ?? null,
+            connectionLimitPerIP: $configuration['connection-limit-per-ip'] ?? null,
+            streamTimeout: $configuration['stream-timeout'] ?? null,
+            connectionTimeout: $configuration['connection-timeout'] ?? null,
+            headerSizeLimit: $configuration['header-size-limit'] ?? null,
+            bodySizeLimit: $configuration['body-size-limit'] ?? null,
+            tlsHandshakeTimeout: $configuration['tls-handshake-timeout'] ?? null,
+            logger: $configuration['logger'] ?? $defaultLogger ?? null,
+        )));
+
+        $container->addDefinition(Definition::ofType(Server::class, new ServerFactory(
+            runtime: $configuration['runtime'] ?? null,
+            eventDispatcher: $configuration['event-dispatcher'] ?? null,
+            logger: $configuration['logger'] ?? $defaultLogger ?? null,
+        )));
+
+        $container->addDefinition(Definition::ofType(ClusterWorker::class, new ClusterWorkerFactory(
+            dispatcher: $configuration['event-dispatcher'] ?? null,
+            logger: $configuration['cluster']['logger'] ?? $defaultLogger ?? null,
+        )));
+
+        $container->addDefinition(Definition::ofType(Cluster::class, new ClusterFactory(
+            logger: $configuration['cluster']['logger'] ?? $defaultLogger ?? null,
+            workers: $configuration['cluster']['workers'] ?? null,
+        )));
 
         $container->getDefinition(Server::class)->addAlias(ServerInterface::class);
         $container->getDefinition(Cluster::class)->addAlias(ClusterInterface::class);
         $container->getDefinition(ClusterWorker::class)->addAlias(ClusterWorkerInterface::class);
 
-        $container->addDefinitions([
-            Definition::ofType(StartCommand::class, new StartCommandFactory()),
-            Definition::ofType(ClusterCommand::class, new ClusterCommandFactory(
-                $configuration['command']['cluster']['watch']['interval'] ?? null,
-                $configuration['command']['cluster']['watch']['directories'] ?? null,
-                $configuration['command']['cluster']['watch']['extensions'] ?? null,
-            ))
-        ]);
+        $container->addDefinition(Definition::ofType(StartCommand::class, new StartCommandFactory()));
+        $container->addDefinition(Definition::ofType(ClusterCommand::class, new ClusterCommandFactory(
+            watchInterval: $configuration['command']['cluster']['watch']['interval'] ?? null,
+            watchDirectories: $configuration['command']['cluster']['watch']['directories'] ?? null,
+            watchExtensions: $configuration['command']['cluster']['watch']['extensions'] ?? null,
+        )));
     }
 
     /**
@@ -152,8 +127,8 @@ final readonly class ServerExtension implements ExtensionInterface
     private function getConfigurationType(): Type\TypeInterface
     {
         return Type\shape([
-            'connection-limit' => Type\optional(Type\int()),
-            'connection-limit-per-ip' => Type\optional(Type\int()),
+            'connection-limit' => Type\optional(Type\positive_int()),
+            'connection-limit-per-ip' => Type\optional(Type\positive_int()),
             'stream-timeout' => Type\optional(Type\int()),
             'connection-timeout' => Type\optional(Type\int()),
             'header-size-limit' => Type\optional(Type\int()),
@@ -206,13 +181,13 @@ final readonly class ServerExtension implements ExtensionInterface
                 ])),
             ])),
             'cluster' => Type\optional(Type\shape([
-                'workers' => Type\optional(Type\int()),
+                'workers' => Type\optional(Type\positive_int()),
                 'logger' => Type\optional(Type\non_empty_string()),
             ])),
             'command' => Type\optional(Type\shape([
                 'cluster' => Type\optional(Type\shape([
                     'watch' => Type\optional(Type\shape([
-                        'interval' => Type\optional(Type\int()),
+                        'interval' => Type\optional(Type\float()),
                         'directories' => Type\optional(Type\vec(Type\non_empty_string())),
                         'extensions' => Type\optional(Type\vec(Type\non_empty_string())),
                     ])),

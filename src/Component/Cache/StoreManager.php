@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Cache;
 
 use Neu\Component\Cache\Exception\RuntimeException;
@@ -14,6 +23,8 @@ final class StoreManager implements StoreManagerInterface
 {
     /**
      * The identifier for the default store, or null if there is no default store.
+     *
+     * @var non-empty-string
      */
     private string $defaultStoreId;
 
@@ -27,7 +38,7 @@ final class StoreManager implements StoreManagerInterface
     /**
      * Create a new {@see StoreManager} instance.
      *
-     * @param string $defaultStoreId The identifier for the default store.
+     * @param non-empty-string $defaultStoreId The identifier for the default store.
      * @param ServiceLocatorInterface<StoreInterface> $locator The service locator used to create store instances.
      */
     public function __construct(string $defaultStoreId, ServiceLocatorInterface $locator)

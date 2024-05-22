@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Runtime\DependencyInjection\Factory\Middleware;
 
 use Neu\Component\DependencyInjection\ContainerInterface;
@@ -13,6 +22,8 @@ use Psr\Log\LoggerInterface;
  * Factory for creating a {@see CompressionMiddleware} instance.
  *
  * @implements FactoryInterface<CompressionMiddleware>
+ *
+ * @psalm-suppress MissingThrowsDocblock
  */
 final readonly class CompressionMiddlewareFactory implements FactoryInterface
 {
@@ -76,7 +87,7 @@ final readonly class CompressionMiddlewareFactory implements FactoryInterface
      * @param null|int<8, 15> $window The window size.
      * @param null|int $priority The priority of the middleware.
      */
-    public function __construct(?string $logger = null, ?int $minimumCompressionContentLength = null, ?string $compressibleContentTypesRegex = null, ?int $level = null, ?int $memory = null, ?int $window = null, ?int $priority = null)
+    public function __construct(null|string $logger = null, null|int $minimumCompressionContentLength = null, null|string $compressibleContentTypesRegex = null, null|int $level = null, null|int $memory = null, null|int $window = null, null|int $priority = null)
     {
         $this->logger = $logger ?? LoggerInterface::class;
         $this->minimumCompressionContentLength = $minimumCompressionContentLength ?? CompressionMiddleware::DEFAULT_MINIMUM_COMPRESSIBLE_CONTENT_LENGTH;
@@ -87,6 +98,9 @@ final readonly class CompressionMiddlewareFactory implements FactoryInterface
         $this->priority = $priority ?? CompressionMiddleware::PRIORITY;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function __invoke(ContainerInterface $container): CompressionMiddleware
     {
         return new CompressionMiddleware(

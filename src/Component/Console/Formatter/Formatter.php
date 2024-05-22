@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Formatter;
 
 use Neu\Component\Console\Exception\InvalidCharacterSequenceException;
@@ -12,27 +21,19 @@ use Neu\Component\Console\Formatter\Style\Style;
 use Neu\Component\Console\Formatter\Style\StyleInterface;
 use Neu\Component\Console\Formatter\Style\StyleStack;
 use Psl\Dict;
+use Psl\Iter;
 use Psl\Regex;
 use Psl\Str;
 use Psl\Str\Byte;
+use Psl\Vec;
 
-use function array_map;
-use function array_rand;
-use function explode;
-use function implode;
-use function ltrim;
 use function preg_match_all;
-use function rtrim;
-use function str_contains;
-use function str_replace;
-use function str_starts_with;
-use function strlen;
-use function substr;
-use function trim;
-use function ucfirst;
 
 use const PREG_OFFSET_CAPTURE;
 
+/**
+ * @psalm-suppress MissingThrowsDocblock
+ */
 final class Formatter extends AbstractFormatter
 {
     /**
@@ -99,14 +100,22 @@ final class Formatter extends AbstractFormatter
         );
 
         foreach ($matches[0] as $i => $match) {
-            $pos = (int)$match[1];
+            $pos = $match[1];
             $text = $match[0];
             if (0 !== $pos && '\\' === $message[$pos - 1]) {
                 continue;
             }
 
+            /** @var int<0, max> $length */
+            $length = $pos - $offset;
             // add the text up to the next tag
-            [$decorated_text, $currentLineLength] = $this->applyCurrentStyle(Byte\slice($message, $offset, $pos - $offset), $output, $width, $currentLineLength);
+            [$decorated_text, $currentLineLength] = $this->applyCurrentStyle(
+                Byte\slice($message, $offset, $length),
+                $output,
+                $width,
+                $currentLineLength,
+            );
+
             $output .= $decorated_text;
             $offset = $pos + Byte\length($text);
             // opening tag?
@@ -133,8 +142,8 @@ final class Formatter extends AbstractFormatter
             }
         }
 
-            [$decorated_text] = $this->applyCurrentStyle(Byte\slice($message, $offset), $output, $width, $currentLineLength);
-            $output .= $decorated_text;
+        [$decorated_text] = $this->applyCurrentStyle(Byte\slice($message, $offset), $output, $width, $currentLineLength);
+        $output .= $decorated_text;
 
         if (Byte\contains($output, "\0")) {
             $output = Byte\replace($output, "\0", '\\');
@@ -162,27 +171,28 @@ final class Formatter extends AbstractFormatter
         }
 
         if (0 === $currentLineLength && '' !== $current) {
-            $text = ltrim($text);
+            $text = Byte\trim_left($text);
         }
 
         if ($currentLineLength > 0 && $width > $currentLineLength) {
+            /** @var int<0, max> $i */
             $i = $width - $currentLineLength;
-            $prefix = substr($text, 0, $i) . "\n";
-            $text = substr($text, $i);
+            $prefix = Byte\slice($text, 0, $i) . "\n";
+            $text = Byte\slice($text, $i);
         } else {
             $prefix = '';
         }
 
         $matches = Regex\first_match($text, "~(\\n)$~");
-        $text = $prefix . Regex\replace($text, '~([^\\n]{' . $width . '})\\ *~', "\$1\n");
-        $text = rtrim($text, "\n") . ($matches[1] ?? '');
-        if (!$currentLineLength && '' !== $current && !str_ends_with($current, "\n")) {
+        $text = $prefix . Regex\replace($text, '~([^\\n]{' . ((string) $width) . '})\\ *~', "\$1\n");
+        $text = Byte\trim_right($text, "\n") . ($matches[1] ?? '');
+        if (!$currentLineLength && '' !== $current && !Byte\ends_with($current, "\n")) {
             $text = "\n" . $text;
         }
 
-        $lines = explode("\n", $text);
+        $lines = Byte\split($text, "\n");
         foreach ($lines as $line) {
-            $currentLineLength += strlen($line);
+            $currentLineLength += Byte\length($line);
             if ($width <= $currentLineLength) {
                 $currentLineLength = 0;
             }
@@ -200,7 +210,7 @@ final class Formatter extends AbstractFormatter
     /**
      * Tries to create new style instance from string.
      */
-    private function createStyleFromString(string $string): ?StyleInterface
+    private function createStyleFromString(string $string): null|StyleInterface
     {
         if (isset($this->styles[$string])) {
             return $this->styles[$string];
@@ -210,9 +220,9 @@ final class Formatter extends AbstractFormatter
             return null;
         }
 
-        $attributes = array_map(
-            trim(...),
+        $attributes = Vec\map(
             Regex\split($string, '~(?<!\\\\)[; ]~'),
+            Byte\trim(...),
         );
 
         if ([] === $attributes) {
@@ -222,13 +232,13 @@ final class Formatter extends AbstractFormatter
         $style = new Style();
         $valid = false;
 
-        $backgrounds = Dict\reindex(BackgroundColor::cases(), static fn(BackgroundColor $enum) => $enum->name);
-        $foregrounds = Dict\reindex(ForegroundColor::cases(), static fn(ForegroundColor $enum) => $enum->name);
-        $effects = Dict\reindex(Effect::cases(), static fn(Effect $enum) => $enum->name);
+        $backgrounds = Dict\reindex(BackgroundColor::cases(), static fn (BackgroundColor $enum) => $enum->name);
+        $foregrounds = Dict\reindex(ForegroundColor::cases(), static fn (ForegroundColor $enum) => $enum->name);
+        $effects = Dict\reindex(Effect::cases(), static fn (Effect $enum) => $enum->name);
 
         $parse_attribute_value = static function (string $attribute, bool $normalize = true): string {
-            if (str_contains($attribute, '=')) {
-                [, $value] = explode('=', $attribute, 2);
+            if (Byte\contains($attribute, '=')) {
+                [, $value] = Byte\split($attribute, '=', 2);
             } else {
                 $value = $attribute;
             }
@@ -237,20 +247,24 @@ final class Formatter extends AbstractFormatter
                 return $value;
             }
 
-            $value = str_replace(['"', '\'', '-',], ['', '', ' '], $value);
+            $value = Byte\replace_every($value, [
+                '"' => '',
+                '\'' => '',
+                '-' => ' ',
+            ]);
 
-            return implode('', array_map(ucfirst(...), explode(' ', $value)));
+            return Str\join(Vec\map(Byte\split($value, ' '), Byte\capitalize(...)), '');
         };
 
         foreach ($attributes as $attribute) {
-            if (str_starts_with($attribute, 'bg=') || str_starts_with($attribute, 'background=')) {
+            if (Byte\starts_with($attribute, 'bg=') || Byte\starts_with($attribute, 'background=')) {
                 $background = $parse_attribute_value($attribute);
                 if ('' === $background) {
                     continue;
                 }
 
                 if ('Random' === $background) {
-                    $background = array_rand($backgrounds);
+                    $background = Iter\random($backgrounds);
                 } elseif (!isset($backgrounds[$background])) {
                     throw new InvalidCharacterSequenceException(
                         Str\format('Background "%s" does not exists.', $background),
@@ -262,14 +276,14 @@ final class Formatter extends AbstractFormatter
                 continue;
             }
 
-            if (str_starts_with($attribute, 'fg=') || str_starts_with($attribute, 'foreground=') || str_starts_with($attribute, 'color=')) {
+            if (Byte\starts_with($attribute, 'fg=') || Byte\starts_with($attribute, 'foreground=') || Byte\starts_with($attribute, 'color=')) {
                 $foreground = $parse_attribute_value($attribute);
                 if ('' === $foreground) {
                     continue;
                 }
 
                 if ('Random' === $foreground) {
-                    $foreground = array_rand($foregrounds);
+                    $foreground = Iter\random($foregrounds);
                 } elseif (!isset($foregrounds[$foreground])) {
                     throw new InvalidCharacterSequenceException(
                         Str\format('Foreground "%s" does not exists.', $foreground),
@@ -281,7 +295,7 @@ final class Formatter extends AbstractFormatter
                 continue;
             }
 
-            if (str_starts_with($attribute, 'href=')) {
+            if (Byte\starts_with($attribute, 'href=')) {
                 $href = $parse_attribute_value($attribute, normalize: false);
                 if ('' === $href) {
                     continue;

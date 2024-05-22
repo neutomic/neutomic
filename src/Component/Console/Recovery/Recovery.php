@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Recovery;
 
 use Neu\Component\Console\Block\BlockFactoryTrait;
@@ -74,7 +83,7 @@ final class Recovery implements RecoveryInterface
                 },
                 $throwable->getTrace(),
             ),
-            static fn(array $frame): bool => isset($frame['function'], $frame['file']),
+            static fn (array $frame): bool => isset($frame['function'], $frame['file']),
         );
 
         if ([] !== $frames) {
@@ -86,7 +95,7 @@ final class Recovery implements RecoveryInterface
             foreach ($frames as $frame) {
                 // render user throwables and neu throwables sources in different colors.
                 // as the error is usually coming from the user, not neu.
-                $file = $frame['file'];
+                $file = $frame['file'] ?? 'internal';
                 if ($sourceHighlighted || $this->isNeu($file)) {
                     $traceFormat = ' ↪ <fg=gray;href=%s>%s</>';
                 } else {
@@ -95,12 +104,12 @@ final class Recovery implements RecoveryInterface
                 }
 
                 if (isset($frame['class'])) {
-                    $output->writeLine(Str\format('%s%s%s()', $frame['class'], $frame['type'], $frame['function']), Verbosity::VeryVerbose);
+                    $output->writeLine(Str\format('%s%s%s()', $frame['class'], $frame['type'] ?? '::', $frame['function'] ?? '???'), Verbosity::VeryVerbose);
                 } else {
-                    $output->writeLine(Str\format(' %s()', $frame['function']), Verbosity::VeryVerbose);
+                    $output->writeLine(Str\format(' %s()', $frame['function'] ?? '???'), Verbosity::VeryVerbose);
                 }
 
-                $output->writeLine(Str\format($traceFormat, $file, $file . (isset($frame['line']) ? (':' . $frame['line']) : '')), Verbosity::VeryVerbose);
+                $output->writeLine(Str\format($traceFormat, $file, $file . (isset($frame['line']) ? (':' . ((string) $frame['line'])) : '')), Verbosity::VeryVerbose);
                 $output->writeLine('', Verbosity::VeryVerbose);
             }
         }

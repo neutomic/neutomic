@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\UserInput;
 
 use Neu\Component\Console\Exception\InvalidArgumentException;
@@ -14,14 +23,14 @@ use Neu\Component\Console\Output\OutputInterface;
  *
  * @template T
  *
- * @implements UserInputInterface
+ * @implements UserInputInterface<T>
  */
 abstract class AbstractUserInput implements UserInputInterface
 {
     /**
      * Input values accepted to continue.
      *
-     * @var array<string, T>
+     * @var array<non-empty-string, T>
      */
     protected array $acceptedValues = [];
 
@@ -30,14 +39,14 @@ abstract class AbstractUserInput implements UserInputInterface
      *
      * @var null|non-empty-string
      */
-    protected ?string $default = null;
+    protected null|string $default = null;
 
     /**
      * Display position.
      *
-     * @var null|array{0: int, 1: int}
+     * @var null|array{0: int<0, max>, 1: int<0, max>}
      */
-    protected ?array $position = null;
+    protected null|array $position = null;
 
     /**
      * Construct a new `UserInput` object.
@@ -55,17 +64,9 @@ abstract class AbstractUserInput implements UserInputInterface
     }
 
     /**
-     * Set the display position (column, row).
-     *
-     * Implementation should not change position unless this method
-     * is called.
-     *
-     * When changing positions, the implementation should always save the cursor
-     * position, then restore it.
-     *
-     * @param null|array{0: int, 1: int}
+     * @inheritDoc
      */
-    public function setPosition(?array $position): void
+    public function setPosition(null|array $position): void
     {
         $this->position = $position;
     }
@@ -86,8 +87,10 @@ abstract class AbstractUserInput implements UserInputInterface
      * Set the default value to use when input is empty.
      *
      * @param null|non-empty-string $default
+     *
+     * @throws InvalidArgumentException If the default value is not one of the accepted values.
      */
-    public function setDefault(?string $default): self
+    public function setDefault(null|string $default): self
     {
         if (null !== $default && !isset($this->acceptedValues[$default])) {
             throw new InvalidArgumentException(

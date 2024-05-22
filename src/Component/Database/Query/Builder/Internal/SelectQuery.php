@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database\Query\Builder\Internal;
 
 use Neu\Component\Database\AbstractionLayerInterface;
@@ -58,16 +67,18 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @var null|int<0, max>
      */
-    private ?int $limit;
+    private null|int $limit;
 
     /**
      * @param non-empty-list<string> $select
      * @param list<array{non-empty-string, ?non-empty-string}> $from
-     * @param list<array{JoinType, non-empty-string, non-empty-string, ?non-empty-string}> $joins
+     * @param array<non-empty-string, list<array{JoinType, non-empty-string, non-empty-string, ?non-empty-string}>> $joins
      * @param list<non-empty-string> $groupBy
+     * @param null|non-empty-string|CompositeExpressionInterface $having
      * @param array<non-empty-string, OrderDirection> $orderBy
      * @param int<0, max> $offset
      * @param null|int<0, max> $limit
+     * @param null|non-empty-string|CompositeExpressionInterface $where
      */
     public function __construct(
         AbstractionLayerInterface $dbal,
@@ -79,7 +90,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
         null|string|CompositeExpressionInterface $having = null,
         array $orderBy = [],
         int $offset = 0,
-        ?int $limit = null,
+        null|int $limit = null,
         null|string|CompositeExpressionInterface $where = null,
     ) {
         parent::__construct($dbal, $where);
@@ -126,7 +137,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
-    public function from(string $table, ?string $alias = null): static
+    public function from(string $table, null|string $alias = null): static
     {
         $from = $this->from;
         $from[] = [$table, $alias];
@@ -149,7 +160,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
-    public function innerJoin(string $from, string $join, string $alias, ?string $condition = null): static
+    public function innerJoin(string $from, string $join, string $alias, null|string $condition = null): static
     {
         $joins = $this->joins;
         $joins[$from][] = [JoinType::Inner, $join, $alias, $condition];
@@ -172,7 +183,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
-    public function leftJoin(string $from, string $join, string $alias, ?string $condition = null): static
+    public function leftJoin(string $from, string $join, string $alias, null|string $condition = null): static
     {
         $joins = $this->joins;
         $joins[$from][] = [JoinType::Left, $join, $alias, $condition];
@@ -195,7 +206,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
-    public function rightJoin(string $from, string $join, string $alias, ?string $condition = null): static
+    public function rightJoin(string $from, string $join, string $alias, null|string $condition = null): static
     {
         $joins = $this->joins;
         $joins[$from][] = [JoinType::Right, $join, $alias, $condition];
@@ -544,7 +555,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
         return ' ORDER BY ' . Str\join(
             Vec\map_with_key(
                 $this->orderBy,
-                static fn(string $sort, OrderDirection $direction): string => $sort . ' ' . $direction->value,
+                static fn (string $sort, OrderDirection $direction): string => $sort . ' ' . $direction->value,
             ),
             ', ',
         );
@@ -567,7 +578,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
-    public function fetchOneNumeric(array $parameters = []): ?array
+    public function fetchOneNumeric(array $parameters = []): null|array
     {
         $row = $this->fetchOneAssociative();
         if (null === $row) {
@@ -580,12 +591,13 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
-    public function fetchOneAssociative(array $parameters = []): ?array
+    public function fetchOneAssociative(array $parameters = []): null|array
     {
         $result = $this->execute($parameters);
         $rows = $result->getRows();
         unset($result);
 
+        /** @var array<non-empty-string, mixed>|null */
         return $rows[0] ?? null;
     }
 
@@ -602,6 +614,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
      */
     public function fetchAllAssociative(array $parameters = []): array
     {
+        /** @var list<array<non-empty-string, mixed>>*/
         return $this->execute($parameters)->getRows();
     }
 }

@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Router\DependencyInjection;
 
 use Neu\Component\DependencyInjection\ContainerBuilderInterface;
@@ -23,6 +32,8 @@ use Neu\Component\Http\Router\RouterInterface;
 use Psl\Type;
 
 /**
+ * A dependency injection extension for the router component.
+ *
  * @psalm-type Configuration = array{
  *     generator?: array{
  *         registry?: non-empty-string,
@@ -36,7 +47,7 @@ use Psl\Type;
  *         matcher?: non-empty-string,
  *     },
  *     hooks?: array{
- *         register-roots?: array{
+ *         register-routes?: array{
  *             registry?: non-empty-string,
  *             logger?: non-empty-string,
  *         }
@@ -50,26 +61,23 @@ final readonly class RouterExtension implements ExtensionInterface
      */
     public function register(ContainerBuilderInterface $container): void
     {
-        /** @var Configuration $configuration */
         $configuration = $container
             ->getConfiguration()
             ->getContainer('http')
             ->getOfTypeOrDefault('router', $this->getRouterConfigurationType(), []);
 
-        $container->addDefinitions([
-            Definition::ofType(Registry::class, new RegistryFactory()),
-            Definition::ofType(Generator::class, new GeneratorFactory(
-                $configuration['generator']['registry'] ?? null,
-            )),
-            Definition::ofType(Matcher::class, new MatcherFactory(
-                $configuration['matcher']['registry'] ?? null,
-                $configuration['matcher']['cache-store'] ?? null
-            )),
-            Definition::ofType(Router::class, new RouterFactory(
-                $configuration['router']['matcher'] ?? null,
-                $configuration['router']['generator'] ?? null,
-            )),
-        ]);
+        $container->addDefinition(Definition::ofType(Registry::class, new RegistryFactory()));
+        $container->addDefinition(Definition::ofType(Generator::class, new GeneratorFactory(
+            $configuration['generator']['registry'] ?? null,
+        )));
+        $container->addDefinition(Definition::ofType(Matcher::class, new MatcherFactory(
+            $configuration['matcher']['registry'] ?? null,
+            $configuration['matcher']['cache-store'] ?? null
+        )));
+        $container->addDefinition(Definition::ofType(Router::class, new RouterFactory(
+            $configuration['router']['matcher'] ?? null,
+            $configuration['router']['generator'] ?? null,
+        )));
 
         $container->getDefinition(Registry::class)->addAlias(RegistryInterface::class);
         $container->getDefinition(Generator::class)->addAlias(GeneratorInterface::class);
@@ -99,7 +107,7 @@ final readonly class RouterExtension implements ExtensionInterface
                 'matcher' => Type\optional(Type\non_empty_string()),
             ])),
             'hooks' => Type\optional(Type\shape([
-                'route' => Type\optional(Type\shape([
+                'register-routes' => Type\optional(Type\shape([
                     'registry' => Type\optional(Type\non_empty_string()),
                 ])),
             ])),

@@ -2,12 +2,22 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Message;
 
+use Neu\Component\Http\Message\Exception\InvalidArgumentException;
+use Neu\Component\Http\Message\Exception\LogicException;
 use Neu\Component\Http\Message\Internal\CookieStorage;
 use Neu\Component\Http\Message\Internal\HeaderStorage;
 use Neu\Component\Http\Session\SessionInterface;
-use RuntimeException;
 
 use function array_merge;
 
@@ -22,6 +32,8 @@ final readonly class Request implements RequestInterface
 
     /**
      * The request target of the request.
+     *
+     * @var non-empty-string
      */
     private string $requestTarget;
 
@@ -33,14 +45,14 @@ final readonly class Request implements RequestInterface
     /**
      * The cookies of the request.
      *
-     * @var CookieStorage<string>
+     * @var CookieStorage<non-empty-string>
      */
     private CookieStorage $cookies;
 
     /**
      * The query parameters of the request.
      *
-     * @var array<string, non-empty-list<string>>
+     * @var array<non-empty-string, non-empty-list<string>>
      */
     private array $queryParameters;
 
@@ -52,7 +64,7 @@ final readonly class Request implements RequestInterface
     /**
      * The attributes of the request.
      *
-     * @var array<string, mixed>
+     * @var array<non-empty-string, mixed>
      */
     private array $attributes;
 
@@ -64,14 +76,15 @@ final readonly class Request implements RequestInterface
     /**
      * Creates a new request instance.
      *
-     * @param array<string, non-empty-list<string>> $queryParameters
-     * @param array<string, mixed> $attributes
-     * @param array<string, TrailerInterface> $trailers
+     * @param array<non-empty-string, non-empty-list<string>> $queryParameters
+     * @param array<non-empty-string, mixed> $attributes
+     * @param array<non-empty-string, TrailerInterface> $trailers
+     * @param CookieStorage<non-empty-string> $cookies
      */
     private function __construct(
         ProtocolVersion $protocolVersion,
         Method $method,
-        ?string $requestTarget,
+        null|string $requestTarget,
         UriInterface $uri,
         HeaderStorage $headerStorage,
         CookieStorage $cookies,
@@ -94,6 +107,8 @@ final readonly class Request implements RequestInterface
             }
 
             $requestTarget = $requestTarget ?: '/';
+        } else {
+            $requestTarget = '/';
         }
 
         $this->protocolVersion = $protocolVersion;
@@ -111,6 +126,12 @@ final readonly class Request implements RequestInterface
 
     /**
      * Creates a new request instance using the given parameters.
+     *
+     * @param UriInterface|non-empty-string $uri
+     * @param array<non-empty-string, non-empty-list<non-empty-string>> $headers
+     * @param array<non-empty-string, non-empty-list<non-empty-string>> $cookies
+     *
+     * @throws InvalidArgumentException If $uri is not a valid URI.
      */
     public static function create(Method $method, UriInterface|string $uri, array $headers = [], array $cookies = []): static
     {
@@ -150,7 +171,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function getBody(): ?RequestBodyInterface
+    public function getBody(): null|RequestBodyInterface
     {
         return $this->body;
     }
@@ -158,9 +179,10 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function withBody(?BodyInterface $body): static
+    public function withBody(null|BodyInterface $body): static
     {
-        if (!$body instanceof RequestBodyInterface) {
+        if (null !== $body && !$body instanceof RequestBodyInterface) {
+            /** @psalm-suppress MissingThrowsDocblock */
             $body = RequestBody::fromIterable($body->getIterator());
         }
 
@@ -281,9 +303,10 @@ final readonly class Request implements RequestInterface
 
         $port = $uri->getPort();
         if ($port !== null) {
-            $host .= ':' . $port;
+            $host .= ':' . ((string) $port);
         }
 
+        /** @psalm-suppress MissingThrowsDocblock - header is valid at this point */
         return $request->withHeader('Host', $host);
     }
 
@@ -306,7 +329,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function getCookie(string $name): ?array
+    public function getCookie(string $name): null|array
     {
         return $this->cookies->getCookie($name);
     }
@@ -414,7 +437,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function getQueryParameter(string $name): ?array
+    public function getQueryParameter(string $name): null|array
     {
         return $this->queryParameters[$name] ?? null;
     }
@@ -544,6 +567,7 @@ final readonly class Request implements RequestInterface
     public function withAttribute(string $name, mixed $value): static
     {
         $attributes = $this->attributes;
+        /** @psalm-suppress MixedAssignment */
         $attributes[$name] = $value;
 
         return new self(
@@ -596,7 +620,7 @@ final readonly class Request implements RequestInterface
     public function getSession(): SessionInterface
     {
         if ($this->session === null) {
-            throw new RuntimeException('The request does not have a session.');
+            throw new LogicException('The request does not have a session.');
         }
 
         return $this->session;
@@ -605,7 +629,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
-    public function withSession(?SessionInterface $session): static
+    public function withSession(null|SessionInterface $session): static
     {
         return new self(
             $this->protocolVersion,

@@ -2,9 +2,18 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Command;
 
-use Neu\Component\Console\Exception\InvalidCharacterSequenceException;
+use Neu\Component\Console\Exception\InvalidArgumentException;
 use Neu\Component\Console\Input\Bag\ArgumentBag;
 use Neu\Component\Console\Input\Bag\FlagBag;
 use Neu\Component\Console\Input\Bag\OptionBag;
@@ -14,6 +23,11 @@ use Neu\Component\Console\Input\Definition\Option;
 use Psl\Regex;
 use Psl\Str;
 
+/**
+ * The configuration for a command.
+ *
+ * @psalm-suppress MissingThrowsDocblock
+ */
 final readonly class Configuration
 {
     private const string NAME_PATTERN = "/^[^\:]++(\:[^\:]++)*$/";
@@ -28,7 +42,7 @@ final readonly class Configuration
     /**
      * The description of the command used when rendering its help screen.
      *
-     * @var non-empty-string
+     * @var string
      */
     public string $description;
 
@@ -68,8 +82,10 @@ final readonly class Configuration
      * Create a new command configuration instance.
      *
      * @param non-empty-string $name
-     * @param non-empty-string $description
+     * @param string $description
      * @param list<non-empty-string> $aliases
+     *
+     * @throws InvalidArgumentException If the name or alias contains invalid characters.
      */
     public function __construct(
         string $name,
@@ -82,14 +98,14 @@ final readonly class Configuration
         bool $enabled = true,
     ) {
         if (!Regex\matches($name, self::NAME_PATTERN)) {
-            throw new InvalidCharacterSequenceException(
+            throw new InvalidArgumentException(
                 Str\format('Command name "%s" is invalid.', $name),
             );
         }
 
         foreach ($aliases as $alias) {
             if (!Regex\matches($alias, self::NAME_PATTERN)) {
-                throw new InvalidCharacterSequenceException(
+                throw new InvalidArgumentException(
                     Str\format('Command alias "%s" is invalid.', $alias),
                 );
             }
@@ -109,7 +125,9 @@ final readonly class Configuration
      * Create a new command configuration instance.
      *
      * @param non-empty-string $name The name of the command.
-     * @param non-empty-string $description The description of the command.
+     * @param string $description The description of the command.
+     *
+     * @throws InvalidArgumentException If the name contains invalid characters.
      */
     public static function create(string $name, string $description): self
     {
@@ -121,6 +139,10 @@ final readonly class Configuration
 
     /**
      * Return a new instance with the provided name.
+     *
+     * @param non-empty-string $name
+     *
+     * @throws InvalidArgumentException If the name contains invalid characters.
      */
     public function withName(string $name): self
     {
@@ -155,6 +177,10 @@ final readonly class Configuration
 
     /**
      * Return a new instance with the provided aliases.
+     *
+     * @param list<non-empty-string> $aliases
+     *
+     * @throws InvalidArgumentException If any of the aliases contain invalid characters.
      */
     public function withAliases(array $aliases): self
     {
@@ -172,6 +198,10 @@ final readonly class Configuration
 
     /**
      * Return a new instance with the provided alias added.
+     *
+     * @param non-empty-string $alias
+     *
+     * @throws InvalidArgumentException If the alias contains invalid characters.
      */
     public function withAddedAlias(string $alias): self
     {

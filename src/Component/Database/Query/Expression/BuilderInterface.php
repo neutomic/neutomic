@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database\Query\Expression;
 
 interface BuilderInterface
@@ -119,7 +128,7 @@ interface BuilderInterface
      *
      * @return non-empty-string
      */
-    public function like(string $expression, string $pattern, ?string $escapeCharacters = null): string;
+    public function like(string $expression, string $pattern, null|string $escapeCharacters = null): string;
 
     /**
      * Creates a NOT LIKE() comparison expression with the given arguments.
@@ -130,7 +139,7 @@ interface BuilderInterface
      *
      * @return non-empty-string
      */
-    public function notLike(string $expression, string $pattern, ?string $escapeCharacters = null): string;
+    public function notLike(string $expression, string $pattern, null|string $escapeCharacters = null): string;
 
     /**
      * Creates an IN () comparison expression with the given arguments.

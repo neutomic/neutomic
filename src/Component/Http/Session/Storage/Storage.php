@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Session\Storage;
 
 use Neu\Component\Cache\Exception\UnavailableItemException;
@@ -12,9 +21,11 @@ use Psl\SecureRandom;
 
 final readonly class Storage implements StorageInterface
 {
-    public function __construct(
-        private StoreInterface $store,
-    ) {
+    private StoreInterface $store;
+
+    public function __construct(StoreInterface $store)
+    {
+        $this->store = $store;
     }
 
     /**
@@ -23,12 +34,12 @@ final readonly class Storage implements StorageInterface
     public function write(SessionInterface $session, null|int $ttl = null): string
     {
         $id = $session->getId();
-        if ('' === $id || $session->isRegenerated() || $session->hasChanges()) {
+        if (null === $id || $session->isRegenerated() || $session->hasChanges()) {
             $id = $this->generateIdentifier();
         }
 
         /** @psalm-suppress MissingThrowsDocblock */
-        $this->store->update($id, static fn(): array => $session->all(), $ttl);
+        $this->store->update($id, static fn (): array => $session->all(), $ttl);
 
         return $id;
     }
@@ -39,11 +50,11 @@ final readonly class Storage implements StorageInterface
     public function read(string $id): SessionInterface
     {
         /**
-         * @var array<array-key, mixed> $data
+         * @var array<non-empty-string, mixed> $data
          *
          * @psalm-suppress MissingThrowsDocblock
          */
-        $data = $this->store->compute($id, static fn(): array => []);
+        $data = $this->store->compute($id, static fn (): array => []);
 
         return new Session($data, $id);
     }
@@ -77,7 +88,11 @@ final readonly class Storage implements StorageInterface
             };
 
         do {
-            /** @psalm-suppress MissingThrowsDocblock */
+            /**
+             * @psalm-suppress MissingThrowsDocblock
+             *
+             * @var non-empty-string $id
+             */
             $id = SecureRandom\string(24);
         } while (!$does_not_exist($id));
 

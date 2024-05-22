@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Input;
 
 use Neu\Component\Console\Exception\InvalidInputDefinitionException;
@@ -19,25 +28,32 @@ use Psl\Regex;
 use Psl\Str;
 use Psl\Vec;
 
+/**
+ * The {@see AbstractInput} class contains all available {@see Flag}, {@see Argument}, and {@see Option}
+ * objects available to parse given the provided input.
+ *
+ * @psalm-suppress RiskyTruthyFalsyComparison
+ * @psalm-suppress MissingThrowsDocblock
+ */
 abstract class AbstractInput implements InputInterface
 {
     /**
-     * Bag container holding all registered `Argument` objects.
+     * The arguments bag holding all registered {@see Argument} objects.
      */
     private ArgumentBag $arguments;
 
     /**
-     * Bag container holding all registered `Option` objects.
+     * The options bag holding all registered {@see Option} objects.
      */
     private OptionBag $options;
 
     /**
-     * Bag container holding all registered `Flag` objects.
+     * The flags bag holding all registered {@see Flag} objects.
      */
     private FlagBag $flags;
 
     /**
-     * The `Lexer` that will traverse and help parse the provided input.
+     * The {@see Lexer} that will traverse and help parse the provided input.
      */
     private Lexer $input;
 
@@ -48,12 +64,14 @@ abstract class AbstractInput implements InputInterface
 
     /**
      * The active command name (if any) that is parsed from the provided input.
+     *
+     * @var null|non-empty-string
      */
-    private ?string $command = null;
+    private null|string $command = null;
 
     /**
-     * All parameters provided in the input that do not match a given `Command`
-     * or `Definition`.
+     * All parameters provided in the input that do not match a given command
+     * and/or definition.
      *
      * @var list<array{raw: string, value: string}>
      */
@@ -68,7 +86,7 @@ abstract class AbstractInput implements InputInterface
      */
     public function __construct(array $args)
     {
-        $args = Vec\filter($args, static fn(string $arg): bool => '' !== $arg);
+        $args = Vec\filter($args, static fn (string $arg): bool => '' !== $arg);
 
         $this->input = new Lexer($args);
         $this->flags = new FlagBag();
@@ -110,9 +128,9 @@ abstract class AbstractInput implements InputInterface
     /**
      * @inheritDoc
      */
-    public function getActiveCommand(): ?string
+    public function getActiveCommand(): null|string
     {
-        if ($this->parsed === true) {
+        if ($this->parsed) {
             return $this->command;
         }
 
@@ -132,7 +150,7 @@ abstract class AbstractInput implements InputInterface
     {
         $lexer = $this->input;
         if ($rewind) {
-            $lexer = new Lexer(Vec\map($this->invalid, static fn($entry) => $entry['raw']));
+            $lexer = new Lexer(Vec\map($this->invalid, static fn ($entry) => $entry['raw']));
         }
 
         foreach ($lexer as $val) {
@@ -146,8 +164,11 @@ abstract class AbstractInput implements InputInterface
 
             if ($this->command === null && !Lexer::isAnnotated($val['raw'])) {
                 // If we haven't parsed a command yet, do so.
-                $this->command = $val['value'];
-                continue;
+                $command = $val['value'];
+                if ($command !== '') {
+                    $this->command = $command;
+                    continue;
+                }
             }
 
             if ($this->parseArgument($val)) {
@@ -180,7 +201,7 @@ abstract class AbstractInput implements InputInterface
 
             $this->invalid = Vec\filter(
                 $this->invalid,
-                static fn($entry) => $entry['value'] !== $input['value'],
+                static fn ($entry) => $entry['value'] !== $input['value'],
             );
 
             return true;
@@ -192,7 +213,7 @@ abstract class AbstractInput implements InputInterface
 
                 $this->invalid = Vec\filter(
                     $this->invalid,
-                    static fn($entry) => $entry['value'] !== $input['value'],
+                    static fn ($entry) => $entry['value'] !== $input['value'],
                 );
 
                 return true;
@@ -207,6 +228,8 @@ abstract class AbstractInput implements InputInterface
      * value.
      *
      * @param array{raw: string, value: string} $input
+     *
+     * @throws MissingValueException If no value is present for the option.
      */
     protected function parseOption(array $input, Lexer $lexer): bool
     {
@@ -245,7 +268,7 @@ abstract class AbstractInput implements InputInterface
 
         $this->invalid = Vec\filter(
             $this->invalid,
-            static fn($entry) => $entry['value'] !== $input['value'] && $entry['value'] !== $value,
+            static fn ($entry) => $entry['value'] !== $input['value'] && $entry['value'] !== $value,
         );
 
         return true;
@@ -265,7 +288,7 @@ abstract class AbstractInput implements InputInterface
 
                 $this->invalid = Vec\filter(
                     $this->invalid,
-                    static fn($entry) => $entry['value'] !== $input['value'],
+                    static fn ($entry) => $entry['value'] !== $input['value'],
                 );
 
                 return true;
@@ -384,7 +407,7 @@ abstract class AbstractInput implements InputInterface
                 continue;
             }
 
-            if ($flag->getValue() === null) {
+            if (!$flag->exists()) {
                 throw new MissingValueException(
                     Str\format('Required flag `%s` is not present.', $name),
                 );
@@ -396,7 +419,7 @@ abstract class AbstractInput implements InputInterface
                 continue;
             }
 
-            if ($option->getValue() === null) {
+            if (!$option->exists()) {
                 throw new MissingValueException(
                     Str\format('No value present for required option `%s`.', $name),
                 );
@@ -408,7 +431,7 @@ abstract class AbstractInput implements InputInterface
                 continue;
             }
 
-            if ($argument->getValue() === null) {
+            if (!$argument->exists()) {
                 throw new MissingValueException(
                     Str\format('No value present for required argument `%s`.', $name),
                 );

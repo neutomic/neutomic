@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Tests\Component\Cache\Driver;
 
 use Neu\Component\Cache;
@@ -9,33 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 final class LocalDriverTest extends TestCase
 {
-    public function testInvalidKey(): void
-    {
-        $driver = new Cache\Driver\LocalDriver();
-
-        try {
-            $driver->set('', 'foo');
-            static::fail('Expected exception to be thrown');
-        } catch (Cache\Exception\InvalidKeyException $e) {
-            $this->addToAssertionCount(1);
-            static::assertSame('Cache key must not be empty.', $e->getMessage());
-        }
-
-        try {
-            $driver->get('');
-            static::fail('Expected exception to be thrown');
-        } catch (Cache\Exception\InvalidKeyException) {
-            $this->addToAssertionCount(1);
-        }
-
-        try {
-            $driver->delete('');
-            static::fail('Expected exception to be thrown');
-        } catch (Cache\Exception\InvalidKeyException) {
-            $this->addToAssertionCount(1);
-        }
-    }
-
     public function testSetGetDelete(): void
     {
         $driver = new Cache\Driver\LocalDriver();

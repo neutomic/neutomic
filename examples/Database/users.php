@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Examples\Database;
 
 use Neu\Component\Database\DatabaseInterface;
@@ -21,7 +30,7 @@ $database->query('CREATE TABLE IF NOT EXISTS users (
     status INT NOT NULL
 )');
 
-$database->transactional(static function(TransactionInterface $transaction): void {
+$database->transactional(static function (TransactionInterface $transaction): void {
     $transaction->insertAll('users', [
         ['username' => 'foo', 'email' => 'foo@example.com', 'password' => '123456789', 'status' => 1],
         ['username' => 'bar', 'email' => 'bar@example.com', 'password' => '123456789', 'status' => 2],

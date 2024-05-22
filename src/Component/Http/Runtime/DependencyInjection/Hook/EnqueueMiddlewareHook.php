@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Runtime\DependencyInjection\Hook;
 
 use Neu\Component\DependencyInjection\ContainerInterface;
@@ -16,6 +25,9 @@ use Psl\Iter;
  */
 final readonly class EnqueueMiddlewareHook implements HookInterface
 {
+    /**
+     * @var non-empty-string
+     */
     private string $queue;
 
     /**
@@ -27,7 +39,7 @@ final readonly class EnqueueMiddlewareHook implements HookInterface
      * @param non-empty-string|null $queue
      * @param list<non-empty-string> $ignore
      */
-    public function __construct(?string $queue = null, array $ignore = [])
+    public function __construct(null|string $queue = null, array $ignore = [])
     {
         $this->queue = $queue ?? MiddlewareQueueInterface::class;
         $this->ignore = $ignore;

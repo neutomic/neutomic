@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Router\Internal\PrefixMatching;
 
 use Neu\Component\Http\Router\Internal\PatternParser\LiteralNode;
@@ -26,31 +35,20 @@ use function substr;
 final readonly class PrefixMap
 {
     /**
-     * @readonly
-     *
      * @var array<string, Route>
      */
     public array $literals;
 
     /**
-     * @readonly
-     *
      * @var array<string, PrefixMap>
      */
     public array $prefixes;
 
     /**
-     * @readonly
-     *
      * @var array<string, PrefixMapOrRoute>
      */
     public array $regexps;
 
-    /**
-     * @readonly
-     *
-     * @var int
-     */
     public int $prefixLength;
 
     /**
@@ -77,12 +75,11 @@ final readonly class PrefixMap
     {
         $entries = array_map(
             /**
-             * @param string $pattern
              * @param Route $route
              *
              * @return array{0: list<Node>, 1: Route}
              */
-            static fn(Route $route): array => [
+            static fn (Route $route): array => [
                 Parser::parse($route->path)->children,
                 $route
             ],
@@ -109,7 +106,6 @@ final readonly class PrefixMap
             }
 
             $node = array_shift($nodes);
-            $nodes = array_values($nodes);
             if ($node instanceof LiteralNode) {
                 if (!$nodes) {
                     $literals[$node->getText()] = $route;
@@ -130,7 +126,7 @@ final readonly class PrefixMap
 
             $regexps[] = [
                 implode('', array_map(
-                    static fn(Node $n): string => $n->asRegexp('#'),
+                    static fn (Node $n): string => $n->asRegexp('#'),
                     array_merge([$node], $nodes),
                 )),
                 [],
@@ -138,30 +134,30 @@ final readonly class PrefixMap
             ];
         }
 
-        /** @var array<string, list<array{0: string, 1: list<Node>, 2: Route}>> $by_first */
+        /** @var array<non-empty-string, list<array{0: non-empty-string, 1: list<Node>, 2: Route}>> $by_first */
         $by_first = Dict\group_by(
             $prefixes,
             /**
-             * @param array{0: string, 1: list<Node>, 2: Route} $entry
+             * @param array{0: non-empty-string, 1: list<Node>, 2: Route} $entry
              */
-            static fn(array $entry): string => $entry[0]
+            static fn (array $entry): string => $entry[0]
         );
 
         [$prefix_length, $grouped] = self::groupByCommonPrefix(array_keys($by_first));
         $prefixes = Dict\map_with_key(
             $grouped,
             /**
-             * @param list<string> $keys
+             * @param non-empty-string $prefix
+             * @param list<non-empty-string> $keys
              */
-            static function (string|int $prefix, array $keys) use ($by_first, $prefix_length): PrefixMap {
-                $prefix = (string)$prefix;
+            static function (string $prefix, array $keys) use ($by_first, $prefix_length): PrefixMap {
                 return self::fromFlatMapImpl(array_merge(...array_map(
                     /**
                      * @return list<array{0: list<Node>, 1: Route}>
                      */
-                    static fn(string $key) => array_map(
+                    static fn (string $key) => array_map(
                         /**
-                         * @param array{0: string, 1: list<Node>, 2: Route} $row
+                         * @param array{0: non-empty-string, 1: list<Node>, 2: Route} $row
                          *
                          * @return array{0: list<Node>, 1: Route}
                          */
@@ -171,6 +167,7 @@ final readonly class PrefixMap
                                 return [$nodes, $route];
                             }
 
+                            /** @var non-empty-string $suffix */
                             $suffix = substr($text, $prefix_length);
                             return [
                                 array_merge([new LiteralNode($suffix)], $nodes),
@@ -189,13 +186,13 @@ final readonly class PrefixMap
             /**
              * @param array{0: string, 1: list<Node>, 2: Route} $entry
              */
-            static fn(array $entry): string => $entry[0]
+            static fn (array $entry): string => $entry[0]
         );
         $regexps = [];
         foreach ($by_first as $first => $group_entries) {
             if (count($group_entries) === 1) {
                 [, $nodes, $route] = $group_entries[0];
-                $rest = implode('', array_map(static fn(Node $n): string => $n->asRegexp('#'), $nodes));
+                $rest = implode('', array_map(static fn (Node $n): string => $n->asRegexp('#'), $nodes));
                 $regexps[$first . $rest] = PrefixMapOrRoute::fromRoute($route);
                 continue;
             }
@@ -207,7 +204,7 @@ final readonly class PrefixMap
                      *
                      * @return array{0: list<Node>, 1: Route}
                      */
-                    static fn(array $e): array => [$e[1], $e[2]],
+                    static fn (array $e): array => [$e[1], $e[2]],
                     $group_entries,
                 )),
             );
@@ -219,7 +216,7 @@ final readonly class PrefixMap
     /**
      * @param list<non-empty-string> $keys
      *
-     * @return array{0: int<0, max>, 1: array<string, list<non-empty-string>>}
+     * @return array{0: int<0, max>, 1: array<non-empty-string, list<non-empty-string>>}
      */
     private static function groupByCommonPrefix(array $keys): array
     {
@@ -227,10 +224,21 @@ final readonly class PrefixMap
             return [0, []];
         }
 
-        $lens = array_map(static fn(string $key): int => strlen($key), $keys);
+        $lens = array_map(static fn (string $key): int => strlen($key), $keys);
         $min = min($lens);
 
-        return [$min, Dict\group_by($keys, static fn(string $key): string => substr($key, 0, $min))];
+        return [$min, Dict\group_by(
+            $keys,
+            /**
+             * @param non-empty-string $key
+             *
+             * @return non-empty-string
+             */
+            static function (string $key) use ($min): string {
+                /** @var non-empty-string */
+                return substr($key, 0, $min);
+            },
+        )];
     }
 
     /**

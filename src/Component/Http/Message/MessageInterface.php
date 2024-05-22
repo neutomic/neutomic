@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Message;
 
 use InvalidArgumentException;
@@ -38,7 +47,7 @@ interface MessageInterface
      *
      * @return null|non-empty-list<non-empty-string> A list of values for the specified header or null if the header does not exist.
      */
-    public function getHeader(string $name): ?array;
+    public function getHeader(string $name): null|array;
 
     /**
      * Retrieves a single string composed of all values of a specific header, concatenated using a comma.
@@ -51,7 +60,7 @@ interface MessageInterface
      *
      * @return null|non-empty-string A single string of concatenated header values, or null if the header is absent.
      */
-    public function getHeaderLine(string $name): ?string;
+    public function getHeaderLine(string $name): null|string;
 
     /**
      * Returns a new instance of the message with the specified header replaced with the provided value(s).
@@ -101,7 +110,7 @@ interface MessageInterface
      *
      * @return ?BodyInterface Returns the body of the message or null if the body has not been set.
      */
-    public function getBody(): ?BodyInterface;
+    public function getBody(): null|BodyInterface;
 
     /**
      * Returns a new instance with the specified message body.
@@ -110,5 +119,5 @@ interface MessageInterface
      *
      * @return static A new instance with the specified body.
      */
-    public function withBody(?BodyInterface $body): static;
+    public function withBody(null|BodyInterface $body): static;
 }

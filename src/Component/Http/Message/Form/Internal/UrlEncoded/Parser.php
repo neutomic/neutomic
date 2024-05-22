@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Message\Form\Internal\UrlEncoded;
 
 use Amp\Pipeline\DisposedException;
@@ -14,6 +23,14 @@ use Neu\Component\Http\Message\RequestBodyInterface;
 use Neu\Component\Http\Message\StatusCode;
 use Throwable;
 
+/**
+ * @internal
+ *
+ * @psalm-suppress ArgumentTypeCoercion
+ * @psalm-suppress MixedMethodCall
+ * @psalm-suppress PossiblyNullArgument
+ * @psalm-suppress PossiblyNullPropertyFetch
+ */
 final readonly class Parser
 {
     /**
@@ -38,7 +55,7 @@ final readonly class Parser
                 $tokens->next();
 
                 if ($token->type === TokenType::String) {
-                    $buffer .= $token->value;
+                    $buffer .= (string) $token->value;
                 } elseif ($token->type === TokenType::Equals) {
                     if ('' === $buffer) {
                         // skip till next ampersand
@@ -61,6 +78,7 @@ final readonly class Parser
                         throw new HttpException(StatusCode::PayloadTooLarge, message: 'Maximum number of fields exceeded.');
                     }
 
+                    /** @var Queue<string> $queue */
                     $queue = new Queue();
                     $future = $source->pushAsync(Field::create(urldecode($field), [], Body::fromIterable($queue->iterate())));
                     while ($tokens->valid()) {

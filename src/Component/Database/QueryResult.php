@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database;
 
 use Amp\Sql\Common\SqlCommandResult;
@@ -17,7 +26,7 @@ final readonly class QueryResult implements QueryResultInterface
     /**
      * @inheritDoc
      */
-    public function nextQueryResult(): ?QueryResultInterface
+    public function nextQueryResult(): null|QueryResultInterface
     {
         $next = $this->result->getNextResult();
         if ($next === null) {
@@ -44,7 +53,7 @@ final readonly class QueryResult implements QueryResultInterface
     /**
      * @inheritDoc
      */
-    public function getRowCount(): ?int
+    public function getRowCount(): null|int
     {
         if ($this->result instanceof SqlCommandResult) {
             return 0;
@@ -56,7 +65,7 @@ final readonly class QueryResult implements QueryResultInterface
     /**
      * @inheritDoc
      */
-    public function getAffectedRowCount(): ?int
+    public function getAffectedRowCount(): null|int
     {
         /** @var null|int<0, max> */
         return $this->result->getRowCount();

@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Feedback;
 
 use Neu\Component\Console\Exception\InvalidCharacterSequenceException;
@@ -12,21 +21,26 @@ use Psl\Math;
 use Psl\Str;
 
 /**
- * The `ProgressBarFeedback` class displays feedback information with a progress bar.
+ * The {@see ProgressBarFeedback} class displays feedback information with a progress bar.
  * Additional information including percentage done, time elapsed, and time
  * remaining is included by default.
+ *
+ * @psalm-suppress InvalidOperand
+ * @psalm-suppress MissingThrowsDocblock
  */
 final class ProgressBarFeedback extends AbstractFeedback
 {
     /**
      * The 2-string character format to use when constructing the displayed bar.
+     *
+     * @var list<string>
      */
     protected array $characterSequence = ['=', '>', ' '];
 
     /**
      * @inheritDoc
      */
-    public function setCharacterSequence(array $characters): self
+    public function setCharacterSequence(array $characters): static
     {
         if (Iter\count($characters) !== 3) {
             throw new InvalidCharacterSequenceException(
@@ -73,6 +87,7 @@ final class ProgressBarFeedback extends AbstractFeedback
             $size = 0;
         }
 
+        /** @var int<0, max> $completed */
         $completed = (int)Math\floor($completed * $size);
         $rest = $size - ($completed + Str\Grapheme\length($this->characterSequence[1]));
 

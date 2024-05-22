@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Console\Output;
 
 use Neu\Component\Console\Formatter\Formatter;
@@ -23,12 +32,12 @@ abstract class AbstractOutput implements OutputInterface
     /**
      * The output cursor.
      */
-    protected ?Cursor $cursor = null;
+    protected null|Cursor $cursor = null;
 
     /**
      * Construct a new `Output` object.
      */
-    public function __construct(Verbosity $verbosity = Verbosity::Normal, null|bool $decorated = null, ?FormatterInterface $formatter = null)
+    public function __construct(Verbosity $verbosity = Verbosity::Normal, null|bool $decorated = null, null|FormatterInterface $formatter = null)
     {
         $this->verbosity = $verbosity;
         $this->formatter = $formatter ?? new Formatter($decorated);

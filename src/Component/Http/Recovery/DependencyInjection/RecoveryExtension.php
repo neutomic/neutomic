@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Http\Recovery\DependencyInjection;
 
 use Neu\Component\DependencyInjection\ContainerBuilderInterface;
@@ -15,6 +24,8 @@ use Psr\Log\LogLevel;
 use Throwable;
 
 /**
+ * An extension for registering the recovery service.
+ *
  * @psalm-import-type ThrowablesConfiguration from Recovery as RecoveryThrowablesConfiguration
  *
  * @psalm-type Configuration = array{
@@ -29,14 +40,12 @@ final readonly class RecoveryExtension implements ExtensionInterface
      */
     public function register(ContainerBuilderInterface $container): void
     {
-        /** @var string|null $defaultLogger */
         $defaultLogger = $container
             ->getConfiguration()
             ->getContainer('http')
-            ->getOfTypeOrDefault('logger', Type\string(), null)
+            ->getOfTypeOrDefault('logger', Type\non_empty_string(), null)
         ;
 
-        /** @var Configuration $configuration */
         $configuration = $container
             ->getConfiguration()
             ->getContainer('http')
@@ -74,7 +83,7 @@ final readonly class RecoveryExtension implements ExtensionInterface
                     'status' => Type\optional(Type\int()),
                     'headers' => Type\optional(Type\dict(
                         Type\non_empty_string(),
-                        Type\vec(Type\non_empty_string()),
+                        Type\non_empty_vec(Type\non_empty_string()),
                     )),
                 ])
             )),

@@ -2,11 +2,21 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\Database\DependencyInjection\Factory;
 
 use Amp\Mysql;
 use Amp\Mysql\MysqlConnection;
 use Amp\Sql\SqlException;
+use Error;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
@@ -26,52 +36,52 @@ final readonly class MysqlConnectionFactory implements FactoryInterface
     /**
      * The port of the MySQL server.
      */
-    private ?int $port;
+    private null|int $port;
 
     /**
      * The username for the MySQL connection.
      */
-    private ?string $user;
+    private null|string $user;
 
     /**
      * The password for the MySQL connection.
      */
-    private ?string $password;
+    private null|string $password;
 
     /**
      * The database name for the MySQL connection.
      */
-    private ?string $database;
+    private null|string $database;
 
     /**
      * The character set for the MySQL connection.
      */
-    private ?string $charset;
+    private null|string $charset;
 
     /**
      * The collation for the MySQL connection.
      */
-    private ?string $collate;
+    private null|string $collate;
 
     /**
      * The SQL mode for the MySQL connection.
      */
-    private ?string $sqlMode;
+    private null|string $sqlMode;
 
     /**
      * Whether to use compression for the connection.
      */
-    private ?bool $useCompression;
+    private null|bool $useCompression;
 
     /**
      * The private key to use for sha256_password authentication method.
      */
-    private ?string $key;
+    private null|string $key;
 
     /**
      * Whether to use local infile for the connection.
      */
-    private ?bool $useLocalInfile;
+    private null|bool $useLocalInfile;
 
     /**
      * Create a new MySQL connection factory.
@@ -90,16 +100,16 @@ final readonly class MysqlConnectionFactory implements FactoryInterface
      */
     public function __construct(
         string $host,
-        ?int $port = null,
-        ?string $user = null,
-        ?string $password = null,
-        ?string $database = null,
-        ?string $charset = null,
-        ?string $collate = null,
-        ?string $sqlMode = null,
-        ?bool $useCompression = null,
-        ?string $key = null,
-        ?bool $useLocalInfile = null
+        null|int $port = null,
+        null|string $user = null,
+        null|string $password = null,
+        null|string $database = null,
+        null|string $charset = null,
+        null|string $collate = null,
+        null|string $sqlMode = null,
+        null|bool $useCompression = null,
+        null|string $key = null,
+        null|bool $useLocalInfile = null
     ) {
         $this->host = $host;
         $this->port = $port;
@@ -125,17 +135,18 @@ final readonly class MysqlConnectionFactory implements FactoryInterface
             user: $this->user,
             password: $this->password,
             database: $this->database,
-            charset: $this->charset,
-            collate: $this->collate,
+            context: null,
+            charset: $this->charset ?? Mysql\MysqlConfig::DEFAULT_CHARSET,
+            collate: $this->collate ?? Mysql\MysqlConfig::DEFAULT_COLLATE,
             sqlMode: $this->sqlMode,
-            useCompression: $this->useCompression,
-            key: $this->key,
-            useLocalInfile: $this->useLocalInfile
+            useCompression: $this->useCompression ?? false,
+            key: $this->key ?? '',
+            useLocalInfile: $this->useLocalInfile ?? false,
         );
 
         try {
             return Mysql\connect($config);
-        } catch (SqlException $e) {
+        } catch (SqlException | Error $e) {
             throw new InvalidArgumentException('Failed to connect to the database: ' . $e->getMessage(), 0, $e);
         }
     }

@@ -2,6 +2,15 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Component\EventDispatcher\Listener\Registry;
 
 use Neu\Component\EventDispatcher\Listener\ListenerInterface;
@@ -13,14 +22,14 @@ use function is_subclass_of;
 final class Registry implements RegistryInterface
 {
     /**
-     * @var array<int, array<class-string, list<ListenerInterface<object>>>>
+     * @var array<int, array<class-string, list<ListenerInterface>>>
      *
      * A map of event class names to their listeners organized by priority.
      */
     private array $listeners = [];
 
     /**
-     * @var array<class-string, list<ListenerInterface<object>>>
+     * @var array<class-string, list<ListenerInterface>>
      */
     private array $optimized = [];
 
@@ -72,17 +81,24 @@ final class Registry implements RegistryInterface
     }
 
     /**
-     * @inheritDoc
+     * Retrieves all listeners registered for the specified event.
+     *
+     * @template T of object
+     *
+     * @param class-string<T> $name The name of the event to retrieve listeners for.
+     *
+     * @return iterable<ListenerInterface<T>> A list of listeners registered for the event.
      */
     public function getListeners(string $name): iterable
     {
         if (Iter\contains_key($this->optimized, $name)) {
+            /** @var list<ListenerInterface<T>> */
             return $this->optimized[$name];
         }
 
         $priorities = Vec\sort(
             Vec\keys($this->listeners),
-            static fn(int $a, int $b): int => $a <=> $b,
+            static fn (int $a, int $b): int => $a <=> $b,
         );
 
         $result = [];
@@ -98,6 +114,7 @@ final class Registry implements RegistryInterface
 
         $this->optimized[$name] = $result;
 
+        /** @var list<ListenerInterface<T>> */
         return $result;
     }
 
