@@ -13,21 +13,24 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Message\Form;
 
-use Amp\Pipeline\ConcurrentIterator;
+use Psl\Vec;
 
+/**
+ * Represents a form containing fields.
+ */
 final readonly class Form implements FormInterface
 {
     /**
-     * @param ConcurrentIterator<FieldInterface> $fields
+     * @var list<FieldInterface>
      */
-    private ConcurrentIterator $fields;
+    private array $fields;
 
     /**
      * Creates a new {@see Form} instance.
      *
-     * @param ConcurrentIterator<FieldInterface> $fields
+     * @param list<FieldInterface> $fields
      */
-    public function __construct(ConcurrentIterator $fields)
+    public function __construct(array $fields)
     {
         $this->fields = $fields;
     }
@@ -35,17 +38,53 @@ final readonly class Form implements FormInterface
     /**
      * @inheritDoc
      */
-    public function getFields(): iterable
+    public function getFields(): array
     {
-        /** @var FieldInterface $field */
-        foreach ($this->fields as $field) {
-            yield $field;
-        }
+        return $this->fields;
     }
 
-    public function __destruct()
+    /**
+     * @inheritDoc
+     */
+    public function getFiles(): array
     {
-        // Disposes of the form fields.
-        $this->fields->dispose();
+        /** @var list<FileInterface> */
+        return Vec\filter(
+            $this->fields,
+            static fn (FieldInterface $field) => $field instanceof FileInterface,
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFieldsByName(string $name): array
+    {
+        return Vec\filter(
+            $this->fields,
+            static fn (FieldInterface $field) => $field->getName() === $name,
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFirstFieldByName(string $name): null|FieldInterface
+    {
+        foreach ($this->fields as $field) {
+            if ($field->getName() === $name) {
+                return $field;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasFieldWithName(string $name): bool
+    {
+        return null !== $this->getFirstFieldByName($name);
     }
 }

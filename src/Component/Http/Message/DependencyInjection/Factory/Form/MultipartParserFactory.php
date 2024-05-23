@@ -15,20 +15,20 @@ namespace Neu\Component\Http\Message\DependencyInjection\Factory\Form;
 
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
-use Neu\Component\Http\Message\Form\MultipartIncrementalFormParser;
+use Neu\Component\Http\Message\Form\MultipartParser;
 
 /**
- * Factory for the multipart incremental form parser.
+ * Factory for the multipart form parser.
  *
- * @implements FactoryInterface<MultipartIncrementalFormParser>
+ * @implements FactoryInterface<MultipartParser>
  */
-final readonly class MultipartIncrementalFormParserFactory implements FactoryInterface
+final readonly class MultipartParserFactory implements FactoryInterface
 {
     /**
      * @inheritDoc
      */
-    public function __invoke(ContainerInterface $container): MultipartIncrementalFormParser
+    public function __invoke(ContainerInterface $container): MultipartParser
     {
-        return new MultipartIncrementalFormParser();
+        return new MultipartParser();
     }
 }

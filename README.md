@@ -52,21 +52,21 @@ Look at the demo repository [neutomic/demo](https://github.com/neutomic/demo) fo
   - [x] File
   - [x] Redis
   - [x] Locale
-- [ ] Form Parsing
-    - [x] Incremental parsing
+- [x] Form Parsing
+    - [x] Streamed parsing
         - [x] Multipart
         - [x] URL-encoded
-    - [ ] Full parsing
-        - [ ] Multipart
-        - [ ] URL-encoded
+    - [x] Full parsing
+        - [x] Multipart
+        - [x] URL-encoded
 - [X] CSRF protection
 - [ ] Authentication
 - [ ] Authorization
 - [ ] WebSockets support
 - [ ] Unit tests
 - [ ] Code coverage
-- [ ] Static analysis
-- [ ] Security analysis
+- [x] Static analysis
+- [x] Security analysis
 
 ## License
 

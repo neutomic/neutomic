@@ -15,20 +15,20 @@ namespace Neu\Component\Http\Message\DependencyInjection\Factory\Form;
 
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
-use Neu\Component\Http\Message\Form\IncrementalFormParser;
+use Neu\Component\Http\Message\Form\UrlEncodedParser;
 
 /**
- * Factory for the incremental form parser.
+ * Factory for the url-encoded form parser.
  *
- * @implements FactoryInterface<IncrementalFormParser>
+ * @implements FactoryInterface<UrlEncodedParser>
  */
-final readonly class IncrementalFormParserFactory implements FactoryInterface
+final readonly class UrlEncodedParserFactory implements FactoryInterface
 {
     /**
      * @inheritDoc
      */
-    public function __invoke(ContainerInterface $container): IncrementalFormParser
+    public function __invoke(ContainerInterface $container): UrlEncodedParser
     {
-        return new IncrementalFormParser();
+        return new UrlEncodedParser();
     }
 }

@@ -19,7 +19,7 @@ use Neu\Component\Http\Message\RequestBodyInterface;
 use function strlen;
 use function substr;
 
-final readonly class Tokenizer
+enum Tokenizer
 {
     /**
      * @return Iterator<Token>

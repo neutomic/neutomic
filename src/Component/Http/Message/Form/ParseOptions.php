@@ -87,11 +87,22 @@ final readonly class ParseOptions
     }
 
     /**
-     * Creates an instance of ParseOptions with a specified maximum field count, retaining the default or current maximum body size and file settings.
+     * Creates an instance of {@see ParseOptions} with default settings.
+     *
+     * @return self Returns a new instance of {@see ParseOptions} with default settings.
+     */
+    public static function create(): self
+    {
+        return new self();
+    }
+
+    /**
+     * Creates an instance of {@see ParseOptions} with a specified maximum field count,
+     * retaining the default or current maximum body size and file settings.
      *
      * @param int $fieldCountLimit The desired maximum number of form fields.
      *
-     * @return self Returns a new instance of ParseOptions with the specified field count limit.
+     * @return self Returns a new instance of {@see ParseOptions} with the specified field count limit.
      */
     public static function fromFieldCountLimit(int $fieldCountLimit): self
     {
@@ -99,11 +110,12 @@ final readonly class ParseOptions
     }
 
     /**
-     * Creates an instance of ParseOptions with a specified maximum body size, retaining the default maximum field count and file settings.
+     * Creates an instance of {@see ParseOptions} with a specified maximum body size,
+     * retaining the default maximum field count and file settings.
      *
      * @param ?int $bodySizeLimit The desired maximum body size in bytes, or null to use the server's default limit.
      *
-     * @return self Returns a new instance of ParseOptions with the specified body size limit.
+     * @return self Returns a new instance of {@see ParseOptions} with the specified body size limit.
      */
     public static function fromBodySizeLimit(null|int $bodySizeLimit): self
     {
