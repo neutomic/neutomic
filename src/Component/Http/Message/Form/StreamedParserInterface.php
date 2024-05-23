@@ -13,20 +13,23 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Message\Form;
 
+use Neu\Component\Http\Exception\HttpException;
 use Neu\Component\Http\Message\RequestInterface;
 
 /**
  * Interface for parsing form data from HTTP requests.
  */
-interface IncrementalFormParserInterface
+interface StreamedParserInterface
 {
     /**
-     * Parses the form data from the given HTTP request.
+     * Parses the form data from the given HTTP request incrementally.
      *
      * @param RequestInterface $request The HTTP request containing form data.
      * @param null|ParseOptions $options Optional parsing options.
      *
-     * @return FormInterface The parsed form data.
+     * @throws HttpException If the request body is too large or the maximum number of fields is exceeded.
+     *
+     * @return StreamedFormInterface The parsed form data.
      */
-    public function parse(RequestInterface $request, null|ParseOptions $options = null): FormInterface;
+    public function parseStreamed(RequestInterface $request, null|ParseOptions $options = null): StreamedFormInterface;
 }

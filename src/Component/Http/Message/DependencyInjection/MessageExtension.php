@@ -16,10 +16,11 @@ namespace Neu\Component\Http\Message\DependencyInjection;
 use Neu\Component\DependencyInjection\ContainerBuilderInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
-use Neu\Component\Http\Message\Form\IncrementalFormParser;
-use Neu\Component\Http\Message\Form\IncrementalFormParserInterface;
-use Neu\Component\Http\Message\Form\MultipartIncrementalFormParser;
-use Neu\Component\Http\Message\Form\UrlEncodedIncrementalFormParser;
+use Neu\Component\Http\Message\Form\MultipartParser;
+use Neu\Component\Http\Message\Form\Parser;
+use Neu\Component\Http\Message\Form\ParserInterface;
+use Neu\Component\Http\Message\Form\StreamedParserInterface;
+use Neu\Component\Http\Message\Form\UrlEncodedParser;
 
 final readonly class MessageExtension implements ExtensionInterface
 {
@@ -28,10 +29,13 @@ final readonly class MessageExtension implements ExtensionInterface
      */
     public function register(ContainerBuilderInterface $container): void
     {
-        $container->addDefinition(Definition::ofType(MultipartIncrementalFormParser::class, new Factory\Form\MultipartIncrementalFormParserFactory()));
-        $container->addDefinition(Definition::ofType(UrlEncodedIncrementalFormParser::class, new Factory\Form\UrlEncodedIncrementalFormParserFactory()));
-        $container->addDefinition(Definition::ofType(IncrementalFormParser::class, new Factory\Form\IncrementalFormParserFactory()));
+        $container->addDefinition(Definition::ofType(MultipartParser::class, new Factory\Form\MultipartParserFactory()));
+        $container->addDefinition(Definition::ofType(UrlEncodedParser::class, new Factory\Form\UrlEncodedParserFactory()));
 
-        $container->getDefinition(IncrementalFormParser::class)->addAlias(IncrementalFormParserInterface::class);
+        $definition = Definition::ofType(Parser::class, new Factory\Form\ParserFactory());
+        $definition->addAlias(ParserInterface::class);
+        $definition->addAlias(StreamedParserInterface::class);
+
+        $container->addDefinition($definition);
     }
 }

@@ -14,22 +14,54 @@ declare(strict_types=1);
 namespace Neu\Component\Http\Message\Form;
 
 /**
- * Interface for handling form data from HTTP requests.
+ * Interface for form data.
  *
- * This interface provides methods to access form fields regardless of the encoding type.
+ * This interface is the result of calling {@see ParserInterface::parse}.
  *
- * It accommodates forms where multiple fields can have the same name by storing these fields in a list.
+ * The form data will be loaded entirely into memory. If the data contains
+ * large amounts of data, it is recommended to use {@see StreamedParserInterface::parseStreamed()}
+ * to parse the form incrementally, which is better for memory usage.
  */
-interface FormInterface
+interface FormInterface extends StreamedFormInterface
 {
     /**
-     * Retrieves an iterator over all fields from the parsed form data.
+     * Retrieves all fields from the parsed form data.
      *
-     * This method provides an efficient way to iterate over fields without loading them all into memory at once.
-     *
-     * It supports multiple fields with the same name, which are returned on separate iterations.
-     *
-     * @return iterable<FieldInterface> An iterable of {@see FieldInterface} implementations.
+     * @return list<FieldInterface> A list of {@see FieldInterface} implementations.
      */
-    public function getFields(): iterable;
+    public function getFields(): array;
+
+    /**
+     * Retrieves all file fields from the parsed form data.
+     *
+     * @return list<FileInterface> A list of {@see FileInterface} implementations.
+     */
+    public function getFiles(): array;
+
+    /**
+     * Retrieves all fields that have a specific name.
+     *
+     * @param non-empty-string $name The name to filter fields by.
+     *
+     * @return list<FieldInterface> A list of {@see FieldInterface} implementations with the specified name.
+     */
+    public function getFieldsByName(string $name): array;
+
+    /**
+     * Retrieves the first field that has a specific name.
+     *
+     * @param non-empty-string $name The name to filter fields by.
+     *
+     * @return FieldInterface|null The first {@see FieldInterface} implementation with the specified name, or null if not found.
+     */
+    public function getFirstFieldByName(string $name): null|FieldInterface;
+
+    /**
+     * Checks if there are fields with a specific name.
+     *
+     * @param non-empty-string $name The name to check for.
+     *
+     * @return bool True if there are fields with the specified name, false otherwise.
+     */
+    public function hasFieldWithName(string $name): bool;
 }
