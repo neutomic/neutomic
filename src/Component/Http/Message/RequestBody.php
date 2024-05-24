@@ -24,8 +24,8 @@ use Amp\TimeoutCancellation;
 use Amp\TimeoutException as AmpTimeoutException;
 use Closure;
 use Neu\Component\Http\Exception\RuntimeException;
-use Neu\Component\Http\Message\Exception\LogicException;
-use Neu\Component\Http\Message\Exception\TimeoutException;
+use Neu\Component\Http\Exception\TimeoutException;
+use Neu\Component\Http\Exception\LogicException;
 use Traversable;
 
 final class RequestBody implements RequestBodyInterface

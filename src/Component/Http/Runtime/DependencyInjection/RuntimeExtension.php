@@ -25,6 +25,7 @@ use Neu\Component\Http\Runtime\DependencyInjection\Factory\Middleware\Middleware
 use Neu\Component\Http\Runtime\DependencyInjection\Factory\Middleware\RouterMiddlewareFactory;
 use Neu\Component\Http\Runtime\DependencyInjection\Factory\Middleware\SessionMiddlewareFactory;
 use Neu\Component\Http\Runtime\DependencyInjection\Factory\Middleware\StaticContentMiddlewareFactory;
+use Neu\Component\Http\Runtime\DependencyInjection\Factory\Middleware\XPoweredByMiddlewareFactory;
 use Neu\Component\Http\Runtime\DependencyInjection\Factory\RuntimeFactory;
 use Neu\Component\Http\Runtime\DependencyInjection\Hook\EnqueueMiddlewareHook;
 use Neu\Component\Http\Runtime\Handler\Resolver\HandlerResolver;
@@ -36,6 +37,7 @@ use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
 use Neu\Component\Http\Runtime\Middleware\RouterMiddleware;
 use Neu\Component\Http\Runtime\Middleware\SessionMiddleware;
 use Neu\Component\Http\Runtime\Middleware\StaticContentMiddleware;
+use Neu\Component\Http\Runtime\Middleware\XPoweredByMiddleware;
 use Neu\Component\Http\Runtime\Runtime;
 use Neu\Component\Http\Runtime\RuntimeInterface;
 use Psl\Iter;
@@ -82,6 +84,9 @@ use Psl\Type;
  *         access-log?: null|array{
  *             priority?: int,
  *             logger?: non-empty-string,
+ *         },
+ *         x-powered-by?: null|array{
+ *             powered-by?: non-empty-string,
  *         },
  *     },
  *     content-delivery?: array{
@@ -171,6 +176,9 @@ final readonly class RuntimeExtension implements ExtensionInterface
                 'access-log' => Type\optional(Type\nullable(Type\shape([
                     'priority' => Type\optional(Type\int()),
                     'logger' => Type\optional(Type\non_empty_string()),
+                ]))),
+                'x-powered-by' => Type\optional(Type\nullable(Type\shape([
+                    'powered-by' => Type\optional(Type\non_empty_string()),
                 ]))),
             ]),
             'content-delivery' => Type\optional(Type\shape([
@@ -279,6 +287,14 @@ final readonly class RuntimeExtension implements ExtensionInterface
                 Definition::ofType(RouterMiddleware::class, new RouterMiddlewareFactory(
                     matcher: $configuration['middleware']['router']['matcher'] ?? null,
                     priority: $configuration['middleware']['router']['priority'] ?? null,
+                )),
+            );
+        }
+
+        if (Iter\contains_key($configuration['middleware'] ?? [], 'x-powered-by')) {
+            $container->addDefinition(
+                Definition::ofType(XPoweredByMiddleware::class, new XPoweredByMiddlewareFactory(
+                    poweredBy: $configuration['middleware']['x-powered-by']['powered-by'] ?? null,
                 )),
             );
         }

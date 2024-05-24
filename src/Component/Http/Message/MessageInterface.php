@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Message;
 
-use InvalidArgumentException;
+use Neu\Component\Http\Exception\InvalidArgumentException;
 
 interface MessageInterface
 {

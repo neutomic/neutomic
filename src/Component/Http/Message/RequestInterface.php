@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Message;
 
-use Neu\Component\Http\Message\Exception\InvalidArgumentException;
-use Neu\Component\Http\Message\Exception\LogicException;
+use Neu\Component\Http\Exception\InvalidArgumentException;
+use Neu\Component\Http\Exception\LogicException;
 use Neu\Component\Http\Session\SessionInterface;
 
 interface RequestInterface extends ExchangeInterface

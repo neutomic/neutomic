@@ -23,8 +23,8 @@ use Amp\Sync\Semaphore;
 use Amp\TimeoutCancellation;
 use Amp\TimeoutException as AmpTimeoutException;
 use Neu\Component\Http\Exception\RuntimeException;
-use Neu\Component\Http\Message\Exception\LogicException;
-use Neu\Component\Http\Message\Exception\TimeoutException;
+use Neu\Component\Http\Exception\TimeoutException;
+use Neu\Component\Http\Exception\LogicException;
 use Traversable;
 
 final class Body implements BodyInterface

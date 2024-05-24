@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Runtime\Middleware;
 
+use Neu\Component\Http\Exception\ExceptionInterface;
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Context;
@@ -33,6 +34,8 @@ interface MiddlewareInterface
      * Processes an incoming server request in order to produce a response.
      * If unable to produce the response itself, it may delegate to the provided
      * request handler to do so.
+     *
+     * @throws ExceptionInterface If processing fails
      */
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface;
 }

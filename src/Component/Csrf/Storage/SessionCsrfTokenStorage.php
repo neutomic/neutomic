@@ -15,7 +15,7 @@ namespace Neu\Component\Csrf\Storage;
 
 use Neu\Component\Csrf\Exception\RuntimeException;
 use Neu\Component\Csrf\Exception\TokenNotFoundException;
-use Neu\Component\Http\Message\Exception\LogicException;
+use Neu\Component\Http\Exception\LogicException;
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Session\Exception\UnavailableItemException;
 use Neu\Component\Http\Session\SessionInterface;

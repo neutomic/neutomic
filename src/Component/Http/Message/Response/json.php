@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\Http\Message\Response;
 
 use Neu\Component\Http\Message\Body;
-use Neu\Component\Http\Message\Exception\InvalidArgumentException;
+use Neu\Component\Http\Exception\InvalidArgumentException;
 use Neu\Component\Http\Message\Response;
 use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Message\StatusCode;

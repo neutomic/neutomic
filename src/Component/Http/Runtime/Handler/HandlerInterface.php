@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Runtime\Handler;
 
+use Neu\Component\Http\Exception\ExceptionInterface;
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Context;
@@ -29,6 +30,8 @@ interface HandlerInterface
      * Handles a request and produces a response.
      *
      * May call other collaborating code to generate the response.
+     *
+     * @throws ExceptionInterface If failed to handle the request
      */
     public function handle(Context $context, RequestInterface $request): ResponseInterface;
 }

@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\Http\Message\Internal;
 
 use Neu\Component\Http\Message\CookieInterface;
-use Neu\Component\Http\Message\Exception\InvalidArgumentException;
+use Neu\Component\Http\Exception\InvalidArgumentException;
 
 use function array_merge;
 use function is_array;

@@ -11,10 +11,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Http\Message\Exception;
+namespace Neu\Component\Http\Exception;
 
-use Neu\Component\Http\Exception\RuntimeException as RootRuntimeException;
-
-final class TimeoutException extends RootRuntimeException implements ExceptionInterface
+final class TimeoutException extends RuntimeException implements ExceptionInterface
 {
 }
