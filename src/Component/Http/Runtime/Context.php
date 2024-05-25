@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Runtime;
 
-use Amp\Socket\TlsInfo;
+use Amp\Http\Server\Driver\Client;
 use Closure;
 use Neu\Component\Http\Exception\InvalidArgumentException;
 use Neu\Component\Http\Message\ResponseInterface;
@@ -26,28 +26,9 @@ final readonly class Context
     private null|int $workerId;
 
     /**
-     * The client ID of the context.
+     * The client of the context.
      */
-    private int $clientId;
-
-    /**
-     * The remote address of the client.
-     *
-     * @var non-empty-string
-     */
-    private string $remoteAddress;
-
-    /**
-     * The local address of the server.
-     *
-     * @var non-empty-string
-     */
-    private string $localAddress;
-
-    /**
-     * The TLS information of the client or null if the client is not encrypted.
-     */
-    private null|TlsInfo $tlsInformation;
+    private Client $client;
 
     /**
      * The function to send an early informational response.
@@ -60,19 +41,13 @@ final readonly class Context
      * Create a new context instance.
      *
      * @param int|null $workerId The worker ID of the context or null if the context is not worker-specific.
-     * @param int $clientId The client ID of the context.
-     * @param non-empty-string $remoteAddress The remote address of the client.
-     * @param non-empty-string $localAddress The local address of the server.
-     * @param TlsInfo|null $tlsInformation The TLS information of the client or null if the client is not encrypted.
+     * @param Client $client The client of the context.
      * @param (Closure(ResponseInterface): void) $sendInformationalResponse The function to send an early informational response.
      */
-    public function __construct(null|int $workerId, int $clientId, string $remoteAddress, string $localAddress, null|TlsInfo $tlsInformation, Closure $sendInformationalResponse)
+    public function __construct(null|int $workerId, Client $client, Closure $sendInformationalResponse)
     {
         $this->workerId = $workerId;
-        $this->clientId = $clientId;
-        $this->remoteAddress = $remoteAddress;
-        $this->localAddress = $localAddress;
-        $this->tlsInformation = $tlsInformation;
+        $this->client = $client;
         $this->sendInformationalResponse = $sendInformationalResponse;
     }
 
@@ -87,41 +62,13 @@ final readonly class Context
     }
 
     /**
-     * Get the client ID of the context.
-     */
-    public function getClientId(): int
-    {
-        return $this->clientId;
-    }
-
-    /**
-     * Get the remote address of the client.
+     * Get the client of the context.
      *
-     * @return non-empty-string The remote address of the client.
+     * @return Client The client of the context.
      */
-    public function getRemoteAddress(): string
+    public function getClient(): Client
     {
-        return $this->remoteAddress;
-    }
-
-    /**
-     * Get the local address of the server.
-     *
-     * @return non-empty-string The local address of the server.
-     */
-    public function getLocalAddress(): string
-    {
-        return $this->localAddress;
-    }
-
-    /**
-     * Get the TLS information of the client.
-     *
-     * @return TlsInfo|null The TLS information of the client or null if the client is not encrypted.
-     */
-    public function getTlsInformation(): null|TlsInfo
-    {
-        return $this->tlsInformation;
+        return $this->client;
     }
 
     /**

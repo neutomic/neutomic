@@ -48,14 +48,14 @@ final readonly class AccessLogMiddleware implements PrioritizedMiddlewareInterfa
             $request->getUri()->toString(),
             $response->getStatusCode(),
             $request->getProtocolVersion()->value,
-            $context->getRemoteAddress(),
+            $context->getClient()->getRemoteAddress()->toString(),
             number_format($duration * 1000, 2),
         );
 
         $this->logger->info($message, [
-            'remote' => $context->getRemoteAddress(),
-            'local' => $context->getLocalAddress(),
-            'client' => $context->getClientId(),
+            'remote' => $context->getClient()->getRemoteAddress()->toString(),
+            'local' => $context->getClient()->getLocalAddress()->toString(),
+            'client' => $context->getClient()->getId(),
             'worker' => $context->getWorkerId(),
         ]);
 

@@ -78,10 +78,7 @@ final readonly class MessageConvertor
 
         $context = new Context(
             Amp\Cluster\Cluster::getContextId(),
-            $request->getClient()->getId(),
-            $request->getClient()->getRemoteAddress()->toString(),
-            $request->getClient()->getLocalAddress()->toString(),
-            $request->getClient()->getTlsInfo(),
+            $request->getClient(),
             static function (ResponseInterface $_): never {
                 throw new RuntimeException('Unable to send informational response, feature not supported.');
             },
@@ -113,7 +110,7 @@ final readonly class MessageConvertor
             );
 
             $ampResponse->onDispose(
-                fn () => Amp\async(static function () use ($body, $stream): void {
+                static fn () => Amp\async(static function () use ($body, $stream): void {
                     $body->close();
                     $stream->close();
                 })
