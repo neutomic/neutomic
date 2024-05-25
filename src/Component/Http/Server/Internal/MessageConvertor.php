@@ -108,8 +108,9 @@ final readonly class MessageConvertor
         $ampResponse = new AmpResponse($response->getStatusCode());
 
         if ($body = $response->getBody()) {
-            $stream = new ReadableIterableStream($body->getIterator());
-            $ampResponse->setBody(new ReadableIterableStream($stream));
+            $ampResponse->setBody(
+                $stream = new ReadableIterableStream($body->getIterator()),
+            );
 
             $ampResponse->onDispose(
                 fn () => Amp\async(static function () use ($body, $stream): void {
