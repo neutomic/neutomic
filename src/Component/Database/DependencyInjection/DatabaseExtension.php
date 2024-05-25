@@ -203,7 +203,7 @@ final class DatabaseExtension implements ExtensionInterface
      */
     private function registerMysqlConnection(ContainerBuilderInterface $container, string $serviceId, array $config): void
     {
-        if (!Class\exists(MysqlConnection::class)) {
+        if (!Class\exists(MysqlConnectionPool::class)) {
             throw new RuntimeException('The "amphp/mysql" package is required to use the mysql database connection.');
         }
 
@@ -254,7 +254,7 @@ final class DatabaseExtension implements ExtensionInterface
      */
     private function registerPostgresConnection(ContainerBuilderInterface $container, string $serviceId, array $config): void
     {
-        if (!Class\exists(PostgresConnection::class)) {
+        if (!Class\exists(PostgresConnectionPool::class)) {
             throw new RuntimeException('The "amphp/postgres" package is required to use the postgres database connection.');
         }
 

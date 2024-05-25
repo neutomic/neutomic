@@ -49,7 +49,6 @@ use Psl\Type;
  *     hooks?: array{
  *         register-routes?: array{
  *             registry?: non-empty-string,
- *             logger?: non-empty-string,
  *         }
  *     },
  * }
