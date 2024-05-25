@@ -108,11 +108,17 @@ final readonly class MessageConvertor
         $ampResponse = new AmpResponse($response->getStatusCode());
 
         if ($body = $response->getBody()) {
-            $ampResponse->setBody(new ReadableIterableStream($body->getIterator()));
+            $stream = new ReadableIterableStream($body->getIterator());
+            $ampResponse->setBody(new ReadableIterableStream($stream));
+
+            $ampResponse->onDispose(
+                fn () => Amp\async(static function () use ($body, $stream): void {
+                    $body->close();
+                    $stream->close();
+                })
+            );
         }
 
-        // we set the headers after the body as Amphp
-        // would remove content-length if we set it before the body
         foreach ($response->getHeaders() as $header => $values) {
             foreach ($values as $value) {
                 $ampResponse->addHeader($header, $value);
