@@ -4,18 +4,20 @@ declare(strict_types=1);
 
 namespace Neu\Examples\Framework;
 
-use Amp\ByteStream\ReadableIterableStream;
+use Amp\Pipeline\Queue;
 use Neu;
-use Neu\Component\DependencyInjection\ContainerBuilder;
 use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\ContainerBuilder;
 use Neu\Component\DependencyInjection\Project;
-use Neu\Component\Http\Message\Method;
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\ResponseInterface;
+use Neu\Component\Http\Message\Body;
 use Neu\Component\Http\Message\Response;
+use Neu\Component\Http\Message\Method;
 use Neu\Component\Http\Router\Route\Route;
-use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
+use Neu\Component\Http\Runtime\Context;
+use Psl\Async;
 
 use function Neu\Framework\entrypoint;
 
@@ -26,18 +28,35 @@ final readonly class IndexHandler implements HandlerInterface
 {
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
-        $stream = new ReadableIterableStream(['Hello', ' ', 'World!']);
-        $stream->onClose(function () {
-            echo 'Stream closed';
-        });
+        return Response\redirect('/index.html');
+    }
+}
 
-        $context->getClient()->onClose(function () {
-            echo 'Client closed';
-        });
+#[Route(name: 'server-sent-events', path: '/sse', methods: [Method::Get])]
+final readonly class ServerSentEventsHandler implements HandlerInterface
+{
+    public function handle(Context $context, RequestInterface $request): ResponseInterface
+    {
+        $queue = new Queue();
+        $context->getClient()->onClose(static fn() => $queue->complete());
 
-        $body = Neu\Component\Http\Message\Body::fromReadableStream($stream);
+        Async\run(static function() use ($queue): void {
+            while (true) {
+                if ($queue->isComplete()) {
+                    break;
+                }
 
-        return Response::fromStatusCode(200)->withBody($body);
+                $queue->push("event: message\n" . "data: {\"message\": \"Hello, World!\"}\n\n");
+
+                Async\sleep(1);
+            }
+        })->ignore();
+
+        return Response::fromStatusCode(200)
+            ->withHeader('Content-Type', 'text/event-stream')
+            ->withHeader('Cache-Control', 'no-cache')
+            ->withHeader('Connection', 'keep-alive')
+            ->withBody(Body::fromIterable($queue->iterate()));
     }
 }
 
