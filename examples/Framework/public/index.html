@@ -9,10 +9,9 @@
 <script>
     const eventSource = new EventSource('/sse');
     eventSource.onmessage = function(event) {
-        const data = JSON.parse(event.data);
 
         let message = document.createElement('div');
-        message.innerHTML = data.message;
+        message.innerHTML = event.data;
 
         document.getElementById('sse-data').appendChild(message);
     };

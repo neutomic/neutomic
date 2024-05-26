@@ -2,21 +2,29 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the Neutomic package.
+ *
+ * (c) Saif Eddin Gmati <azjezz@protonmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Neu\Examples\Framework;
 
-use Amp\Pipeline\Queue;
 use Neu;
 use Neu\Component\DependencyInjection\ContainerBuilderInterface;
 use Neu\Component\DependencyInjection\ContainerBuilder;
 use Neu\Component\DependencyInjection\Project;
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\ResponseInterface;
-use Neu\Component\Http\Message\Body;
 use Neu\Component\Http\Message\Response;
 use Neu\Component\Http\Message\Method;
 use Neu\Component\Http\Router\Route\Route;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\Runtime\Context;
+use Neu\Component\Http\ServerSentEvent;
 use Psl\Async;
 
 use function Neu\Framework\entrypoint;
@@ -37,30 +45,28 @@ final readonly class ServerSentEventsHandler implements HandlerInterface
 {
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
-        $queue = new Queue();
-        $context->getClient()->onClose(static fn() => $queue->complete());
+        $stream = ServerSentEvent\EventStream::forContext($context);
 
-        Async\run(static function() use ($queue): void {
+        Async\run(static function () use ($stream): void {
             while (true) {
-                if ($queue->isComplete()) {
+                if ($stream->isClosed()) {
                     break;
                 }
 
-                $queue->push("event: message\n" . "data: {\"message\": \"Hello, World!\"}\n\n");
+                $stream->send(new ServerSentEvent\Event(
+                    type: 'message',
+                    data: 'Hello, World!',
+                ));
 
                 Async\sleep(1);
             }
         })->ignore();
 
-        return Response::fromStatusCode(200)
-            ->withHeader('Content-Type', 'text/event-stream')
-            ->withHeader('Cache-Control', 'no-cache')
-            ->withHeader('Connection', 'keep-alive')
-            ->withBody(Body::fromIterable($queue->iterate()));
+        return $stream->getResponse();
     }
 }
 
-entrypoint(static function(Project $project): ContainerBuilderInterface {
+entrypoint(static function (Project $project): ContainerBuilderInterface {
     $project = $project
         ->withEntryPoint(__FILE__)
         ->withDirectory(__DIR__)
