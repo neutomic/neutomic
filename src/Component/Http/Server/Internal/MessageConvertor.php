@@ -65,7 +65,6 @@ final readonly class MessageConvertor
             ->withCookies($cookies)
             ->withQueryParameters($request->getQueryParameters())
             ->withAddedAttributes($request->getAttributes())
-            ->withAttribute('client', $request->getClient())
         ;
 
         if ($ampTrailers = $request->getTrailers()) {
@@ -109,12 +108,10 @@ final readonly class MessageConvertor
                 $stream = new ReadableIterableStream($body->getIterator()),
             );
 
-            $ampResponse->onDispose(
-                static fn () => Amp\async(static function () use ($body, $stream): void {
-                    $body->close();
-                    $stream->close();
-                })
-            );
+            $ampResponse->onDispose(function() use($body, $stream): void {
+                $body->close();
+                $stream->close();
+            });
         }
 
         foreach ($response->getHeaders() as $header => $values) {
