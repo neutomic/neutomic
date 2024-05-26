@@ -23,9 +23,9 @@ Key components of Neutomic include:
 
 Neu is designed to power high-traffic APIs, complex web applications, and real-time data processing systems. By adopting modern asynchronous PHP features, Neu helps developers build robust, efficient applications that are well-suited to today's dynamic, high-load environments.
 
-## Demo
+## Skeleton repository
 
-Look at the demo repository [neutomic/demo](https://github.com/neutomic/demo) for a simple example of a Neu application.
+Look at the skeleton repository [neutomic/skeleton](https://github.com/neutomic/skeleton) for a simple example of a Neu application.
 
 ## To Do
 
