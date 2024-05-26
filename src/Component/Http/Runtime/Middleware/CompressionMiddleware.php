@@ -76,7 +76,7 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
     /**
      * The default regular expression used to match compressible content types.
      */
-    public const string DEFAULT_COMPRESSIBLE_CONTENT_TYPES_REGEX = '/^(text\/.+|application\/(?:json|(?:x-)?javascript)|[^\/]+\/[^\/]+\+xml|[^\/]+\/xml)(?:\s*;|$)/i';
+    public const string DEFAULT_COMPRESSIBLE_CONTENT_TYPES_REGEX = '/^(?!(text\/event-stream))(text\/.+|application\/(?:json|(?:x-)?javascript)|[^\/]+\/[^\/]+\+xml|[^\/]+\/xml)(?:\s*;|$)/i';
 
     /**
      * The default level of compression.
