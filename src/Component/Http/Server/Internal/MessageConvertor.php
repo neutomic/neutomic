@@ -108,7 +108,7 @@ final readonly class MessageConvertor
                 $stream = new ReadableIterableStream($body->getIterator()),
             );
 
-            $ampResponse->onDispose(function() use($body, $stream): void {
+            $ampResponse->onDispose(static function () use ($body, $stream): void {
                 $body->close();
                 $stream->close();
             });
