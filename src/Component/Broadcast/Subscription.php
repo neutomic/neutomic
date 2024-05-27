@@ -16,7 +16,6 @@ namespace Neu\Component\Broadcast;
 use Amp\Pipeline\ConcurrentIterator;
 use Amp\Pipeline\DisposedException;
 use Closure;
-use Revolt\EventLoop;
 
 /**
  * Represents a subscription to a channel, providing an iterator to receive messages.
@@ -98,20 +97,6 @@ final class Subscription
         }
 
         return $this->iterator->getValue();
-    }
-
-    /**
-     * Consumes messages from the channel using the provided consumer.
-     *
-     * @param (Closure(Subscription<T>, Message<T>): void) $consumer The consumer to process messages.
-     */
-    public function consume(Closure $consumer): void
-    {
-        EventLoop::defer(function () use ($consumer): void {
-            while ($message = $this->receive()) {
-                $consumer($this, $message);
-            }
-        });
     }
 
     /**
