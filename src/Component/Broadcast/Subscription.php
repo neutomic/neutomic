@@ -62,7 +62,7 @@ final class Subscription
     /**
      * Gets the channel associated with the subscription.
      *
-     * @return string The channel name.
+     * @return non-empty-string The channel name.
      */
     public function getChannel(): string
     {
