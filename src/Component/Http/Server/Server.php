@@ -19,6 +19,7 @@ use Neu\Component\EventDispatcher\EventDispatcherInterface;
 use Neu\Component\Http\Exception\ServerStateConflictException;
 use Neu\Component\Http\Runtime\RuntimeInterface;
 use Neu\Component\Http\Server\Event\ServerStartedEvent;
+use Neu\Component\Http\Server\Event\ServerStoppingEvent;
 use Psl\Async;
 use Psl\Vec;
 use Psr\Log\LoggerInterface;
@@ -200,6 +201,9 @@ final class Server implements ServerInterface
         $this->status = Status::Stopping;
 
         $this->logger->notice('Server is stopping...');
+
+        // Dispatch the stopping event before closing the servers, so that listeners can perform cleanup (e.g. close broadcasting hubs).
+        $this->dispatcher->dispatch(new ServerStoppingEvent());
 
         try {
             foreach ($this->servers as $server) {
