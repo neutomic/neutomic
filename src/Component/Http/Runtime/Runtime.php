@@ -25,6 +25,7 @@ use Neu\Component\Http\Runtime\Event\ThrowableEvent;
 use Neu\Component\Http\Runtime\Handler\ClosureHandler;
 use Neu\Component\Http\Runtime\Handler\Resolver\HandlerResolverInterface;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
+use Psl\Async;
 use Psl\Async\Semaphore;
 use Throwable;
 
@@ -146,27 +147,29 @@ final class Runtime implements RuntimeInterface
      */
     private function handleRequest(array $input): ResponseInterface
     {
-        [$context, $request] = $input;
+        return Async\run(function () use ($input): ResponseInterface {
+            [$context, $request] = $input;
 
-        try {
-            $event = $this->dispatcher->dispatch(new RequestEvent($context, $request));
-            $request = $event->request;
-            $handler  = $event->handler;
-            $response = $event->response;
-            if (null === $response) {
-                if (null === $handler) {
-                    $handler = new ClosureHandler(function (Context $context, RequestInterface $request): ResponseInterface {
-                        return $this->resolver->resolve($request)->handle($context, $request);
-                    });
+            try {
+                $event = $this->dispatcher->dispatch(new RequestEvent($context, $request));
+                $request = $event->request;
+                $handler  = $event->handler;
+                $response = $event->response;
+                if (null === $response) {
+                    if (null === $handler) {
+                        $handler = new ClosureHandler(function (Context $context, RequestInterface $request): ResponseInterface {
+                            return $this->resolver->resolve($request)->handle($context, $request);
+                        });
+                    }
+
+                    $response = $this->queue->wrap($handler)->handle($context, $request);
                 }
-
-                $response = $this->queue->wrap($handler)->handle($context, $request);
+            } catch (Throwable $throwable) {
+                $response = $this->handleThrowable($context, $request, $throwable);
             }
-        } catch (Throwable $throwable) {
-            $response = $this->handleThrowable($context, $request, $throwable);
-        }
 
-        return $this->handleResponse($context, $request, $response);
+            return $this->handleResponse($context, $request, $response);
+        })->await();
     }
 
     /**

@@ -18,10 +18,12 @@ use Amp\ByteStream\PendingReadError;
 use Amp\ByteStream\ReadableIterableStream;
 use Amp\ByteStream\ReadableStream;
 use Amp\ByteStream\StreamException;
-use Amp\Sync\LocalSemaphore;
-use Amp\Sync\Semaphore;
+use Amp\CancelledException;
+use Amp\Sync\LocalMutex;
+use Amp\Sync\Mutex;
 use Amp\TimeoutCancellation;
 use Amp\TimeoutException as AmpTimeoutException;
+use Error;
 use Neu\Component\Http\Exception\RuntimeException;
 use Neu\Component\Http\Exception\TimeoutException;
 use Neu\Component\Http\Exception\LogicException;
@@ -29,9 +31,20 @@ use Traversable;
 
 final class Body implements BodyInterface
 {
+    /**
+     * The mode of the body.
+     */
     private BodyMode $mode;
+
+    /**
+     * The payload, encapsulating the actual data of the body.
+     */
     private Payload $payload;
-    private Semaphore $semaphore;
+
+    /**
+     * The mutex used to synchronize access to the body.
+     */
+    private Mutex $mutex;
 
     /**
      * Constructs a new instance of {@see Body} with a specific {@see Payload}.
@@ -42,12 +55,11 @@ final class Body implements BodyInterface
     {
         $this->mode = BodyMode::None;
         $this->payload = $payload;
-        $this->semaphore = new LocalSemaphore(1);
+        $this->mutex = new LocalMutex();
 
-        // Set the mode to closed when the payload is closed.
-        $payload->onClose(function () {
+        if ($payload->isClosed()) {
             $this->mode = BodyMode::Closed;
-        });
+        }
     }
 
     /**
@@ -119,16 +131,16 @@ final class Body implements BodyInterface
 
         $this->mode = BodyMode::Streamed;
 
-        $lock = $this->semaphore->acquire();
+        $lock = $this->mutex->acquire();
         try {
             if (null === $timeout) {
                 return $this->payload->read();
             }
 
             return $this->payload->read(new TimeoutCancellation($timeout));
-        } catch (AmpTimeoutException $e) {
+        } catch (CancelledException $e) {
             throw new TimeoutException('Reading from the body timed out', 0, $e);
-        } catch (StreamException | PendingReadError $e) {
+        } catch (StreamException | PendingReadError | Error $e) {
             throw new RuntimeException('An error occurred while reading from the body', 0, $e);
         } finally {
             $lock->release();
@@ -154,7 +166,7 @@ final class Body implements BodyInterface
 
         $this->mode = BodyMode::Buffered;
 
-        $lock = $this->semaphore->acquire();
+        $lock = $this->mutex->acquire();
         try {
             if (null === $timeout) {
                 return $this->payload->buffer();
@@ -185,7 +197,7 @@ final class Body implements BodyInterface
 
         $this->mode = BodyMode::Streamed;
 
-        $lock = $this->semaphore->acquire();
+        $lock = $this->mutex->acquire();
         try {
             while (null !== $chunk = $this->payload->read()) {
                 yield $chunk;
@@ -202,6 +214,11 @@ final class Body implements BodyInterface
      */
     public function close(): void
     {
+        if ($this->mode === BodyMode::Closed) {
+            return;
+        }
+
+        $this->mode = BodyMode::Closed;
         $this->payload->close();
     }
 
