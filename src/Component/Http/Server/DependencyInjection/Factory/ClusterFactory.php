@@ -15,6 +15,7 @@ namespace Neu\Component\Http\Server\DependencyInjection\Factory;
 
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Neu\Component\EventDispatcher\EventDispatcherInterface;
 use Neu\Component\Http\Server\Cluster;
 use Psr\Log\LoggerInterface;
 
@@ -25,6 +26,13 @@ use Psr\Log\LoggerInterface;
  */
 final readonly class ClusterFactory implements FactoryInterface
 {
+    /**
+     * The event dispatcher service to be used by the cluster.
+     *
+     * @var non-empty-string
+     */
+    private string $eventDispatcher;
+
     /**
      * The logger service to be used by the cluster.
      *
@@ -42,11 +50,13 @@ final readonly class ClusterFactory implements FactoryInterface
     /**
      * Create a new {@see ClusterFactory} instance.
      *
+     * @param non-empty-string|null $eventDispatcher The event dispatcher service to be used by the cluster.
      * @param non-empty-string|null $logger The logger service to be used by the cluster.
      * @param positive-int|null $workers The number of worker processes to be managed by the cluster.
      */
-    public function __construct(null|string $logger = null, null|int $workers = null)
+    public function __construct(null|string $eventDispatcher = null, null|string $logger = null, null|int $workers = null)
     {
+        $this->eventDispatcher = $eventDispatcher ?? EventDispatcherInterface::class;
         $this->logger = $logger ?? LoggerInterface::class;
         $this->workers = $workers;
     }
@@ -54,8 +64,9 @@ final readonly class ClusterFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container): Cluster
     {
         $entrypoint = $container->getProject()->entrypoint;
+        $eventDispatcher = $container->getTyped($this->eventDispatcher, EventDispatcherInterface::class);
         $logger = $container->getTyped($this->logger, LoggerInterface::class);
 
-        return new Cluster($entrypoint, $logger, $this->workers);
+        return new Cluster($entrypoint, $eventDispatcher, $logger, $this->workers);
     }
 }

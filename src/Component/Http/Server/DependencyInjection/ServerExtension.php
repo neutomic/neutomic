@@ -106,6 +106,7 @@ final readonly class ServerExtension implements ExtensionInterface
 
         $container->addDefinition(Definition::ofType(Cluster::class, new ClusterFactory(
             logger: $configuration['cluster']['logger'] ?? $defaultLogger ?? null,
+            eventDispatcher: $configuration['event-dispatcher'] ?? null,
             workers: $configuration['cluster']['workers'] ?? null,
         )));
 

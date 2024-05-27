@@ -14,9 +14,16 @@ declare(strict_types=1);
 namespace Neu\Component\Http\Server;
 
 use Amp\Cluster\Cluster as AmpCluster;
+use Amp\Cluster\ClusterException;
 use Amp\Cluster\ClusterWatcher;
+use Amp\Parallel\Context\ContextException;
+use Neu\Component\EventDispatcher\EventDispatcherInterface;
 use Neu\Component\Http\Exception\RuntimeException;
+use Neu\Component\Http\Server\Event\ClusterRestartedEvent;
+use Neu\Component\Http\Server\Event\ClusterStartedEvent;
+use Neu\Component\Http\Server\Event\ClusterStoppedEvent;
 use Psr\Log\LoggerInterface;
+use Revolt\EventLoop;
 use Throwable;
 
 use function Amp\Cluster\countCpuCores;
@@ -34,12 +41,19 @@ final class Cluster implements ClusterInterface
     private string $entrypoint;
 
     /**
+     * The event dispatcher instance for dispatching cluster events.
+     */
+    private EventDispatcherInterface $dispatcher;
+
+    /**
      * The logger instance for logging cluster activities.
      */
     private LoggerInterface $logger;
 
     /**
      * The cluster watcher instance to manage worker processes.
+     *
+     * @var null|ClusterWatcher<mixed, mixed>
      */
     private null|ClusterWatcher $watcher = null;
 
@@ -55,9 +69,10 @@ final class Cluster implements ClusterInterface
      * @param LoggerInterface $logger Logger instance for logging cluster activities.
      * @param int|null $workerCount Optional number of workers to start. If null, the number of CPU cores will be used.
      */
-    public function __construct(string $entrypoint, LoggerInterface $logger, null|int $workerCount = null)
+    public function __construct(string $entrypoint, EventDispatcherInterface $dispatcher, LoggerInterface $logger, null|int $workerCount = null)
     {
         $this->entrypoint = $entrypoint;
+        $this->dispatcher = $dispatcher;
         $this->logger = $logger;
         $this->workerCount = $workerCount ?? (countCpuCores() * 2);
     }
@@ -87,6 +102,28 @@ final class Cluster implements ClusterInterface
         $watcher->start($workers);
 
         $this->logger->info('Cluster started with {workers} workers.', ['workers' => $workers]);
+
+        EventLoop::defer(function () use ($watcher): void {
+            $iterator = $watcher->getMessageIterator();
+
+            try {
+                foreach ($iterator as $message) {
+                    /** @psalm-suppress RedundantCondition */
+                    assert($this->logger->debug('Broadcasting a message received from worker "{worker}".', [
+                        'worker' => $message->getWorker()->getId(),
+                        'data' => $message->getData(),
+                    ]) || true);
+
+                    $watcher->broadcast($message->getData());
+                }
+            } catch (ClusterException | ContextException) {
+                // Cluster has been closed.
+
+                return;
+            }
+        });
+
+        $this->dispatcher->dispatch(new ClusterStartedEvent($workers));
     }
 
     /**
@@ -107,6 +144,8 @@ final class Cluster implements ClusterInterface
         $watcher->restart();
 
         $this->logger->info('Cluster restarted.');
+
+        $this->dispatcher->dispatch(new ClusterRestartedEvent());
     }
 
     /**
@@ -135,5 +174,7 @@ final class Cluster implements ClusterInterface
         } finally {
             $this->watcher = null;
         }
+
+        $this->dispatcher->dispatch(new ClusterStoppedEvent());
     }
 }
