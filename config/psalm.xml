@@ -17,6 +17,7 @@
 >
     <projectFiles>
         <directory name="../src"/>
+        <directory name="../examples/Framework"/>
     </projectFiles>
 
     <issueHandlers>
