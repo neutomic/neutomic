@@ -40,15 +40,12 @@ use function array_key_first;
  * A dependency injection extension for the broadcast component.
  *
  * @psalm-type PostgresSslMode = 'disable'|'allow'|'prefer'|'require'|'verify-ca'|'verify-full'
- *
  * @psalm-type LocalTransportConfiguration = array{
  *     transport: 'local',
  * }
- *
  * @psalm-type MemoryTransportConfiguration = array{
  *     transport: 'memory'
  * }
- *
  * @psalm-type PostgresTransportConfiguration = array{
  *      transport: 'pgsql'|'postgres'|'postgresql',
  *      host: non-empty-string,
@@ -60,14 +57,11 @@ use function array_key_first;
  *      application-name?: string,
  *      ssl-mode?: PostgresSslMode,
  *  }
- *
  * @psalm-type ServiceTransportConfiguration = array{
  *      transport: 'service',
  *      service: non-empty-string
  * }
- *
  * @psalm-type TransportConfiguration = LocalTransportConfiguration|MemoryTransportConfiguration|PostgresTransportConfiguration|ServiceTransportConfiguration
- *
  * @psalm-type Configuration = array{
  *      default?: non-empty-string,
  *      hubs?: array<non-empty-string, TransportConfiguration>
