@@ -52,13 +52,19 @@ function entrypoint(Closure $closure): void
         throw new Exception\RuntimeException('Failed to determine the entry point file.');
     }
 
+    $builder = $closure(
+        Project::create(dirname($entrypoint, 2), $entrypoint),
+    );
+
+    $project = $builder->getProject();
+    if ($project->debug) {
+        Env\set_var('AMP_DEBUG', '1');
+        Env\set_var('REVOLT_DRIVER_DEBUG_TRACE', '1');
+    }
+
+    $container = $builder->build();
+
     try {
-        $builder = $closure(
-            Project::create(dirname($entrypoint, 2), $entrypoint),
-        );
-
-        $container = $builder->build();
-
         if (Cluster::isWorker()) {
             Env\set_var('NONINTERACTIVE', '1');
 
@@ -78,5 +84,7 @@ function entrypoint(Closure $closure): void
         }
     } catch (Throwable $e) {
         throw new Exception\RuntimeException('Failed to bootstrap the project.', 0, $e);
+    } finally {
+        $container->dispose();
     }
 }

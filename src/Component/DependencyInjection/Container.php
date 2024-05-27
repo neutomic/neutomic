@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\DependencyInjection;
 
 use Neu\Component\DependencyInjection\Definition\DefinitionInterface;
+use Neu\Component\DependencyInjection\Exception\DisposedObjectException;
 
 use function count;
 
@@ -22,7 +23,7 @@ use function count;
  *
  * @psalm-suppress InvalidReturnType
  */
-final readonly class Container implements ContainerInterface
+final class Container implements ContainerInterface
 {
     /**
      * The project instance.
@@ -53,6 +54,13 @@ final readonly class Container implements ContainerInterface
     private array $aliasIdMap;
 
     /**
+     * Whether the container has been disposed.
+     *
+     * @var bool
+     */
+    private bool $isDisposed = false;
+
+    /**
      * @param array<non-empty-string, DefinitionInterface> $definitions
      */
     public function __construct(Project $project, array $definitions)
@@ -81,6 +89,8 @@ final readonly class Container implements ContainerInterface
      */
     public function getProject(): Project
     {
+        DisposedObjectException::guard($this);
+
         return $this->project;
     }
 
@@ -89,6 +99,8 @@ final readonly class Container implements ContainerInterface
      */
     public function has(string $id): bool
     {
+        DisposedObjectException::guard($this);
+
         if ('' === $id) {
             return false;
         }
@@ -105,6 +117,8 @@ final readonly class Container implements ContainerInterface
      */
     public function get(string $id): object
     {
+        DisposedObjectException::guard($this);
+
         if ('' === $id) {
             throw Exception\RuntimeException::forEmptyServiceId();
         }
@@ -142,6 +156,8 @@ final readonly class Container implements ContainerInterface
      */
     public function getTyped(string $id, string $type): object
     {
+        DisposedObjectException::guard($this);
+
         /** @psalm-suppress MissingThrowsDocblock - Psr exception is never thrown */
         $service = $this->get($id);
         if ($service instanceof $type) {
@@ -156,6 +172,8 @@ final readonly class Container implements ContainerInterface
      */
     public function getInstancesOf(string $type): iterable
     {
+        DisposedObjectException::guard($this);
+
         foreach ($this->definitions as $definition) {
             if ($definition->isInstanceOf($type)) {
                 yield $definition->resolve($this);
@@ -168,6 +186,8 @@ final readonly class Container implements ContainerInterface
      */
     public function getAttributed(string $attribute): iterable
     {
+        DisposedObjectException::guard($this);
+
         foreach ($this->definitions as $definition) {
             if ($definition->hasAttribute($attribute)) {
                 yield $definition->resolve($this);
@@ -180,6 +200,45 @@ final readonly class Container implements ContainerInterface
      */
     public function getLocator(string $type, array $services): ServiceLocatorInterface
     {
+        DisposedObjectException::guard($this);
+
         return new ServiceLocator($this, $type, $services);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isDisposed(): bool
+    {
+        return $this->isDisposed;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function dispose(): void
+    {
+        if ($this->isDisposed) {
+            return;
+        }
+
+        try {
+            foreach ($this->getInstancesOf(DisposableInterface::class) as $instance) {
+                $instance->dispose();
+            }
+        } finally {
+            $this->isDisposed = true;
+            $this->definitions = [];
+            $this->typeIdsMap = [];
+            $this->aliasIdMap = [];
+        }
+    }
+
+    /**
+     * Dispose of the container on destruction.
+     */
+    public function __destruct()
+    {
+        $this->dispose();
     }
 }

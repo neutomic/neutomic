@@ -15,7 +15,7 @@ namespace Neu\Component\DependencyInjection;
 
 use Psr\Container\ContainerInterface as PsrContainerInterface;
 
-interface ContainerInterface extends PsrContainerInterface
+interface ContainerInterface extends DisposableInterface, PsrContainerInterface
 {
     /**
      * Returns the project instance.
