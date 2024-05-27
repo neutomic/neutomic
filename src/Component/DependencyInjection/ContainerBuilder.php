@@ -359,6 +359,10 @@ final class ContainerBuilder implements ContainerBuilderInterface
         $sourceLocator = new AggregateSourceLocator($locators);
         $reflector = new DefaultReflector($sourceLocator);
         foreach ($reflector->reflectAllClasses() as $class) {
+            if (!$class->isInstantiable() || $class->isAnonymous()) {
+                continue;
+            }
+
             $name = $class->getName();
             foreach ($this->definitions as $definition) {
                 if ($definition->getId() === $name) {
