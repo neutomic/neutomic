@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Tests\Component\Http\Runtime\Middleware;
 
+use Amp\Http\Server\Driver\Client;
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Context;
@@ -30,10 +31,7 @@ final class MiddlewareQueueTest extends TestCase
     {
         $this->context = new Context(
             workerId: null,
-            clientId: 1,
-            remoteAddress: 'null',
-            localAddress: 'null',
-            tlsInformation: null,
+            client: $this->createMock(Client::class),
             sendInformationalResponse: static fn () => null,
         );
     }
