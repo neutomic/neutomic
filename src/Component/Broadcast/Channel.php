@@ -143,7 +143,10 @@ final class Channel implements ChannelInterface
         return new Subscription($this->name, $queue->iterate(), function () use ($queue, $id) {
             unset($this->queues[$id]);
 
-            $queue->complete();
+            // Complete the queue if it's not already
+            if (!$queue->isComplete()) {
+                $queue->complete();
+            }
         });
     }
 
@@ -164,7 +167,14 @@ final class Channel implements ChannelInterface
             return;
         }
 
-        $this->iterator->dispose();
+        $iterator = $this->iterator;
+        $queues = $this->queues;
         $this->iterator = null;
+        $this->queues = [];
+
+        $iterator->dispose();
+        foreach ($queues as $queue) {
+            $queue->complete();
+        }
     }
 }
