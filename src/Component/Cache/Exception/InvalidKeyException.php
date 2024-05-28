@@ -13,9 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Cache\Exception;
 
-use InvalidArgumentException;
-
-final class InvalidKeyException extends InvalidArgumentException implements ExceptionInterface
+final class InvalidKeyException extends InvalidArgumentException
 {
     /**
      * Create an exception for a cache key that is too long.

@@ -11,10 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Http\Message\Exception;
+namespace Neu\Component\Cache\Exception;
 
-use Neu\Component\Http\Exception\ExceptionInterface as RootExceptionInterface;
+use Neu\Component\Exception\InvalidArgumentException as RootInvalidArgumentException;
 
-interface ExceptionInterface extends RootExceptionInterface
+class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface
 {
 }

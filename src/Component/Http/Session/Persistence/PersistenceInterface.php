@@ -15,6 +15,7 @@ namespace Neu\Component\Http\Session\Persistence;
 
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\ResponseInterface;
+use Neu\Component\Http\Session\Exception\RuntimeException;
 
 interface PersistenceInterface
 {
@@ -23,6 +24,8 @@ interface PersistenceInterface
      *
      * Persists the session data, returning a response instance with any
      * artifacts required to return to the client.
+     *
+     * @throws RuntimeException If an error occurs while persisting the session data.
      */
     public function persist(RequestInterface $request, ResponseInterface $response): ResponseInterface;
 }

@@ -11,8 +11,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Http\Exception;
+namespace Neu\Component\Http\Router\Exception;
 
+use Neu\Component\Http\Exception\HttpException;
 use Neu\Component\Http\Message\Method;
 use Neu\Component\Http\Message\StatusCode;
 use Neu\Component\Http\Message\UriInterface;
@@ -68,7 +69,7 @@ final class MethodNotAllowedHttpException extends HttpException
     /**
      * Returns the allowed methods.
      *
-     * @return list<Method>
+     * @return non-empty-list<Method>
      */
     public function getAllowedMethods(): array
     {

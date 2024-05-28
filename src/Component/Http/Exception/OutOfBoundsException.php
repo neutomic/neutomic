@@ -11,10 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Configuration\Exception;
+namespace Neu\Component\Http\Exception;
 
-use Neu\Component\Exception\LogicException as RootLogicException;
+use Neu\Component\Exception\OutOfBoundsException as RootOutOfBoundsException;
 
-final class LogicException extends RootLogicException implements ExceptionInterface
+class OutOfBoundsException extends RootOutOfBoundsException implements ExceptionInterface
 {
 }

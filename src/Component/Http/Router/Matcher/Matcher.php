@@ -14,12 +14,12 @@ declare(strict_types=1);
 namespace Neu\Component\Http\Router\Matcher;
 
 use Neu\Component\Cache\StoreInterface;
-use Neu\Component\Http\Exception\MethodNotAllowedHttpException;
-use Neu\Component\Http\Exception\NotFoundHttpException;
 use Neu\Component\Http\Exception\RuntimeException;
 use Neu\Component\Http\Message\Method;
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\UriInterface;
+use Neu\Component\Http\Router\Exception\RouteNotFoundHttpException;
+use Neu\Component\Http\Router\Exception\MethodNotAllowedHttpException;
 use Neu\Component\Http\Router\Internal\PrefixMatching\PrefixMap;
 use Neu\Component\Http\Router\Route\Registry\RegistryInterface;
 use Neu\Component\Http\Router\Route\Route;
@@ -71,7 +71,7 @@ final class Matcher implements MatcherInterface
             );
 
             return new Result($route, $this->registry->getHandler($route->name), $parameters);
-        } catch (NotFoundHttpException $e) {
+        } catch (RouteNotFoundHttpException $e) {
             $allowed = $this->getAllowedMethods($request->getUri());
             if (null === $allowed) {
                 throw $e;
@@ -120,7 +120,7 @@ final class Matcher implements MatcherInterface
                 $this->matchImpl($method, $uri);
 
                 $allowed[] = $method;
-            } catch (NotFoundHttpException) {
+            } catch (RouteNotFoundHttpException) {
                 continue;
             }
         }
@@ -156,7 +156,7 @@ final class Matcher implements MatcherInterface
     }
 
     /**
-     * @throws NotFoundHttpException
+     * @throws RouteNotFoundHttpException
      *
      * @return array{0: Route, 1: array<non-empty-string, non-empty-string>}
      */
@@ -164,7 +164,7 @@ final class Matcher implements MatcherInterface
     {
         $map = $this->getMap()[$method->value] ?? null;
         if ($map === null) {
-            throw NotFoundHttpException::create($method, $uri);
+            throw RouteNotFoundHttpException::create($method, $uri);
         }
 
         return self::matchWithMap($method, $uri, $uri->getPath(), $map);
@@ -176,7 +176,7 @@ final class Matcher implements MatcherInterface
      * @param string $path
      * @param PrefixMap $map
      *
-     * @throws NotFoundHttpException
+     * @throws RouteNotFoundHttpException
      *
      * @return array{0: Route, 1: array<non-empty-string, non-empty-string>}
      */
@@ -217,13 +217,13 @@ final class Matcher implements MatcherInterface
 
             try {
                 [$route, $sub_data] = self::matchWithMap($method, $uri, $remaining, $sub->getMap());
-            } catch (NotFoundHttpException) {
+            } catch (RouteNotFoundHttpException) {
                 continue;
             }
 
             return [$route, $data + $sub_data];
         }
 
-        throw NotFoundHttpException::create($method, $uri);
+        throw RouteNotFoundHttpException::create($method, $uri);
     }
 }

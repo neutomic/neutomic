@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Router\Route\Registry;
 
-use Neu\Component\Http\Exception\RouteNotFoundException;
+use Neu\Component\Http\Exception\OutOfBoundsException;
 use Neu\Component\Http\Router\Route\Route;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Utility\AlternativeFinder;
@@ -114,7 +114,7 @@ final class Registry implements RegistryInterface
      *
      * @param non-empty-string $name The name of the missing route or handler.
      */
-    private function buildException(string $name): RouteNotFoundException
+    private function buildException(string $name): OutOfBoundsException
     {
         $allNames = Vec\keys($this->routes);
         $message = Str\format('Route "%s" was not found', $name);
@@ -128,6 +128,6 @@ final class Registry implements RegistryInterface
             }
         }
 
-        return new RouteNotFoundException($message);
+        return new OutOfBoundsException($message);
     }
 }

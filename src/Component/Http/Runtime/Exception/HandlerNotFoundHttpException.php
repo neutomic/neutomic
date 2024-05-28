@@ -11,22 +11,24 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Http\Exception;
+namespace Neu\Component\Http\Runtime\Exception;
 
-use Neu\Component\Http\Message\Method;
+use Neu\Component\Http\Exception\HttpException;
+use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\StatusCode;
-use Neu\Component\Http\Message\UriInterface;
 use Throwable;
 
-final class NotFoundHttpException extends HttpException
+final class HandlerNotFoundHttpException extends HttpException
 {
     public function __construct(string $message = '', null|Throwable $previous = null)
     {
         parent::__construct(StatusCode::NotFound, [], $message, $previous);
     }
 
-    public static function create(Method $method, UriInterface $uri): self
+    public static function forRequest(RequestInterface $request): self
     {
-        return new self('No route found for "' . $method->value . ' ' . $uri->getPath() . '".');
+        return new self(
+            'Unable to resolve handler for path "' . $request->getUri()->getPath() . '", did you forget to configure a handler to the route?',
+        );
     }
 }

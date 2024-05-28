@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Neu\Component\Http\Message;
 
 use IteratorAggregate;
-use Neu\Component\Http\Exception\RuntimeException;
-use Neu\Component\Http\Exception\TimeoutException;
 use Neu\Component\Http\Exception\LogicException;
+use Neu\Component\Http\Exception\RuntimeException;
+use Neu\Component\Http\Message\Exception\TimeoutException;
 use Traversable;
 
 /**

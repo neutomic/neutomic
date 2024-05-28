@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Exception;
 
-final class ServerStateConflictException extends RuntimeException
+use Neu\Component\Exception\UnexpectedValueException as RootUnexpectedValueException;
+
+final class UnexpectedValueException extends RootUnexpectedValueException implements ExceptionInterface
 {
 }

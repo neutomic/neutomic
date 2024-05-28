@@ -16,9 +16,10 @@ namespace Neu\Component\Exception;
 use Throwable;
 
 /**
- * A marker interface for exceptions in the contract namespace.
+ * A marker interface for exceptions in the {@see Neu} namespace.
  *
- * All exceptions in the contract namespace should implement this interface.
+ * All exceptions thrown by the Neutomic components should implement this
+ * interface.
  */
 interface ExceptionInterface extends Throwable
 {

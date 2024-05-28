@@ -14,7 +14,8 @@ declare(strict_types=1);
 namespace Neu\Component\DependencyInjection\Exception;
 
 use Psr\Container\ContainerExceptionInterface;
+use Neu\Component\Exception\ExceptionInterface as RootExceptionInterface;
 
-interface ExceptionInterface extends ContainerExceptionInterface
+interface ExceptionInterface extends ContainerExceptionInterface, RootExceptionInterface
 {
 }

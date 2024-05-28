@@ -13,8 +13,11 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Session\Storage;
 
+use Neu\Component\Cache\Exception\ExceptionInterface as CacheException;
+use Psl\SecureRandom\Exception\ExceptionInterface as SecureRandomException;
 use Neu\Component\Cache\Exception\UnavailableItemException;
 use Neu\Component\Cache\StoreInterface;
+use Neu\Component\Http\Session\Exception\RuntimeException;
 use Neu\Component\Http\Session\Session;
 use Neu\Component\Http\Session\SessionInterface;
 use Psl\SecureRandom;
@@ -33,13 +36,16 @@ final readonly class Storage implements StorageInterface
      */
     public function write(SessionInterface $session, null|int $ttl = null): string
     {
-        $id = $session->getId();
-        if (null === $id || $session->isRegenerated() || $session->hasChanges()) {
-            $id = $this->generateIdentifier();
-        }
+        try {
+            $id = $session->getId();
+            if (null === $id || $session->isRegenerated() || $session->hasChanges()) {
+                $id = $this->generateIdentifier();
+            }
 
-        /** @psalm-suppress MissingThrowsDocblock */
-        $this->store->update($id, static fn (): array => $session->all(), $ttl);
+            $this->store->update($id, static fn (): array => $session->all(), $ttl);
+        } catch (CacheException | SecureRandomException $e) {
+            throw new RuntimeException('An error occurred while writing the session.', previous: $e);
+        }
 
         return $id;
     }
@@ -49,12 +55,12 @@ final readonly class Storage implements StorageInterface
      */
     public function read(string $id): SessionInterface
     {
-        /**
-         * @var array<non-empty-string, mixed> $data
-         *
-         * @psalm-suppress MissingThrowsDocblock
-         */
-        $data = $this->store->compute($id, static fn (): array => []);
+        try {
+            /** @var array<non-empty-string, mixed> $data */
+            $data = $this->store->compute($id, static fn (): array => []);
+        } catch (CacheException $e) {
+            throw new RuntimeException('An error occurred while reading the session.', previous: $e);
+        }
 
         return new Session($data, $id);
     }
@@ -64,12 +70,20 @@ final readonly class Storage implements StorageInterface
      */
     public function flush(string $id): void
     {
-        /** @psalm-suppress MissingThrowsDocblock */
-        $this->store->delete($id);
+        try {
+            $this->store->delete($id);
+        } catch (CacheException $e) {
+            throw new RuntimeException('An error occurred while flushing the session.', previous: $e);
+        }
     }
 
     /**
-     * @return non-empty-string
+     * Generate a new session identifier.
+     *
+     * @throws CacheException If an error occurs while generating the identifier.
+     * @throws SecureRandomException If an error occurs while generating the identifier.
+     *
+     * @return non-empty-string The generated identifier.
      */
     private function generateIdentifier(): string
     {
@@ -88,11 +102,7 @@ final readonly class Storage implements StorageInterface
             };
 
         do {
-            /**
-             * @psalm-suppress MissingThrowsDocblock
-             *
-             * @var non-empty-string $id
-             */
+            /** @var non-empty-string $id */
             $id = SecureRandom\string(24);
         } while (!$does_not_exist($id));
 

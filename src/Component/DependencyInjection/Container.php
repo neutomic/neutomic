@@ -120,7 +120,7 @@ final class Container implements ContainerInterface
         DisposedObjectException::guard($this);
 
         if ('' === $id) {
-            throw Exception\RuntimeException::forEmptyServiceId();
+            throw Exception\InvalidReferenceException::forEmptyServiceId();
         }
 
         if ($id === Project::class) {

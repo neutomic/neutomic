@@ -14,9 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\Http\Runtime\ContentDelivery;
 
 use Amp\File;
-use Neu\Component\Http\Exception\FilesystemException;
 use Neu\Component\Http\Exception\HttpException;
-use Neu\Component\Http\Exception\NotFoundHttpException;
 use Neu\Component\Http\Message\Body;
 use Neu\Component\Http\Message\Method;
 use Neu\Component\Http\Message\RequestInterface;
@@ -25,6 +23,8 @@ use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Message\StatusCode;
 use Neu\Component\Http\Runtime\ContentDelivery\Internal\Boundary;
 use Neu\Component\Http\Runtime\ContentDelivery\Internal\ContentTypes;
+use Neu\Component\Http\Runtime\Exception\FileNotFoundHttpException;
+use Neu\Component\Http\Runtime\Exception\FilesystemException;
 use Psl\Encoding;
 use Psl\Filesystem;
 use Psl\Hash;
@@ -87,7 +87,7 @@ final readonly class ContentDeliverer
      * @param RequestInterface $request The HTTP request object, containing the client's request information.
      * @param non-empty-string $file The absolute path to the file that needs to be delivered.
      *
-     * @throws NotFoundHttpException If the requested file does not exist or is a directory.
+     * @throws FileNotFoundHttpException If the requested file does not exist or is a directory.
      * @throws FilesystemException If an error occurs while reading the file or preparing the response.
      *
      * @return ResponseInterface The response object containing the file content or the relevant HTTP error response.
@@ -100,7 +100,7 @@ final readonly class ContentDeliverer
                 'file' => $file,
             ]) || true);
 
-            throw new NotFoundHttpException('Requested file does not exist.');
+            throw FileNotFoundHttpException::create($file);
         }
 
         // If the file is a directory:
@@ -110,7 +110,7 @@ final readonly class ContentDeliverer
                 'file' => $file,
             ]) || true);
 
-            throw new NotFoundHttpException('Requested file is a directory.');
+            throw FileNotFoundHttpException::isDirectory($file);
         }
 
         try {

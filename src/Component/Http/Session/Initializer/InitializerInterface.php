@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\Http\Session\Initializer;
 
 use Neu\Component\Http\Message\RequestInterface;
+use Neu\Component\Http\Session\Exception\RuntimeException;
 
 interface InitializerInterface
 {
@@ -21,6 +22,8 @@ interface InitializerInterface
      * Initialize the give request with a session instance.
      *
      * The returned request must return true for {@see RequestInterface::hasSession()} call.
+     *
+     * @throws RuntimeException If an error occurs while initializing the request.
      */
     public function initialize(RequestInterface $request): RequestInterface;
 }

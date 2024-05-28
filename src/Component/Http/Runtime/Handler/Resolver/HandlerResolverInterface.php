@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Runtime\Handler\Resolver;
 
-use Neu\Component\Http\Exception\HandlerNotFoundException;
-use Neu\Component\Http\Exception\InvalidHandlerException;
+use Neu\Component\Http\Exception\LogicException;
 use Neu\Component\Http\Message\RequestInterface;
+use Neu\Component\Http\Runtime\Exception\HandlerNotFoundHttpException;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 
 /**
@@ -38,8 +38,8 @@ interface HandlerResolverInterface
      *
      * @param RequestInterface $request The HTTP request for which a handler needs to be resolved.
      *
-     * @throws HandlerNotFoundException If no handler can be resolved for the given request.
-     * @throws InvalidHandlerException If the resolved handler is not an instance of {@see HandlerInterface}.
+     * @throws HandlerNotFoundHttpException If no handler can be resolved for the given request.
+     * @throws LogicException If the resolved handler is not an instance of {@see HandlerInterface}.
      *
      * @return HandlerInterface The handler capable of processing the request.
      */

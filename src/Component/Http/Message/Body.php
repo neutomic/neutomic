@@ -24,9 +24,9 @@ use Amp\Sync\Mutex;
 use Amp\TimeoutCancellation;
 use Amp\TimeoutException as AmpTimeoutException;
 use Error;
-use Neu\Component\Http\Exception\RuntimeException;
-use Neu\Component\Http\Exception\TimeoutException;
 use Neu\Component\Http\Exception\LogicException;
+use Neu\Component\Http\Exception\RuntimeException;
+use Neu\Component\Http\Message\Exception\TimeoutException;
 use Traversable;
 
 final class Body implements BodyInterface

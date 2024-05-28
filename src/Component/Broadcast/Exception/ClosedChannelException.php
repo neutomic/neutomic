@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Neu\Component\Broadcast\Exception;
 
-use Neu\Component\Exception\LogicException as RootLogicException;
-
-final class ClosedChannelException extends RootLogicException implements ExceptionInterface
+final class ClosedChannelException extends LogicException implements ExceptionInterface
 {
 }

@@ -11,10 +11,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Configuration\Exception;
+namespace Neu\Component\Http\Message\Exception;
 
-use Neu\Component\Exception\LogicException as RootLogicException;
+use Neu\Component\Http\Exception\ExceptionInterface;
+use Neu\Component\Http\Exception\RuntimeException;
 
-final class LogicException extends RootLogicException implements ExceptionInterface
+final class TimeoutException extends RuntimeException implements ExceptionInterface
 {
 }

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Router\Route\Registry;
 
-use Neu\Component\Http\Exception\RouteNotFoundException;
+use Neu\Component\Http\Exception\OutOfBoundsException;
 use Neu\Component\Http\Router\Route\Route;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 
@@ -59,7 +59,7 @@ interface RegistryInterface
      *
      * @param non-empty-string $name The name of the route to retrieve.
      *
-     * @throws RouteNotFoundException If no route with the given name exists.
+     * @throws OutOfBoundsException If no route with the given name exists.
      *
      * @return Route Returns the requested route.
      */
@@ -70,7 +70,7 @@ interface RegistryInterface
      *
      * @param non-empty-string $name The name of the handler to retrieve.
      *
-     * @throws RouteNotFoundException If no handler for the given name exists.
+     * @throws OutOfBoundsException If no handler for the given name exists.
      *
      * @return HandlerInterface Returns the requested handler.
      */
