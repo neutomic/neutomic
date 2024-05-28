@@ -19,6 +19,7 @@ use Neu\Component\DependencyInjection\ExtensionInterface;
 use Neu\Component\Http\Router\DependencyInjection\Factory\Generator\GeneratorFactory;
 use Neu\Component\Http\Router\DependencyInjection\Factory\Matcher\MatcherFactory;
 use Neu\Component\Http\Router\DependencyInjection\Factory\Registry\RegistryFactory;
+use Neu\Component\Http\Router\DependencyInjection\Factory\RouteCollectorFactory;
 use Neu\Component\Http\Router\DependencyInjection\Factory\RouterFactory;
 use Neu\Component\Http\Router\DependencyInjection\Hook\RegisterRoutesHook;
 use Neu\Component\Http\Router\Generator\Generator;
@@ -27,6 +28,7 @@ use Neu\Component\Http\Router\Matcher\Matcher;
 use Neu\Component\Http\Router\Matcher\MatcherInterface;
 use Neu\Component\Http\Router\Registry\Registry;
 use Neu\Component\Http\Router\Registry\RegistryInterface;
+use Neu\Component\Http\Router\RouteCollector;
 use Neu\Component\Http\Router\Router;
 use Neu\Component\Http\Router\RouterInterface;
 use Psl\Type;
@@ -44,6 +46,9 @@ use Psl\Type;
  *     router?: array{
  *         generator?: non-empty-string,
  *         matcher?: non-empty-string,
+ *     },
+ *     collector?: array{
+ *         registry?: non-empty-string,
  *     },
  *     hooks?: array{
  *         register-routes?: array{
@@ -64,22 +69,38 @@ final readonly class RouterExtension implements ExtensionInterface
             ->getContainer('http')
             ->getOfTypeOrDefault('router', $this->getRouterConfigurationType(), []);
 
-        $container->addDefinition(Definition::ofType(Registry::class, new RegistryFactory()));
-        $container->addDefinition(Definition::ofType(Generator::class, new GeneratorFactory(
+        // Register registry
+        $definition = Definition::ofType(Registry::class, new RegistryFactory());
+        $definition->addAlias(RegistryInterface::class);
+        $container->addDefinition($definition);
+
+        // Register collector
+        $definition = Definition::ofType(RouteCollector::class, new RouteCollectorFactory(
+            $configuration['collector']['registry'] ?? null,
+        ));
+        $container->addDefinition($definition);
+
+        // Register generator
+        $definition = Definition::ofType(Generator::class, new GeneratorFactory(
             $configuration['generator']['registry'] ?? null,
-        )));
-        $container->addDefinition(Definition::ofType(Matcher::class, new MatcherFactory(
+        ));
+        $definition->addAlias(GeneratorInterface::class);
+        $container->addDefinition($definition);
+
+        // Register matcher
+        $definition = Definition::ofType(Matcher::class, new MatcherFactory(
             $configuration['matcher']['registry'] ?? null,
-        )));
-        $container->addDefinition(Definition::ofType(Router::class, new RouterFactory(
+        ));
+        $definition->addAlias(MatcherInterface::class);
+        $container->addDefinition($definition);
+
+        // Register router
+        $definition = Definition::ofType(Router::class, new RouterFactory(
             $configuration['router']['matcher'] ?? null,
             $configuration['router']['generator'] ?? null,
-        )));
-
-        $container->getDefinition(Registry::class)->addAlias(RegistryInterface::class);
-        $container->getDefinition(Generator::class)->addAlias(GeneratorInterface::class);
-        $container->getDefinition(Matcher::class)->addAlias(MatcherInterface::class);
-        $container->getDefinition(Router::class)->addAlias(RouterInterface::class);
+        ));
+        $definition->addAlias(RouterInterface::class);
+        $container->addDefinition($definition);
 
         $container->addHook(new RegisterRoutesHook(
             $configuration['hooks']['register-routes']['registry'] ?? null,
@@ -101,6 +122,9 @@ final readonly class RouterExtension implements ExtensionInterface
             'router' => Type\optional(Type\shape([
                 'generator' => Type\optional(Type\non_empty_string()),
                 'matcher' => Type\optional(Type\non_empty_string()),
+            ])),
+            'collector' => Type\optional(Type\shape([
+                'registry' => Type\optional(Type\non_empty_string()),
             ])),
             'hooks' => Type\optional(Type\shape([
                 'register-routes' => Type\optional(Type\shape([

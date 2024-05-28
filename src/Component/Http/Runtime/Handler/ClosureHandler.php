@@ -20,16 +20,22 @@ use Neu\Component\Http\Runtime\Context;
 
 /**
  * Handles a request using a closure.
+ *
+ * @psalm-type Handler = (Closure(Context, RequestInterface): ResponseInterface)
  */
 final readonly class ClosureHandler implements HandlerInterface
 {
     /**
-     * @var Closure(Context, RequestInterface): ResponseInterface
+     * The closure to handle the request.
+     *
+     * @var Handler
      */
     private Closure $closure;
 
     /**
-     * @param (Closure(Context, RequestInterface): ResponseInterface) $closure
+     * Creates a new {@see ClosureHandler} instance.
+     *
+     * @param Handler $closure The closure to handle the request
      */
     public function __construct(Closure $closure)
     {
