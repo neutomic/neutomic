@@ -13,15 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\DependencyInjection\Exception;
 
-use RuntimeException as RootRuntimeException;
+use Neu\Component\Exception\RuntimeException as RootRuntimeException;
 
 class RuntimeException extends RootRuntimeException implements ExceptionInterface
 {
-    /**
-     * Create a new instance for an empty service id.
-     */
-    public static function forEmptyServiceId(): self
-    {
-        return new self('Service id cannot be empty.');
-    }
 }

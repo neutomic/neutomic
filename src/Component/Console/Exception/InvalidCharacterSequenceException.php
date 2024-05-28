@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Neu\Component\Console\Exception;
 
 use Neu\Component\Console\Feedback\FeedbackInterface;
-use RuntimeException;
 
 /**
  * Exception thrown when an invalid character sequence is used in a {@see FeedbackInterface}

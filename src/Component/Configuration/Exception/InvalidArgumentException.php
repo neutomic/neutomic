@@ -11,8 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Http\Exception;
+namespace Neu\Component\Configuration\Exception;
 
-final class FilesystemException extends RuntimeException
+use Neu\Component\Exception\InvalidArgumentException as RootInvalidArgumentException;
+
+class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface
 {
 }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Session\Storage;
 
+use Neu\Component\Http\Session\Exception\RuntimeException;
 use Neu\Component\Http\Session\SessionInterface;
 
 interface StorageInterface
@@ -23,6 +24,8 @@ interface StorageInterface
      * If {@see SessionInterface::getId()} returns null, the storage should generate a new ID, and return it.
      *
      * @param null|int<1, max> $ttl
+     *
+     * @throws RuntimeException If an error occurs while writing the session.
      */
     public function write(SessionInterface $session, null|int $ttl = null): string;
 
@@ -34,6 +37,8 @@ interface StorageInterface
      * Calling {@see SessionInterface::getId()} on the returned instance, must return the given ID.
      *
      * @param non-empty-string $id
+     *
+     * @throws RuntimeException If an error occurs while reading the session.
      */
     public function read(string $id): SessionInterface;
 
@@ -41,6 +46,8 @@ interface StorageInterface
      * Flush the given session id.
      *
      * @param non-empty-string $id
+     *
+     * @throws RuntimeException If an error occurs while flushing the session.
      */
     public function flush(string $id): void;
 }

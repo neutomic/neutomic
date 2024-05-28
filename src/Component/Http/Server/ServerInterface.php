@@ -13,8 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Server;
 
-use Neu\Component\Http\Exception\MisconfiguredServerException;
-use Neu\Component\Http\Exception\ServerStateConflictException;
+use Neu\Component\Http\Server\Exception\ServerStateConflictException;
 
 /**
  * Defines the contract for an HTTP server.
@@ -40,7 +39,6 @@ interface ServerInterface
      * If the server status is {@see Status::Started}, this method has no effect, otherwise if the status
      * is anything other than {@see Status::Stopped}, this method raises an exception.
      *
-     * @throws MisconfiguredServerException If the server is not properly configured.
      * @throws ServerStateConflictException If the server is in a conflicting state.
      */
     public function start(): void;

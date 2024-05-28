@@ -47,7 +47,7 @@ final readonly class Recovery implements RecoveryInterface
     private array $throwables;
 
     /**
-     * Constructs the recovery handler.
+     * Create a new {@see Recovery} instance.
      *
      * @param bool $debug Whether to enable debug mode.
      * @param LoggerInterface $logger The logger instance.
@@ -165,10 +165,10 @@ final readonly class Recovery implements RecoveryInterface
                     background-color: var(--background-status);
                     padding: 0.2rem 0.5rem;
                 }
-                .links {
+                .actions {
                     margin-top: 2rem;
                 }
-                .link {
+                .action {
                     padding: 0.6rem 1.2rem;
                     color: var(--text-color-secondary);
                     font-size: 1rem;
@@ -177,7 +177,7 @@ final readonly class Recovery implements RecoveryInterface
                     transition: all 0.3s ease;
                     background-color: var(--background-container);
                 }
-                .link:hover {
+                .action:hover {
                     color: var(--text-color-primary);
                     cursor: pointer;
                     border-color: var(--border-color-hover);
@@ -236,9 +236,9 @@ final readonly class Recovery implements RecoveryInterface
             <h1 class="title">Oops! an error occurred</h1>
             <p class="description">The server returned a <code class="status">{$statusCode->value}</code> response.</p>
             <p class="text">Something went wrong while trying to process your request. we will fix this as soon as possible. sorry for the inconvenience.</p>
-            <div class="links">
-                <a class="link" onclick="window.history.back();">back</a>
-                <a class="link" onclick="window.location.reload();">retry</a>
+            <div class="actions">
+                <button class="action" onmousedown="window.history.back();">back</button>
+                <button class="action" onmousedown="window.location.reload();">retry</button>
             </div>
         </div>
         {$this->renderDebugInformation($exception)}

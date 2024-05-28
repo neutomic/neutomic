@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Database\Exception;
 
-use LogicException as RootLogicException;
+use Neu\Component\Exception\LogicException as RootLogicException;
 
 final class LogicException extends RootLogicException implements ExceptionInterface
 {

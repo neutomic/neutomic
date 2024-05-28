@@ -15,7 +15,7 @@ namespace Neu\Component\DependencyInjection\Exception;
 
 use Psr\Container\NotFoundExceptionInterface;
 
-final class ServiceNotFoundException extends RuntimeException implements ExceptionInterface, NotFoundExceptionInterface
+final class ServiceNotFoundException extends RuntimeException implements NotFoundExceptionInterface
 {
     /**
      * Create a new instance for a service id.

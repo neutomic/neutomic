@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\Database\Exception;
 
-use InvalidArgumentException as RootInvalidArgumentException;
+use Neu\Component\Exception\InvalidArgumentException as RootInvalidArgumentException;
 
-final class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface
+class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface
 {
 }

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Router\Generator;
 
-use Neu\Component\Http\Exception\RouteNotFoundException;
+use Neu\Component\Http\Exception\OutOfBoundsException;
 use Neu\Component\Http\Router\Route\Registry\RegistryInterface;
 
 final readonly class Generator implements GeneratorInterface
@@ -32,6 +32,6 @@ final readonly class Generator implements GeneratorInterface
     {
         $route = $this->registry->getRoute($name);
 
-        throw new RouteNotFoundException('TODO: Implement generate() method, route: ' . $route->name . ', parameters: ' . ((string) json_encode($parameters)) . '.');
+        throw new OutOfBoundsException('TODO: Implement generate() method, route: ' . $route->name . ', parameters: ' . ((string) json_encode($parameters)) . '.');
     }
 }

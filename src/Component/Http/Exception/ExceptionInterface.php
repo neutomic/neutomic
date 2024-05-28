@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Exception;
 
-use Throwable;
+use Neu\Component\Exception\ExceptionInterface as RootExceptionInterface;
 
-interface ExceptionInterface extends Throwable
+interface ExceptionInterface extends RootExceptionInterface
 {
 }

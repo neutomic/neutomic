@@ -13,8 +13,9 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Router\Generator;
 
-use Neu\Component\Http\Exception\InvalidArgumentException;
-use Neu\Component\Http\Exception\RouteNotFoundException;
+use Neu\Component\Cache\Exception\InvalidArgumentException;
+use Neu\Component\Http\Exception\OutOfBoundsException;
+use Neu\Component\Http\Exception\UnexpectedValueException;
 use Neu\Component\Http\Message\UriInterface;
 
 interface GeneratorInterface
@@ -25,11 +26,14 @@ interface GeneratorInterface
      * Parameters are optional and can be used to replace placeholders in the route pattern,
      * if extra parameters are provided, they will be appended as query string.
      *
-     * @param non-empty-string $name
-     * @param array<string, mixed> $parameters
+     * @param non-empty-string $name The route name.
+     * @param array<non-empty-string, scalar> $parameters The route parameters.
      *
-     * @throws RouteNotFoundException If the route name is not found.
-     * @throws InvalidArgumentException If the parameters are invalid.
+     * @throws OutOfBoundsException If the route name is not found in the registry.
+     * @throws InvalidArgumentException If a required parameter is missing from the parameters array.
+     * @throws UnexpectedValueException If a parameter is not of the expected type.
+     *
+     * @return UriInterface The generated URI.
      */
     public function generate(string $name, array $parameters = []): UriInterface;
 }

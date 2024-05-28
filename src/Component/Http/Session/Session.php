@@ -102,16 +102,12 @@ final class Session implements SessionInterface
      */
     public function compute(string $key, Closure $computer): mixed
     {
-        if (!$this->has($key)) {
-            $this->set($key, $computer());
+        if (!array_key_exists($key, $this->data)) {
+            $this->data[$key] = $computer();
         }
 
-        /**
-         * @psalm-suppress MissingThrowsDocblock
-         *
-         * @var T
-         */
-        return $this->get($key);
+        /** @var T */
+        return $this->data[$key];
     }
 
     /**
@@ -130,17 +126,18 @@ final class Session implements SessionInterface
      */
     public function update(string $key, Closure $updater): mixed
     {
-        /** @var T|null */
-        $previous = $this->has($key) ? $this->get($key) : null;
+        $previous = null;
+        if (array_key_exists($key, $this->data)) {
+            /** @var T $previous */
+            $previous = $this->data[$key];
+        }
 
-        $this->set($key, $updater($previous));
+        /** @var T $value */
+        $value = $updater($previous);
 
-        /**
-         * @psalm-suppress MissingThrowsDocblock
-         *
-         * @var T
-         */
-        return $this->get($key);
+        $this->data[$key] = $value;
+
+        return $value;
     }
 
     /**

@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Router\Matcher;
 
-use Neu\Component\Http\Exception\MethodNotAllowedHttpException;
-use Neu\Component\Http\Exception\NotFoundHttpException;
 use Neu\Component\Http\Exception\RuntimeException;
 use Neu\Component\Http\Message\RequestInterface;
+use Neu\Component\Http\Router\Exception\MethodNotAllowedHttpException;
+use Neu\Component\Http\Router\Exception\RouteNotFoundHttpException;
 
 /**
  * Defines the contract for a route matcher within the HTTP routing component.
@@ -29,8 +29,6 @@ use Neu\Component\Http\Message\RequestInterface;
  * Implementations of this interface must handle the routing logic that parses
  * the request URI and method to map it to configured routes, handling different
  * HTTP methods and route patterns.
- *
- * @package Neu\Component\Http\Routing\Matcher
  */
 interface MatcherInterface
 {
@@ -44,7 +42,7 @@ interface MatcherInterface
      *
      * @param RequestInterface $request The HTTP request to match against configured routes.
      *
-     * @throws NotFoundHttpException If no route matches the request URI.
+     * @throws RouteNotFoundHttpException If no route matches the request URI.
      * @throws MethodNotAllowedHttpException If a route matches the request URI but not the HTTP method.
      * @throws RuntimeException If an error occurs during the matching process.
      *

@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\Console\Exception;
 
-final class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
+use Neu\Component\Exception\InvalidArgumentException as RootInvalidArgumentException;
+
+class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface
 {
 }

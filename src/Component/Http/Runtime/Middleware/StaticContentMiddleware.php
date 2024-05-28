@@ -13,16 +13,15 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Runtime\Middleware;
 
-use Neu\Component\Http\Exception\FilesystemException;
-use Neu\Component\Http\Exception\ForbiddenException;
 use Neu\Component\Http\Exception\HttpException;
-use Neu\Component\Http\Exception\NotFoundHttpException;
 use Neu\Component\Http\Exception\RuntimeException;
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Message\StatusCode;
 use Neu\Component\Http\Runtime\ContentDelivery\ContentDeliverer;
 use Neu\Component\Http\Runtime\Context;
+use Neu\Component\Http\Runtime\Exception\FileNotFoundHttpException;
+use Neu\Component\Http\Runtime\Exception\FilesystemException;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Psl\Filesystem;
 use Psl\Iter;
@@ -101,7 +100,7 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
             ]);
 
             // Throw a forbidden exception:
-            throw new ForbiddenException(message: 'Suspicious path traversal attempt.');
+            throw new HttpException(StatusCode::Forbidden, message: 'Suspicious path traversal attempt.');
         }
 
         // Get the file extension:
@@ -154,7 +153,7 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
             try {
                 // Deliver the file:
                 return $this->deliverer->deliver($request, $file);
-            } catch (NotFoundHttpException) {
+            } catch (FileNotFoundHttpException) {
                 assert($this->logger->debug('Requested file "{path}" does not exist within root "{root}".', [
                     'path' => $path,
                     'root' => $root,

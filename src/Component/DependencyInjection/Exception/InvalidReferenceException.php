@@ -15,4 +15,11 @@ namespace Neu\Component\DependencyInjection\Exception;
 
 final class InvalidReferenceException extends RuntimeException
 {
+    /**
+     * Create a new instance for an empty service id.
+     */
+    public static function forEmptyServiceId(): self
+    {
+        return new self('Service id cannot be empty.');
+    }
 }

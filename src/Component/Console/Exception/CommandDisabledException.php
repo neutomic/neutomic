@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Neu\Component\Console\Exception;
 
 use Neu\Component\Console\Command\ExitCode;
-use RuntimeException;
 
 /**
  * Exception thrown when attempting to execute a disabled command.

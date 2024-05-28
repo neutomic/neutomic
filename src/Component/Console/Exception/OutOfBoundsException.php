@@ -11,8 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Http\Exception;
+namespace Neu\Component\Console\Exception;
 
-final class TimeoutException extends RuntimeException implements ExceptionInterface
+use Neu\Component\Exception\OutOfBoundsException as RootOutOfBoundsException;
+
+class OutOfBoundsException extends RootOutOfBoundsException implements ExceptionInterface
 {
 }

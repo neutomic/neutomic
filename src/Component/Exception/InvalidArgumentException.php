@@ -11,10 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Configuration\Exception;
+namespace Neu\Component\Exception;
 
-use Neu\Component\Exception\LogicException as RootLogicException;
+use InvalidArgumentException as RootInvalidArgumentException;
 
-final class LogicException extends RootLogicException implements ExceptionInterface
+class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface
 {
 }

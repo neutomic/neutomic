@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Cache\Exception;
 
-final class UnavailableItemException extends RuntimeException implements ExceptionInterface
+final class UnavailableItemException extends RuntimeException
 {
     /**
      * Create an {@see UnavailableItemException} for the given key.

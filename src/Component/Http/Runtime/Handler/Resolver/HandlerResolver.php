@@ -13,10 +13,12 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Runtime\Handler\Resolver;
 
-use Neu\Component\Http\Exception\HandlerNotFoundException;
-use Neu\Component\Http\Exception\InvalidHandlerException;
+use Neu\Component\Http\Exception\LogicException;
 use Neu\Component\Http\Message\RequestInterface;
+use Neu\Component\Http\Runtime\Exception\HandlerNotFoundHttpException;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
+
+use function get_debug_type;
 
 /**
  * Resolves the handler for a given request.
@@ -43,7 +45,9 @@ final readonly class HandlerResolver implements HandlerResolverInterface
                 return $this->fallback;
             }
 
-            throw HandlerNotFoundException::forRequest($request);
+            throw new HandlerNotFoundHttpException(
+                message: 'Unable to resolve handler for path "' . $request->getUri()->getPath() . '". Did you forget to configure a handler to the route?',
+            );
         }
 
         $handler = $request->getAttribute(HandlerInterface::class);
@@ -51,6 +55,8 @@ final readonly class HandlerResolver implements HandlerResolverInterface
             return $handler;
         }
 
-        throw InvalidHandlerException::forHandler($handler);
+        throw new LogicException(
+            message: 'Invalid handler provided. Expected an instance of "' . HandlerInterface::class . '", got "' . get_debug_type($handler) . '".',
+        );
     }
 }
