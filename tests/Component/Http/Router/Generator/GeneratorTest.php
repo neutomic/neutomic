@@ -70,6 +70,16 @@ final class GeneratorTest extends TestCase
         yield ['/foo[/{id:\d+}/{name:\w+}]', ['id' => 1, 'name' => 'bar'], '/foo/1/bar'];
         yield ['/foo[/{id:\d+}/{name:\w+}]', ['id' => '1', 'name' => 'bar'], '/foo/1/bar'];
         yield ['/foo[/{id:\d+}/{name:\w+}]', ['id' => '12', 'name' => 'bar'], '/foo/12/bar'];
+        // optional between parameters
+        yield ['/foo/{id}[/{name}]/{age}', ['id' => 1, 'age' => 18], '/foo/1/18'];
+        yield ['/foo/{id}[/{name}]/{age}', ['id' => 1, 'name' => 'bar', 'age' => 18], '/foo/1/bar/18'];
+        yield ['/foo/{id}[/{name}]/{age}', ['id' => 1, 'name' => 'bar', 'age' => 18], '/foo/1/bar/18'];
+        yield ['/foo/{id}[/{name}]/{age}', ['id' => 1, 'name' => 'bar', 'age' => 18], '/foo/1/bar/18'];
+        yield ['/foo/{id}/[{name}]/{age}', ['id' => 1, 'age' => 18], '/foo/1//18'];
+        yield ['/foo/{id}/[{name}]/{age}', ['id' => 1, 'name' => 'bar', 'age' => 18], '/foo/1/bar/18'];
+        // optional between regex parameters
+        yield ['/foo/{id:\d+}[/{name:\w+}]/{age:\d+}', ['id' => 1, 'age' => 18], '/foo/1/18'];
+        yield ['/foo/{id:\d+}[/{name:\w+}]/{age:\d+}', ['id' => 1, 'name' => 'bar', 'age' => 18], '/foo/1/bar/18'];
     }
 
     #[DataProvider('provideGeneratingRoute')]
