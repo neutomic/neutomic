@@ -34,6 +34,8 @@ function redirect(UriInterface|string $location, StatusCode $statusCode = Status
         $location = $location->toString();
     }
 
+    $location = $location === '' ? '/' : $location;
+
     return Response::fromStatusCode($statusCode)
         ->withHeader('Location', $location);
 }

@@ -109,7 +109,8 @@ final class Matcher implements MatcherInterface
      */
     private function getAllowedMethods(UriInterface $uri): null|array
     {
-        $path = $uri->getPath();
+        /** @var non-empty-string $path */
+        $path = $uri->getPath() ?: '/';
         if (array_key_exists($path, $this->allowedMethods)) {
             return $this->allowedMethods[$path];
         }
@@ -167,7 +168,10 @@ final class Matcher implements MatcherInterface
             throw RouteNotFoundHttpException::create($method, $uri);
         }
 
-        return self::matchWithMap($method, $uri, $uri->getPath(), $map);
+        /** @var non-empty-string $path */
+        $path = $uri->getPath() ?: '/';
+
+        return self::matchWithMap($method, $uri, $path, $map);
     }
 
     /**

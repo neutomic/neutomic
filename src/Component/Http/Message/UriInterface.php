@@ -13,9 +13,24 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Message;
 
-use InvalidArgumentException;
+use Neu\Component\Http\Exception\InvalidArgumentException;
 use Stringable;
 
+/**
+ * Interface representing a URI.
+ *
+ * This interface represents URIs as defined in RFC 3986, providing methods
+ * for common URI operations. Instances of this interface are immutable; all
+ * methods that might change the state MUST retain the state of the current
+ * instance and return a new instance with the modified state.
+ *
+ * Implementations MUST support the schemes "http" and "https" case
+ * insensitively, and MAY support other schemes if required. Typically, the
+ * host component will also be present in the request message for server-side
+ * requests, and the scheme will be discoverable in the server parameters.
+ *
+ * @see https://tools.ietf.org/html/rfc3986 (the URI specification)
+ */
 interface UriInterface extends Stringable
 {
     /**
@@ -32,6 +47,20 @@ interface UriInterface extends Stringable
      * @return null|non-empty-string
      */
     public function getScheme(): null|string;
+
+    /**
+     * Return an instance with the specified scheme.
+     *
+     * Implementations MUST support the schemes "http" and "https" case
+     * insensitively, and MAY accommodate other schemes if required.
+     *
+     * A null scheme is equivalent to removing the scheme.
+     *
+     * @param null|non-empty-string $scheme The scheme to use with the new instance; a null value removes the scheme.
+     *
+     * @throws InvalidArgumentException for invalid or unsupported schemes.
+     */
+    public function withScheme(null|string $scheme): self;
 
     /**
      * Retrieve the authority component of the URI.
@@ -72,15 +101,16 @@ interface UriInterface extends Stringable
      * Return an instance with the specified user information.
      *
      * Password is optional, but the user information MUST include the
-     * user; an empty string for the user is equivalent to removing user
-     * information.
+     * user;
      *
-     * @param non-empty-string $user The username to use for authority.
-     * @param non-empty-string|null $password The password associated with $user.
+     * A null user value is equivalent to removing the user information.
+     *
+     * @param null|non-empty-string $user The username to use for authority.
+     * @param null|non-empty-string $password The password associated with $user.
      *
      * @throws InvalidArgumentException for invalid user or password.
      */
-    public function withUserInformation(string $user, null|string $password = null): self;
+    public function withUserInformation(null|string $user, null|string $password = null): self;
 
     /**
      * Retrieve the host component of the URI.
@@ -100,7 +130,7 @@ interface UriInterface extends Stringable
      *
      * A null host value is equivalent to removing the host.
      *
-     * @param non-empty-string|null $host The hostname to use with the new instance; a null value removes the host information.
+     * @param null|non-empty-string $host The hostname to use with the new instance; a null value removes the host information.
      *
      * @throws InvalidArgumentException for invalid hostnames.
      */
@@ -113,11 +143,7 @@ interface UriInterface extends Stringable
      * this method MUST return it as an integer. If the port is the standard port
      * used with the current scheme, this method SHOULD return null.
      *
-     * If no port is present, and no scheme is present, this method MUST return
-     * a null value.
-     *
-     * If no port is present, but a scheme is present, this method MAY return
-     * the standard port for that scheme, but SHOULD return null.
+     * If no port is present, this method MUST return a null value.
      *
      * @return null|int<0, 65535> The URI port.
      */
@@ -126,13 +152,10 @@ interface UriInterface extends Stringable
     /**
      * Return an instance with the specified port.
      *
-     * Implementations MUST raise an exception for ports outside the
-     * established TCP and UDP port ranges.
-     *
      * A null value provided for the port is equivalent to removing the port
      * information.
      *
-     * @param int<0, 65535>|null $port The port to use with the new instance; a null value removes the port information.
+     * @param null|int<0, 65535> $port The port to use with the new instance; a null value removes the port information.
      *
      * @throws InvalidArgumentException for invalid ports.
      */
@@ -141,8 +164,13 @@ interface UriInterface extends Stringable
     /**
      * Retrieve the path component of the URI.
      *
-     * The path can either be absolute (starting with a slash) or rootless (not starting with a slash).
-     * Implementations MUST support both syntax's.
+     * The path can be empty, absolute (starting with a slash), or rootless (not starting with a slash).
+     *
+     * Implementations MUST support all these syntax forms.
+     *
+     * Normally, the empty path "" and absolute path "/" are considered equal as defined in RFC 7230 Section 2.7.3.
+     * But this method MUST NOT automatically do this normalization because in contexts with a trimmed base path, e.g.
+     * the front controller, this difference becomes significant. It's the task of the user to handle both "" and "/".
      *
      * The value returned MUST be percent-encoded, but MUST NOT double-encode any characters.
      * To determine what characters to encode, please refer to RFC 3986, Sections 2 and 3.3.
@@ -154,23 +182,23 @@ interface UriInterface extends Stringable
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.3
      *
-     * @return non-empty-string The URI path.
+     * @return string The URI path.
      */
     public function getPath(): string;
 
     /**
      * Return an instance with the specified path.
      *
-     * The path can either be absolute (starting with a slash) or rootless (not starting with a slash).
-     * Implementations MUST support both syntax's.
+     * The path can be empty, absolute (starting with a slash), or rootless (not starting with a slash).
+     *
+     * Implementations MUST support all these syntax forms.
      *
      * If the path is intended to be domain-relative rather than path-relative, then it must begin with a slash ("/").
      * Paths not starting with a slash ("/") are assumed to be relative to some base path known to the application or consumer.
      *
-     * Users must provide a non-empty string for the path.
-     * Implementations ensure the correct encoding as outlined in getPath().
+     * Implementations ensure the correct encoding as outlined in {@see UriInterface::getPath()}.
      *
-     * @param non-empty-string $path The URI path.
+     * @param string $path The URI path.
      *
      * @throws InvalidArgumentException for invalid paths.
      */
@@ -180,13 +208,13 @@ interface UriInterface extends Stringable
      * Retrieve the query string of the URI.
      *
      * If no query string is present, this method MUST return a null value.
+     * If the query string is empty, this method MUST return an empty string.
      *
      * The leading "?" character is not part of the query and MUST NOT be
      * added.
      *
-     * The value returned MUST be percent-encoded, but MUST NOT double-encode
-     * any characters. To determine what characters to encode, please refer to
-     * RFC 3986, Sections 2 and 3.4.
+     * The value returned MUST be percent-encoded, but MUST NOT double-encode any characters.
+     * To determine what characters to encode, please refer to RFC 3986, Sections 2 and 3.4.
      *
      * As an example, if a value in a key/value pair of the query string should
      * include an ampersand ("&") not intended as a delimiter between values,
@@ -195,7 +223,7 @@ interface UriInterface extends Stringable
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.4
      *
-     * @return null|non-empty-string The URI query string.
+     * @return null|string The URI query string.
      */
     public function getQuery(): null|string;
 
@@ -203,11 +231,12 @@ interface UriInterface extends Stringable
      * Return an instance with the specified query string.
      *
      * Users can provide both encoded and decoded query characters.
-     * Implementations ensure the correct encoding as outlined in getQuery().
+     * Implementations ensure the correct encoding as outlined in {@see UriInterface::getQuery()}.
      *
      * A null query string value is equivalent to removing the query string.
+     * An empty string value is equivalent to an empty query string.
      *
-     * @param non-empty-string $query The query string to use with the new instance; a null value removes the query string.
+     * @param null|string $query The query string to use with the new instance; a null value removes the query string.
      *
      * @throws InvalidArgumentException for invalid query strings.
      */
@@ -217,18 +246,17 @@ interface UriInterface extends Stringable
      * Retrieve the fragment component of the URI.
      *
      * If no fragment is present, this method MUST return a null value.
+     * If the fragment is empty, this method MUST return an empty string.
      *
-     * The leading "#" character is not part of the fragment and MUST NOT be
-     * added.
+     * The leading "#" character is not part of the fragment and MUST NOT be added.
      *
-     * The value returned MUST be percent-encoded, but MUST NOT double-encode
-     * any characters. To determine what characters to encode, please refer to
-     * RFC 3986, Sections 2 and 3.5.
+     * The value returned MUST be percent-encoded, but MUST NOT double-encode any characters.
+     * To determine what characters to encode, please refer to RFC 3986, Sections 2 and 3.5.
      *
      * @see https://tools.ietf.org/html/rfc3986#section-2
      * @see https://tools.ietf.org/html/rfc3986#section-3.5
      *
-     * @return null|non-empty-string The URI fragment.
+     * @return null|string The URI fragment.
      */
     public function getFragment(): null|string;
 
@@ -239,26 +267,13 @@ interface UriInterface extends Stringable
      * Implementations ensure the correct encoding as outlined in getFragment().
      *
      * A null fragment value is equivalent to removing the fragment.
+     * An empty string value is equivalent to an empty fragment.
      *
-     * @param non-empty-string|null $fragment The fragment to use with the new instance; a null value removes the fragment.
+     * @param null|string $fragment The fragment to use with the new instance; a null value removes the fragment.
      *
      * @throws InvalidArgumentException for invalid fragment value.
      */
     public function withFragment(null|string $fragment): self;
-
-    /**
-     * Return an instance with the specified scheme.
-     *
-     * Implementations MUST support the schemes "http" and "https" case
-     * insensitively, and MAY accommodate other schemes if required.
-     *
-     * A null scheme is equivalent to removing the scheme.
-     *
-     * @param non-empty-string|null $scheme The scheme to use with the new instance; a null value removes the scheme.
-     *
-     * @throws InvalidArgumentException for invalid or unsupported schemes.
-     */
-    public function withScheme(null|string $scheme): self;
 
     /**
      * Return the string representation as a URI reference.
@@ -282,14 +297,14 @@ interface UriInterface extends Stringable
      *
      * @see http://tools.ietf.org/html/rfc3986#section-4.1
      *
-     * @return non-empty-string The URI as a string.
+     * @return string The URI as a string.
      */
     public function toString(): string;
 
     /**
      * An alias for {@see UriInterface::toString()}.
      *
-     * @return non-empty-string The URI as a string.
+     * @return string The URI as a string.
      */
     public function __toString(): string;
 }

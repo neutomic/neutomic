@@ -57,21 +57,21 @@ final readonly class Uri implements UriInterface
     /**
      * The URI path.
      *
-     * @var non-empty-string
+     * @var string
      */
     private string $path;
 
     /**
      * The URI query.
      *
-     * @var null|non-empty-string
+     * @var null|string
      */
     private null|string $query;
 
     /**
      * The URI fragment.
      *
-     * @var null|non-empty-string
+     * @var null|string
      */
     private null|string $fragment;
 
@@ -80,9 +80,9 @@ final readonly class Uri implements UriInterface
      * @param null|non-empty-string $userInformation
      * @param null|non-empty-string $host
      * @param null|int<0, 65535> $port
-     * @param non-empty-string $path
-     * @param null|non-empty-string $query
-     * @param null|non-empty-string $fragment
+     * @param string $path
+     * @param null|string $query
+     * @param null|string $fragment
      */
     private function __construct(
         null|string $scheme = null,
@@ -214,6 +214,10 @@ final readonly class Uri implements UriInterface
             if ($scheme === $this->scheme) {
                 return clone $this;
             }
+
+            if ('' === $scheme) {
+                throw new InvalidArgumentException('Expected scheme to be non-empty.');
+            }
         }
 
         return new self($scheme, $this->userInformation, $this->host, $this->port, $this->path, $this->query, $this->fragment);
@@ -251,12 +255,16 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    public function withUserInformation(string $user, null|string $password = null): self
+    public function withUserInformation(null|string $user, null|string $password = null): self
     {
+        if (null === $user) {
+            return new self($this->scheme, null, $this->host, $this->port, $this->path, $this->query, $this->fragment);
+        }
+
         $info = self::filterUserInformationPart($user);
 
         if (null !== $password) {
-            $info .= ':' . self::filterUserInformationPart($password);
+            $info .= ':' . self::filterUserInformationPart($password, true);
         }
 
         if ($this->userInformation === $info) {
@@ -438,20 +446,14 @@ final readonly class Uri implements UriInterface
 
     /**
      * Normalize the given path.
-     *
-     * @return non-empty-string
      */
     private static function normalizePathPart(string $path): string
     {
-        if ('' === $path) {
-            return '/';
-        }
-
-        if ('/' !== $path[0]) {
+        if ('' !== $path && '/' !== $path[0]) {
             $path = '/' . $path;
         }
 
-        if (isset($path[1]) && '/' === $path[1]) {
+        if ('' !== $path && isset($path[1]) && '/' === $path[1]) {
             $path = '/' . ltrim($path, '/');
         }
 
@@ -465,7 +467,7 @@ final readonly class Uri implements UriInterface
      *
      * @return non-empty-string The filtered user information.
      */
-    private static function filterUserInformationPart(string $userInformation): string
+    private static function filterUserInformationPart(string $userInformation, bool $password = false): string
     {
         $filteredUserInformation = preg_replace_callback(
             '/[:\/\?#\[\]@!\$&\'\(\)\*\+,;=]++/',
@@ -473,8 +475,18 @@ final readonly class Uri implements UriInterface
             $userInformation,
         );
 
-        if (null === $filteredUserInformation || '' === $filteredUserInformation) {
+        if (null === $filteredUserInformation) {
+            if ($password) {
+                throw new InvalidArgumentException('The given user information password "' . $userInformation . '" is invalid.');
+            }
+
             throw new InvalidArgumentException('The given user information "' . $userInformation . '" is invalid.');
+        } elseif ('' === $filteredUserInformation) {
+            if ($password) {
+                throw new InvalidArgumentException('Expected user information password to be non-empty.');
+            }
+
+            throw new InvalidArgumentException('Expected user information to be non-empty.');
         }
 
         return $filteredUserInformation;
@@ -507,7 +519,7 @@ final readonly class Uri implements UriInterface
      *
      * @throws InvalidArgumentException If the query or fragment part is invalid.
      *
-     * @return non-empty-string The filtered query or fragment part.
+     * @return string The filtered query or fragment part.
      */
     private static function filterQueryOrFragmentPart(string $str): string
     {
@@ -517,7 +529,7 @@ final readonly class Uri implements UriInterface
             $str,
         );
 
-        if (null === $filteredQueryOrFragmentPart || '' === $filteredQueryOrFragmentPart) {
+        if (null === $filteredQueryOrFragmentPart) {
             throw new InvalidArgumentException('The given query or fragment part "' . $str . '" is invalid.');
         }
 
