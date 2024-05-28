@@ -44,7 +44,7 @@ final readonly class PrefixedRegistry implements RegistryInterface
      */
     public function __construct(string $prefix, RegistryInterface $registry)
     {
-        $this->prefix = Str\trim_right($prefix, '/');
+        $this->prefix = Str\Byte\trim_right($prefix, '/');
         $this->registry = $registry;
     }
 
@@ -53,7 +53,7 @@ final readonly class PrefixedRegistry implements RegistryInterface
      */
     public function register(Route $route, HandlerInterface $handler): void
     {
-        $pattern = $this->prefix . '/' . Str\trim_left($route->pattern, '/');
+        $pattern = $this->prefix . '/' . Str\Byte\trim_left($route->pattern, '/');
 
         $this->registry->register(new Route($route->name, $pattern, $route->methods, $route->priority, $route->attributes), $handler);
     }

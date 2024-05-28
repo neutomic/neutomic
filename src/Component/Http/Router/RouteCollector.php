@@ -21,7 +21,7 @@ use Neu\Component\Http\Runtime\Handler\ClosureHandler;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 
 /**
- * @psalm-import-type Handler from ClosureHandler as ClosureHandler
+ * @psalm-import-type Handler from ClosureHandler
  */
 final readonly class RouteCollector
 {
@@ -56,16 +56,16 @@ final readonly class RouteCollector
     /**
      * Add a route.
      *
-     * @param string $name The name of the route.
-     * @param string $pattern The pattern of the route.
-     * @param Method|list<Method> $methods The methods for the route.
-     * @param Closure|HandlerInterface $handler The handler of the route.
+     * @param non-empty-string $name The name of the route.
+     * @param non-empty-string $pattern The pattern of the route.
+     * @param Method|non-empty-list<Method> $methods The methods for the route.
+     * @param Handler|HandlerInterface $handler The handler of the route.
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
     public function route(string $name, string $pattern, Method|array $methods, Closure|HandlerInterface $handler, int $priority = 0, array $attributes = []): void
     {
-        if ($handler instanceof Closure) {
+        if (!$handler instanceof HandlerInterface) {
             $handler = new ClosureHandler($handler);
         }
 
@@ -81,9 +81,9 @@ final readonly class RouteCollector
     /**
      * Add a route that matches GET requests.
      *
-     * @param string $name The name of the route.
-     * @param string $pattern The pattern of the route.
-     * @param Closure|HandlerInterface $handler The handler of the route.
+     * @param non-empty-string $name The name of the route.
+     * @param non-empty-string $pattern The pattern of the route.
+     * @param Handler|HandlerInterface $handler The handler of the route.
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
@@ -95,9 +95,9 @@ final readonly class RouteCollector
     /**
      * Add a route that matches POST requests.
      *
-     * @param string $name The name of the route.
-     * @param string $pattern The pattern of the route.
-     * @param Closure|HandlerInterface $handler The handler of the route.
+     * @param non-empty-string $name The name of the route.
+     * @param non-empty-string $pattern The pattern of the route.
+     * @param Handler|HandlerInterface $handler The handler of the route.
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
@@ -109,9 +109,9 @@ final readonly class RouteCollector
     /**
      * Add a route that matches PUT requests.
      *
-     * @param string $name The name of the route.
-     * @param string $pattern The pattern of the route.
-     * @param Closure|HandlerInterface $handler The handler of the route.
+     * @param non-empty-string $name The name of the route.
+     * @param non-empty-string $pattern The pattern of the route.
+     * @param Handler|HandlerInterface $handler The handler of the route.
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
@@ -123,9 +123,9 @@ final readonly class RouteCollector
     /**
      * Add a route that matches PATCH requests.
      *
-     * @param string $name The name of the route.
-     * @param string $pattern The pattern of the route.
-     * @param Closure|HandlerInterface $handler The handler of the route.
+     * @param non-empty-string $name The name of the route.
+     * @param non-empty-string $pattern The pattern of the route.
+     * @param Handler|HandlerInterface $handler The handler of the route.
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
@@ -137,9 +137,9 @@ final readonly class RouteCollector
     /**
      * Add a route that matches DELETE requests.
      *
-     * @param string $name The name of the route.
-     * @param string $pattern The pattern of the route.
-     * @param Closure|HandlerInterface $handler The handler of the route.
+     * @param non-empty-string $name The name of the route.
+     * @param non-empty-string $pattern The pattern of the route.
+     * @param Handler|HandlerInterface $handler The handler of the route.
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
@@ -151,9 +151,9 @@ final readonly class RouteCollector
     /**
      * Add a route that matches HEAD requests.
      *
-     * @param string $name The name of the route.
-     * @param string $pattern The pattern of the route.
-     * @param Closure|HandlerInterface $handler The handler of the route.
+     * @param non-empty-string $name The name of the route.
+     * @param non-empty-string $pattern The pattern of the route.
+     * @param Handler|HandlerInterface $handler The handler of the route.
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
@@ -165,9 +165,9 @@ final readonly class RouteCollector
     /**
      * Add a route that matches OPTIONS requests.
      *
-     * @param string $name The name of the route.
-     * @param string $pattern The pattern of the route.
-     * @param Closure|HandlerInterface $handler The handler of the route.
+     * @param non-empty-string $name The name of the route.
+     * @param non-empty-string $pattern The pattern of the route.
+     * @param Handler|HandlerInterface $handler The handler of the route.
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
@@ -179,9 +179,9 @@ final readonly class RouteCollector
     /**
      * Add a route that matches TRACE requests.
      *
-     * @param string $name The name of the route.
-     * @param string $pattern The pattern of the route.
-     * @param Closure|HandlerInterface $handler The handler of the route.
+     * @param non-empty-string $name The name of the route.
+     * @param non-empty-string $pattern The pattern of the route.
+     * @param Handler|HandlerInterface $handler The handler of the route.
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
@@ -193,9 +193,9 @@ final readonly class RouteCollector
     /**
      * Add a route that matches TRACE requests.
      *
-     * @param string $name The name of the route.
-     * @param string $pattern The pattern of the route.
-     * @param Closure|HandlerInterface $handler The handler of the route.
+     * @param non-empty-string $name The name of the route.
+     * @param non-empty-string $pattern The pattern of the route.
+     * @param Handler|HandlerInterface $handler The handler of the route.
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
@@ -207,9 +207,9 @@ final readonly class RouteCollector
     /**
      * Add a route that matches CONNECT requests.
      *
-     * @param string $name The name of the route.
-     * @param string $pattern The pattern of the route.
-     * @param Closure|HandlerInterface $handler The handler of the route.
+     * @param non-empty-string $name The name of the route.
+     * @param non-empty-string $pattern The pattern of the route.
+     * @param Handler|HandlerInterface $handler The handler of the route.
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
@@ -221,9 +221,9 @@ final readonly class RouteCollector
     /**
      * Add a route that matches any request method.
      *
-     * @param string $name The name of the route.
-     * @param string $pattern The pattern of the route.
-     * @param Closure|HandlerInterface $handler The handler of the route.
+     * @param non-empty-string $name The name of the route.
+     * @param non-empty-string $pattern The pattern of the route.
+     * @param Handler|HandlerInterface $handler The handler of the route.
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */

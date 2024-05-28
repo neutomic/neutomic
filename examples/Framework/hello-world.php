@@ -78,7 +78,7 @@ entrypoint(static function (Project $project): ContainerInterface {
 
     /** @var RouteCollector $collector */
     $collector = $container->get(RouteCollector::class);
-    $collector->get('index', '/', static function ($ctx, $req) {
+    $collector->get('index', '/', static function () {
         return Response\text('Hello, World!');
     });
 

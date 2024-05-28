@@ -37,8 +37,10 @@ use const DEBUG_BACKTRACE_IGNORE_ARGS;
  * building the dependency injection container, and running the application
  * or HTTP server worker based on the context.
  *
- * @param (Closure(Project): ContainerBuilderInterface|ContainerInterface) $closure A closure that takes a {@see Project} instance
- *                                                                                  and returns a {@see ContainerBuilderInterface}.
+ * @psalm-type Container = ContainerBuilderInterface|ContainerInterface
+ * @psalm-type Bootstrap = (Closure(Project): Container)
+ *
+ * @param Bootstrap $closure A closure that takes a {@see Project} instance and returns a {@see Container}.
  *
  * @note This function assumes that the container builder returned from the closure contains a definition
  *  for console application ({@see ApplicationInterface}) and the HTTP server cluster worker ({@see ClusterWorkerInterface}).
