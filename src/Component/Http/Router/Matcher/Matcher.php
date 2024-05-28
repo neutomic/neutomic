@@ -13,16 +13,15 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Router\Matcher;
 
-use Neu\Component\Cache\StoreInterface;
 use Neu\Component\Http\Exception\RuntimeException;
 use Neu\Component\Http\Message\Method;
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\UriInterface;
-use Neu\Component\Http\Router\Exception\RouteNotFoundHttpException;
 use Neu\Component\Http\Router\Exception\MethodNotAllowedHttpException;
-use Neu\Component\Http\Router\Internal\PrefixMatching\PrefixMap;
-use Neu\Component\Http\Router\Route\Registry\RegistryInterface;
-use Neu\Component\Http\Router\Route\Route;
+use Neu\Component\Http\Router\Exception\RouteNotFoundHttpException;
+use Neu\Component\Http\Router\PrefixMap\PrefixMap;
+use Neu\Component\Http\Router\Registry\RegistryInterface;
+use Neu\Component\Http\Router\Route;
 use Throwable;
 
 use function array_key_exists;
@@ -35,22 +34,15 @@ use function substr;
 final class Matcher implements MatcherInterface
 {
     private RegistryInterface $registry;
-    private StoreInterface $cache;
 
     /**
      * @var array<non-empty-string, null|non-empty-list<Method>> $allowedMethods
      */
     private array $allowedMethods = [];
 
-    /**
-     * @var null|array<non-empty-string, PrefixMap> $map
-     */
-    private null|array $map = null;
-
-    public function __construct(RegistryInterface $registry, StoreInterface $cache)
+    public function __construct(RegistryInterface $registry)
     {
         $this->registry = $registry;
-        $this->cache = $cache;
     }
 
     /**
@@ -132,38 +124,13 @@ final class Matcher implements MatcherInterface
     }
 
     /**
-     * @return array<non-empty-string, PrefixMap>
-     *
-     * @psalm-suppress MissingThrowsDocblock
-     */
-    private function getMap(): array
-    {
-        if ($this->map !== null) {
-            return $this->map;
-        }
-
-        $this->map = $this->cache->compute('__routing__' . $this->registry->getHash(), function (): array {
-            $routes = [];
-            foreach ($this->registry->getRoutes() as $route) {
-                foreach ($route->methods as $method) {
-                    $routes[$method->value][] = $route;
-                }
-            }
-
-            return array_map(PrefixMap::fromFlatMap(...), $routes);
-        });
-
-        return $this->map;
-    }
-
-    /**
      * @throws RouteNotFoundHttpException
      *
      * @return array{0: Route, 1: array<non-empty-string, non-empty-string>}
      */
     private function matchImpl(Method $method, UriInterface $uri): array
     {
-        $map = $this->getMap()[$method->value] ?? null;
+        $map = $this->registry->getPrefixMaps()[$method->value] ?? null;
         if ($map === null) {
             throw RouteNotFoundHttpException::create($method, $uri);
         }

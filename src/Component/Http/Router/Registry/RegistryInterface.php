@@ -11,10 +11,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Http\Router\Route\Registry;
+namespace Neu\Component\Http\Router\Registry;
 
 use Neu\Component\Http\Exception\OutOfBoundsException;
-use Neu\Component\Http\Router\Route\Route;
+use Neu\Component\Http\Message\Method;
+use Neu\Component\Http\Router\PrefixMap\PrefixMap;
+use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 
 /**
@@ -84,11 +86,18 @@ interface RegistryInterface
     public function getRoutes(): array;
 
     /**
-     * Retrieves the hash of the registry.
+     * Retrieves a map of HTTP methods to their corresponding prefix maps.
      *
-     * The hash is used to determine if the registry has changed, and if it needs to be recompiled.
+     * This method generates a prefix map for each HTTP method represented in the registry.
+     * It groups routes by their HTTP methods and then creates a prefix map for each group.
+     * The resulting array maps each HTTP method to its prefix map.
      *
-     * @return non-empty-string The hash of the registry.
+     * The prefix maps are invalidated and regenerated whenever a change occurs in the registry,
+     * such as when a new route is added. This ensures that the prefix maps always reflect the
+     * current state of the registry.
+     *
+     * @return array<value-of<Method>, PrefixMap> An array where the keys are HTTP methods and the values
+     *                                            are the corresponding prefix maps.
      */
-    public function getHash(): string;
+    public function getPrefixMaps(): array;
 }

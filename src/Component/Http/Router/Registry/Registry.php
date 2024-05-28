@@ -11,18 +11,18 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Http\Router\Route\Registry;
+namespace Neu\Component\Http\Router\Registry;
 
 use Neu\Component\Http\Exception\OutOfBoundsException;
-use Neu\Component\Http\Router\Route\Route;
+use Neu\Component\Http\Message\Method;
+use Neu\Component\Http\Router\PrefixMap\PrefixMap;
+use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Utility\AlternativeFinder;
+use Psl\Dict;
 use Psl\Iter;
 use Psl\Str;
 use Psl\Vec;
-
-use function md5;
-use function serialize;
 
 final class Registry implements RegistryInterface
 {
@@ -41,10 +41,19 @@ final class Registry implements RegistryInterface
     private array $handlers = [];
 
     /**
+     * The prefix maps for each HTTP method.
+     *
+     * @var null|array<value-of<Method>, PrefixMap>
+     */
+    private null|array $prefixMaps = null;
+
+    /**
      * @inheritDoc
      */
     public function register(Route $route, HandlerInterface $handler): void
     {
+        $this->prefixMaps = null;
+
         $this->routes[$route->name] = $route;
         $this->handlers[$route->name] = $handler;
     }
@@ -104,9 +113,20 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    public function getHash(): string
+    public function getPrefixMaps(): array
     {
-        return md5(serialize($this->routes));
+        if (null === $this->prefixMaps) {
+            $map = [];
+            foreach ($this->getRoutes() as $route) {
+                foreach ($route->methods as $method) {
+                    $map[$method->value][] = $route;
+                }
+            }
+
+            $this->prefixMaps = Dict\map($map, PrefixMap::fromRoutes(...));
+        }
+
+        return $this->prefixMaps;
     }
 
     /**
@@ -126,6 +146,8 @@ final class Registry implements RegistryInterface
             } else {
                 $message .= Str\format(', did you mean one of the following: "%s"?', Str\join($alternatives, '", "'));
             }
+        } else {
+            $message .= '.';
         }
 
         return new OutOfBoundsException($message);

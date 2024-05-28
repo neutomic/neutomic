@@ -171,7 +171,7 @@ final readonly class Uri implements UriInterface
     /**
      * Create a new URI from a string.
      *
-     * @param non-empty-string $url
+     * @param string $url The URL to create the URI from.
      *
      * @throws InvalidArgumentException If the URL is invalid.
      *
@@ -215,6 +215,7 @@ final readonly class Uri implements UriInterface
                 return clone $this;
             }
 
+            /** @psalm-suppress DocblockTypeContradiction */
             if ('' === $scheme) {
                 throw new InvalidArgumentException('Expected scheme to be non-empty.');
             }

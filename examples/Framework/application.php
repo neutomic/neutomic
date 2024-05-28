@@ -14,16 +14,16 @@ declare(strict_types=1);
 namespace Neu\Examples\Framework;
 
 use Neu;
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
 use Neu\Component\DependencyInjection\ContainerBuilder;
+use Neu\Component\DependencyInjection\ContainerBuilderInterface;
 use Neu\Component\DependencyInjection\Project;
-use Neu\Component\Http\Message\RequestInterface;
-use Neu\Component\Http\Message\ResponseInterface;
-use Neu\Component\Http\Message\Response;
 use Neu\Component\Http\Message\Method;
-use Neu\Component\Http\Router\Route\Route;
-use Neu\Component\Http\Runtime\Handler\HandlerInterface;
+use Neu\Component\Http\Message\RequestInterface;
+use Neu\Component\Http\Message\Response;
+use Neu\Component\Http\Message\ResponseInterface;
+use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Context;
+use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\ServerSentEvent;
 use Psl\Async;
 
@@ -31,7 +31,7 @@ use function Neu\Framework\entrypoint;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-#[Route(name: 'index', path: '/', methods: [Method::Get])]
+#[Route(name: 'index', pattern: '/', methods: [Method::Get])]
 final readonly class IndexHandler implements HandlerInterface
 {
     public function handle(Context $context, RequestInterface $request): ResponseInterface
@@ -40,7 +40,7 @@ final readonly class IndexHandler implements HandlerInterface
     }
 }
 
-#[Route(name: 'server-sent-events', path: '/sse', methods: [Method::Get])]
+#[Route(name: 'server-sent-events', pattern: '/sse', methods: [Method::Get])]
 final readonly class ServerSentEventsHandler implements HandlerInterface
 {
     public function handle(Context $context, RequestInterface $request): ResponseInterface
@@ -77,6 +77,23 @@ entrypoint(static function (Project $project): ContainerBuilderInterface {
     $builder = ContainerBuilder::create($project);
 
     $builder->addConfiguration([
+        'monolog' => [
+            'default' => 'main',
+            'channels' => [
+                'main' => [
+                    'handlers' => [
+                        'monolog.handler.stderr',
+                    ],
+                ]
+            ],
+            'handlers' => [
+                'stderr' => [
+                    'type' => 'stderr',
+                    'level' => $project->mode->isProduction() ? 'warning' : 'debug',
+                    'formatter' => $project->mode->isProduction() ? 'monolog.formatter.line' : 'monolog.formatter.console',
+                ],
+            ],
+        ],
         'http' => [
             'server' => [
                 'sockets' => [['host' => '127.0.0.1', 'port' => 1337]]

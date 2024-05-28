@@ -16,7 +16,7 @@ namespace Neu\Component\Http\Router\DependencyInjection\Factory\Generator;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Router\Generator\Generator;
-use Neu\Component\Http\Router\Route\Registry\RegistryInterface;
+use Neu\Component\Http\Router\Registry\RegistryInterface;
 
 /**
  * Factory for creating a router generator.

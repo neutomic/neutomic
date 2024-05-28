@@ -11,23 +11,38 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Http\Router\Internal\PatternParser;
+namespace Neu\Component\Http\Router\PatternParser;
 
 use Neu\Component\Http\Exception\RuntimeException;
+use Neu\Component\Http\Router\PatternParser\Node\LiteralNode;
+use Neu\Component\Http\Router\PatternParser\Node\OptionalNode;
+use Neu\Component\Http\Router\PatternParser\Node\ParameterNode;
+use Neu\Component\Http\Router\PatternParser\Node\PatternNode;
 
-use function array_merge;
 use function array_shift;
 use function var_export;
 
 /**
- * @internal
+ * Parser for URI patterns.
+ *
+ * This enum provides methods for parsing URI patterns into a structured format
+ * using a series of tokens. The resulting structure can be used within the router
+ * component for matching and handling routes.
  */
 enum Parser
 {
     /**
-     * @param non-empty-string $pattern
+     * Parse a URI pattern.
      *
-     * @throws RuntimeException
+     * This method tokenizes the given pattern and converts it into a structured
+     * format represented by a {@see PatternNode}.
+     *
+     * @param non-empty-string $pattern The URI pattern to parse.
+     *
+     * @throws RuntimeException If there are remaining tokens after parsing or if
+     *                          the pattern contains unexpected tokens.
+     *
+     * @return PatternNode The root node of the parsed pattern structure.
      */
     public static function parse(string $pattern): PatternNode
     {
@@ -43,22 +58,30 @@ enum Parser
     }
 
     /**
-     * @param list<Token> $tokens
+     * Recursive implementation of the parsing logic.
      *
-     * @throws RuntimeException
+     * This method processes the tokens recursively, handling nested structures
+     * such as optional segments and parameters.
      *
-     * @return array{PatternNode, list<Token>}
+     * @param list<Token> $tokens The list of tokens to parse.
+     * @param bool $recursive Whether the parsing is within a recursive context.
+     *
+     * @throws RuntimeException If unexpected tokens are encountered or if
+     *                          structures are unbalanced.
+     *
+     * @return array{PatternNode, list<Token>} A tuple containing the parsed node
+     *                                         and the remaining tokens.
      */
     private static function parseImpl(array $tokens, bool $recursive = false): array
     {
         $nodes = [];
 
         while ($tokens !== []) {
-            $token = array_shift($tokens);
-            $type = $token->type;
-            $text = $token->value;
+            /** @var Token $token */
+            $token = current($tokens);
 
-            if ($type === TokenType::OpenBrace) {
+            if ($token->type === TokenType::OpenBrace) {
+                array_shift($tokens); // consume the open brace
                 [$node, $tokens] = self::parseParameter($tokens);
                 $nodes[] = $node;
                 $token = array_shift($tokens);
@@ -74,7 +97,8 @@ enum Parser
                 continue;
             }
 
-            if ($type === TokenType::OpenBracket) {
+            if ($token->type === TokenType::OpenBracket) {
+                array_shift($tokens); // consume the open bracket
                 [$node, $tokens] = self::parseImpl($tokens, true);
 
                 $nodes[] = new OptionalNode($node);
@@ -91,26 +115,35 @@ enum Parser
                 continue;
             }
 
-            if ($recursive && $type === TokenType::CloseBracket) {
-                return [new PatternNode($nodes), array_merge([new Token($type, $text)], $tokens)];
+            if ($recursive && $token->type === TokenType::CloseBracket) {
+                return [new PatternNode(...$nodes), $tokens];
             }
 
-            if ($type !== TokenType::String) {
-                throw new RuntimeException('Unexpected token type: ' . $type->toString());
+            if ($token->type !== TokenType::String) {
+                throw new RuntimeException('Unexpected token type: ' . $token->type->toString());
             }
 
-            $nodes[] = new LiteralNode($text);
+            array_shift($tokens); // consume the token
+
+            $nodes[] = new LiteralNode($token->value);
         }
 
-        return [new PatternNode($nodes), $tokens];
+        return [new PatternNode(...$nodes), $tokens];
     }
 
     /**
-     * @param list<Token> $tokens
+     * Parse a parameter from the tokens.
      *
-     * @throws RuntimeException
+     * This method extracts a parameter from the list of tokens, including its
+     * name and optional regular expression constraint.
      *
-     * @return array{ParameterNode, list<Token>}
+     * @param list<Token> $tokens The list of tokens to parse.
+     *
+     * @throws RuntimeException If the parameter is not well-formed or if
+     *                          unexpected tokens are encountered.
+     *
+     * @return array{ParameterNode, list<Token>} A tuple containing the parsed
+     *                                           parameter node and the remaining tokens.
      */
     private static function parseParameter(iterable $tokens): array
     {
@@ -131,7 +164,7 @@ enum Parser
         }
 
         if ($token->getType() === TokenType::CloseBrace) {
-            return [new ParameterNode($name, null), [$token]];
+            return [new ParameterNode($name, null), $tokens];
         }
 
         if ($token->getType() !== TokenType::Colon) {
@@ -143,15 +176,18 @@ enum Parser
         $regexp = '';
         $depth = 0;
         while ($tokens !== []) {
-            $token = array_shift($tokens);
+            $token = current($tokens);
             if ($token->getType() === TokenType::OpenBrace) {
                 ++$depth;
             } elseif ($token->getType() === TokenType::CloseBrace) {
                 if ($depth === 0) {
                     break;
                 }
+
                 --$depth;
             }
+
+            array_shift($tokens); // consume the token
 
             $regexp .= $token->getValue();
         }
@@ -159,6 +195,8 @@ enum Parser
         if ($depth !== 0) {
             throw new RuntimeException('Unbalanced braces in regexp');
         }
+
+        $regexp = '' === $regexp ? null : $regexp;
 
         return [new ParameterNode($name, $regexp), $tokens];
     }

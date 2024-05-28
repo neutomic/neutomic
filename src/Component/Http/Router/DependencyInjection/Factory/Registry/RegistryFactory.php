@@ -11,11 +11,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Http\Router\DependencyInjection\Factory\Route\Registry;
+namespace Neu\Component\Http\Router\DependencyInjection\Factory\Registry;
 
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
-use Neu\Component\Http\Router\Route\Registry\Registry;
+use Neu\Component\Http\Router\Registry\Registry;
 
 /**
  * @implements FactoryInterface<Registry>

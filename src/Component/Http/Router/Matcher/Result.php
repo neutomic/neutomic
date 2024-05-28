@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Router\Matcher;
 
-use Neu\Component\Http\Router\Route\Route;
+use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 
 final readonly class Result

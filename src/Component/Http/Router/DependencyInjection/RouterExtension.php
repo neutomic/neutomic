@@ -18,15 +18,15 @@ use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Neu\Component\Http\Router\DependencyInjection\Factory\Generator\GeneratorFactory;
 use Neu\Component\Http\Router\DependencyInjection\Factory\Matcher\MatcherFactory;
-use Neu\Component\Http\Router\DependencyInjection\Factory\Route\Registry\RegistryFactory;
+use Neu\Component\Http\Router\DependencyInjection\Factory\Registry\RegistryFactory;
 use Neu\Component\Http\Router\DependencyInjection\Factory\RouterFactory;
 use Neu\Component\Http\Router\DependencyInjection\Hook\RegisterRoutesHook;
 use Neu\Component\Http\Router\Generator\Generator;
 use Neu\Component\Http\Router\Generator\GeneratorInterface;
 use Neu\Component\Http\Router\Matcher\Matcher;
 use Neu\Component\Http\Router\Matcher\MatcherInterface;
-use Neu\Component\Http\Router\Route\Registry\Registry;
-use Neu\Component\Http\Router\Route\Registry\RegistryInterface;
+use Neu\Component\Http\Router\Registry\Registry;
+use Neu\Component\Http\Router\Registry\RegistryInterface;
 use Neu\Component\Http\Router\Router;
 use Neu\Component\Http\Router\RouterInterface;
 use Psl\Type;
@@ -40,7 +40,6 @@ use Psl\Type;
  *     },
  *     matcher?: array{
  *         registry?: non-empty-string,
- *         cache-store?: non-empty-string,
  *     },
  *     router?: array{
  *         generator?: non-empty-string,
@@ -71,7 +70,6 @@ final readonly class RouterExtension implements ExtensionInterface
         )));
         $container->addDefinition(Definition::ofType(Matcher::class, new MatcherFactory(
             $configuration['matcher']['registry'] ?? null,
-            $configuration['matcher']['cache-store'] ?? null
         )));
         $container->addDefinition(Definition::ofType(Router::class, new RouterFactory(
             $configuration['router']['matcher'] ?? null,
@@ -99,7 +97,6 @@ final readonly class RouterExtension implements ExtensionInterface
             ])),
             'matcher' => Type\optional(Type\shape([
                 'registry' => Type\optional(Type\non_empty_string()),
-                'cache-store' => Type\optional(Type\non_empty_string()),
             ])),
             'router' => Type\optional(Type\shape([
                 'generator' => Type\optional(Type\non_empty_string()),

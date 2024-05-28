@@ -11,12 +11,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Http\Router\Internal\PrefixMatching;
+namespace Neu\Component\Http\Router\PrefixMap;
 
-use Neu\Component\Http\Router\Route\Route;
+use Neu\Component\Http\Router\Route;
 
 /**
- * @internal
+ * Class representing either a PrefixMap or a Route in the prefix matching process.
  */
 final class PrefixMapOrRoute
 {
@@ -24,30 +24,59 @@ final class PrefixMapOrRoute
      * @param null|PrefixMap $map
      * @param null|Route $route
      */
-    private function __construct(private null|PrefixMap $map, private mixed $route)
+    private function __construct(private null|PrefixMap $map, private null|Route $route)
     {
     }
 
+    /**
+     * Create an instance from a PrefixMap.
+     *
+     * @param PrefixMap $map The PrefixMap instance.
+     *
+     * @return self
+     */
     public static function fromMap(PrefixMap $map): self
     {
         return new self($map, null);
     }
 
+    /**
+     * Create an instance from a Route.
+     *
+     * @param Route $route The Route instance.
+     *
+     * @return self
+     */
     public static function fromRoute(Route $route): self
     {
         return new self(null, $route);
     }
 
+    /**
+     * Check if this instance represents a PrefixMap.
+     *
+     * @return bool True if it is a PrefixMap, false otherwise.
+     */
     public function isMap(): bool
     {
         return $this->map !== null;
     }
 
+    /**
+     * Check if this instance represents a Route.
+     *
+     * @return bool True if it is a Route, false otherwise.
+     */
     public function isRoute(): bool
     {
         return $this->route !== null;
     }
 
+    /**
+     * Get the PrefixMap instance.
+     *
+     * @return PrefixMap
+     */
     public function getMap(): PrefixMap
     {
         assert($this->map instanceof PrefixMap);
@@ -56,18 +85,23 @@ final class PrefixMapOrRoute
         return $this->map;
     }
 
+    /**
+     * Get the Route instance.
+     *
+     * @return Route
+     */
     public function getRoute(): Route
     {
         assert($this->route instanceof Route);
 
-        /** @return Route */
+        /** @var Route */
         return $this->route;
     }
 
     /**
-     * @return array{map: null|PrefixMap, route: null|Route}
+     * Serialize the instance into an array.
      *
-     * @internal
+     * @return array{map: null|PrefixMap, route: null|Route}
      */
     public function __serialize(): array
     {
@@ -75,9 +109,9 @@ final class PrefixMapOrRoute
     }
 
     /**
-     * @param array{map: null|PrefixMap, route: null|Route} $data
+     * Unserialize the instance from an array.
      *
-     * @internal
+     * @param array{map: null|PrefixMap, route: null|Route} $data The serialized data.
      */
     public function __unserialize(array $data): void
     {

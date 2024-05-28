@@ -15,20 +15,20 @@ namespace Neu\Examples\Framework;
 
 use Neu;
 use Neu\Component\Broadcast\HubInterface;
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
 use Neu\Component\DependencyInjection\ContainerBuilder;
+use Neu\Component\DependencyInjection\ContainerBuilderInterface;
 use Neu\Component\DependencyInjection\Project;
 use Neu\Component\EventDispatcher\Attribute\Listener;
 use Neu\Component\EventDispatcher\Listener\ListenerInterface;
 use Neu\Component\Http\Message\Form\ParseOptions;
 use Neu\Component\Http\Message\Form\ParserInterface;
-use Neu\Component\Http\Message\RequestInterface;
-use Neu\Component\Http\Message\ResponseInterface;
-use Neu\Component\Http\Message\Response;
 use Neu\Component\Http\Message\Method;
-use Neu\Component\Http\Router\Route\Route;
-use Neu\Component\Http\Runtime\Handler\HandlerInterface;
+use Neu\Component\Http\Message\RequestInterface;
+use Neu\Component\Http\Message\Response;
+use Neu\Component\Http\Message\ResponseInterface;
+use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Context;
+use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\Server\Event\ServerStoppingEvent;
 use Neu\Component\Http\ServerSentEvent;
 use Revolt\EventLoop;
@@ -38,7 +38,7 @@ use function Neu\Framework\entrypoint;
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 /** @psalm-suppress MissingThrowsDocblock */
-#[Route(name: 'pub', path: '/pub', methods: [Method::Post])]
+#[Route(name: 'pub', pattern: '/pub', methods: [Method::Post])]
 final readonly class PubHandler implements HandlerInterface
 {
     public function __construct(private ParserInterface $parser, private HubInterface $hub)
@@ -64,7 +64,7 @@ final readonly class PubHandler implements HandlerInterface
 }
 
 /** @psalm-suppress MissingThrowsDocblock */
-#[Route(name: 'sub', path: '/sub', methods: [Method::Get])]
+#[Route(name: 'sub', pattern: '/sub', methods: [Method::Get])]
 final readonly class SubHandler implements HandlerInterface
 {
     public function __construct(private HubInterface $hub)

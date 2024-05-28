@@ -17,7 +17,7 @@ use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Router\Matcher\MatcherInterface;
 use Neu\Component\Http\Router\Matcher\Result;
-use Neu\Component\Http\Router\Route\Route;
+use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 
