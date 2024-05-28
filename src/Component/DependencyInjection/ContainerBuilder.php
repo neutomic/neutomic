@@ -80,7 +80,6 @@ final class ContainerBuilder implements ContainerBuilderInterface
      */
     private array $processors = [];
 
-
     /**
      * The processors to apply to the services by interface.
      *
@@ -166,6 +165,10 @@ final class ContainerBuilder implements ContainerBuilderInterface
     public function addExtension(ExtensionInterface $extension): void
     {
         $this->extensions[$extension::class] = $extension;
+
+        if ($extension instanceof CompositeExtensionInterface) {
+            $this->addExtensions($extension->getExtensions());
+        }
     }
 
     /**
