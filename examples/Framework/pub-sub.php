@@ -150,11 +150,7 @@ entrypoint(static function (Project $project): ContainerBuilderInterface {
         new Neu\Component\Broadcast\DependencyInjection\BroadcastExtension(),
         new Neu\Component\EventDispatcher\DependencyInjection\EventDispatcherExtension(),
         new Neu\Component\Cache\DependencyInjection\CacheExtension(),
-        new Neu\Component\Http\Message\DependencyInjection\MessageExtension(),
-        new Neu\Component\Http\Recovery\DependencyInjection\RecoveryExtension(),
-        new Neu\Component\Http\Router\DependencyInjection\RouterExtension(),
-        new Neu\Component\Http\Runtime\DependencyInjection\RuntimeExtension(),
-        new Neu\Component\Http\Server\DependencyInjection\ServerExtension(),
+        new Neu\Component\Http\DependencyInjection\HttpExtension(),
     ]);
 
     return $builder;
