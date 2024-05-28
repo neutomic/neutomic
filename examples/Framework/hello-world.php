@@ -24,12 +24,8 @@ use function Neu\Framework\entrypoint;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-
 entrypoint(static function (Project $project): ContainerInterface {
-    $project = $project
-        ->withSource(null)
-        ->withConfig(null)
-    ;
+    $project = $project->withConfig(null);
 
     $builder = ContainerBuilder::create($project);
 

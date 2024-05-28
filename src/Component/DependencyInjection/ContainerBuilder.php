@@ -344,9 +344,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
             ];
 
             if (null !== $source) {
-                if (!File\exists($source)) {
-                    throw new RuntimeException('The source "' . $source . '" does not exist.');
-                } elseif (File\isFile($source)) {
+                if (File\isFile($source)) {
                     $locators[] = new SingleFileSourceLocator($source, $astLocator);
                 } elseif (File\isDirectory($source)) {
                     $locators[] = new DirectoriesSourceLocator([$source], $astLocator);

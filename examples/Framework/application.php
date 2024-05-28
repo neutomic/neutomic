@@ -67,12 +67,7 @@ final readonly class ServerSentEventsHandler implements HandlerInterface
 }
 
 entrypoint(static function (Project $project): ContainerBuilderInterface {
-    $project = $project
-        ->withEntryPoint(__FILE__)
-        ->withDirectory(__DIR__)
-        ->withSource(null)
-        ->withConfig(null)
-    ;
+    $project = $project->withConfig(null);
 
     $builder = ContainerBuilder::create($project);
 

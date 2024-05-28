@@ -126,10 +126,7 @@ final readonly class ShutdownListener implements ListenerInterface
 }
 
 entrypoint(static function (Project $project): ContainerBuilderInterface {
-    $project = $project
-        ->withSource(null)
-        ->withConfig(null)
-    ;
+    $project = $project->withConfig(null);
 
     $builder = ContainerBuilder::create($project);
     $builder->addConfiguration([
