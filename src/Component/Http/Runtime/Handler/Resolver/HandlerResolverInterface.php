@@ -15,6 +15,7 @@ namespace Neu\Component\Http\Runtime\Handler\Resolver;
 
 use Neu\Component\Http\Exception\LogicException;
 use Neu\Component\Http\Message\RequestInterface;
+use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Exception\HandlerNotFoundHttpException;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 
@@ -25,17 +26,21 @@ use Neu\Component\Http\Runtime\Handler\HandlerInterface;
  * for a specific request. It plays a crucial role in the request processing pipeline
  * by dynamically selecting the handler that should be used to process and respond
  * to an incoming request.
+ *
+ * The handler resolver is also an instance of {@see HandlerInterface}, which means
+ * that it can be used as a handler itself. This allows the resolver to be used
+ * within the request processing pipeline, enabling it to resolve the appropriate
+ * handler for the incoming request and delegate the request processing to it.
  */
-interface HandlerResolverInterface
+interface HandlerResolverInterface extends HandlerInterface
 {
     /**
      * Resolves and returns the appropriate handler for the specified HTTP request.
      *
      * This method analyzes the request and determines the most suitable handler
-     * that can process and generate a response for it. This typically involves
-     * looking up handler mappings based on the request's attributes such as the
-     * URL path, HTTP method, headers, or other criteria specific to the application.
+     * that can process and generate a response for it.
      *
+     * @param Context $context The runtime context for the current request.
      * @param RequestInterface $request The HTTP request for which a handler needs to be resolved.
      *
      * @throws HandlerNotFoundHttpException If no handler can be resolved for the given request.
@@ -43,5 +48,5 @@ interface HandlerResolverInterface
      *
      * @return HandlerInterface The handler capable of processing the request.
      */
-    public function resolve(RequestInterface $request): HandlerInterface;
+    public function resolve(Context $context, RequestInterface $request): HandlerInterface;
 }

@@ -17,7 +17,7 @@ use Amp\Http\Server\Request;
 use Amp\Http\Server\RequestHandler;
 use Amp\Http\Server\Response;
 use Neu\Component\Http\Exception\ExceptionInterface;
-use Neu\Component\Http\Runtime\Handler\HandlerInterface;
+use Neu\Component\Http\Runtime\RuntimeInterface;
 
 /**
  * Represents a request handler that bridges between Amp HTTP server requests and Neu HTTP runtime handler.
@@ -29,14 +29,14 @@ final readonly class AmphpRequestHandler implements RequestHandler
     /**
      * The Neu runtime handler to handle the converted Neu HTTP server request.
      */
-    private HandlerInterface $handler;
+    private RuntimeInterface $handler;
 
     /**
      * Creates a new bridging request handler.
      *
-     * @param HandlerInterface $handler The Neu runtime handler to handle the converted Neu HTTP server request.
+     * @param RuntimeInterface $handler The Neu runtime handler to handle the converted Neu HTTP server request.
      */
-    public function __construct(HandlerInterface $handler)
+    public function __construct(RuntimeInterface $handler)
     {
         $this->handler = $handler;
     }

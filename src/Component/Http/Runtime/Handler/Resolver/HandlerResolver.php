@@ -15,6 +15,8 @@ namespace Neu\Component\Http\Runtime\Handler\Resolver;
 
 use Neu\Component\Http\Exception\LogicException;
 use Neu\Component\Http\Message\RequestInterface;
+use Neu\Component\Http\Message\ResponseInterface;
+use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Exception\HandlerNotFoundHttpException;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 
@@ -38,7 +40,15 @@ final readonly class HandlerResolver implements HandlerResolverInterface
     /**
      * @inheritDoc
      */
-    public function resolve(RequestInterface $request): HandlerInterface
+    public function handle(Context $context, RequestInterface $request): ResponseInterface
+    {
+        return $this->resolve($context, $request)->handle($context, $request);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function resolve(Context $context, RequestInterface $request): HandlerInterface
     {
         if (!$request->hasAttribute(HandlerInterface::class)) {
             if ($this->fallback instanceof HandlerInterface) {

@@ -20,13 +20,10 @@ use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Recovery\RecoveryInterface;
 use Neu\Component\Http\Runtime\Event\RequestEvent;
 use Neu\Component\Http\Runtime\Event\ResponseEvent;
-use Neu\Component\Http\Runtime\Event\TerminateEvent;
 use Neu\Component\Http\Runtime\Event\ThrowableEvent;
-use Neu\Component\Http\Runtime\Handler\ClosureHandler;
 use Neu\Component\Http\Runtime\Handler\Resolver\HandlerResolverInterface;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
 use Psl\Async;
-use Psl\Async\Semaphore;
 use Throwable;
 
 /**
@@ -63,9 +60,9 @@ final class Runtime implements RuntimeInterface
     /**
      * A semaphore to limit the number of concurrent requests handled by the runtime.
      *
-     * @var Semaphore<array{Context, RequestInterface}, ResponseInterface>
+     * @var Async\Semaphore<array{Context, RequestInterface}, ResponseInterface>
      */
-    private Semaphore $semaphore;
+    private Async\Semaphore $semaphore;
 
     /**
      * Constructs a new Runtime instance with specified components for handling HTTP requests.
@@ -81,7 +78,7 @@ final class Runtime implements RuntimeInterface
         $this->queue = $queue;
         $this->resolver = $resolver;
         $this->recovery = $recovery;
-        $this->semaphore = new Semaphore($concurrencyLimit, $this->handleRequest(...));
+        $this->semaphore = new Async\Semaphore($concurrencyLimit, $this->handleRequest(...));
     }
 
     /**
@@ -113,15 +110,13 @@ final class Runtime implements RuntimeInterface
      */
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
-        return $this->semaphore->waitFor([$context, $request]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function terminate(Context $context, RequestInterface $request, ResponseInterface $response): void
-    {
-        $this->dispatcher->dispatch(new TerminateEvent($context, $request, $response));
+        try {
+            return $this->semaphore->waitFor([$context, $request]);
+        } finally {
+            // trigger a tick in the event loop to allow other pending operations to proceed
+            // in case the request handling process is synchronous (e.g., no async operations)
+            Async\later();
+        }
     }
 
     /**
@@ -147,29 +142,23 @@ final class Runtime implements RuntimeInterface
      */
     private function handleRequest(array $input): ResponseInterface
     {
-        return Async\run(function () use ($input): ResponseInterface {
-            [$context, $request] = $input;
+        [$context, $request] = $input;
 
-            try {
-                $event = $this->dispatcher->dispatch(new RequestEvent($context, $request));
-                $request = $event->request;
-                $handler  = $event->handler;
-                $response = $event->response;
-                if (null === $response) {
-                    if (null === $handler) {
-                        $handler = new ClosureHandler(function (Context $context, RequestInterface $request): ResponseInterface {
-                            return $this->resolver->resolve($request)->handle($context, $request);
-                        });
-                    }
+        try {
+            $event = $this->dispatcher->dispatch(new RequestEvent($context, $request));
+            $request = $event->request;
+            $handler  = $event->handler;
+            $response = $event->response;
+            if (null === $response) {
+                $handler ??= $this->resolver;
 
-                    $response = $this->queue->wrap($handler)->handle($context, $request);
-                }
-            } catch (Throwable $throwable) {
-                $response = $this->handleThrowable($context, $request, $throwable);
+                $response = $this->queue->wrap($handler)->handle($context, $request);
             }
+        } catch (Throwable $throwable) {
+            $response = $this->handleThrowable($context, $request, $throwable);
+        }
 
-            return $this->handleResponse($context, $request, $response);
-        })->await();
+        return $this->handleResponse($context, $request, $response);
     }
 
     /**

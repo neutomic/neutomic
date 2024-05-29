@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Runtime;
 
+use Neu\Component\Http\Exception\ExceptionInterface;
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
@@ -66,6 +67,8 @@ interface RuntimeInterface extends HandlerInterface
      *
      * @param RequestInterface $request The HTTP request to handle.
      *
+     * @throws ExceptionInterface If failed to handle the request
+     *
      * @return ResponseInterface The response to the given request.
      *
      * @see Event\RequestEvent for the request handling event.
@@ -73,20 +76,4 @@ interface RuntimeInterface extends HandlerInterface
      * @see Event\ThrowableEvent for the exception handling event.
      */
     public function handle(Context $context, RequestInterface $request): ResponseInterface;
-
-    /**
-     * Terminates the request/response cycle.
-     *
-     * This method is called after the response has been sent to the client, providing an
-     * opportunity to perform cleanup, logging, or other shutdown procedures.
-     *
-     * It dispatches a termination event, signaling that the request and response lifecycle
-     * has fully concluded.
-     *
-     * @param RequestInterface $request The request that was processed.
-     * @param ResponseInterface $response The response that was sent to the client.
-     *
-     * @see Event\TerminateEvent for the final termination event.
-     */
-    public function terminate(Context $context, RequestInterface $request, ResponseInterface $response): void;
 }
