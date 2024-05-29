@@ -27,9 +27,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 entrypoint(static function (Project $project): ContainerInterface {
     $project = $project->withConfig(null);
 
-    $builder = ContainerBuilder::create($project);
-
-    $builder->addConfiguration([
+    $builder = ContainerBuilder::create($project, [
         'monolog' => [
             'default' => 'main',
             'channels' => [
@@ -51,23 +49,12 @@ entrypoint(static function (Project $project): ContainerInterface {
             'server' => [
                 'sockets' => [['host' => '127.0.0.1', 'port' => 1337]]
             ],
-            'runtime' => [
-                'middleware' => [
-                    'x-powered-by' => null,
-                    'access-log' => null,
-                    'router' => null,
-                ]
-            ]
         ]
     ]);
 
     $builder->addExtensions([
+        new Neu\Framework\DependencyInjection\FrameworkExtension(),
         new Neu\Bridge\Monolog\DependencyInjection\MonologExtension(),
-        new Neu\Component\Advisory\DependencyInjection\AdvisoryExtension(),
-        new Neu\Component\Console\DependencyInjection\ConsoleExtension(),
-        new Neu\Component\EventDispatcher\DependencyInjection\EventDispatcherExtension(),
-        new Neu\Component\Cache\DependencyInjection\CacheExtension(),
-        new Neu\Component\Http\DependencyInjection\HttpExtension(),
     ]);
 
     $container = $builder->build();

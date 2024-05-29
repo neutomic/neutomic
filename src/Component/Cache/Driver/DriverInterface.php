@@ -84,4 +84,11 @@ interface DriverInterface
      * @return void
      */
     public function prune(): void;
+
+    /**
+     * Close the driver, releasing any resources.
+     *
+     * @throws RuntimeException If an error occurs while closing the driver.
+     */
+    public function close(): void;
 }

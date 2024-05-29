@@ -99,4 +99,11 @@ interface StoreInterface
      * @throws Exception\RuntimeException If an error occurs while deleting the item.
      */
     public function delete(string $key): void;
+
+    /**
+     * Close the store, releasing any resources.
+     *
+     * @throws Exception\RuntimeException If an error occurs while closing the store.
+     */
+    public function close(): void;
 }

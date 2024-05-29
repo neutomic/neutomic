@@ -44,4 +44,13 @@ interface DatabaseManagerInterface
      * @return DatabaseInterface The database associated with the given name.
      */
     public function getDatabase(string $name): DatabaseInterface;
+
+    /**
+     * Retrieve the list of available databases.
+     *
+     * @throws Exception\RuntimeException If failed to load the list of available databases.
+     *
+     * @return list<DatabaseInterface> The list of available databases.
+     */
+    public function getAvailableDatabases(): array;
 }

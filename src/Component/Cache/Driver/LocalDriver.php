@@ -122,4 +122,14 @@ final class LocalDriver extends AbstractDriver
             }
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function close(): void
+    {
+        parent::close();
+
+        $this->clear();
+    }
 }

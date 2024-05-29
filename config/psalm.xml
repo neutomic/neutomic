@@ -14,6 +14,7 @@
     cacheDirectory="../var/psalm-cache"
     findUnusedPsalmSuppress="true"
     findUnusedCode="false"
+    threads="10"
 >
     <projectFiles>
         <directory name="../src"/>

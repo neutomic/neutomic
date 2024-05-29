@@ -20,12 +20,8 @@ use Neu\Component\Http\Server\Cluster;
 use Neu\Component\Http\Server\ClusterInterface;
 use Neu\Component\Http\Server\ClusterWorker;
 use Neu\Component\Http\Server\ClusterWorkerInterface;
-use Neu\Component\Http\Server\Command\ClusterCommand;
-use Neu\Component\Http\Server\Command\StartCommand;
 use Neu\Component\Http\Server\DependencyInjection\Factory\ClusterFactory;
 use Neu\Component\Http\Server\DependencyInjection\Factory\ClusterWorkerFactory;
-use Neu\Component\Http\Server\DependencyInjection\Factory\Command\ClusterCommandFactory;
-use Neu\Component\Http\Server\DependencyInjection\Factory\Command\StartCommandFactory;
 use Neu\Component\Http\Server\DependencyInjection\Factory\ServerFactory;
 use Neu\Component\Http\Server\DependencyInjection\Factory\ServerInfrastructureFactory;
 use Neu\Component\Http\Server\Server;
@@ -53,16 +49,7 @@ use Psl\Type;
  *     cluster?: array{
  *         workers?: positive-int,
  *         logger?: non-empty-string,
- *     },
- *     command?: array{
- *          cluster?: array{
- *              watch?: array{
- *                  interval?: float,
- *                  directories?: list<non-empty-string>,
- *                  extensions?: list<non-empty-string>,
- *              },
- *          },
- *     },
+ *     }
  * }
  */
 final readonly class ServerExtension implements ExtensionInterface
@@ -113,13 +100,6 @@ final readonly class ServerExtension implements ExtensionInterface
         $container->getDefinition(Server::class)->addAlias(ServerInterface::class);
         $container->getDefinition(Cluster::class)->addAlias(ClusterInterface::class);
         $container->getDefinition(ClusterWorker::class)->addAlias(ClusterWorkerInterface::class);
-
-        $container->addDefinition(Definition::ofType(StartCommand::class, new StartCommandFactory()));
-        $container->addDefinition(Definition::ofType(ClusterCommand::class, new ClusterCommandFactory(
-            watchInterval: $configuration['command']['cluster']['watch']['interval'] ?? null,
-            watchDirectories: $configuration['command']['cluster']['watch']['directories'] ?? null,
-            watchExtensions: $configuration['command']['cluster']['watch']['extensions'] ?? null,
-        )));
     }
 
     /**
@@ -184,15 +164,6 @@ final readonly class ServerExtension implements ExtensionInterface
             'cluster' => Type\optional(Type\shape([
                 'workers' => Type\optional(Type\positive_int()),
                 'logger' => Type\optional(Type\non_empty_string()),
-            ])),
-            'command' => Type\optional(Type\shape([
-                'cluster' => Type\optional(Type\shape([
-                    'watch' => Type\optional(Type\shape([
-                        'interval' => Type\optional(Type\float()),
-                        'directories' => Type\optional(Type\vec(Type\non_empty_string())),
-                        'extensions' => Type\optional(Type\vec(Type\non_empty_string())),
-                    ])),
-                ])),
             ])),
         ]);
     }

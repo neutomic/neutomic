@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Cache\Driver;
 
+use Neu\Component\Cache\Exception\RuntimeException;
 use Revolt\EventLoop;
 
 /**
@@ -56,13 +57,24 @@ abstract class AbstractDriver implements DriverInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function close(): void
+    {
+        if (EventLoop::isEnabled($this->pruneWatcher)) {
+            EventLoop::disable($this->pruneWatcher);
+        }
+    }
+
+    /**
      * Destructor for the cache driver.
-     *
-     * Ensures that the event loop watcher for pruning is properly disabled when
-     * the cache driver object is destroyed.
      */
     public function __destruct()
     {
-        EventLoop::disable($this->pruneWatcher);
+        try {
+            $this->close();
+        } catch (RuntimeException) {
+            // Ignore any exceptions thrown by the close operation.
+        }
     }
 }

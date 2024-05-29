@@ -78,6 +78,18 @@ final readonly class Storage implements StorageInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function close(): void
+    {
+        try {
+            $this->store->close();
+        } catch (CacheException $e) {
+            throw new RuntimeException('An error occurred while closing the storage.', previous: $e);
+        }
+    }
+
+    /**
      * Generate a new session identifier.
      *
      * @throws CacheException If an error occurs while generating the identifier.

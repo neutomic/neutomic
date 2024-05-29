@@ -50,4 +50,11 @@ interface StorageInterface
      * @throws RuntimeException If an error occurs while flushing the session.
      */
     public function flush(string $id): void;
+
+    /**
+     * Close the storage, releasing any resources.
+     *
+     * @throws RuntimeException If an error occurs while closing the storage.
+     */
+    public function close(): void;
 }

@@ -44,4 +44,13 @@ interface HubManagerInterface
      * @return HubInterface The hub associated with the given identifier.
      */
     public function getHub(string $identifier): HubInterface;
+
+    /**
+     * Retrieve all available hubs.
+     *
+     * @throws Exception\RuntimeException If failed to load the hubs.
+     *
+     * @return list<HubInterface> A list of all available hubs.
+     */
+    public function getAvailableHubs(): array;
 }

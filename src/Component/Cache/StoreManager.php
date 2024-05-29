@@ -76,4 +76,23 @@ final class StoreManager implements StoreManagerInterface
             throw new RuntimeException('An error occurred while retrieving the store.', previous: $exception);
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAvailableStores(): array
+    {
+        $services = $this->locator->getAvailableServices();
+        $stores = [];
+
+        foreach ($services as $name) {
+            try {
+                $stores[] = $this->getStore($name);
+            } catch (StoreNotFoundException) {
+                // unreachable
+            }
+        }
+
+        return $stores;
+    }
 }
