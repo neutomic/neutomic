@@ -25,6 +25,7 @@ use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\ServerSentEvent;
+use Psl\DateTime;
 use Psl\Async;
 
 use function Neu\Framework\entrypoint;
@@ -58,7 +59,7 @@ final readonly class ServerSentEventsHandler implements HandlerInterface
                     data: 'Hello, World!',
                 ));
 
-                Async\sleep(1);
+                Async\sleep(DateTime\Duration::seconds(1));
             }
         })->ignore();
 

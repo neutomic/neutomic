@@ -18,11 +18,14 @@ use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Psl\Str;
+use Psl\DateTime;
 use Psr\Log\LoggerInterface;
 
-use function microtime;
-use function number_format;
-
+/**
+ * Middleware that logs the request and response information.
+ *
+ * @psalm-suppress MissingThrowsDocblock
+ */
 final readonly class AccessLogMiddleware implements PrioritizedMiddlewareInterface
 {
     public const int PRIORITY = -512;
@@ -38,9 +41,9 @@ final readonly class AccessLogMiddleware implements PrioritizedMiddlewareInterfa
 
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
-        $time = microtime(true);
+        $time = DateTime\Timestamp::monotonic();
         $response = $next->handle($context, $request);
-        $duration = (int) (microtime(true) - $time);
+        $duration = DateTime\Timestamp::monotonic()->since($time)->getTotalMilliseconds();
 
         $message = Str\format(
             '"%s %s" %d HTTP/%s @ %s | %s ms',
@@ -49,7 +52,7 @@ final readonly class AccessLogMiddleware implements PrioritizedMiddlewareInterfa
             $response->getStatusCode(),
             $request->getProtocolVersion()->value,
             $context->getClient()->getRemoteAddress()->toString(),
-            number_format($duration * 1000, 2),
+            Str\format_number($duration, 2),
         );
 
         $this->logger->info($message, [

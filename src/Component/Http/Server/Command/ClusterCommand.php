@@ -31,6 +31,7 @@ use Neu\Component\DependencyInjection\Project;
 use Neu\Component\Http\Server\ClusterInterface;
 use Psl\Async;
 use Psl\Str;
+use Psl\DateTime;
 use Revolt\EventLoop\UnsupportedFeatureException;
 
 /**
@@ -94,7 +95,7 @@ final readonly class ClusterCommand extends AbstractCommand
         $this->cluster->start($workers);
 
         // Wait for the workers output to be flushed:
-        Async\sleep(1);
+        Async\sleep(DateTime\Duration::seconds(1));
 
         $this->createSuccessBlock($output)->display(
             'The server cluster has started successfully.'
@@ -126,7 +127,7 @@ final readonly class ClusterCommand extends AbstractCommand
             $this->cluster->stop();
 
             // Wait for the workers output to be flushed:
-            Async\sleep(1);
+            Async\sleep(DateTime\Duration::seconds(1));
 
             $this->createSuccessBlock($output)->display(
                 'The server cluster has stopped successfully.'
@@ -148,7 +149,7 @@ final readonly class ClusterCommand extends AbstractCommand
         $this->cluster->restart();
 
         // Wait for the workers output to be flushed:
-        Async\sleep(1);
+        Async\sleep(DateTime\Duration::seconds(1));
 
         $this->createSuccessBlock($this->output)->display(
             'The server cluster has been restarted.'
