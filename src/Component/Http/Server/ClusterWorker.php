@@ -14,6 +14,10 @@ declare(strict_types=1);
 namespace Neu\Component\Http\Server;
 
 use Amp\Cluster\Cluster;
+use Amp\Sync\Parcel;
+use Amp\Sync\PosixSemaphore;
+use Amp\Sync\SemaphoreMutex;
+use Amp\Sync\SharedMemoryParcel;
 use Neu\Component\EventDispatcher\EventDispatcherInterface;
 use Neu\Component\Http\Exception\RuntimeException;
 use Neu\Component\Http\Server\Event\ClusterWorkerStartedEvent;
@@ -27,7 +31,7 @@ use Throwable;
  *
  * @psalm-suppress MissingThrowsDocblock
  */
-final readonly class ClusterWorker implements ClusterWorkerInterface
+final class ClusterWorker implements ClusterWorkerInterface
 {
     /**
      * The server instance to be managed by the worker.
@@ -113,5 +117,26 @@ final readonly class ClusterWorker implements ClusterWorkerInterface
         $this->logger->notice('Cluster worker "{id}" has stopped.', ['id' => $workerId]);
 
         $this->dispatcher->dispatch(new ClusterWorkerStoppedEvent($workerId));
+    }
+
+    private array $parcels = [];
+
+    public function getOrCreateParcel(string $name): Parcel
+    {
+        if (isset($this->parcels[$name])) {
+            return $this->parcels[$name];
+        }
+
+        $semaphore = PosixSemaphore::create(1, permissions: 0666);
+        $mutex = new SemaphoreMutex($semaphore);
+
+        Cluster::getChannel()->send(['create-parcel', [$name]]);
+        $key = Cluster::getChannel()->receive();
+
+        $parcel = SharedMemoryParcel::use($mutex, $key);
+
+        $this->parcels[$name] = $parcel;
+
+        return $parcel;
     }
 }

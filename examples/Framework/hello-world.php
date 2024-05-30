@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Examples\Framework;
 
+use Amp\Cluster\Cluster;
 use Neu;
 use Neu\Component\DependencyInjection\ContainerBuilder;
 use Neu\Component\DependencyInjection\ContainerInterface;
@@ -20,6 +21,7 @@ use Neu\Component\DependencyInjection\Project;
 use Neu\Component\Http\Message\Response;
 use Neu\Component\Http\Router\RouteCollector;
 
+use Neu\Component\Http\Server\ClusterWorkerInterface;
 use function Neu\Framework\entrypoint;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -47,7 +49,7 @@ entrypoint(static function (Project $project): ContainerInterface {
         ],
         'http' => [
             'server' => [
-                'sockets' => [['host' => '127.0.0.1', 'port' => 1337]]
+                'sockets' => [['host' => '127.0.0.1', 'port' => 2020]]
             ],
         ]
     ]);
@@ -61,8 +63,19 @@ entrypoint(static function (Project $project): ContainerInterface {
 
     /** @var RouteCollector $collector */
     $collector = $container->get(RouteCollector::class);
-    $collector->get('index', '/', static function () {
-        return Response\text('Hello, World!');
+    $collector->get('index', '/', static function () use($container) {
+        $worker = $container->getTyped(ClusterWorkerInterface::class, ClusterWorkerInterface::class);
+        $parcel = $worker->getOrCreateParcel('counter');
+        $value = $parcel->synchronized(function (?int $value): int {
+            if ($value === null) {
+                $value = 0;
+            }
+
+            return $value + 1;
+        });
+        $worker = Cluster::getContextId();
+
+        return Response\text('Hello, World! - visited ' . $value . ' times (worker: ' . $worker . ')');
     });
 
     return $container;

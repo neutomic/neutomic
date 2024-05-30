@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Server;
 
+use Neu\Component\Contract\ParcelManagerInterface;
 use Neu\Component\Http\Exception\RuntimeException;
 
 /**
@@ -20,7 +21,7 @@ use Neu\Component\Http\Exception\RuntimeException;
  *
  * This interface provides methods for starting and stopping a worker in a clustered server environment.
  */
-interface ClusterWorkerInterface
+interface ClusterWorkerInterface extends ParcelManagerInterface
 {
     /**
      * Starts the worker.

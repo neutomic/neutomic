@@ -17,6 +17,9 @@ use Amp\Cluster\Cluster as AmpCluster;
 use Amp\Cluster\ClusterException;
 use Amp\Cluster\ClusterWatcher;
 use Amp\Parallel\Context\ContextException;
+use Amp\Sync\PosixSemaphore;
+use Amp\Sync\SemaphoreMutex;
+use Amp\Sync\SharedMemoryParcel;
 use Neu\Component\EventDispatcher\EventDispatcherInterface;
 use Neu\Component\Http\Exception\RuntimeException;
 use Neu\Component\Http\Server\Event\ClusterRestartedEvent;
@@ -109,12 +112,24 @@ final class Cluster implements ClusterInterface
             try {
                 foreach ($iterator as $message) {
                     /** @psalm-suppress RedundantCondition */
-                    assert($this->logger->debug('Broadcasting a message received from worker "{worker}".', [
+                    assert($this->logger->debug('message received from worker "{worker}".', [
                         'worker' => $message->getWorker()->getId(),
                         'data' => $message->getData(),
                     ]) || true);
 
-                    $watcher->broadcast($message->getData());
+                    [$command, $args] = $message->getData();
+                    if ('create-parcel' === $command) {
+                        $name = $args[0];
+                        if (!isset($this->parcels[$name])) {
+                            $semaphore = PosixSemaphore::create(1, permissions: 0666);
+                            $mutex = new SemaphoreMutex($semaphore);
+                            $parcel = SharedMemoryParcel::create($mutex, null);
+
+                            $this->parcels[$name] = $parcel->getKey();
+                        }
+
+                        $message->getWorker()->send($this->parcels[$name]);
+                    }
                 }
             } catch (ClusterException | ContextException) {
                 // Cluster has been closed.
@@ -125,6 +140,8 @@ final class Cluster implements ClusterInterface
 
         $this->dispatcher->dispatch(new ClusterStartedEvent($workers));
     }
+
+    private array $parcels = [];
 
     /**
      * @inheritDoc
