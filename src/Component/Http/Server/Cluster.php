@@ -16,8 +16,13 @@ namespace Neu\Component\Http\Server;
 use Amp\Cluster\Cluster as AmpCluster;
 use Amp\Cluster\ClusterException;
 use Amp\Cluster\ClusterWatcher;
+use Amp\Cluster\ClusterWorkerMessage;
 use Amp\Parallel\Context\ContextException;
+use Amp\Sync\Channel;
+use Amp\Sync\Mutex;
+use Amp\Sync\Parcel;
 use Amp\Sync\PosixSemaphore;
+use Amp\Sync\Semaphore;
 use Amp\Sync\SemaphoreMutex;
 use Amp\Sync\SharedMemoryParcel;
 use Neu\Component\EventDispatcher\EventDispatcherInterface;
@@ -30,6 +35,8 @@ use Revolt\EventLoop;
 use Throwable;
 
 use function Amp\Cluster\countCpuCores;
+use function count;
+use function pack;
 
 /**
  * A cluster that manages multiple worker processes.
@@ -66,6 +73,26 @@ final class Cluster implements ClusterInterface
     private int $workerCount;
 
     /**
+     * The semaphore instance for synchronizing parcels.
+     */
+    private null|Semaphore $semaphore;
+
+    /**
+     * The mutex instance for synchronizing parcels.
+     */
+    private null|SemaphoreMutex $mutex;
+
+    /**
+     * The shared memory parcel instance for sharing data between workers.
+     */
+    private null|Parcel $parcel;
+
+    /**
+     * The channel instance for communicating between the cluster and its workers.
+     */
+    private null|Channel $channel;
+
+    /**
      * Create a new {@see Cluster} instance.
      *
      * @param string $entrypoint Path to the entrypoint file for executes the {@see ClusterWorkerInterface} instance.
@@ -77,7 +104,55 @@ final class Cluster implements ClusterInterface
         $this->entrypoint = $entrypoint;
         $this->dispatcher = $dispatcher;
         $this->logger = $logger;
-        $this->workerCount = $workerCount ?? (countCpuCores() * 2);
+        $this->workerCount = $workerCount ?? countCpuCores();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMutex(): Mutex
+    {
+        if (null === $this->mutex) {
+            throw new RuntimeException('Failed to access the shared mutex, the cluster is not started.');
+        }
+
+        return $this->mutex;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getParcel(): Parcel
+    {
+        if (null === $this->parcel) {
+            throw new RuntimeException('Failed to access the shared parcel, the cluster is not started.');
+        }
+
+        return $this->parcel;
+    }
+
+    public function getChannel(): Channel
+    {
+        if (null === $this->channel) {
+            throw new RuntimeException('Failed to access the shared channel, the cluster is not started.');
+        }
+
+        return $this->channel;
+    }
+
+    private array $objects = [];
+
+    public function getOrCreateSharedResource(string $identifier, mixed $default): SharedResource
+    {
+        if (null === $this->parcel) {
+            throw new RuntimeException('Failed to access the shared resource, the cluster is not started.');
+        }
+
+        if (!isset($this->objects[$identifier])) {
+            $this->objects[$identifier] = new SharedResource($identifier, $this->getParcel(), $default);
+        }
+
+        return $this->objects[$identifier];
     }
 
     /**
@@ -104,44 +179,12 @@ final class Cluster implements ClusterInterface
 
         $watcher->start($workers);
 
+        $this->initialize();
+
         $this->logger->info('Cluster started with {workers} workers.', ['workers' => $workers]);
-
-        EventLoop::defer(function () use ($watcher): void {
-            $iterator = $watcher->getMessageIterator();
-
-            try {
-                foreach ($iterator as $message) {
-                    /** @psalm-suppress RedundantCondition */
-                    assert($this->logger->debug('message received from worker "{worker}".', [
-                        'worker' => $message->getWorker()->getId(),
-                        'data' => $message->getData(),
-                    ]) || true);
-
-                    [$command, $args] = $message->getData();
-                    if ('create-parcel' === $command) {
-                        $name = $args[0];
-                        if (!isset($this->parcels[$name])) {
-                            $semaphore = PosixSemaphore::create(1, permissions: 0666);
-                            $mutex = new SemaphoreMutex($semaphore);
-                            $parcel = SharedMemoryParcel::create($mutex, null);
-
-                            $this->parcels[$name] = $parcel->getKey();
-                        }
-
-                        $message->getWorker()->send($this->parcels[$name]);
-                    }
-                }
-            } catch (ClusterException | ContextException) {
-                // Cluster has been closed.
-
-                return;
-            }
-        });
 
         $this->dispatcher->dispatch(new ClusterStartedEvent($workers));
     }
-
-    private array $parcels = [];
 
     /**
      * @inheritDoc
@@ -159,6 +202,8 @@ final class Cluster implements ClusterInterface
         $this->logger->info('Restarting cluster...');
 
         $watcher->restart();
+
+        $this->initialize();
 
         $this->logger->info('Cluster restarted.');
 
@@ -193,5 +238,27 @@ final class Cluster implements ClusterInterface
         }
 
         $this->dispatcher->dispatch(new ClusterStoppedEvent());
+    }
+
+    /**
+     * Send the semaphore and parcel to the worker processes.
+     *
+     * @throws RuntimeException If the cluster is not started.
+     */
+    private function initialize(): void
+    {
+        if (null === $this->watcher) {
+            throw new RuntimeException('Failed to send semaphore and parcel to workers, the cluster is not started.');
+        }
+
+
+        $this->semaphore = $this->semaphore ?? PosixSemaphore::create(1, permissions: 0666);
+        $this->mutex = $this->mutex ?? new SemaphoreMutex($this->semaphore);
+        $this->parcel = $this->parcel ?? SharedMemoryParcel::create($this->mutex, null);
+        $this->channel = new Internal\ClusterChannel($this->watcher);
+
+        $this->watcher->broadcast($this->semaphore->getKey());
+        $this->watcher->broadcast($this->parcel->getKey());
+
     }
 }

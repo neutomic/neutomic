@@ -17,6 +17,8 @@
         "php": "~8.3.0",
         "ext-mbstring": "*",
         "ext-pcntl": "*",
+        "ext-sysvmsg": "*",
+        "ext-shmop": "*",
         "psr/container": "^2.0",
         "psr/event-dispatcher": "^1.0.0",
         "azjezz/psl": "dev-next as 3.0.0",

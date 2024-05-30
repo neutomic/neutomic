@@ -18,7 +18,7 @@ namespace Neu\Component\Http\Server;
  *
  * Implementations of this interface should provide mechanisms to start and stop the cluster.
  */
-interface ClusterInterface
+interface ClusterInterface extends SharedResourcesInterface
 {
     /**
      * Start the cluster of worker processes.
@@ -37,4 +37,5 @@ interface ClusterInterface
      * Stop the cluster of worker processes.
      */
     public function stop(): void;
+
 }
