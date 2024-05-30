@@ -18,8 +18,6 @@ use Neu\Component\Broadcast\HubInterface;
 use Neu\Component\DependencyInjection\ContainerBuilder;
 use Neu\Component\DependencyInjection\ContainerBuilderInterface;
 use Neu\Component\DependencyInjection\Project;
-use Neu\Component\EventDispatcher\Attribute\Listener;
-use Neu\Component\EventDispatcher\Listener\ListenerInterface;
 use Neu\Component\Http\Message\Form\ParseOptions;
 use Neu\Component\Http\Message\Form\ParserInterface;
 use Neu\Component\Http\Message\Method;
@@ -29,7 +27,6 @@ use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
-use Neu\Component\Http\Server\Event\ServerStoppingEvent;
 use Neu\Component\Http\ServerSentEvent;
 use Revolt\EventLoop;
 
@@ -107,24 +104,6 @@ final readonly class SubHandler implements HandlerInterface
     }
 }
 
-/**
- * @implements ListenerInterface<ServerStoppingEvent>
- */
-#[Listener(events: [ServerStoppingEvent::class])]
-final readonly class ShutdownListener implements ListenerInterface
-{
-    public function __construct(private HubInterface $hub)
-    {
-    }
-
-    public function process(object $event): object
-    {
-        $this->hub->close();
-
-        return $event;
-    }
-}
-
 entrypoint(static function (Project $project): ContainerBuilderInterface {
     $project = $project->withConfig(null);
 
@@ -134,23 +113,13 @@ entrypoint(static function (Project $project): ContainerBuilderInterface {
             'server' => [
                 'sockets' => [['host' => '127.0.0.1', 'port' => 1337]]
             ],
-            'runtime' => [
-                'middleware' => [
-                    'x-powered-by' => null,
-                    'access-log' => null,
-                    'router' => null,
-                ]
-            ]
-        ]
+        ],
     ]);
+
     $builder->addExtensions([
         new Neu\Bridge\Monolog\DependencyInjection\MonologExtension(),
-        new Neu\Component\Advisory\DependencyInjection\AdvisoryExtension(),
-        new Neu\Component\Console\DependencyInjection\ConsoleExtension(),
+        new Neu\Framework\DependencyInjection\FrameworkExtension(),
         new Neu\Component\Broadcast\DependencyInjection\BroadcastExtension(),
-        new Neu\Component\EventDispatcher\DependencyInjection\EventDispatcherExtension(),
-        new Neu\Component\Cache\DependencyInjection\CacheExtension(),
-        new Neu\Component\Http\DependencyInjection\HttpExtension(),
     ]);
 
     return $builder;

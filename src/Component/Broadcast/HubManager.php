@@ -76,4 +76,22 @@ final class HubManager implements HubManagerInterface
             throw new RuntimeException('An error occurred while retrieving the hub.', previous: $exception);
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAvailableHubs(): array
+    {
+        $hubs = [];
+        $services = $this->locator->getAvailableServices();
+        foreach ($services as $service) {
+            try {
+                $hubs[] = $this->getHub($service);
+            } catch (HubNotFoundException) {
+                // unreachable
+            }
+        }
+
+        return $hubs;
+    }
 }

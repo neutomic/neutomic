@@ -23,8 +23,18 @@ final class RedisDriver implements DriverInterface
 {
     use SerializationTrait;
 
-    private RedisClient $client;
+    /**
+     * The redis client.
+     *
+     * @var null|RedisClient
+     */
+    private null|RedisClient $client;
 
+    /**
+     * Creates a new redis cache driver.
+     *
+     * @param RedisClient $client The redis client.
+     */
     public function __construct(RedisClient $client)
     {
         $this->client = $client;
@@ -35,12 +45,18 @@ final class RedisDriver implements DriverInterface
      */
     public function get(string $key): mixed
     {
+        if (null === $this->client) {
+            throw new RuntimeException('The redis client has been closed.');
+        }
+
+        $client = $this->client;
+
         try {
-            if (!$this->client->has($key)) {
+            if (!$client->has($key)) {
                 throw UnavailableItemException::for($key);
             }
 
-            $value = $this->client->get($key);
+            $value = $client->get($key);
             if ('' === $value || null === $value) {
                 throw UnavailableItemException::for($key);
             }
@@ -56,13 +72,19 @@ final class RedisDriver implements DriverInterface
      */
     public function set(string $key, mixed $value, null|int $ttl = null): void
     {
+        if (null === $this->client) {
+            throw new RuntimeException('The redis client has been closed.');
+        }
+
+        $client = $this->client;
+
         $options = new SetOptions();
         if ($ttl !== null) {
             $options = $options->withTtl($ttl);
         }
 
         try {
-            $this->client->set($key, $this->serialize($key, $value), $options);
+            $client->set($key, $this->serialize($key, $value), $options);
         } catch (RedisException $e) {
             throw new RuntimeException('A redis error occurred while writing to the cache.', 0, $e);
         }
@@ -73,8 +95,14 @@ final class RedisDriver implements DriverInterface
      */
     public function delete(string $key): void
     {
+        if (null === $this->client) {
+            throw new RuntimeException('The redis client has been closed.');
+        }
+
+        $client = $this->client;
+
         try {
-            $this->client->delete($key);
+            $client->delete($key);
         } catch (RedisException $e) {
             throw new RuntimeException('A redis error occurred while deleting the cache.', 0, $e);
         }
@@ -85,8 +113,14 @@ final class RedisDriver implements DriverInterface
      */
     public function clear(): void
     {
+        if (null === $this->client) {
+            throw new RuntimeException('The redis client has been closed.');
+        }
+
+        $client = $this->client;
+
         try {
-            $this->client->flushAll();
+            $client->flushAll();
         } catch (RedisException $e) {
             throw new RuntimeException('A redis error occurred while clearing the cache.', 0, $e);
         }
@@ -98,5 +132,13 @@ final class RedisDriver implements DriverInterface
     public function prune(): void
     {
         // Redis automatically prunes expired keys.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function close(): void
+    {
+        $this->client = null;
     }
 }

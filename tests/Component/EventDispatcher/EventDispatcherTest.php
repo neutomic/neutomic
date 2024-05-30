@@ -23,6 +23,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use Psl;
 use Psl\Async;
+use Psl\DateTime\Duration;
 
 final class EventDispatcherTest extends TestCase
 {
@@ -128,7 +129,7 @@ final class EventDispatcherTest extends TestCase
                 $event->orderId++;
                 $ref->value .= '1';
 
-                Async\sleep(0.02);
+                Async\sleep(Duration::milliseconds(20));
 
                 return $event;
             });
@@ -142,7 +143,7 @@ final class EventDispatcherTest extends TestCase
                 $event->orderId++;
                 $ref->value .= '2';
 
-                Async\sleep(0.02);
+                Async\sleep(Duration::milliseconds(20));
 
                 return $event;
             });
@@ -153,11 +154,12 @@ final class EventDispatcherTest extends TestCase
 
         $dispatcher = new EventDispatcher($provider);
 
-        [, [$one, $two]] = Amp\Future\awaitAll([
+        [$errors, [$one, $two]] = Amp\Future\awaitAll([
             Amp\async(static fn () =>  $dispatcher->dispatch($event)),
             Amp\async(static fn () =>  $dispatcher->dispatch($event)),
         ]);
 
+        static::assertSame([], $errors);
         static::assertSame($one, $event);
         static::assertSame($two, $event);
         static::assertSame('1212', $ref->value);

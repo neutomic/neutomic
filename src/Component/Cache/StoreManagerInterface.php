@@ -44,4 +44,13 @@ interface StoreManagerInterface
      * @return StoreInterface The store associated with the given identifier.
      */
     public function getStore(string $identifier): StoreInterface;
+
+    /**
+     * Retrieve the list of available stores.
+     *
+     * @throws Exception\RuntimeException If failed to load the list of available stores.
+     *
+     * @return list<StoreInterface> The list of available stores.
+     */
+    public function getAvailableStores(): array;
 }

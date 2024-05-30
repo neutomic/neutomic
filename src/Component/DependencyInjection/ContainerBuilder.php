@@ -110,12 +110,20 @@ final class ContainerBuilder implements ContainerBuilderInterface
      * Create a new container builder.
      *
      * @param Project $project The project instance.
-     * @param ConfigurationContainerInterface|null $configuration The configuration container.
+     * @param null|array<array-key, mixed>|ConfigurationContainerInterface $configuration The configuration container.
      *
      * @return static The created container builder.
      */
-    public static function create(Project $project, null|ConfigurationContainerInterface $configuration = null): static
+    public static function create(Project $project, null|array|ConfigurationContainerInterface $configuration = null): static
     {
+        if (null === $configuration) {
+            $configuration = new ConfigurationContainer([]);
+        }
+
+        if (!$configuration instanceof ConfigurationContainerInterface) {
+            $configuration = new ConfigurationContainer($configuration);
+        }
+
         return new self($project, $configuration);
     }
 
@@ -216,7 +224,17 @@ final class ContainerBuilder implements ContainerBuilderInterface
      */
     public function hasDefinition(string $id): bool
     {
-        return Iter\contains_key($this->definitions, $id);
+        foreach ($this->definitions as $definition) {
+            if ($definition->getId() === $id) {
+                return true;
+            }
+
+            if (Iter\contains($definition->getAliases(), $id)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

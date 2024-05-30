@@ -151,4 +151,12 @@ final class Store implements StoreInterface
 
         $this->driver->delete($key);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function close(): void
+    {
+        $this->driver->close();
+    }
 }

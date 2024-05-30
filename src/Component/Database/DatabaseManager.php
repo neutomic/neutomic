@@ -76,4 +76,23 @@ final class DatabaseManager implements DatabaseManagerInterface
             throw new RuntimeException('An error occurred while retrieving the database.', previous: $exception);
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAvailableDatabases(): array
+    {
+        $services = $this->locator->getAvailableServices();
+        $databases = [];
+
+        foreach ($services as $name) {
+            try {
+                $databases[] = $this->getDatabase($name);
+            } catch (DatabaseNotFoundException) {
+                // unreachable
+            }
+        }
+
+        return $databases;
+    }
 }

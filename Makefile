@@ -18,6 +18,9 @@ coding-standard-check:                                                          
 static-analysis:                                                                ## run static analysis checks
 	./vendor/bin/psalm -c config/psalm.xml
 
+uncached-static-analysis:                                                      ## run static analysis checks without cache
+	./vendor/bin/psalm -c config/psalm.xml --no-cache
+
 type-coverage:                                                                  ## send static analysis type coverage metrics to https://shepherd.dev/
 	./vendor/bin/psalm -c config/psalm.xml --shepherd --stats
 

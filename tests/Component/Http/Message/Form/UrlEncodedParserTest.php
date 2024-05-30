@@ -26,6 +26,7 @@ use Neu\Component\Http\Message\RequestBody;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psl;
+use Psl\DateTime\Duration;
 use Psl\Str;
 
 /**
@@ -484,7 +485,7 @@ class UrlEncodedParserTest extends TestCase
 
                 yield 'x';
 
-                Psl\Async\sleep(0.0001);
+                Psl\Async\sleep(Duration::milliseconds(1));
             }
         })()));
 

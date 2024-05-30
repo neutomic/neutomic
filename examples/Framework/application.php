@@ -21,12 +21,14 @@ use Neu\Component\Http\Message\Method;
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\Response;
 use Neu\Component\Http\Message\ResponseInterface;
+use Neu\Component\Http\Message\StatusCode;
 use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\ServerSentEvent;
-use Psl\DateTime;
 use Psl\Async;
+
+use Psl\DateTime\Duration;
 
 use function Neu\Framework\entrypoint;
 
@@ -37,7 +39,7 @@ final readonly class IndexHandler implements HandlerInterface
 {
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
-        return Response\redirect('/index.html');
+        return Response\redirect('/index.html', StatusCode::TemporaryRedirect);
     }
 }
 
@@ -59,7 +61,7 @@ final readonly class ServerSentEventsHandler implements HandlerInterface
                     data: 'Hello, World!',
                 ));
 
-                Async\sleep(DateTime\Duration::seconds(1));
+                Async\sleep(Duration::seconds(1));
             }
         })->ignore();
 
@@ -73,6 +75,15 @@ entrypoint(static function (Project $project): ContainerBuilderInterface {
     $builder = ContainerBuilder::create($project);
 
     $builder->addConfiguration([
+        'framework' => [
+            'middleware' => [
+                'static-content' => [
+                    'roots' => [
+                        '/' => __DIR__ . '/public'
+                    ]
+                ],
+            ]
+        ],
         'monolog' => [
             'default' => 'main',
             'channels' => [
@@ -85,7 +96,7 @@ entrypoint(static function (Project $project): ContainerBuilderInterface {
             'handlers' => [
                 'stderr' => [
                     'type' => 'stderr',
-                    'level' => $project->mode->isProduction() ? 'warning' : 'debug',
+                    'level' => $project->mode->isProduction() ? 'notice' : 'debug',
                     'formatter' => $project->mode->isProduction() ? 'monolog.formatter.line' : 'monolog.formatter.console',
                 ],
             ],
@@ -94,30 +105,12 @@ entrypoint(static function (Project $project): ContainerBuilderInterface {
             'server' => [
                 'sockets' => [['host' => '127.0.0.1', 'port' => 1337]]
             ],
-            'runtime' => [
-                'middleware' => [
-                    'x-powered-by' => null,
-                    'access-log' => null,
-                    'router' => null,
-                    'session' => null,
-                    'compression' => null,
-                    'static-content' => [
-                        'roots' => [
-                            '/' => __DIR__ . '/public'
-                        ]
-                    ],
-                ]
-            ]
         ]
     ]);
 
     $builder->addExtensions([
         new Neu\Bridge\Monolog\DependencyInjection\MonologExtension(),
-        new Neu\Component\Advisory\DependencyInjection\AdvisoryExtension(),
-        new Neu\Component\Console\DependencyInjection\ConsoleExtension(),
-        new Neu\Component\EventDispatcher\DependencyInjection\EventDispatcherExtension(),
-        new Neu\Component\Cache\DependencyInjection\CacheExtension(),
-        new Neu\Component\Http\DependencyInjection\HttpExtension(),
+        new Neu\Framework\DependencyInjection\FrameworkExtension(),
     ]);
 
     return $builder;

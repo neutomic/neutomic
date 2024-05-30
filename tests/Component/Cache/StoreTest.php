@@ -18,6 +18,7 @@ use Neu\Component\Cache\Exception\UnavailableItemException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psl;
+use Psl\DateTime\Duration;
 
 final class StoreTest extends TestCase
 {
@@ -35,7 +36,7 @@ final class StoreTest extends TestCase
     {
         $ref = new Psl\Ref(false);
         $computer = static function () use ($ref): string {
-            Psl\Async\sleep(0.02);
+            Psl\Async\sleep(Duration::milliseconds(20));
             $ref->value = true;
 
             return 'azjezz';
@@ -95,7 +96,7 @@ final class StoreTest extends TestCase
         $ref = new Psl\Ref(false);
         $computer = static function () use ($ref): string {
             $ref->value = true;
-            Psl\Async\sleep(0.02);
+            Psl\Async\sleep(Duration::milliseconds(20));
 
             return 'azjezz';
         };
