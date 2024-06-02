@@ -13,14 +13,17 @@ declare(strict_types=1);
 
 namespace Neu\Component\Cache\DependencyInjection\Factory\Driver;
 
+use Amp\Cluster\Cluster;
+use Neu\Component\Cache\Driver\IPCDriver;
 use Neu\Component\Cache\Driver\LocalDriver;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * A factory for creating a {@see LocalDriver} instance.
  *
- * @implements FactoryInterface<LocalDriver>
+ * @implements FactoryInterface<LocalDriver|IPCDriver>
  */
 final readonly class LocalDriverFactory implements FactoryInterface
 {
@@ -46,9 +49,17 @@ final readonly class LocalDriverFactory implements FactoryInterface
 
     /**
      * @inheritDoc
+     * @throws \Psl\Exception\InvariantViolationException
      */
-    public function __invoke(ContainerInterface $container): LocalDriver
+    public function __invoke(ContainerInterface $container): LocalDriver|IPCDriver
     {
-        return new LocalDriver($this->pruneInterval, $this->size);
+        $localDriver = new LocalDriver($this->pruneInterval, $this->size);
+
+        if (Cluster::isWorker()) {
+            $logger = $container->getTyped(LoggerInterface::class, LoggerInterface::class);
+            return new IPCDriver($localDriver, $logger);
+        }
+
+        return $localDriver;
     }
 }

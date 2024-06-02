@@ -1,0 +1,11 @@
+###
+GET http://localhost:2000/cache/foo
+
+###
+POST http://localhost:2000/cache/foo
+Content-Type: application/json
+
+"asd"
+
+###
+DELETE http://localhost:2000/cache/foo

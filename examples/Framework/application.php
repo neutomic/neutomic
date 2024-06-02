@@ -43,6 +43,20 @@ final readonly class IndexHandler implements HandlerInterface
     }
 }
 
+#[Route(name: 'counter', pattern: '/counter', methods: [Method::Get])]
+final readonly class CounterHandler implements HandlerInterface
+{
+    public function handle(Context $context, RequestInterface $request): ResponseInterface
+    {
+        $visits = $request->getSession()->update(
+            'visits',
+            static fn (null|int $count): int => ($count ?? 0) + 1
+        );
+
+        return Response\text(sprintf('Visits: %d', $visits));
+    }
+}
+
 #[Route(name: 'server-sent-events', pattern: '/sse', methods: [Method::Get])]
 final readonly class ServerSentEventsHandler implements HandlerInterface
 {
@@ -103,9 +117,17 @@ entrypoint(static function (Project $project): ContainerBuilderInterface {
         ],
         'http' => [
             'server' => [
-                'sockets' => [['host' => '127.0.0.1', 'port' => 1337]]
+                'sockets' => [
+                    [
+                        'host' => '127.0.0.1',
+                        'port' => 2000,
+                        'bind' => [
+                            'reuse-port' => false,
+                        ],
+                    ],
+                ],
             ],
-        ]
+        ],
     ]);
 
     $builder->addExtensions([

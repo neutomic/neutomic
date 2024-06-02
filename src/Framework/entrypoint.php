@@ -90,6 +90,9 @@ function entrypoint(Closure $closure): void
             Env\set_var('AMP_LOG_COLOR', Terminal::hasColorSupport() ? '1' : '0');
 
             // we are in the main process, run the application.
+            /**
+             * @var ApplicationInterface $application
+             */
             $application = $container->getTyped(ApplicationInterface::class, ApplicationInterface::class);
             $application->run();
         }
