@@ -16,7 +16,6 @@ namespace Neu\Examples\Framework;
 use Neu;
 use Neu\Component\Broadcast\HubInterface;
 use Neu\Component\DependencyInjection\ContainerBuilder;
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
 use Neu\Component\DependencyInjection\Project;
 use Neu\Component\Http\Message\Form\ParseOptions;
 use Neu\Component\Http\Message\Form\ParserInterface;
@@ -28,9 +27,10 @@ use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\ServerSentEvent;
+use Neu\Framework\EngineInterface;
 use Revolt\EventLoop;
-
-use function Neu\Framework\entrypoint;
+use Psl\Env;
+use Psl\SecureRandom;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
@@ -104,23 +104,54 @@ final readonly class SubHandler implements HandlerInterface
     }
 }
 
-entrypoint(static function (Project $project): ContainerBuilderInterface {
-    $project = $project->withConfig(null);
+(static function (): void {
+    // Retrieve the project secret.
+    $secret = Env\get_var('PROJECT_SECRET');
+    if (null === $secret) {
+        // Generate a new secret.
+        $secret = SecureRandom\string(32);
+        // Store the secret in the environment.
+        Env\set_var('PROJECT_SECRET', $secret);
+    }
 
+    // Create a project instance.
+    $project = Project::create(secret: $secret, directory: __DIR__, entrypoint: __FILE__);
+
+    // Create a container builder.
     $builder = ContainerBuilder::create($project);
+
+    // Add configuration to the container builder.
     $builder->addConfiguration([
+        'framework' => [
+            'middleware' => [
+                'static-content' => false,
+                'session' => false,
+                'compression' => false,
+            ]
+        ],
         'http' => [
             'server' => [
-                'sockets' => [['host' => '127.0.0.1', 'port' => 1337]]
+                'sockets' => [[
+                    'host' => '127.0.0.1',
+                    'port' => 1337,
+                ]]
             ],
-        ],
+        ]
     ]);
 
+    // Add extensions to the container.
     $builder->addExtensions([
         new Neu\Bridge\Monolog\DependencyInjection\MonologExtension(),
         new Neu\Framework\DependencyInjection\FrameworkExtension(),
         new Neu\Component\Broadcast\DependencyInjection\BroadcastExtension(),
     ]);
 
-    return $builder;
-});
+    // Build the container.
+    $container = $builder->build();
+
+    // Retrieve the engine from the container.
+    $engine = $container->getTyped(EngineInterface::class, EngineInterface::class);
+
+    // Run the engine.
+    $engine->run();
+})();

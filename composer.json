@@ -59,8 +59,7 @@
             "src/Component/Http/Message/Response/xml.php",
             "src/Component/Http/Message/Response/text.php",
             "src/Component/Http/Message/Response/json.php",
-            "src/Component/Http/Message/Response/redirect.php",
-            "src/Framework/entrypoint.php"
+            "src/Component/Http/Message/Response/redirect.php"
         ]
     },
     "autoload-dev": {

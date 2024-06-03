@@ -15,7 +15,6 @@ namespace Neu\Framework\DependencyInjection\Factory\Middleware;
 
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
-use Neu\Component\Http\Session\Initializer\InitializerInterface;
 use Neu\Component\Http\Session\Persistence\PersistenceInterface;
 use Neu\Framework\Middleware\SessionMiddleware;
 
@@ -29,11 +28,6 @@ final readonly class SessionMiddlewareFactory implements FactoryInterface
     /**
      * @var non-empty-string
      */
-    private string $initializer;
-
-    /**
-     * @var non-empty-string
-     */
     private string $persistence;
 
     /**
@@ -42,13 +36,11 @@ final readonly class SessionMiddlewareFactory implements FactoryInterface
     private int $priority;
 
     /**
-     * @param non-empty-string|null $initializer Session initializer service identifier.
      * @param non-empty-string|null $persistence Session persistence service identifier.
      * @param int|null $priority Middleware priority.
      */
-    public function __construct(null|string $initializer = null, null|string $persistence = null, null|int $priority = null)
+    public function __construct(null|string $persistence = null, null|int $priority = null)
     {
-        $this->initializer = $initializer ?? InitializerInterface::class;
         $this->persistence = $persistence ?? PersistenceInterface::class;
         $this->priority = $priority ?? SessionMiddleware::PRIORITY;
     }
@@ -59,7 +51,6 @@ final readonly class SessionMiddlewareFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container): SessionMiddleware
     {
         return new SessionMiddleware(
-            $container->getTyped($this->initializer, InitializerInterface::class),
             $container->getTyped($this->persistence, PersistenceInterface::class),
             $this->priority,
         );

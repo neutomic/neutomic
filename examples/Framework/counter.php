@@ -23,6 +23,7 @@ use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
+use Neu\Component\Http\Session\Configuration\CacheLimiter;
 use Neu\Framework\EngineInterface;
 use Psl\SecureRandom;
 use Psl\Env;
@@ -34,7 +35,12 @@ final readonly class IndexHandler implements HandlerInterface
 {
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
-        return Response\text('Hello, World!');
+        $session = $request->getSession();
+        $counter = (string) $session->update('counter', static function (null|int $value): int {
+            return null === $value ? 1 : $value + 1;
+        });
+
+        return Response\text('Hello, World! You have visited this page ' . $counter . ' times.');
     }
 }
 
@@ -58,10 +64,8 @@ final readonly class IndexHandler implements HandlerInterface
     $builder->addConfiguration([
         'framework' => [
             'middleware' => [
-                'access-log' => false,
                 'compression' => false,
                 'static-content' => false,
-                'session' => false,
             ]
         ],
         'http' => [
@@ -71,6 +75,11 @@ final readonly class IndexHandler implements HandlerInterface
                     'port' => 1337,
                 ]]
             ],
+            'session' => [
+                'cache' => [
+                    'limiter' => CacheLimiter::Public,
+                ]
+            ]
         ]
     ]);
 

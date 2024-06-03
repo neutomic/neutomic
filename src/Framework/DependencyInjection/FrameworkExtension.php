@@ -23,6 +23,8 @@ use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\EventDispatcher\DependencyInjection\EventDispatcherExtension;
 use Neu\Component\Http\DependencyInjection\HttpExtension;
 use Neu\Framework\Command;
+use Neu\Framework\Engine;
+use Neu\Framework\EngineInterface;
 use Neu\Framework\Listener;
 use Neu\Framework\Middleware;
 use Psl\Type;
@@ -87,7 +89,6 @@ use Psr\Log\NullLogger;
  *         priority?: int,
  *     },
  *     session?: false|array{
- *         initializer?: non-empty-string,
  *         persistence?: non-empty-string,
  *         priority?: int,
  *     },
@@ -112,6 +113,14 @@ use Psr\Log\NullLogger;
  *     commands?: CommandsConfiguration,
  *     listeners?: ListenersConfiguration,
  *     middleware?: MiddlewareConfiguration,
+ *     engine?: array{
+ *          application?: non-empty-string,
+ *          cluster-worker?: non-empty-string,
+ *          router-registry?: non-empty-string,
+ *          middleware-queue?: non-empty-string,
+ *          event-dispatcher-registry?: non-empty-string,
+ *          console-registry?: non-empty-string,
+ *     }
  * }
  */
 final readonly class FrameworkExtension implements CompositeExtensionInterface
@@ -234,7 +243,6 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
             $container->addDefinition(Definition::ofType(
                 Middleware\SessionMiddleware::class,
                 new Factory\Middleware\SessionMiddlewareFactory(
-                    initializer: $sessionMiddlewareConfiguration['initializer'] ?? null,
                     persistence: $sessionMiddlewareConfiguration['persistence'] ?? null,
                     priority: $sessionMiddlewareConfiguration['priority'] ?? null,
                 ),
@@ -278,6 +286,19 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
 
             $container->addDefinition($definition);
         }
+
+        $definition = Definition::ofType(Engine::class, new Factory\EngineFactory(
+            application: $configuration['engine']['application'] ?? null,
+            clusterWorker: $configuration['engine']['cluster-worker'] ?? null,
+            routerRegistry: $configuration['engine']['router-registry'] ?? null,
+            middlewareQueue: $configuration['engine']['middleware-queue'] ?? null,
+            eventDispatcherRegistry: $configuration['engine']['event-dispatcher-registry'] ?? null,
+            consoleRegistry: $configuration['engine']['console-registry'] ?? null,
+        ));
+
+        $definition->addAlias(EngineInterface::class);
+
+        $container->addDefinition($definition);
     }
 
     /**
@@ -356,7 +377,6 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
                     'priority' => Type\optional(Type\int()),
                 ]))),
                 'session' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
-                    'initializer' => Type\optional(Type\non_empty_string()),
                     'persistence' => Type\optional(Type\non_empty_string()),
                     'priority' => Type\optional(Type\int()),
                 ]))),
@@ -407,6 +427,14 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
                     'logger' => Type\optional(Type\non_empty_string()),
                     'priority' => Type\optional(Type\int()),
                 ]))),
+            ])),
+            'engine' => Type\optional(Type\shape([
+                'application' => Type\optional(Type\non_empty_string()),
+                'cluster-worker' => Type\optional(Type\non_empty_string()),
+                'router-registry' => Type\optional(Type\non_empty_string()),
+                'middleware-queue' => Type\optional(Type\non_empty_string()),
+                'event-dispatcher-registry' => Type\optional(Type\non_empty_string()),
+                'console-registry' => Type\optional(Type\non_empty_string()),
             ])),
         ]);
     }
