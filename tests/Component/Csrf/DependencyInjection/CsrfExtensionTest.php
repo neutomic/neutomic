@@ -28,12 +28,13 @@ use Neu\Component\Http\Message\Method;
 use Neu\Component\Http\Message\Request;
 use Neu\Component\Http\Session\Session;
 use PHPUnit\Framework\TestCase;
+use Psl\SecureRandom;
 
 final class CsrfExtensionTest extends TestCase
 {
     public function testRegister(): void
     {
-        $project = Project::create(__DIR__, __FILE__);
+        $project = Project::create(SecureRandom\string(32), __DIR__, __FILE__);
         $builder = new ContainerBuilder($project);
 
         $extension = new CsrfExtension();
@@ -50,7 +51,7 @@ final class CsrfExtensionTest extends TestCase
 
     public function testConfigurations(): void
     {
-        $project = Project::create(__DIR__, __FILE__);
+        $project = Project::create(SecureRandom\string(32), __DIR__, __FILE__);
         $builder = new ContainerBuilder($project);
         $builder->addConfiguration([
             'csrf' => [
@@ -96,7 +97,7 @@ final class CsrfExtensionTest extends TestCase
 
     public function testInvalidStoragePrefixConfiguration(): void
     {
-        $project = Project::create(__DIR__, __FILE__);
+        $project = Project::create(SecureRandom\string(32), __DIR__, __FILE__);
         $builder = new ContainerBuilder($project);
         $builder->addConfiguration([
             'csrf' => [
@@ -118,7 +119,7 @@ final class CsrfExtensionTest extends TestCase
 
     public function testInvalidManagerConfiguration(): void
     {
-        $project = Project::create(__DIR__, __FILE__);
+        $project = Project::create(SecureRandom\string(32), __DIR__, __FILE__);
         $builder = new ContainerBuilder($project);
         $builder->addConfiguration([
             'csrf' => [
