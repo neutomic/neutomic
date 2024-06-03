@@ -11,21 +11,35 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Http\Session\Storage;
+namespace Neu\Component\Http\Session\Handler;
 
 use Neu\Component\Cache\Exception\ExceptionInterface as CacheException;
-use Psl\SecureRandom\Exception\ExceptionInterface as SecureRandomException;
 use Neu\Component\Cache\Exception\UnavailableItemException;
 use Neu\Component\Cache\StoreInterface;
 use Neu\Component\Http\Session\Exception\RuntimeException;
 use Neu\Component\Http\Session\Session;
 use Neu\Component\Http\Session\SessionInterface;
+use Psl\SecureRandom\Exception\ExceptionInterface as SecureRandomException;
 use Psl\SecureRandom;
 
-final readonly class Storage implements StorageInterface
+/**
+ * A {@see HandlerInterface} implementation that stores the session data in a cache store.
+ *
+ * @see HandlerInterface
+ * @see StoreInterface
+ */
+final readonly class CacheHandler implements HandlerInterface
 {
+    /**
+     * The cache store.
+     */
     private StoreInterface $store;
 
+    /**
+     * Creates a new {@see CacheHandlerFactory} instance.
+     *
+     * @param StoreInterface $store The cache store.
+     */
     public function __construct(StoreInterface $store)
     {
         $this->store = $store;
@@ -34,11 +48,11 @@ final readonly class Storage implements StorageInterface
     /**
      * @inheritDoc
      */
-    public function write(SessionInterface $session, null|int $ttl = null): string
+    public function save(SessionInterface $session, null|int $ttl = null): string
     {
         try {
             $id = $session->getId();
-            if (null === $id || $session->isRegenerated() || $session->hasChanges()) {
+            if (null === $id || $session->hasChanges()) {
                 $id = $this->generateIdentifier();
             }
 
@@ -53,39 +67,27 @@ final readonly class Storage implements StorageInterface
     /**
      * @inheritDoc
      */
-    public function read(string $id): SessionInterface
+    public function load(string $identifier): SessionInterface
     {
         try {
             /** @var array<non-empty-string, mixed> $data */
-            $data = $this->store->compute($id, static fn (): array => []);
+            $data = $this->store->compute($identifier, static fn (): array => []);
         } catch (CacheException $e) {
             throw new RuntimeException('An error occurred while reading the session.', previous: $e);
         }
 
-        return new Session($data, $id);
+        return new Session($data, $identifier);
     }
 
     /**
      * @inheritDoc
      */
-    public function flush(string $id): void
+    public function flush(string $identifier): void
     {
         try {
-            $this->store->delete($id);
+            $this->store->delete($identifier);
         } catch (CacheException $e) {
             throw new RuntimeException('An error occurred while flushing the session.', previous: $e);
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function close(): void
-    {
-        try {
-            $this->store->close();
-        } catch (CacheException $e) {
-            throw new RuntimeException('An error occurred while closing the storage.', previous: $e);
         }
     }
 

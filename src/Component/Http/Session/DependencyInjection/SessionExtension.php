@@ -22,20 +22,26 @@ use Neu\Component\Http\Session\Configuration\CacheLimiter;
 use Neu\Component\Http\Session\Configuration\CookieConfiguration;
 use Neu\Component\Http\Session\DependencyInjection\Factory\Configuration\CacheConfigurationFactory;
 use Neu\Component\Http\Session\DependencyInjection\Factory\Configuration\CookieConfigurationFactory;
-use Neu\Component\Http\Session\DependencyInjection\Factory\Initializer\InitializerFactory;
+use Neu\Component\Http\Session\DependencyInjection\Factory\Handler\EncryptedHandlerFactory;
 use Neu\Component\Http\Session\DependencyInjection\Factory\Persistence\PersistenceFactory;
-use Neu\Component\Http\Session\DependencyInjection\Factory\Storage\StorageFactory;
-use Neu\Component\Http\Session\Initializer\Initializer;
-use Neu\Component\Http\Session\Initializer\InitializerInterface;
-use Neu\Component\Http\Session\Persistence\Persistence;
+use Neu\Component\Http\Session\DependencyInjection\Factory\Handler\CacheHandlerFactory;
+use Neu\Component\Http\Session\Handler\CacheHandler;
+use Neu\Component\Http\Session\Handler\EncryptedHandler;
 use Neu\Component\Http\Session\Persistence\PersistenceInterface;
-use Neu\Component\Http\Session\Storage\Storage;
-use Neu\Component\Http\Session\Storage\StorageInterface;
+use Neu\Component\Http\Session\Handler\HandlerInterface;
 use Psl\Type;
 
 /**
  * A container extension for the session component.
  *
+ * @psalm-type CacheHandlerConfiguration = array{
+ *     type: 'cache',
+ *     store?: non-empty-string,
+ * }
+ * @psalm-type EncryptedHandlerConfiguration = array{
+ *     type: 'encrypted',
+ *     secret?: non-empty-string,
+ * }
  * @psalm-type Configuration = array{
  *     cookie?: array{
  *         name?: non-empty-string,
@@ -50,15 +56,9 @@ use Psl\Type;
  *         expires?: int,
  *         limiter?: CacheLimiter|string,
  *     },
- *     storage?: array{
- *         store?: non-empty-string,
- *     },
- *     initializer?: array{
- *         storage?: non-empty-string,
- *         cookie-configuration?: non-empty-string,
- *     },
+ *     handler?: CacheHandlerConfiguration|EncryptedHandlerConfiguration,
  *     persistence?: array{
- *         storage?: non-empty-string,
+ *         handler?: non-empty-string,
  *         cookie-configuration?: non-empty-string,
  *         cache-configuration?: non-empty-string,
  *     }
@@ -89,24 +89,52 @@ final readonly class SessionExtension implements ExtensionInterface
             $configuration['cookie']['same-site'] ?? null,
         )));
 
-        $container->addDefinition(Definition::ofType(Initializer::class, new InitializerFactory(
-            $configuration['initializer']['storage'] ?? null,
-            $configuration['initializer']['cookie-configuration'] ?? null,
-        )));
+        $handler = $configuration['handler'] ?? ['type' => 'encrypted', 'secret' => null];
+        if ('cache' === $handler['type']) {
+            /** @var CacheHandlerConfiguration $handler */
+            $this->registerCacheHandler($container, $handler);
+        } else {
+            /** @var EncryptedHandlerConfiguration $handler */
+            $this->registerEncryptedHandler($container, $handler);
+        }
 
-        $container->addDefinition(Definition::ofType(Persistence::class, new PersistenceFactory(
-            $configuration['persistence']['storage'] ?? null,
+        $container->addDefinition(Definition::ofType(PersistenceInterface::class, new PersistenceFactory(
+            $configuration['persistence']['handler'] ?? null,
             $configuration['persistence']['cookie-configuration'] ?? null,
             $configuration['persistence']['cache-configuration'] ?? null,
         )));
+    }
 
-        $container->addDefinition(Definition::ofType(Storage::class, new StorageFactory(
-            $configuration['storage']['store'] ?? null,
-        )));
+    /**
+     * Register the cache handler.
+     *
+     * @param ContainerBuilderInterface $container
+     * @param CacheHandlerConfiguration $configuration
+     */
+    private function registerCacheHandler(ContainerBuilderInterface $container, array $configuration): void
+    {
+        $definition = Definition::ofType(CacheHandler::class, new CacheHandlerFactory(
+            $configuration['store'] ?? null,
+        ));
+        $definition->addAlias(HandlerInterface::class);
 
-        $container->getDefinition(Initializer::class)->addAlias(InitializerInterface::class);
-        $container->getDefinition(Persistence::class)->addAlias(PersistenceInterface::class);
-        $container->getDefinition(Storage::class)->addAlias(StorageInterface::class);
+        $container->addDefinition($definition);
+    }
+
+    /**
+     * Register the encrypted handler.
+     *
+     * @param ContainerBuilderInterface $container
+     * @param EncryptedHandlerConfiguration $configuration
+     */
+    private function registerEncryptedHandler(ContainerBuilderInterface $container, array $configuration): void
+    {
+        $definition = Definition::ofType(EncryptedHandler::class, new EncryptedHandlerFactory(
+            $configuration['secret'] ?? null,
+        ));
+        $definition->addAlias(HandlerInterface::class);
+
+        $container->addDefinition($definition);
     }
 
     /**
@@ -139,15 +167,18 @@ final readonly class SessionExtension implements ExtensionInterface
                     )
                 ),
             ])),
-            'storage' => Type\optional(Type\shape([
-                'store' => Type\optional(Type\non_empty_string()),
-            ])),
-            'initializer' => Type\optional(Type\shape([
-                'storage' => Type\optional(Type\non_empty_string()),
-                'cookie-configuration' => Type\optional(Type\non_empty_string()),
-            ])),
+            'handler' => Type\optional(Type\union(
+                Type\shape([
+                    'type' => Type\literal_scalar('cache'),
+                    'store' => Type\optional(Type\non_empty_string()),
+                ]),
+                Type\shape([
+                    'type' => Type\literal_scalar('encrypted'),
+                    'secret' => Type\optional(Type\non_empty_string()),
+                ]),
+            )),
             'persistence' => Type\optional(Type\shape([
-                'storage' => Type\optional(Type\non_empty_string()),
+                'handler' => Type\optional(Type\non_empty_string()),
                 'cookie-configuration' => Type\optional(Type\non_empty_string()),
                 'cache-configuration' => Type\optional(Type\non_empty_string()),
             ])),

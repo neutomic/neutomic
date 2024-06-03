@@ -13,25 +13,24 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Session\Persistence;
 
-use Amp\File;
 use Neu\Component\Http\Message\Cookie;
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\ResponseInterface;
+use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Session\Configuration\CacheConfiguration;
 use Neu\Component\Http\Session\Configuration\CacheLimiter;
 use Neu\Component\Http\Session\Configuration\CookieConfiguration;
+use Neu\Component\Http\Session\Exception\InvalidIdentifierException;
 use Neu\Component\Http\Session\Session;
-use Neu\Component\Http\Session\SessionInterface;
-use Neu\Component\Http\Session\Storage\StorageInterface;
-use Psl\Env;
-use Psl\Math;
+use Neu\Component\Http\Session\Handler\HandlerInterface;
 use Psl\Str;
+use Psl\Env;
+use Psl\DateTime;
 
-use function Amp\Http\formatDateHeader;
-use function time;
+use function Amp\File\getModificationTime;
 
 /**
- * Implements the {@see PersistenceInterface} and handles the persistence of session data.
+ * The session persistence mechanism.
  *
  * @psalm-suppress MissingThrowsDocblock
  */
@@ -48,34 +47,36 @@ final class Persistence implements PersistenceInterface
     private static null|string $lastModified = null;
 
     /**
-     * @var StorageInterface The session storage interface.
+     * The session handler.
+     *
+     * @var HandlerInterface
      */
-    private readonly StorageInterface $storage;
+    private HandlerInterface $handler;
 
     /**
      * The session cookie configuration.
      *
-     * @param CookieConfiguration $cookie
+     * @var CookieConfiguration
      */
-    private readonly CookieConfiguration $cookie;
+    protected readonly CookieConfiguration $cookie;
 
     /**
      * The session cache configuration.
      *
-     * @param CacheConfiguration $cache
+     * @var CacheConfiguration
      */
-    private readonly CacheConfiguration $cache;
+    protected readonly CacheConfiguration $cache;
 
     /**
-     * Creates a new {@see Persistence} instance.
+     * Create a new {@see Persistence} instance.
      *
-     * @param StorageInterface $storage The session storage.
+     * @param HandlerInterface $handler The session handler.
      * @param CookieConfiguration $cookie The session cookie configuration.
      * @param CacheConfiguration $cache The session cache configuration.
      */
-    public function __construct(StorageInterface $storage, CookieConfiguration $cookie, CacheConfiguration $cache)
+    public function __construct(HandlerInterface $handler, CookieConfiguration $cookie, CacheConfiguration $cache)
     {
-        $this->storage = $storage;
+        $this->handler = $handler;
         $this->cookie = $cookie;
         $this->cache = $cache;
     }
@@ -83,7 +84,29 @@ final class Persistence implements PersistenceInterface
     /**
      * @inheritDoc
      */
-    public function persist(RequestInterface $request, ResponseInterface $response): ResponseInterface
+    public function initialize(Context $context, RequestInterface $request): RequestInterface
+    {
+        $values = $request->getCookie($this->cookie->name);
+        if (null === $values) {
+            return $request->withSession(new Session([]));
+        }
+
+        /** @var non-empty-string $identifier */
+        $identifier = $values[0];
+
+        try {
+            $session = $this->handler->load($identifier);
+        } catch (InvalidIdentifierException) {
+            $session = new Session([]);
+        }
+
+        return $request->withSession($session);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function persist(Context $context, RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         // Check if session exists in the request
         if (!$request->hasSession()) {
@@ -92,55 +115,46 @@ final class Persistence implements PersistenceInterface
 
         /** @psalm-suppress MissingThrowsDocblock */
         $session = $request->getSession();
-        $id = $session->getId();
+        $identifier = $session->getId();
 
-        // If session ID is empty and session has no changes, return response
-        if (null === $id && (0 === count($session->all()) || !$session->hasChanges())) {
+        // If session identifier is null and session has no changes, return response
+        if (null === $identifier && (0 === count($session->all()) || !$session->hasChanges())) {
             return $response;
         }
 
         // Flush session data if session is flagged for flushing
         if ($session->isFlushed()) {
-            if ($id !== null) {
-                $this->storage->flush($id);
+            if ($identifier !== null) {
+                $this->handler->flush($identifier);
             }
 
             // Return response with expired cookie
-            return $response->withCookie($this->cookie->name, new Cookie('', expires: 0));
+            return $response->withCookie($this->cookie->name, $this->createExpiredCookie());
         }
 
         // Calculate expiration time for the cookie
         $expires = $this->cookie->getExpires($session);
 
         // Write session data to storage
-        $id = $this->storage->write($session, $expires);
+        $identifier = $this->handler->save($session, $expires);
 
         // Return response with updated cookie
         return $this->withCacheHeaders(
-            $response->withCookie($this->cookie->name, $this->createCookie($id, $expires))
+            $response->withCookie($this->cookie->name, $this->createCookie($identifier, $expires))
         );
     }
 
     /**
-     * Calculates the persistence duration for the session.
+     * Create the session cookie.
      *
-     * @param SessionInterface $session The session object.
+     * @param non-empty-string $identifier The session identifier.
+     * @param null|int $expires The expiration time for the cookie.
      *
-     * @return int The persistence duration in seconds.
+     * @return Cookie The session cookie.
      */
-    protected function getPersistenceDuration(SessionInterface $session): int
+    private function createCookie(string $identifier, null|int $expires): Cookie
     {
-        $duration = $this->cookie->lifetime ?? 0;
-        if ($session->has(Session::SESSION_AGE_KEY)) {
-            $duration = $session->age();
-        }
-
-        return Math\maxva($duration, 0);
-    }
-
-    private function createCookie(string $id, null|int $expires): Cookie
-    {
-        return (new Cookie(value: $id))
+        return (new Cookie(value: $identifier))
             ->withExpires(($expires !== null && $expires > 0) ? $expires : null)
             ->withDomain($this->cookie->domain)
             ->withPath($this->cookie->path)
@@ -149,6 +163,29 @@ final class Persistence implements PersistenceInterface
             ->withSameSite($this->cookie->sameSite);
     }
 
+    /**
+     * Create an expired cookie.
+     *
+     * @return Cookie The expired cookie.
+     */
+    private function createExpiredCookie(): Cookie
+    {
+        return (new Cookie(value: ''))
+            ->withExpires(0)
+            ->withDomain($this->cookie->domain)
+            ->withPath($this->cookie->path)
+            ->withHttpOnly($this->cookie->httpOnly)
+            ->withSecure($this->cookie->secure)
+            ->withSameSite($this->cookie->sameSite);
+    }
+
+    /**
+     * Add cache headers to the response.
+     *
+     * @param ResponseInterface $response The response to add cache headers to.
+     *
+     * @return ResponseInterface The response with cache headers.
+     */
     private function withCacheHeaders(ResponseInterface $response): ResponseInterface
     {
         $cacheLimiter = $this->cache->limiter;
@@ -164,6 +201,13 @@ final class Persistence implements PersistenceInterface
         return $response;
     }
 
+    /**
+     * Determine if the response already has cache headers.
+     *
+     * @param ResponseInterface $response
+     *
+     * @return bool True if the response already has cache headers, false otherwise.
+     */
     private function responseAlreadyHasCacheHeaders(ResponseInterface $response): bool
     {
         return (
@@ -188,7 +232,9 @@ final class Persistence implements PersistenceInterface
             ],
             CacheLimiter::Public => $this->withLastModifiedAndMaxAge([
                 'Expires' => [
-                    formatDateHeader(time() + (60 * $this->cache->expires)),
+                    DateTime\Timestamp::now()
+                        ->plus(DateTime\Duration::minutes($this->cache->expires))
+                        ->format('EEE, dd MMM yyyy HH:mm:ss \'GMT\''),
                 ],
                 'Cache-Control' => ['public'],
             ]),
@@ -221,7 +267,9 @@ final class Persistence implements PersistenceInterface
         }
 
         if (null === static::$lastModified) {
-            static::$lastModified = formatDateHeader(File\getModificationTime(static::$pathTranslated));
+            static::$lastModified = DateTime\Timestamp::fromParts(
+                seconds: getModificationTime(static::$pathTranslated),
+            )->format('EEE, dd MMM yyyy HH:mm:ss \'GMT\'');
         }
 
         $headers['Last-Modified'][] = static::$lastModified;

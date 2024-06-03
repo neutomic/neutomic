@@ -17,6 +17,7 @@ use Neu\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Psl\Env;
 use Psl\Filesystem;
 use Psl\Str;
+use SensitiveParameter;
 
 final readonly class Project
 {
@@ -35,6 +36,13 @@ final readonly class Project
      * The project debug mode.
      */
     public bool $debug;
+
+    /**
+     * The project secret.
+     *
+     * @var non-empty-string
+     */
+    public string $secret;
 
     /**
      * The project name.
@@ -76,16 +84,27 @@ final readonly class Project
      *
      * @param ProjectMode $mode The project mode.
      * @param bool $debug The project debug mode.
+     * @param non-empty-string $secret The project secret.
      * @param non-empty-string $name The project name.
      * @param non-empty-string $directory The project directory.
      * @param non-empty-string|null $source The project source.
      * @param non-empty-string|null $config The project configuration.
      * @param non-empty-string $entrypoint The project entry point.
      */
-    private function __construct(ProjectMode $mode, bool $debug, string $name, string $directory, null|string $source, null|string $config, string $entrypoint)
-    {
+    private function __construct(
+        ProjectMode $mode,
+        bool $debug,
+        #[SensitiveParameter]
+        string $secret,
+        string $name,
+        string $directory,
+        null|string $source,
+        null|string $config,
+        string $entrypoint,
+    ) {
         $this->mode = $mode;
         $this->debug = $debug;
+        $this->secret = $secret;
         $this->name = $name;
         $this->directory = $directory;
         $this->source = $source;
@@ -100,14 +119,22 @@ final readonly class Project
      *
      * For source and configuration, it will use the default values: `src` and `config`.
      *
+     * @param string $secret The project secret.
      * @param non-empty-string $directory The project directory.
      * @param non-empty-string $entrypoint The project entry point.
      *
      * @throws Exception\RuntimeException If the project directory does not exist.
-     * @throws Exception\InvalidArgumentException If the project mode set in the environment is invalid.
+     * @throws Exception\InvalidArgumentException If the project secret is not 32 characters long,
+     *                                            or if the project mode set in the environment is invalid.
+     *
+     * @psalm-assert non-empty-string $secret
      */
-    public static function create(string $directory, string $entrypoint): self
+    public static function create(#[SensitiveParameter] string $secret, string $directory, string $entrypoint): self
     {
+        if (Str\length($secret, encoding: Str\Encoding::Ascii8bit) !== 32) {
+            throw new InvalidArgumentException('The project secret must be 32 characters long.');
+        }
+
         $mode = self::getModeFromEnvironment();
         $debug = self::getDebugFromEnvironment();
         if (!Filesystem\is_directory($directory)) {
@@ -120,7 +147,8 @@ final readonly class Project
         $source = $directory . Filesystem\SEPARATOR . self::DEFAULT_SOURCE;
         $config = $directory . Filesystem\SEPARATOR . self::DEFAULT_CONFIG;
 
-        return new self($mode, $debug, $name, $directory, $source, $config, $entrypoint);
+        /** @var non-empty-string $secret */
+        return new self($mode, $debug, $secret, $name, $directory, $source, $config, $entrypoint);
     }
 
     /**
@@ -184,7 +212,7 @@ final readonly class Project
      */
     public function withMode(ProjectMode $mode): self
     {
-        return new self($mode, $this->debug, $this->name, $this->directory, $this->source, $this->config, $this->entrypoint);
+        return new self($mode, $this->debug, $this->secret, $this->name, $this->directory, $this->source, $this->config, $this->entrypoint);
     }
 
     /**
@@ -194,7 +222,23 @@ final readonly class Project
      */
     public function withDebug(bool $debug): self
     {
-        return new self($this->mode, $debug, $this->name, $this->directory, $this->source, $this->config, $this->entrypoint);
+        return new self($this->mode, $debug, $this->secret, $this->name, $this->directory, $this->source, $this->config, $this->entrypoint);
+    }
+
+    /**
+     * Create a new project instance with a different secret.
+     *
+     * @param non-empty-string $secret The project secret.
+     *
+     * @throws InvalidArgumentException If the project secret is not 32 characters long.
+     */
+    public function withSecret(#[SensitiveParameter] string $secret): self
+    {
+        if (Str\length($secret, encoding: Str\Encoding::Ascii8bit) !== 32) {
+            throw new InvalidArgumentException('The project secret must be 32 characters long.');
+        }
+
+        return new self($this->mode, $this->debug, $secret, $this->name, $this->directory, $this->source, $this->config, $this->entrypoint);
     }
 
     /**
@@ -204,7 +248,7 @@ final readonly class Project
      */
     public function withName(string $name): self
     {
-        return new self($this->mode, $this->debug, $name, $this->directory, $this->source, $this->config, $this->entrypoint);
+        return new self($this->mode, $this->debug, $this->secret, $name, $this->directory, $this->source, $this->config, $this->entrypoint);
     }
 
     /**
@@ -222,7 +266,7 @@ final readonly class Project
 
         $directory = Filesystem\canonicalize($directory) ?? $directory;
 
-        return new self($this->mode, $this->debug, $this->name, $directory, $this->source, $this->config, $this->entrypoint);
+        return new self($this->mode, $this->debug, $this->secret, $this->name, $directory, $this->source, $this->config, $this->entrypoint);
     }
 
     /**
@@ -242,7 +286,7 @@ final readonly class Project
             $source = Filesystem\canonicalize($source);
         }
 
-        return new self($this->mode, $this->debug, $this->name, $this->directory, $source, $this->config, $this->entrypoint);
+        return new self($this->mode, $this->debug, $this->secret, $this->name, $this->directory, $source, $this->config, $this->entrypoint);
     }
 
     /**
@@ -262,7 +306,7 @@ final readonly class Project
             $config = Filesystem\canonicalize($config);
         }
 
-        return new self($this->mode, $this->debug, $this->name, $this->directory, $this->source, $config, $this->entrypoint);
+        return new self($this->mode, $this->debug, $this->secret, $this->name, $this->directory, $this->source, $config, $this->entrypoint);
     }
 
     /**
@@ -272,7 +316,7 @@ final readonly class Project
      */
     public function withEntrypoint(string $entrypoint): self
     {
-        return new self($this->mode, $this->debug, $this->name, $this->directory, $this->source, $this->config, $entrypoint);
+        return new self($this->mode, $this->debug, $this->secret, $this->name, $this->directory, $this->source, $this->config, $entrypoint);
     }
 
     /**

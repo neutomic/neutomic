@@ -15,10 +15,22 @@ namespace Neu\Component\Http\Session\Persistence;
 
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\ResponseInterface;
+use Neu\Component\Http\Runtime\Context;
+use Neu\Component\Http\Session\Exception\InvalidArgumentException;
 use Neu\Component\Http\Session\Exception\RuntimeException;
 
 interface PersistenceInterface
 {
+    /**
+     * Initialize the give request with a session instance.
+     *
+     * The returned request must return true for {@see RequestInterface::hasSession()} call.
+     *
+     * @throws InvalidArgumentException If the request references an invalid session.
+     * @throws RuntimeException If an error occurs while initializing the request.
+     */
+    public function initialize(Context $context, RequestInterface $request): RequestInterface;
+
     /**
      * Persist the session data from the give request.
      *
@@ -27,5 +39,5 @@ interface PersistenceInterface
      *
      * @throws RuntimeException If an error occurs while persisting the session data.
      */
-    public function persist(RequestInterface $request, ResponseInterface $response): ResponseInterface;
+    public function persist(Context $context, RequestInterface $request, ResponseInterface $response): ResponseInterface;
 }

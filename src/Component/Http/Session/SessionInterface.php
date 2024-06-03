@@ -132,21 +132,6 @@ interface SessionInterface
     public function isFlushed(): bool;
 
     /**
-     * Regenerate the session.
-     *
-     * This can be done to prevent session fixation. When executed, it SHOULD
-     * return a new instance; that instance should always return true for
-     * isRegenerated().
-     */
-    public function regenerate(): static;
-
-    /**
-     * Method to determine if the session was regenerated; should return
-     * true if the instance was produced via regenerate().
-     */
-    public function isRegenerated(): bool;
-
-    /**
      * Sets the expiration time for the session.
      *
      * The session will expire after that many seconds
@@ -176,6 +161,7 @@ interface SessionInterface
      * - 0, to indicate the cookie should be treated as a
      *   session cookie, and expire when the window is closed. This should be
      *   the default behavior.
+     *
      * - If {@see expireAfter()} was provided during session creation or anytime later,
      *   the persistence engine should pull the TTL value from the session itself
      *   and return it here.

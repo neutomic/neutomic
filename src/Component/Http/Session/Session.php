@@ -226,19 +226,7 @@ final class Session implements SessionInterface
      */
     public function hasChanges(): bool
     {
-        if ($this->isRegenerated()) {
-            return true;
-        }
-
         return $this->data !== $this->originalData;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isRegenerated(): bool
-    {
-        return $this->isRegenerated;
     }
 
     /**
@@ -247,17 +235,6 @@ final class Session implements SessionInterface
     public function isFlushed(): bool
     {
         return $this->flushed;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function regenerate(): static
-    {
-        $session = clone $this;
-        $session->isRegenerated = true;
-
-        return $session;
     }
 
     /**

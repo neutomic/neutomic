@@ -11,19 +11,19 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Http\Session\DependencyInjection\Factory\Storage;
+namespace Neu\Component\Http\Session\DependencyInjection\Factory\Handler;
 
 use Neu\Component\Cache\StoreInterface;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
-use Neu\Component\Http\Session\Storage\Storage;
+use Neu\Component\Http\Session\Handler\CacheHandler;
 
 /**
  * A factory to create a storage instance.
  *
- * @implements FactoryInterface<Storage>
+ * @implements FactoryInterface<CacheHandler>
  */
-final readonly class StorageFactory implements FactoryInterface
+final readonly class CacheHandlerFactory implements FactoryInterface
 {
     /**
      * @var non-empty-string
@@ -38,9 +38,9 @@ final readonly class StorageFactory implements FactoryInterface
         $this->store = $store ?? StoreInterface::class;
     }
 
-    public function __invoke(ContainerInterface $container): Storage
+    public function __invoke(ContainerInterface $container): CacheHandler
     {
-        return new Storage(
+        return new CacheHandler(
             $container->getTyped($this->store, StoreInterface::class)
         );
     }
