@@ -74,7 +74,7 @@ final class Cluster implements ClusterInterface
         $this->entrypoint = $entrypoint;
         $this->dispatcher = $dispatcher;
         $this->logger = $logger;
-        $this->workerCount = $workerCount ?? (countCpuCores() * 2);
+        $this->workerCount = $workerCount ?? countCpuCores();
     }
 
     /**
