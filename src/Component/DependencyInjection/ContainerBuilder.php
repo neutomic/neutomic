@@ -111,20 +111,22 @@ final class ContainerBuilder implements ContainerBuilderInterface
      *
      * @param Project $project The project instance.
      * @param null|array<array-key, mixed>|ConfigurationContainerInterface $configuration The configuration container.
+     * @param list<ExtensionInterface> $extensions The extensions to apply to the container.
      *
      * @return static The created container builder.
      */
-    public static function create(Project $project, null|array|ConfigurationContainerInterface $configuration = null): static
+    public static function create(Project $project, null|array|ConfigurationContainerInterface $configuration = null, array $extensions = []): static
     {
         if (null === $configuration) {
             $configuration = new ConfigurationContainer([]);
-        }
-
-        if (!$configuration instanceof ConfigurationContainerInterface) {
+        } else if (!$configuration instanceof ConfigurationContainerInterface) {
             $configuration = new ConfigurationContainer($configuration);
         }
 
-        return new self($project, $configuration);
+        $builder = new self($project, $configuration);
+        $builder->addExtensions($extensions);
+
+        return $builder;
     }
 
     /**
