@@ -17,8 +17,6 @@ use Closure;
 
 /**
  * An interface that describes a store.
- *
- * All implementations of this interface must be atomic.
  */
 interface StoreInterface
 {
@@ -28,6 +26,9 @@ interface StoreInterface
      * If the specified key doesn't exist, an exception will be thrown.
      *
      * Implementations must ensure that all pending operations related to the given key are completed before returning the value.
+     *
+     * @note that this guarantee is only provided within the current thread. If a different thread attempts to perform
+     *      an operation on the same key concurrently, atomicity is not guaranteed.
      *
      * @param non-empty-string $key The unique cache key of the item to get.
      *
@@ -46,6 +47,9 @@ interface StoreInterface
      * which will be stored in cache, and returned as a result of this method.
      *
      * Implementations must ensure that all pending operations related to the given key are completed before computing the value.
+     *
+     * @note that this guarantee is only provided within the current thread. If a different thread attempts to perform
+     *      an operation on the same key concurrently, atomicity is not guaranteed.
      *
      * @template T
      *
@@ -72,6 +76,9 @@ interface StoreInterface
      *
      * Implementations must ensure that all pending operations related to the given key are completed before computing the value.
      *
+     * @note that this guarantee is only provided within the current thread. If a different thread attempts to perform
+     *      an operation on the same key concurrently, atomicity is not guaranteed.
+     *
      * @template T
      *
      * @param non-empty-string $key
@@ -92,6 +99,9 @@ interface StoreInterface
      * If the item doesn't exist, this method should do nothing.
      *
      * Implementations must ensure that all pending operations related to the given key are completed before deleting the item.
+     *
+     * @note that this guarantee is only provided within the current thread. If a different thread attempts to perform
+     *      an operation on the same key concurrently, atomicity is not guaranteed.
      *
      * @param non-empty-string $key The unique cache key of the item to delete.
      *
