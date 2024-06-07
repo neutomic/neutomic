@@ -293,4 +293,36 @@ final readonly class Project
             '%project.entrypoint%' => $this->entrypoint,
         ];
     }
+
+    /**
+     * Resolve a path relative to the project directory.
+     *
+     * @param non-empty-string $path The path to resolve.
+     *
+     * @return non-empty-string The resolved path.
+     */
+    public function resolve(string $path): string
+    {
+        // $path is absolute, return it as is
+        if (Str\Byte\starts_with($path, '/')) {
+            return $path;
+        }
+
+        $map = [
+            '%project.directory%' => $this->directory,
+            '%project.entrypoint%' => $this->entrypoint,
+        ];
+
+        $normalizedPath = Str\Byte\trim_left($path, '/');
+        $result = $this->directory . '/' . $normalizedPath;
+        foreach ($map as $prefix => $directory) {
+            if (Str\Byte\starts_with($normalizedPath, $prefix)) {
+                $result = $directory . '/' . Str\Byte\trim_left(Str\Byte\strip_prefix($normalizedPath, $prefix), '/');
+                break;
+            }
+        }
+
+        /** @var non-empty-string */
+        return Str\Byte\replace_every($result, $this->getPlaceholders());
+    }
 }

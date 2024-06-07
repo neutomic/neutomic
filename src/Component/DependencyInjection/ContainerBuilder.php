@@ -343,7 +343,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
         $configurations = $document->getAll();
 
         $placeholders = $project->getPlaceholders();
-        array_walk_recursive($configurations, function (mixed &$value) use($placeholders): void {
+        array_walk_recursive($configurations, static function (mixed &$value) use ($placeholders): void {
             if (!is_string($value) || '' === $value) {
                 return;
             }
