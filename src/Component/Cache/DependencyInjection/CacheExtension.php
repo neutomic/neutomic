@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Neu\Component\Cache\DependencyInjection;
 
-use Amp\File\Filesystem;
 use Amp\Redis\RedisConfig;
 use Neu\Component\Cache\DependencyInjection\Factory\Driver\FilesystemDriverFactory;
 use Neu\Component\Cache\DependencyInjection\Factory\Driver\LocalDriverFactory;
@@ -27,10 +26,11 @@ use Neu\Component\Cache\Driver\RedisDriver;
 use Neu\Component\Cache\StoreInterface;
 use Neu\Component\Cache\StoreManager;
 use Neu\Component\Cache\StoreManagerInterface;
-use Neu\Component\Configuration\Exception\InvalidConfigurationException;
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
+use Neu\Component\DependencyInjection\Exception\InvalidConfigurationException;
 use Neu\Component\DependencyInjection\ExtensionInterface;
+use Neu\Component\DependencyInjection\RegistryInterface;
 use Psl\Class;
 use Psl\Type;
 
@@ -73,10 +73,9 @@ final class CacheExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    public function register(ContainerBuilderInterface $container): void
+    public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $configuration = $container
-            ->getConfiguration()
+        $configuration = $configurations
             ->getOfTypeOrDefault('cache', $this->getConfigurationType(), [])
         ;
 
@@ -87,23 +86,23 @@ final class CacheExtension implements ExtensionInterface
             $stores = ['default' => ['driver' => 'local']];
         }
 
-        $storeDefinitions = $this->registerStores($container, $stores);
+        $storeDefinitions = $this->registerStores($registry, $stores);
         $defaultStore = $configuration['default'] ?? array_key_first($storeDefinitions);
 
-        $this->setDefaultStore($container, $storeDefinitions, $defaultStore);
+        $this->setDefaultStore($registry, $storeDefinitions, $defaultStore);
 
-        $this->registerStoreManager($container, $defaultStore, $storeDefinitions);
+        $this->registerStoreManager($registry, $defaultStore, $storeDefinitions);
     }
 
     /**
      * Register cache stores.
      *
-     * @param ContainerBuilderInterface $container
+     * @param RegistryInterface $registry
      * @param non-empty-array<non-empty-string, DriverConfiguration> $stores
      *
      * @return non-empty-array<non-empty-string, non-empty-string> Map of store names to store service IDs
      */
-    private function registerStores(ContainerBuilderInterface $container, array $stores): array
+    private function registerStores(RegistryInterface $registry, array $stores): array
     {
         $storeDefinitions = [];
 
@@ -114,19 +113,19 @@ final class CacheExtension implements ExtensionInterface
             $driver = $config['driver'];
             if ('local' === $driver) {
                 /** @var LocalDriverConfiguration $config */
-                $this->registerLocalDriver($container, $driverServiceId, $config);
+                $this->registerLocalDriver($registry, $driverServiceId, $config);
             } elseif ('filesystem' === $driver) {
                 /** @var FilesystemDriverConfiguration $config */
-                $this->registerFilesystemDriver($container, $driverServiceId, $config);
+                $this->registerFilesystemDriver($registry, $driverServiceId, $config);
             } elseif ('redis' === $driver || 'valkey' === $driver) {
                 /** @var RedisDriverConfiguration $config */
-                $this->registerRedisDriver($container, $driverServiceId, $config);
+                $this->registerRedisDriver($registry, $driverServiceId, $config);
             } else {
                 /** @var ServiceDriverConfiguration $config */
-                $this->registerServiceDriver($container, $driverServiceId, $config);
+                $this->registerServiceDriver($registry, $driverServiceId, $config);
             }
 
-            $container->addDefinition(Definition::create($storeServiceId, StoreInterface::class, new StoreFactory($driverServiceId)));
+            $registry->addDefinition(Definition::create($storeServiceId, StoreInterface::class, new StoreFactory($driverServiceId)));
 
             $storeDefinitions[$name] = $storeServiceId;
         }
@@ -137,13 +136,13 @@ final class CacheExtension implements ExtensionInterface
     /**
      * Register a local cache driver.
      *
-     * @param ContainerBuilderInterface $container
+     * @param RegistryInterface $registry
      * @param non-empty-string $serviceId
      * @param LocalDriverConfiguration $config
      */
-    private function registerLocalDriver(ContainerBuilderInterface $container, string $serviceId, array $config): void
+    private function registerLocalDriver(RegistryInterface $registry, string $serviceId, array $config): void
     {
-        $container->addDefinition(Definition::create($serviceId, LocalDriver::class, new LocalDriverFactory(
+        $registry->addDefinition(Definition::create($serviceId, LocalDriver::class, new LocalDriverFactory(
             pruneInterval: $config['prune-interval'] ?? null,
             size: $config['size'] ?? null,
         )));
@@ -152,13 +151,13 @@ final class CacheExtension implements ExtensionInterface
     /**
      * Register a filesystem cache driver.
      *
-     * @param ContainerBuilderInterface $container
+     * @param RegistryInterface $registry
      * @param non-empty-string $serviceId
      * @param FilesystemDriverConfiguration $config
      */
-    private function registerFilesystemDriver(ContainerBuilderInterface $container, string $serviceId, array $config): void
+    private function registerFilesystemDriver(RegistryInterface $registry, string $serviceId, array $config): void
     {
-        $container->addDefinition(Definition::create($serviceId, FilesystemDriver::class, new FilesystemDriverFactory(
+        $registry->addDefinition(Definition::create($serviceId, FilesystemDriver::class, new FilesystemDriverFactory(
             directory: $config['directory'],
             pruneInterval: $config['prune-interval'] ?? null,
         )));
@@ -167,17 +166,17 @@ final class CacheExtension implements ExtensionInterface
     /**
      * Register a redis cache driver.
      *
-     * @param ContainerBuilderInterface $container
+     * @param RegistryInterface $registry
      * @param non-empty-string $serviceId
      * @param RedisDriverConfiguration $config
      */
-    private function registerRedisDriver(ContainerBuilderInterface $container, string $serviceId, array $config): void
+    private function registerRedisDriver(RegistryInterface $registry, string $serviceId, array $config): void
     {
         if (!Class\exists(RedisConfig::class)) {
             throw new InvalidConfigurationException('The "amphp/redis" package is required to use the redis cache driver.');
         }
 
-        $container->addDefinition(Definition::create($serviceId, RedisDriver::class, new RedisDriverFactory(
+        $registry->addDefinition(Definition::create($serviceId, RedisDriver::class, new RedisDriverFactory(
             uri: $config['uri'],
             timeout: $config['timeout'] ?? null,
             database: $config['database'] ?? null,
@@ -188,13 +187,13 @@ final class CacheExtension implements ExtensionInterface
     /**
      * Register a custom service driver.
      *
-     * @param ContainerBuilderInterface $container
+     * @param RegistryInterface $registry
      * @param non-empty-string $serviceId
      * @param ServiceDriverConfiguration $config
      */
-    private function registerServiceDriver(ContainerBuilderInterface $container, string $serviceId, array $config): void
+    private function registerServiceDriver(RegistryInterface $registry, string $serviceId, array $config): void
     {
-        $serviceDefinition = $container->getDefinition($config['service']);
+        $serviceDefinition = $registry->getDefinition($config['service']);
 
         if (!$serviceDefinition->isInstanceOf(DriverInterface::class)) {
             throw new InvalidConfigurationException('The service "' . $config['service'] . '" must implement "' . DriverInterface::class . '".');
@@ -206,20 +205,20 @@ final class CacheExtension implements ExtensionInterface
     /**
      * Set the default cache store.
      *
-     * @param ContainerBuilderInterface $container
+     * @param RegistryInterface $registry
      * @param array<non-empty-string, non-empty-string> $storeDefinitions
      * @param non-empty-string $defaultStore
      */
-    private function setDefaultStore(ContainerBuilderInterface $container, array $storeDefinitions, string $defaultStore): void
+    private function setDefaultStore(RegistryInterface $registry, array $storeDefinitions, string $defaultStore): void
     {
         if (!isset($storeDefinitions[$defaultStore])) {
-            if (!$container->hasDefinition($defaultStore)) {
+            if (!$registry->hasDefinition($defaultStore)) {
                 throw new InvalidConfigurationException('The default cache store "' . $defaultStore . '" is not defined.');
             }
 
-            $definition = $container->getDefinition($defaultStore);
+            $definition = $registry->getDefinition($defaultStore);
         } else {
-            $definition = $container->getDefinition($storeDefinitions[$defaultStore]);
+            $definition = $registry->getDefinition($storeDefinitions[$defaultStore]);
         }
 
         if (!$definition->isInstanceOf(StoreInterface::class)) {
@@ -232,16 +231,16 @@ final class CacheExtension implements ExtensionInterface
     /**
      * Register the {@see StoreManager} service.
      *
-     * @param ContainerBuilderInterface $container
+     * @param RegistryInterface $registry
      * @param non-empty-string $defaultStore
      * @param array<non-empty-string, non-empty-string> $storeDefinitions
      */
-    private function registerStoreManager(ContainerBuilderInterface $container, string $defaultStore, array $storeDefinitions): void
+    private function registerStoreManager(RegistryInterface $registry, string $defaultStore, array $storeDefinitions): void
     {
         $definition = Definition::ofType(StoreManager::class, new StoreManagerFactory($defaultStore, $storeDefinitions));
         $definition->addAlias(StoreManagerInterface::class);
 
-        $container->addDefinition($definition);
+        $registry->addDefinition($definition);
     }
 
     /**

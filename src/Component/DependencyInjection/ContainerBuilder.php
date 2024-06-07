@@ -14,11 +14,12 @@ declare(strict_types=1);
 namespace Neu\Component\DependencyInjection;
 
 use Amp\File;
-use Neu\Component\Configuration\ConfigurationContainer;
-use Neu\Component\Configuration\ConfigurationContainerInterface;
-use Neu\Component\DependencyInjection\Definition\DefinitionInterface;
+use Neu\Component\DependencyInjection\Configuration\CombineStrategy;
+use Neu\Component\DependencyInjection\Configuration\Document;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
+use Neu\Component\DependencyInjection\Configuration\Loader\LoaderInterface;
+use Neu\Component\DependencyInjection\Configuration\Resolver\Resolver;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
-use Psl\Iter;
 use ReflectionClass;
 use ReflectionException;
 use Roave\BetterReflection\BetterReflection;
@@ -31,21 +32,32 @@ use Roave\BetterReflection\SourceLocator\Type\AutoloadSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\DirectoriesSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\SingleFileSourceLocator;
 
+use function array_walk_recursive;
+use function is_string;
+
 final class ContainerBuilder implements ContainerBuilderInterface
 {
     /**
-     * The project instance.
-     *
-     * @var Project
+     * The container registry.
      */
-    private Project $project;
+    private RegistryInterface $registry;
 
     /**
-     * The configuration container.
-     *
-     * @var ConfigurationContainerInterface
+     * The configuration resolver.
      */
-    private ConfigurationContainerInterface $configuration;
+    private Resolver $resolver;
+
+    /**
+     * The combine strategy.
+     */
+    private CombineStrategy $strategy;
+
+    /**
+     * The configuration resources.
+     *
+     * @var list<mixed>
+     */
+    private array $resources = [];
 
     /**
      * Whether auto-discovery is enabled.
@@ -53,11 +65,11 @@ final class ContainerBuilder implements ContainerBuilderInterface
     private bool $autoDiscovery = true;
 
     /**
-     * The service definitions.
+     * The paths to discover services from.
      *
-     * @var array<non-empty-string, DefinitionInterface>
+     * @var list<non-empty-string>
      */
-    private array $definitions = [];
+    private array $discoverablePaths = [];
 
     /**
      * The extensions to apply to the container.
@@ -67,63 +79,30 @@ final class ContainerBuilder implements ContainerBuilderInterface
     private array $extensions = [];
 
     /**
-     * The hooks to apply to the container.
-     *
-     * @var list<HookInterface>
-     */
-    private array $hooks = [];
-
-    /**
-     * The processors to apply to the services.
-     *
-     * @var list<ProcessorInterface>
-     */
-    private array $processors = [];
-
-    /**
-     * The processors to apply to the services by interface.
-     *
-     * @var array<class-string, list<ProcessorInterface>>
-     */
-    private array $processorsForInstanceOf = [];
-
-    /**
-     * The processors to apply to the services by attribute.
-     *
-     * @var array<class-string, list<ProcessorInterface>>
-     */
-    private array $processorsForAttributes = [];
-
-    /**
-     * Create a new container builder.
+     * Create a new {@see ContainerBuilder} instance.
      *
      * @param Project $project The project instance.
-     * @param ConfigurationContainerInterface|null $configuration The configuration container.
+     * @param Resolver $resolver The configuration resolver.
+     * @param CombineStrategy $strategy The combine strategy to use for combining configuration documents.
      */
-    public function __construct(Project $project, null|ConfigurationContainerInterface $configuration = null)
+    public function __construct(RegistryInterface $registry, Resolver $resolver, CombineStrategy $strategy = CombineStrategy::ReplaceRecursive)
     {
-        $this->project = $project;
-        $this->configuration = $configuration ?? new ConfigurationContainer([]);
+        $this->registry = $registry;
+        $this->resolver = $resolver;
+        $this->strategy = $strategy;
     }
 
     /**
      * Create a new container builder.
      *
      * @param Project $project The project instance.
-     * @param null|array<array-key, mixed>|ConfigurationContainerInterface $configuration The configuration container.
      * @param list<ExtensionInterface> $extensions The extensions to apply to the container.
      *
      * @return static The created container builder.
      */
-    public static function create(Project $project, null|array|ConfigurationContainerInterface $configuration = null, array $extensions = []): static
+    public static function create(Project $project, array $extensions = []): static
     {
-        if (null === $configuration) {
-            $configuration = new ConfigurationContainer([]);
-        } else if (!$configuration instanceof ConfigurationContainerInterface) {
-            $configuration = new ConfigurationContainer($configuration);
-        }
-
-        $builder = new self($project, $configuration);
+        $builder = new self(new Registry($project), Resolver::create());
         $builder->addExtensions($extensions);
 
         return $builder;
@@ -132,17 +111,25 @@ final class ContainerBuilder implements ContainerBuilderInterface
     /**
      * @inheritDoc
      */
-    public function getProject(): Project
+    public function addConfigurationResource(mixed $resource): void
     {
-        return $this->project;
+        $this->resources[] = $resource;
     }
 
     /**
      * @inheritDoc
      */
-    public function getConfiguration(): ConfigurationContainerInterface
+    public function addConfigurationLoader(LoaderInterface $loader): void
     {
-        return $this->configuration;
+        $this->resolver->addLoader($loader);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addPathForAutoDiscovery(string $path): void
+    {
+        $this->discoverablePaths[] = $path;
     }
 
     /**
@@ -164,21 +151,13 @@ final class ContainerBuilder implements ContainerBuilderInterface
     /**
      * @inheritDoc
      */
-    public function hasExtension(string $extension): bool
-    {
-        return Iter\contains_key($this->extensions, $extension);
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function addExtension(ExtensionInterface $extension): void
     {
-        $this->extensions[$extension::class] = $extension;
-
-        if ($extension instanceof CompositeExtensionInterface) {
-            $this->addExtensions($extension->getExtensions());
+        if (isset($this->extensions[$extension::class])) {
+            return;
         }
+
+        $this->extensions[$extension::class] = $extension;
     }
 
     /**
@@ -194,113 +173,9 @@ final class ContainerBuilder implements ContainerBuilderInterface
     /**
      * @inheritDoc
      */
-    public function addHook(HookInterface $hook): void
+    public function getRegistry(): RegistryInterface
     {
-        $this->hooks[] = $hook;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addHooks(array $hooks): void
-    {
-        foreach ($hooks as $hook) {
-            $this->hooks[] = $hook;
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addConfiguration(ConfigurationContainerInterface|array $configuration): void
-    {
-        if (!$configuration instanceof ConfigurationContainerInterface) {
-            $configuration = new ConfigurationContainer($configuration);
-        }
-
-        $this->configuration = $this->configuration->merge($configuration);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function hasDefinition(string $id): bool
-    {
-        foreach ($this->definitions as $definition) {
-            if ($definition->getId() === $id) {
-                return true;
-            }
-
-            if (Iter\contains($definition->getAliases(), $id)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getDefinition(string $id): DefinitionInterface
-    {
-        return $this->definitions[$id] ?? throw new Exception\ServiceNotFoundException($id);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getDefinitions(): array
-    {
-        return $this->definitions;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addDefinition(DefinitionInterface $definition): void
-    {
-        $this->definitions[$definition->getId()] = $definition;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addDefinitions(array $definitions): void
-    {
-        foreach ($definitions as $definition) {
-            $this->addDefinition($definition);
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addProcessor(ProcessorInterface $processor): void
-    {
-        $this->processors[] = $processor;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addProcessorForInstanceOf(string $type, ProcessorInterface $processor): void
-    {
-        $processorsForInstanceOf = $this->processorsForInstanceOf[$type] ?? [];
-        $processorsForInstanceOf[] = $processor;
-
-        $this->processorsForInstanceOf[$type] = $processorsForInstanceOf;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addProcessorForAttribute(string $attribute, ProcessorInterface $processor): void
-    {
-        $processorsForAttributes = $this->processorsForAttributes[$attribute] ?? [];
-        $processorsForAttributes[] = $processor;
-
-        $this->processorsForAttributes[$attribute] = $processorsForAttributes;
+        return $this->registry;
     }
 
     /**
@@ -308,22 +183,33 @@ final class ContainerBuilder implements ContainerBuilderInterface
      */
     public function build(): ContainerInterface
     {
-        $clone = clone $this;
-
-        foreach ($clone->extensions as $extension) {
-            $extension->register($clone);
+        $document = new Document([]);
+        /** @var mixed $resource */
+        foreach ($this->resources as $resource) {
+            $document = $document->combine(
+                $this->resolver->resolve($resource)->load($resource),
+                $this->strategy,
+            );
         }
 
-        if ($clone->autoDiscovery) {
-            $clone->discover();
+        $document = $this->processConfiguration($document);
+
+        $this->addCompositeExtensions($document);
+
+        foreach ($this->extensions as $extension) {
+            $extension->register($this->registry, $document);
         }
 
-        foreach ($clone->definitions as $definition) {
-            foreach ($clone->processors as $processor) {
+        if ($this->autoDiscovery) {
+            $this->doDiscover();
+        }
+
+        foreach ($this->registry->getDefinitions() as $definition) {
+            foreach ($this->registry->getProcessors() as $processor) {
                 $definition->addProcessor($processor);
             }
 
-            foreach ($clone->processorsForInstanceOf as $interface => $processors) {
+            foreach ($this->registry->getInstanceOfProcessors() as $interface => $processors) {
                 if ($definition->isInstanceOf($interface)) {
                     foreach ($processors as $processor) {
                         $definition->addProcessor($processor);
@@ -331,7 +217,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
                 }
             }
 
-            foreach ($clone->processorsForAttributes as $attribute => $processors) {
+            foreach ($this->registry->getAttributeProcessors() as $attribute => $processors) {
                 if ($definition->hasAttribute($attribute)) {
                     foreach ($processors as $processor) {
                         $definition->addProcessor($processor);
@@ -340,8 +226,8 @@ final class ContainerBuilder implements ContainerBuilderInterface
             }
         }
 
-        $container = new Container($clone->project, $clone->definitions);
-        foreach ($clone->hooks as $hook) {
+        $container = new Container($this->registry->getProject(), $this->registry->getDefinitions());
+        foreach ($this->registry->getHooks() as $hook) {
             $hook($container);
         }
 
@@ -349,32 +235,63 @@ final class ContainerBuilder implements ContainerBuilderInterface
     }
 
     /**
+     * Add composite extensions.
+     *
+     * @param DocumentInterface $document The configuration document used to load the extensions.
+     */
+    private function addCompositeExtensions(DocumentInterface $document): void
+    {
+        foreach ($this->extensions as $extension) {
+            if ($extension instanceof CompositeExtensionInterface) {
+                $this->addCompositeExtension($extension, $document);
+            }
+        }
+    }
+
+    /**
+     * Add composite extensions.
+     *
+     * @param CompositeExtensionInterface $extension The extension to add.
+     * @param DocumentInterface $document The configuration document used to load the sub-extensions.
+     */
+    private function addCompositeExtension(CompositeExtensionInterface $extension, DocumentInterface $document): void
+    {
+        $extensions = $extension->getExtensions($document);
+
+        foreach ($extensions as $extension) {
+            $this->addExtension($extension);
+
+            if ($extension instanceof CompositeExtensionInterface) {
+                $this->addCompositeExtension($extension, $document);
+            }
+        }
+    }
+
+    /**
      * Discover services.
      *
      * @throws RuntimeException If an error occurs while discovering services.
      */
-    private function discover(): void
+    private function doDiscover(): void
     {
-        $entrypoint = $this->project->entrypoint;
-        $source = $this->project->source;
+        if ([] === $this->discoverablePaths) {
+            return;
+        }
 
         $astLocator = (new BetterReflection())->astLocator();
-
-        try {
-            $locators = [
-                new SingleFileSourceLocator($entrypoint, $astLocator),
-                new AutoloadSourceLocator($astLocator),
-            ];
-
-            if (null !== $source) {
-                if (File\isFile($source)) {
-                    $locators[] = new SingleFileSourceLocator($source, $astLocator);
-                } elseif (File\isDirectory($source)) {
-                    $locators[] = new DirectoriesSourceLocator([$source], $astLocator);
+        $locators = [
+            new AutoloadSourceLocator($astLocator),
+        ];
+        foreach ($this->discoverablePaths as $path) {
+            try {
+                if (File\isFile($path)) {
+                    $locators[] = new SingleFileSourceLocator($path, $astLocator);
+                } elseif (File\isDirectory($path)) {
+                    $locators[] = new DirectoriesSourceLocator([$path], $astLocator);
                 }
+            } catch (InvalidDirectory | InvalidFileInfo | InvalidFileLocation $exception) {
+                throw new RuntimeException('An error occurred while discovering services from "' . $path . '"', previous: $exception);
             }
-        } catch (InvalidDirectory | InvalidFileInfo | InvalidFileLocation $exception) {
-            throw new RuntimeException('An error occurred while discovering services.', previous: $exception);
         }
 
         $sourceLocator = new AggregateSourceLocator($locators);
@@ -385,7 +302,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
             }
 
             $name = $class->getName();
-            foreach ($this->definitions as $definition) {
+            foreach ($this->registry->getDefinitions() as $definition) {
                 if ($definition->getId() === $name) {
                     continue 2;
                 }
@@ -407,7 +324,27 @@ final class ContainerBuilder implements ContainerBuilderInterface
                 continue;
             }
 
-            $this->addDefinition(Definition\Definition::create($name, $name));
+            $this->registry->addDefinition(Definition\Definition::create($name, $name));
         }
+    }
+
+    /**
+     * Process the configuration.
+     *
+     * @param DocumentInterface $document The configuration document to process.
+     *
+     * @return DocumentInterface The processed configuration document.
+     */
+    private function processConfiguration(DocumentInterface $document): DocumentInterface
+    {
+        $configurations = $document->getAll();
+
+        array_walk_recursive($configurations, function (mixed &$value): void {
+            if (is_string($value) && '' !== $value) {
+                $value = $this->getRegistry()->getProject()->resolve($value);
+            }
+        });
+
+        return new Document($configurations);
     }
 }

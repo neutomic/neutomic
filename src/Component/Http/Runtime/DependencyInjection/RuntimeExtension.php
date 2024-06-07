@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Runtime\DependencyInjection;
 
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
+use Neu\Component\DependencyInjection\RegistryInterface;
 use Neu\Component\Http\Runtime\ContentDelivery\ContentDeliverer;
 use Neu\Component\Http\Runtime\DependencyInjection\Factory\ContentDelivery\ContentDelivererFactory;
 use Neu\Component\Http\Runtime\DependencyInjection\Factory\Handler\Resolver\HandlerResolverFactory;
@@ -56,6 +57,39 @@ use Psl\Type;
 final readonly class RuntimeExtension implements ExtensionInterface
 {
     /**
+     * @inheritDoc
+     */
+    public function register(RegistryInterface $registry, DocumentInterface $configurations): void
+    {
+        $defaultLogger = $configurations->getDocument('http')->getOfTypeOrDefault('logger', Type\non_empty_string(), null);
+        $configuration = $configurations->getDocument('http')->getOfTypeOrDefault('runtime', $this->getConfigurationType(), []);
+
+        $registry->addDefinition(Definition::ofType(HandlerResolver::class, new HandlerResolverFactory(
+            fallback: $configuration['handler']['fallback'] ?? null,
+        )));
+        $registry->addDefinition(Definition::ofType(MiddlewareQueue::class, new MiddlewareQueueFactory()));
+        $registry->addDefinition(Definition::ofType(Runtime::class, new RuntimeFactory(
+            eventDispatcher: $configuration['event-dispatcher'] ?? null,
+            handlerResolver: $configuration['handler-resolver'] ?? null,
+            middlewareQueue: $configuration['middleware-queue'] ?? null,
+            recovery: $configuration['recovery'] ?? null,
+            concurrencyLimit: $configuration['concurrency-limit'] ?? null,
+        )));
+        $registry->addDefinition(Definition::ofType(ContentDeliverer::class, new ContentDelivererFactory(
+            logger: $configuration['content-delivery']['logger'] ?? $defaultLogger ?? null,
+        )));
+
+        $registry->getDefinition(HandlerResolver::class)->addAlias(HandlerResolverInterface::class);
+        $registry->getDefinition(MiddlewareQueue::class)->addAlias(MiddlewareQueueInterface::class);
+        $registry->getDefinition(Runtime::class)->addAlias(RuntimeInterface::class);
+
+        $registry->addHook(new EnqueueMiddlewareHook(
+            queue: $configuration['hooks']['enqueue-middleware']['queue'] ?? null,
+            ignore: $configuration['hooks']['enqueue-middleware']['ignore'] ?? [],
+        ));
+    }
+
+    /**
      * @return Type\TypeInterface<Configuration>
      */
     private function getConfigurationType(): Type\TypeInterface
@@ -79,50 +113,5 @@ final readonly class RuntimeExtension implements ExtensionInterface
                 ])),
             ])),
         ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function register(ContainerBuilderInterface $container): void
-    {
-        $defaultLogger = $container
-            ->getConfiguration()
-            ->getContainer('http')
-            ->getOfTypeOrDefault('logger', Type\non_empty_string(), null)
-        ;
-
-        $configuration = $container
-            ->getConfiguration()
-            ->getContainer('http')
-            ->getOfTypeOrDefault('runtime', $this->getConfigurationType(), [])
-        ;
-
-        $container->addDefinition(Definition::ofType(HandlerResolver::class, new HandlerResolverFactory(
-            fallback: $configuration['handler']['fallback'] ?? null,
-        )));
-
-        $container->addDefinition(Definition::ofType(MiddlewareQueue::class, new MiddlewareQueueFactory()));
-
-        $container->addDefinition(Definition::ofType(Runtime::class, new RuntimeFactory(
-            eventDispatcher: $configuration['event-dispatcher'] ?? null,
-            handlerResolver: $configuration['handler-resolver'] ?? null,
-            middlewareQueue: $configuration['middleware-queue'] ?? null,
-            recovery: $configuration['recovery'] ?? null,
-            concurrencyLimit: $configuration['concurrency-limit'] ?? null,
-        )));
-
-        $container->addDefinition(Definition::ofType(ContentDeliverer::class, new ContentDelivererFactory(
-            logger: $configuration['content-delivery']['logger'] ?? $defaultLogger ?? null,
-        )));
-
-        $container->getDefinition(HandlerResolver::class)->addAlias(HandlerResolverInterface::class);
-        $container->getDefinition(MiddlewareQueue::class)->addAlias(MiddlewareQueueInterface::class);
-        $container->getDefinition(Runtime::class)->addAlias(RuntimeInterface::class);
-
-        $container->addHook(new EnqueueMiddlewareHook(
-            queue: $configuration['hooks']['enqueue-middleware']['queue'] ?? null,
-            ignore: $configuration['hooks']['enqueue-middleware']['ignore'] ?? [],
-        ));
     }
 }

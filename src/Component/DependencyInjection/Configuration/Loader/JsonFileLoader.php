@@ -11,11 +11,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Configuration\Loader;
+namespace Neu\Component\DependencyInjection\Configuration\Loader;
 
-use Neu\Component\Configuration\ConfigurationContainer;
-use Neu\Component\Configuration\ConfigurationContainerInterface;
-use Neu\Component\Configuration\Exception\InvalidConfigurationException;
+use Neu\Component\DependencyInjection\Configuration\Document;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
+use Neu\Component\DependencyInjection\Exception\InvalidConfigurationException;
+use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Psl\File;
 use Psl\Filesystem;
 use Psl\Json;
@@ -29,25 +30,28 @@ final class JsonFileLoader implements LoaderInterface
 {
     /**
      * @inheritDoc
-     *
-     * @throws File\Exception\RuntimeException If unable to read $resource.
-     *
-     * @psalm-suppress MissingThrowsDocblock
      */
-    public function load(mixed $resource): ConfigurationContainerInterface
+    public function load(mixed $resource): DocumentInterface
     {
-        $content = File\read($resource);
+        try {
+            $content = File\read($resource);
+        } catch (File\Exception\ExceptionInterface $previous) {
+            throw new RuntimeException(
+                'failed to read json resource file "' . $resource . '".',
+                previous: $previous
+            );
+        }
 
         try {
             $data = Json\typed($content, Type\dict(Type\string(), Type\mixed()));
         } catch (Json\Exception\DecodeException $previous) {
             throw new InvalidConfigurationException(
-                'Failed to decode json resource file "' . $resource . '".',
+                'failed to decode json resource file "' . $resource . '".',
                 previous: $previous
             );
         }
 
-        return new ConfigurationContainer($data);
+        return new Document($data);
     }
 
     /**

@@ -67,13 +67,6 @@ final readonly class ClusterCommandFactory implements FactoryInterface
 
         if ($project->mode->isDevelopment()) {
             $directories[] = $project->entrypoint;
-            if (null !== $project->source) {
-                $directories[] = $project->source;
-            }
-
-            if (null !== $project->config) {
-                $directories[] = $project->config;
-            }
         }
 
         $watcherConfiguration = Configuration::createForDirectories($directories)

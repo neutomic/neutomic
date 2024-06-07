@@ -26,10 +26,11 @@ use Neu\Component\Database\DependencyInjection\Factory\MysqlConnectionFactory;
 use Neu\Component\Database\DependencyInjection\Factory\MysqlConnectionPoolFactory;
 use Neu\Component\Database\DependencyInjection\Factory\PostgresConnectionFactory;
 use Neu\Component\Database\DependencyInjection\Factory\PostgresConnectionPoolFactory;
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\ExtensionInterface;
+use Neu\Component\DependencyInjection\RegistryInterface;
 use Psl\Class;
 use Psl\Type;
 
@@ -76,6 +77,172 @@ use Psl\Type;
  */
 final class DatabaseExtension implements ExtensionInterface
 {
+    /**
+     * @inheritDoc
+     */
+    public function register(RegistryInterface $registry, DocumentInterface $configurations): void
+    {
+        $configuration = $configurations->getOfTypeOrDefault('database', $this->getConfigurationType(), []);
+
+        $databases = $configuration['databases'] ?? [];
+
+        $databaseDefinitions = $this->registerDatabases($registry, $databases);
+
+        if ($databaseDefinitions !== []) {
+            $defaultDatabase = $configuration['default'] ?? array_key_first($databaseDefinitions);
+
+            $this->registerDatabaseManager($registry, $defaultDatabase, $databaseDefinitions);
+        }
+    }
+
+    /**
+     * Register databases.
+     *
+     * @param RegistryInterface $registry
+     * @param array<non-empty-string, DatabaseConfiguration> $databases
+     *
+     * @return array<non-empty-string, non-empty-string> Map of database names to database service IDs
+     */
+    private function registerDatabases(RegistryInterface $registry, array $databases): array
+    {
+        $databaseDefinitions = [];
+
+        foreach ($databases as $name => $config) {
+            $connectionServiceId = 'database.connection.' . $name;
+            $databaseServiceId = 'database.' . $name;
+
+            if ($config['platform'] === 'mysql' || $config['platform'] === 'mysqli' || $config['platform'] === 'mariadb') {
+                /** @var MysqlConnectionConfiguration $config */
+                $this->registerMysqlConnection($registry, $connectionServiceId, $config);
+            } else {
+                /** @var PostgresConnectionConfiguration $config */
+                $this->registerPostgresConnection($registry, $connectionServiceId, $config);
+            }
+
+            $registry->addDefinition(Definition::create($databaseServiceId, DatabaseInterface::class, new DatabaseFactory(
+                connection: $connectionServiceId,
+            )));
+
+            $databaseDefinitions[$name] = $databaseServiceId;
+        }
+
+        return $databaseDefinitions;
+    }
+
+    /**
+     * Register a MySQL connection.
+     *
+     * @param RegistryInterface $registry
+     * @param non-empty-string $serviceId
+     * @param MysqlConnectionConfiguration $config
+     *
+     * @throws RuntimeException If the "amphp/mysql" package is not installed.
+     */
+    private function registerMysqlConnection(RegistryInterface $registry, string $serviceId, array $config): void
+    {
+        if (!Class\exists(MysqlConnectionPool::class)) {
+            throw new RuntimeException('The "amphp/mysql" package is required to use the mysql database connection.');
+        }
+
+        $pooled = $config['pooled'] ?? true;
+        if ($pooled) {
+            $registry->addDefinition(Definition::create($serviceId, MysqlConnectionPool::class, new MysqlConnectionPoolFactory(
+                host: $config['host'],
+                port: $config['port'] ?? null,
+                user: $config['user'] ?? null,
+                password: $config['password'] ?? null,
+                database: $config['database'] ?? null,
+                charset: $config['charset'] ?? null,
+                collate: $config['collate'] ?? null,
+                sqlMode: $config['sql-mode'] ?? null,
+                useCompression: $config['use-compression'] ?? null,
+                key: $config['key'] ?? null,
+                useLocalInfile: $config['use-local-infile'] ?? null,
+                maxConnections: $config['max-connections'] ?? null,
+                idleTimeout: $config['idle-timeout'] ?? null,
+            )));
+
+            return;
+        }
+
+        $registry->addDefinition(Definition::create($serviceId, MysqlConnection::class, new MysqlConnectionFactory(
+            host: $config['host'],
+            port: $config['port'] ?? null,
+            user: $config['user'] ?? null,
+            password: $config['password'] ?? null,
+            database: $config['database'] ?? null,
+            charset: $config['charset'] ?? null,
+            collate: $config['collate'] ?? null,
+            sqlMode: $config['sql-mode'] ?? null,
+            useCompression: $config['use-compression'] ?? null,
+            key: $config['key'] ?? null,
+            useLocalInfile: $config['use-local-infile'] ?? null,
+        )));
+    }
+
+    /**
+     * Register a Postgres connection.
+     *
+     * @param RegistryInterface $registry
+     * @param non-empty-string $serviceId
+     * @param PostgresConnectionConfiguration $config
+     *
+     * @throws RuntimeException If the "amphp/postgres" package is not installed.
+     */
+    private function registerPostgresConnection(RegistryInterface $registry, string $serviceId, array $config): void
+    {
+        if (!Class\exists(PostgresConnectionPool::class)) {
+            throw new RuntimeException('The "amphp/postgres" package is required to use the postgres database connection.');
+        }
+
+        $pooled = $config['pooled'] ?? true;
+        if ($pooled) {
+            $registry->addDefinition(Definition::create($serviceId, PostgresConnectionPool::class, new PostgresConnectionPoolFactory(
+                host: $config['host'],
+                port: $config['port'] ?? null,
+                user: $config['user'] ?? null,
+                password: $config['password'] ?? null,
+                database: $config['database'] ?? null,
+                applicationName: $config['application-name'] ?? null,
+                sslMode: $config['ssl-mode'] ?? null,
+                maxConnections: $config['max-connections'] ?? null,
+                idleTimeout: $config['idle-timeout'] ?? null,
+                resetConnections: $config['reset-connections'] ?? null,
+            )));
+
+            return;
+        }
+
+        $registry->addDefinition(Definition::create($serviceId, PostgresConnection::class, new PostgresConnectionFactory(
+            host: $config['host'],
+            port: $config['port'] ?? null,
+            user: $config['user'] ?? null,
+            password: $config['password'] ?? null,
+            database: $config['database'] ?? null,
+            applicationName: $config['application-name'] ?? null,
+            sslMode: $config['ssl-mode'] ?? null,
+        )));
+    }
+
+    /**
+     * Register the {@see DatabaseManager} service.
+     *
+     * @param RegistryInterface $registry
+     * @param non-empty-string $defaultDatabase
+     * @param array<non-empty-string, non-empty-string> $databaseDefinitions
+     */
+    private function registerDatabaseManager(RegistryInterface $registry, string $defaultDatabase, array $databaseDefinitions): void
+    {
+        $definition = Definition::ofType(DatabaseManager::class, new DatabaseManagerFactory(
+            defaultDatabaseId: $defaultDatabase,
+            services: $databaseDefinitions,
+        ));
+
+        $definition->addAlias(DatabaseManagerInterface::class);
+
+        $registry->addDefinition($definition);
+    }
+
     /**
      * @return Type\TypeInterface<Configuration>
      */
@@ -135,174 +302,5 @@ final class DatabaseExtension implements ExtensionInterface
                 ),
             )),
         ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function register(ContainerBuilderInterface $container): void
-    {
-        $configuration = $container
-            ->getConfiguration()
-            ->getOfTypeOrDefault('database', $this->getConfigurationType(), [])
-        ;
-
-        $databases = $configuration['databases'] ?? [];
-
-        $databaseDefinitions = $this->registerDatabases($container, $databases);
-
-        if ($databaseDefinitions !== []) {
-            $defaultDatabase = $configuration['default'] ?? array_key_first($databaseDefinitions);
-
-            $this->registerDatabaseManager($container, $defaultDatabase, $databaseDefinitions);
-        }
-    }
-
-    /**
-     * Register databases.
-     *
-     * @param ContainerBuilderInterface $container
-     * @param array<non-empty-string, DatabaseConfiguration> $databases
-     *
-     * @return array<non-empty-string, non-empty-string> Map of database names to database service IDs
-     */
-    private function registerDatabases(ContainerBuilderInterface $container, array $databases): array
-    {
-        $databaseDefinitions = [];
-
-        foreach ($databases as $name => $config) {
-            $connectionServiceId = 'database.connection.' . $name;
-            $databaseServiceId = 'database.' . $name;
-
-            if ($config['platform'] === 'mysql' || $config['platform'] === 'mysqli' || $config['platform'] === 'mariadb') {
-                /** @var MysqlConnectionConfiguration $config */
-                $this->registerMysqlConnection($container, $connectionServiceId, $config);
-            } else {
-                /** @var PostgresConnectionConfiguration $config */
-                $this->registerPostgresConnection($container, $connectionServiceId, $config);
-            }
-
-            $container->addDefinition(Definition::create($databaseServiceId, DatabaseInterface::class, new DatabaseFactory(
-                connection: $connectionServiceId,
-            )));
-
-            $databaseDefinitions[$name] = $databaseServiceId;
-        }
-
-        return $databaseDefinitions;
-    }
-
-    /**
-     * Register a MySQL connection.
-     *
-     * @param ContainerBuilderInterface $container
-     * @param non-empty-string $serviceId
-     * @param MysqlConnectionConfiguration $config
-     *
-     * @throws RuntimeException If the "amphp/mysql" package is not installed.
-     */
-    private function registerMysqlConnection(ContainerBuilderInterface $container, string $serviceId, array $config): void
-    {
-        if (!Class\exists(MysqlConnectionPool::class)) {
-            throw new RuntimeException('The "amphp/mysql" package is required to use the mysql database connection.');
-        }
-
-        $pooled = $config['pooled'] ?? true;
-        if ($pooled) {
-            $container->addDefinition(Definition::create($serviceId, MysqlConnectionPool::class, new MysqlConnectionPoolFactory(
-                host: $config['host'],
-                port: $config['port'] ?? null,
-                user: $config['user'] ?? null,
-                password: $config['password'] ?? null,
-                database: $config['database'] ?? null,
-                charset: $config['charset'] ?? null,
-                collate: $config['collate'] ?? null,
-                sqlMode: $config['sql-mode'] ?? null,
-                useCompression: $config['use-compression'] ?? null,
-                key: $config['key'] ?? null,
-                useLocalInfile: $config['use-local-infile'] ?? null,
-                maxConnections: $config['max-connections'] ?? null,
-                idleTimeout: $config['idle-timeout'] ?? null,
-            )));
-
-            return;
-        }
-
-        $container->addDefinition(Definition::create($serviceId, MysqlConnection::class, new MysqlConnectionFactory(
-            host: $config['host'],
-            port: $config['port'] ?? null,
-            user: $config['user'] ?? null,
-            password: $config['password'] ?? null,
-            database: $config['database'] ?? null,
-            charset: $config['charset'] ?? null,
-            collate: $config['collate'] ?? null,
-            sqlMode: $config['sql-mode'] ?? null,
-            useCompression: $config['use-compression'] ?? null,
-            key: $config['key'] ?? null,
-            useLocalInfile: $config['use-local-infile'] ?? null,
-        )));
-    }
-
-    /**
-     * Register a Postgres connection.
-     *
-     * @param ContainerBuilderInterface $container
-     * @param non-empty-string $serviceId
-     * @param PostgresConnectionConfiguration $config
-     *
-     * @throws RuntimeException If the "amphp/postgres" package is not installed.
-     */
-    private function registerPostgresConnection(ContainerBuilderInterface $container, string $serviceId, array $config): void
-    {
-        if (!Class\exists(PostgresConnectionPool::class)) {
-            throw new RuntimeException('The "amphp/postgres" package is required to use the postgres database connection.');
-        }
-
-        $pooled = $config['pooled'] ?? true;
-        if ($pooled) {
-            $container->addDefinition(Definition::create($serviceId, PostgresConnectionPool::class, new PostgresConnectionPoolFactory(
-                host: $config['host'],
-                port: $config['port'] ?? null,
-                user: $config['user'] ?? null,
-                password: $config['password'] ?? null,
-                database: $config['database'] ?? null,
-                applicationName: $config['application-name'] ?? null,
-                sslMode: $config['ssl-mode'] ?? null,
-                maxConnections: $config['max-connections'] ?? null,
-                idleTimeout: $config['idle-timeout'] ?? null,
-                resetConnections: $config['reset-connections'] ?? null,
-            )));
-
-            return;
-        }
-
-        $container->addDefinition(Definition::create($serviceId, PostgresConnection::class, new PostgresConnectionFactory(
-            host: $config['host'],
-            port: $config['port'] ?? null,
-            user: $config['user'] ?? null,
-            password: $config['password'] ?? null,
-            database: $config['database'] ?? null,
-            applicationName: $config['application-name'] ?? null,
-            sslMode: $config['ssl-mode'] ?? null,
-        )));
-    }
-
-    /**
-     * Register the {@see DatabaseManager} service.
-     *
-     * @param ContainerBuilderInterface $container
-     * @param non-empty-string $defaultDatabase
-     * @param array<non-empty-string, non-empty-string> $databaseDefinitions
-     */
-    private function registerDatabaseManager(ContainerBuilderInterface $container, string $defaultDatabase, array $databaseDefinitions): void
-    {
-        $definition = Definition::ofType(DatabaseManager::class, new DatabaseManagerFactory(
-            defaultDatabaseId: $defaultDatabase,
-            services: $databaseDefinitions,
-        ));
-
-        $definition->addAlias(DatabaseManagerInterface::class);
-
-        $container->addDefinition($definition);
     }
 }

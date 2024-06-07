@@ -48,7 +48,8 @@ use Neu\Bridge\Monolog\DependencyInjection\Factory\Processor\MemoryUsageProcesso
 use Neu\Bridge\Monolog\DependencyInjection\Factory\Processor\ProcessIdProcessorFactory;
 use Neu\Bridge\Monolog\DependencyInjection\Factory\Processor\PsrLogMessageProcessorFactory;
 use Neu\Bridge\Monolog\DependencyInjection\Processor\LoggerAwareProcessor;
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
+use Neu\Component\DependencyInjection\RegistryInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Psl\Type;
@@ -146,6 +147,224 @@ use function array_key_first;
  */
 final readonly class MonologExtension implements ExtensionInterface
 {
+    public function register(RegistryInterface $registry, DocumentInterface $configurations): void
+    {
+        $configuration = $configurations->getOfTypeOrDefault('monolog', $this->getConfigurationType(), []);
+
+        $this->registerProcessors($registry);
+        $this->registerFormatters($registry, $configuration);
+        $this->registerHandlers($registry, $configuration);
+        $registeredChannels = $this->registerChannels($registry, $configuration);
+
+        if (array_key_exists('default', $configuration)) {
+            $defaultLogger = $configuration['default'];
+            if (!$registry->hasDefinition($defaultLogger)) {
+                $defaultLogger = 'monolog.logger.' . $defaultLogger;
+            }
+        } else {
+            $defaultLogger = 'monolog.logger.' . array_key_first($registeredChannels);
+        }
+
+        $defaultLogger = $registry->getDefinition($defaultLogger);
+        $defaultLogger->addAlias(LoggerInterface::class);
+        $defaultLogger->addAlias(Logger::class);
+
+        $registry->addProcessor(new LoggerAwareProcessor(
+            $configuration['processors']['logger-aware-processor']['logger'] ?? null,
+        ));
+    }
+
+    /**
+     * Register the processors in the container.
+     */
+    private function registerProcessors(RegistryInterface $configurator): void
+    {
+        $configurator->addDefinition(Definition::create('monolog.processor.closure-context', ClosureContextProcessor::class, new ClosureContextProcessorFactory()));
+        $configurator->addDefinition(Definition::create('monolog.processor.hostname', HostnameProcessor::class, new HostnameProcessorFactory()));
+        $configurator->addDefinition(Definition::create('monolog.processor.load-average', LoadAverageProcessor::class, new LoadAverageProcessorFactory()));
+        $configurator->addDefinition(Definition::create('monolog.processor.memory-peak-usage', MemoryPeakUsageProcessor::class, new MemoryPeakUsageProcessorFactory()));
+        $configurator->addDefinition(Definition::create('monolog.processor.memory-usage', MemoryUsageProcessor::class, new MemoryUsageProcessorFactory()));
+        $configurator->addDefinition(Definition::create('monolog.processor.process-id', ProcessIdProcessor::class, new ProcessIdProcessorFactory()));
+        $configurator->addDefinition(Definition::create('monolog.processor.psr-log-message', PsrLogMessageProcessor::class, new PsrLogMessageProcessorFactory()));
+    }
+
+    /**
+     * Register the formatters in the container.
+     *
+     * @param Configuration $configuration
+     */
+    private function registerFormatters(RegistryInterface $configurator, array $configuration): void
+    {
+        $configurator->addDefinition(Definition::create('monolog.formatter.console', ConsoleFormatter::class, new ConsoleFormatterFactory(
+            $configuration['formatters']['console']['format'] ?? null,
+            $configuration['formatters']['console']['date-format'] ?? null,
+            $configuration['formatters']['console']['allow-inline-line-breaks'] ?? null,
+            $configuration['formatters']['console']['ignore-empty-context-and-extra'] ?? null,
+        )));
+
+        $configurator->addDefinition(Definition::create('monolog.formatter.html', HtmlFormatter::class, new HtmlFormatterFactory(
+            $configuration['formatters']['html']['date-format'] ?? null,
+        )));
+
+        $configurator->addDefinition(Definition::create('monolog.formatter.json', JsonFormatter::class, new JsonFormatterFactory(
+            $configuration['formatters']['json']['batch-mode'] ?? null,
+            $configuration['formatters']['json']['append-newline'] ?? null,
+            $configuration['formatters']['json']['ignore-empty-context-and-extra'] ?? null,
+            $configuration['formatters']['json']['include-stack-traces'] ?? null
+        )));
+
+        $configurator->addDefinition(Definition::create('monolog.formatter.line', LineFormatter::class, new LineFormatterFactory(
+            $configuration['formatters']['line']['format'] ?? null,
+            $configuration['formatters']['line']['date-format'] ?? null,
+            $configuration['formatters']['line']['allow-inline-line-breaks'] ?? null,
+            $configuration['formatters']['line']['ignore-empty-context-and-extra'] ?? null,
+            $configuration['formatters']['line']['include-stack-traces'] ?? null
+        )));
+
+        $configurator->addDefinition(Definition::create('monolog.formatter.normalizer', NormalizerFormatter::class, new NormalizerFormatterFactory(
+            $configuration['formatters']['normalizer']['date-format'] ?? null,
+        )));
+
+        $configurator->addDefinition(Definition::create('monolog.formatter.scalar', ScalarFormatter::class, new ScalarFormatterFactory(
+            $configuration['formatters']['scalar']['date-format'] ?? null,
+        )));
+    }
+
+    /**
+     * @param RegistryInterface $registry
+     * @param Configuration $configuration
+     */
+    private function registerHandlers(RegistryInterface $registry, array $configuration): void
+    {
+        $this->registerNullHandler($registry, 'null', ['type' => 'null']);
+
+        $this->registerStderrHandler($registry, 'stderr', [
+            'type' => 'stderr',
+            'formatter' => 'monolog.formatter.console',
+            'processors' => [
+                'monolog.processor.process-id',
+                'monolog.processor.psr-log-message',
+            ]
+        ]);
+
+        $this->registerStdoutHandler($registry, 'stdout', [
+            'type' => 'stdout',
+            'formatter' => 'monolog.formatter.console',
+            'processors' => [
+                'monolog.processor.process-id',
+                'monolog.processor.psr-log-message',
+            ]
+        ]);
+
+        $handlers = $configuration['handlers'] ?? [];
+        foreach ($handlers as $name => $handler) {
+            if ($handler['type'] === 'null') {
+                /** @var NullHandlerConfiguration $handler */
+                $this->registerNullHandler($registry, $name, $handler);
+            } elseif ($handler['type'] === 'stdout') {
+                /** @var StdoutHandlerConfiguration $handler */
+                $this->registerStdoutHandler($registry, $name, $handler);
+            } elseif ($handler['type'] === 'stderr') {
+                /** @var StderrHandlerConfiguration $handler */
+                $this->registerStderrHandler($registry, $name, $handler);
+            } else {
+                /** @var FileHandlerConfiguration $handler */
+                $this->registerFileHandler($registry, $name, $handler);
+            }
+        }
+    }
+
+    /**
+     * @param RegistryInterface $registry
+     * @param NullHandlerConfiguration $configuration
+     */
+    private function registerNullHandler(RegistryInterface $registry, string $name, array $configuration): void
+    {
+        $registry->addDefinition(Definition::create('monolog.handler.' . $name, NullHandler::class, new NullHandlerFactory(
+            level: $configuration['level'] ?? null,
+        )));
+    }
+
+    /**
+     * @param RegistryInterface $registry
+     * @param StdoutHandlerConfiguration $configuration
+     */
+    private function registerStdoutHandler(RegistryInterface $registry, string $name, array $configuration): void
+    {
+        $registry->addDefinition(Definition::create('monolog.handler.' . $name, StreamHandler::class, new StdoutHandlerFactory(
+            level: $configuration['level'] ?? null,
+            bubble: $configuration['bubble'] ?? null,
+            formatter: $configuration['formatter'] ?? null,
+            processors: $configuration['processors'] ?? null,
+        )));
+    }
+
+    /**
+     * @param RegistryInterface $registry
+     * @param StderrHandlerConfiguration $configuration
+     */
+    private function registerStderrHandler(RegistryInterface $registry, string $name, array $configuration): void
+    {
+        $registry->addDefinition(Definition::create('monolog.handler.' . $name, StreamHandler::class, new StderrHandlerFactory(
+            level: $configuration['level'] ?? null,
+            bubble: $configuration['bubble'] ?? null,
+            formatter: $configuration['formatter'] ?? null,
+            processors: $configuration['processors'] ?? null,
+        )));
+    }
+
+    /**
+     * @param RegistryInterface $registry
+     * @param FileHandlerConfiguration $configuration
+     */
+    private function registerFileHandler(RegistryInterface $registry, string $name, array $configuration): void
+    {
+        $registry->addDefinition(Definition::create('monolog.handler.' . $name, StreamHandler::class, new FileHandlerFactory(
+            file: $configuration['file'],
+            level: $configuration['level'] ?? null,
+            bubble: $configuration['bubble'] ?? null,
+            formatter: $configuration['formatter'] ?? null,
+            processors: $configuration['processors'] ?? null,
+        )));
+    }
+
+    /**
+     * @param RegistryInterface $registry
+     * @param Configuration $configuration
+     *
+     * @return non-empty-array<non-empty-string, non-empty-string>
+     */
+    private function registerChannels(RegistryInterface $registry, array $configuration): array
+    {
+        $registered = [];
+        $channels = $configuration['channels'] ?? [];
+        foreach ($channels as $name => $channel) {
+            $serviceId = 'monolog.logger.' . $name;
+
+            $registry->addDefinition(Definition::create($serviceId, Logger::class, new LoggerFactory(
+                channel: $name,
+                timezone: $channel['timezone'] ?? null,
+                handlers: $channel['handlers'] ?? null,
+                processors: $channel['processors'] ?? null,
+                useLoggingLoopDetection: $channel['use-logging-loop-detection'] ?? null,
+                useMicrosecondTimestamps: $channel['use-microsecond-timestamps'] ?? null,
+            )));
+
+            $registered[$name] = $serviceId;
+        }
+
+        if ([] === $registered) {
+            $registry->addDefinition(Definition::create('monolog.logger.default', Logger::class, new LoggerFactory(
+                channel: 'default',
+                handlers: ['monolog.handler.stderr'],
+            )));
+
+            $registered['default'] = 'monolog.logger.default';
+        }
+
+        return $registered;
+    }
+
     /**
      * @return Type\TypeInterface<Configuration>
      */
@@ -231,225 +450,5 @@ final readonly class MonologExtension implements ExtensionInterface
                 ])),
             ])),
         ]);
-    }
-
-    public function register(ContainerBuilderInterface $container): void
-    {
-        $configuration = $container
-            ->getConfiguration()
-            ->getOfTypeOrDefault('monolog', $this->getConfigurationType(), [])
-        ;
-
-        $this->registerProcessors($container);
-        $this->registerFormatters($container, $configuration);
-        $this->registerHandlers($container, $configuration);
-        $registeredChannels = $this->registerChannels($container, $configuration);
-
-        if (array_key_exists('default', $configuration)) {
-            $defaultLogger = $configuration['default'];
-            if (!$container->hasDefinition($defaultLogger)) {
-                $defaultLogger = 'monolog.logger.' . $defaultLogger;
-            }
-        } else {
-            $defaultLogger = 'monolog.logger.' . array_key_first($registeredChannels);
-        }
-
-        $defaultLogger = $container->getDefinition($defaultLogger);
-        $defaultLogger->addAlias(LoggerInterface::class);
-        $defaultLogger->addAlias(Logger::class);
-
-        $container->addProcessor(new LoggerAwareProcessor(
-            $configuration['processors']['logger-aware-processor']['logger'] ?? null,
-        ));
-    }
-
-    /**
-     * @param ContainerBuilderInterface $container
-     */
-    private function registerProcessors(ContainerBuilderInterface $container): void
-    {
-        $container->addDefinition(Definition::create('monolog.processor.closure-context', ClosureContextProcessor::class, new ClosureContextProcessorFactory()));
-        $container->addDefinition(Definition::create('monolog.processor.hostname', HostnameProcessor::class, new HostnameProcessorFactory()));
-        $container->addDefinition(Definition::create('monolog.processor.load-average', LoadAverageProcessor::class, new LoadAverageProcessorFactory()));
-        $container->addDefinition(Definition::create('monolog.processor.memory-peak-usage', MemoryPeakUsageProcessor::class, new MemoryPeakUsageProcessorFactory()));
-        $container->addDefinition(Definition::create('monolog.processor.memory-usage', MemoryUsageProcessor::class, new MemoryUsageProcessorFactory()));
-        $container->addDefinition(Definition::create('monolog.processor.process-id', ProcessIdProcessor::class, new ProcessIdProcessorFactory()));
-        $container->addDefinition(Definition::create('monolog.processor.psr-log-message', PsrLogMessageProcessor::class, new PsrLogMessageProcessorFactory()));
-    }
-
-    /**
-     * @param ContainerBuilderInterface $container
-     * @param Configuration $configuration
-     */
-    private function registerFormatters(ContainerBuilderInterface $container, array $configuration): void
-    {
-        $container->addDefinition(Definition::create('monolog.formatter.console', ConsoleFormatter::class, new ConsoleFormatterFactory(
-            $configuration['formatters']['console']['format'] ?? null,
-            $configuration['formatters']['console']['date-format'] ?? null,
-            $configuration['formatters']['console']['allow-inline-line-breaks'] ?? null,
-            $configuration['formatters']['console']['ignore-empty-context-and-extra'] ?? null,
-        )));
-
-        $container->addDefinition(Definition::create('monolog.formatter.html', HtmlFormatter::class, new HtmlFormatterFactory(
-            $configuration['formatters']['html']['date-format'] ?? null,
-        )));
-
-        $container->addDefinition(Definition::create('monolog.formatter.json', JsonFormatter::class, new JsonFormatterFactory(
-            $configuration['formatters']['json']['batch-mode'] ?? null,
-            $configuration['formatters']['json']['append-newline'] ?? null,
-            $configuration['formatters']['json']['ignore-empty-context-and-extra'] ?? null,
-            $configuration['formatters']['json']['include-stack-traces'] ?? null
-        )));
-
-        $container->addDefinition(Definition::create('monolog.formatter.line', LineFormatter::class, new LineFormatterFactory(
-            $configuration['formatters']['line']['format'] ?? null,
-            $configuration['formatters']['line']['date-format'] ?? null,
-            $configuration['formatters']['line']['allow-inline-line-breaks'] ?? null,
-            $configuration['formatters']['line']['ignore-empty-context-and-extra'] ?? null,
-            $configuration['formatters']['line']['include-stack-traces'] ?? null
-        )));
-
-        $container->addDefinition(Definition::create('monolog.formatter.normalizer', NormalizerFormatter::class, new NormalizerFormatterFactory(
-            $configuration['formatters']['normalizer']['date-format'] ?? null,
-        )));
-
-        $container->addDefinition(Definition::create('monolog.formatter.scalar', ScalarFormatter::class, new ScalarFormatterFactory(
-            $configuration['formatters']['scalar']['date-format'] ?? null,
-        )));
-    }
-
-    /**
-     * @param ContainerBuilderInterface $container
-     * @param Configuration $configuration
-     */
-    private function registerHandlers(ContainerBuilderInterface $container, array $configuration): void
-    {
-        $this->registerNullHandler($container, 'null', ['type' => 'null']);
-
-        $this->registerStderrHandler($container, 'stderr', [
-            'type' => 'stderr',
-            'formatter' => 'monolog.formatter.console',
-            'processors' => [
-                'monolog.processor.process-id',
-                'monolog.processor.psr-log-message',
-            ]
-        ]);
-
-        $this->registerStdoutHandler($container, 'stdout', [
-            'type' => 'stdout',
-            'formatter' => 'monolog.formatter.console',
-            'processors' => [
-                'monolog.processor.process-id',
-                'monolog.processor.psr-log-message',
-            ]
-        ]);
-
-        $handlers = $configuration['handlers'] ?? [];
-        foreach ($handlers as $name => $handler) {
-            if ($handler['type'] === 'null') {
-                /** @var NullHandlerConfiguration $handler */
-                $this->registerNullHandler($container, $name, $handler);
-            } elseif ($handler['type'] === 'stdout') {
-                /** @var StdoutHandlerConfiguration $handler */
-                $this->registerStdoutHandler($container, $name, $handler);
-            } elseif ($handler['type'] === 'stderr') {
-                /** @var StderrHandlerConfiguration $handler */
-                $this->registerStderrHandler($container, $name, $handler);
-            } else {
-                /** @var FileHandlerConfiguration $handler */
-                $this->registerFileHandler($container, $name, $handler);
-            }
-        }
-    }
-
-    /**
-     * @param ContainerBuilderInterface $container
-     * @param NullHandlerConfiguration $configuration
-     */
-    private function registerNullHandler(ContainerBuilderInterface $container, string $name, array $configuration): void
-    {
-        $container->addDefinition(Definition::create('monolog.handler.' . $name, NullHandler::class, new NullHandlerFactory(
-            level: $configuration['level'] ?? null,
-        )));
-    }
-
-    /**
-     * @param ContainerBuilderInterface $container
-     * @param StdoutHandlerConfiguration $configuration
-     */
-    private function registerStdoutHandler(ContainerBuilderInterface $container, string $name, array $configuration): void
-    {
-        $container->addDefinition(Definition::create('monolog.handler.' . $name, StreamHandler::class, new StdoutHandlerFactory(
-            level: $configuration['level'] ?? null,
-            bubble: $configuration['bubble'] ?? null,
-            formatter: $configuration['formatter'] ?? null,
-            processors: $configuration['processors'] ?? null,
-        )));
-    }
-
-    /**
-     * @param ContainerBuilderInterface $container
-     * @param StderrHandlerConfiguration $configuration
-     */
-    private function registerStderrHandler(ContainerBuilderInterface $container, string $name, array $configuration): void
-    {
-        $container->addDefinition(Definition::create('monolog.handler.' . $name, StreamHandler::class, new StderrHandlerFactory(
-            level: $configuration['level'] ?? null,
-            bubble: $configuration['bubble'] ?? null,
-            formatter: $configuration['formatter'] ?? null,
-            processors: $configuration['processors'] ?? null,
-        )));
-    }
-
-    /**
-     * @param ContainerBuilderInterface $container
-     * @param FileHandlerConfiguration $configuration
-     */
-    private function registerFileHandler(ContainerBuilderInterface $container, string $name, array $configuration): void
-    {
-        $container->addDefinition(Definition::create('monolog.handler.' . $name, StreamHandler::class, new FileHandlerFactory(
-            file: $configuration['file'],
-            level: $configuration['level'] ?? null,
-            bubble: $configuration['bubble'] ?? null,
-            formatter: $configuration['formatter'] ?? null,
-            processors: $configuration['processors'] ?? null,
-        )));
-    }
-
-    /**
-     * @param ContainerBuilderInterface $container
-     * @param Configuration $configuration
-     *
-     * @return non-empty-array<non-empty-string, non-empty-string>
-     */
-    private function registerChannels(ContainerBuilderInterface $container, array $configuration): array
-    {
-        $registered = [];
-        $channels = $configuration['channels'] ?? [];
-        foreach ($channels as $name => $channel) {
-            $serviceId = 'monolog.logger.' . $name;
-
-            $container->addDefinition(Definition::create($serviceId, Logger::class, new LoggerFactory(
-                channel: $name,
-                timezone: $channel['timezone'] ?? null,
-                handlers: $channel['handlers'] ?? null,
-                processors: $channel['processors'] ?? null,
-                useLoggingLoopDetection: $channel['use-logging-loop-detection'] ?? null,
-                useMicrosecondTimestamps: $channel['use-microsecond-timestamps'] ?? null,
-            )));
-
-            $registered[$name] = $serviceId;
-        }
-
-        if ([] === $registered) {
-            $container->addDefinition(Definition::create('monolog.logger.default', Logger::class, new LoggerFactory(
-                channel: 'default',
-                handlers: ['monolog.handler.stderr'],
-            )));
-
-            $registered['default'] = 'monolog.logger.default';
-        }
-
-        return $registered;
     }
 }

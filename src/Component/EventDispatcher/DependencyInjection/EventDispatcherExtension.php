@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\EventDispatcher\DependencyInjection;
 
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
+use Neu\Component\DependencyInjection\RegistryInterface as DIRegistryInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Neu\Component\EventDispatcher\DependencyInjection\Factory\EventDispatcherFactory;
@@ -52,28 +53,25 @@ final readonly class EventDispatcherExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    public function register(ContainerBuilderInterface $container): void
+    public function register(DIRegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $configurations = $container
-            ->getConfiguration()
-            ->getOfTypeOrDefault('event-dispatcher', $this->getConfigurationType(), [])
-        ;
+        $configuration = $configurations->getOfTypeOrDefault('event-dispatcher', $this->getConfigurationType(), []);
 
-        $container->addDefinition(Definition::ofType(Registry::class, new RegistryFactory()));
-        $container->addDefinition(Definition::ofType(EventDispatcher::class, new EventDispatcherFactory(
-            $configurations['registry'] ?? null,
+        $registry->addDefinition(Definition::ofType(Registry::class, new RegistryFactory()));
+        $registry->addDefinition(Definition::ofType(EventDispatcher::class, new EventDispatcherFactory(
+            $configuration['registry'] ?? null,
         )));
 
-        $container->getDefinition(Registry::class)->addAlias(RegistryInterface::class);
-        $container->getDefinition(EventDispatcher::class)->addAlias(EventDispatcherInterface::class);
-        $container->getDefinition(EventDispatcher::class)->addAlias(PsrEventDispatcherInterface::class);
+        $registry->getDefinition(Registry::class)->addAlias(RegistryInterface::class);
+        $registry->getDefinition(EventDispatcher::class)->addAlias(EventDispatcherInterface::class);
+        $registry->getDefinition(EventDispatcher::class)->addAlias(PsrEventDispatcherInterface::class);
 
-        $container->addProcessorForInstanceOf(EventDispatcherAwareInterface::class, new EventDispatcherAwareProcessor(
-            $configurations['processors']['event-dispatcher-aware']['event-dispatcher'] ?? null,
+        $registry->addProcessorForInstanceOf(EventDispatcherAwareInterface::class, new EventDispatcherAwareProcessor(
+            $configuration['processors']['event-dispatcher-aware']['event-dispatcher'] ?? null,
         ));
 
-        $container->addHook(new RegisterListenersHook(
-            $configurations['hooks']['register-listeners']['registry'] ?? null,
+        $registry->addHook(new RegisterListenersHook(
+            $configuration['hooks']['register-listeners']['registry'] ?? null,
         ));
     }
 

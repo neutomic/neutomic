@@ -22,9 +22,10 @@ use Neu\Component\Csrf\Generator\CsrfTokenGeneratorInterface;
 use Neu\Component\Csrf\Generator\UrlSafeCsrfTokenGenerator;
 use Neu\Component\Csrf\Storage\CsrfTokenStorageInterface;
 use Neu\Component\Csrf\Storage\SessionCsrfTokenStorage;
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
+use Neu\Component\DependencyInjection\RegistryInterface;
 use Psl\Type;
 
 /**
@@ -45,26 +46,22 @@ final readonly class CsrfExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    public function register(ContainerBuilderInterface $container): void
+    public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $configurations = $container
-            ->getConfiguration()
-            ->getOfTypeOrDefault('csrf', $this->getConfigurationType(), []);
+        $configuration = $configurations->getOfTypeOrDefault('csrf', $this->getConfigurationType(), []);
 
-        $container->addDefinition(Definition::ofType(UrlSafeCsrfTokenGenerator::class, new UrlSafeCsrfTokenGeneratorFactory()));
-
-        $container->addDefinition(Definition::ofType(SessionCsrfTokenStorage::class, new SessionCsrfTokenStorageFactory(
-            $configurations['storage']['prefix'] ?? null,
+        $registry->addDefinition(Definition::ofType(UrlSafeCsrfTokenGenerator::class, new UrlSafeCsrfTokenGeneratorFactory()));
+        $registry->addDefinition(Definition::ofType(SessionCsrfTokenStorage::class, new SessionCsrfTokenStorageFactory(
+            $configuration['storage']['prefix'] ?? null,
+        )));
+        $registry->addDefinition(Definition::ofType(CsrfTokenManager::class, new CsrfTokenManagerFactory(
+            $configuration['manager']['generator'] ?? null,
+            $configuration['manager']['storage'] ?? null,
         )));
 
-        $container->addDefinition(Definition::ofType(CsrfTokenManager::class, new CsrfTokenManagerFactory(
-            $configurations['manager']['generator'] ?? null,
-            $configurations['manager']['storage'] ?? null,
-        )));
-
-        $container->getDefinition(UrlSafeCsrfTokenGenerator::class)->addAlias(CsrfTokenGeneratorInterface::class);
-        $container->getDefinition(SessionCsrfTokenStorage::class)->addAlias(CsrfTokenStorageInterface::class);
-        $container->getDefinition(CsrfTokenManager::class)->addAlias(CsrfTokenManagerInterface::class);
+        $registry->getDefinition(UrlSafeCsrfTokenGenerator::class)->addAlias(CsrfTokenGeneratorInterface::class);
+        $registry->getDefinition(SessionCsrfTokenStorage::class)->addAlias(CsrfTokenStorageInterface::class);
+        $registry->getDefinition(CsrfTokenManager::class)->addAlias(CsrfTokenManagerInterface::class);
     }
 
     /**

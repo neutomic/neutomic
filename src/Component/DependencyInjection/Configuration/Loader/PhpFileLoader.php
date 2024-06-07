@@ -11,11 +11,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Configuration\Loader;
+namespace Neu\Component\DependencyInjection\Configuration\Loader;
 
-use Neu\Component\Configuration\ConfigurationContainer;
-use Neu\Component\Configuration\ConfigurationContainerInterface;
-use Neu\Component\Configuration\Exception\InvalidConfigurationException;
+use Neu\Component\DependencyInjection\Configuration\Document;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
+use Neu\Component\DependencyInjection\Exception\InvalidConfigurationException;
 use Psl\Filesystem;
 use Psl\Str;
 use Psl\Type;
@@ -23,30 +23,29 @@ use Psl\Type;
 /**
  * @implements LoaderInterface<non-empty-string>
  */
-final class PHPFileLoader implements LoaderInterface
+final class PhpFileLoader implements LoaderInterface
 {
     /**
      * @inheritDoc
      */
-    public function load(mixed $resource): ConfigurationContainerInterface
+    public function load(mixed $resource): DocumentInterface
     {
-        /** @var array<string, mixed>|mixed $data */
+        /** @var mixed $data */
         $data = (static function () use ($resource): mixed {
             /** @psalm-suppress UnresolvableInclude */
             return @require $resource;
         })();
 
-
         try {
             $data = Type\dict(Type\string(), Type\mixed())->coerce($data);
         } catch (Type\Exception\CoercionException $previous) {
             throw new InvalidConfigurationException(
-                'Failed to coerce php resource file "' . $resource . '".',
+                'failed to coerce php resource file "' . $resource . '".',
                 previous: $previous
             );
         }
 
-        return new ConfigurationContainer($data);
+        return new Document($data);
     }
 
     /**

@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Neu\Tests\Component\Configuration\Resolver;
 
-use Neu\Component\Configuration\Exception\NoSupportiveLoaderException;
-use Neu\Component\Configuration\Loader\LoaderInterface;
-use Neu\Component\Configuration\Loader\ResolverAwareLoaderInterface;
-use Neu\Component\Configuration\Resolver\Resolver;
+use Neu\Component\DependencyInjection\Configuration\Loader\LoaderInterface;
+use Neu\Component\DependencyInjection\Configuration\Loader\ResolverAwareLoaderInterface;
+use Neu\Component\DependencyInjection\Configuration\Resolver\Resolver;
+use Neu\Component\DependencyInjection\Exception\NoSupportiveLoaderException;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
@@ -54,7 +54,7 @@ final class ResolverTest extends TestCase
         $loader2->expects(static::once())->method('supports')->with('file.yaml')->willReturn(false);
 
         $this->expectException(NoSupportiveLoaderException::class);
-        $this->expectExceptionMessage('Unable to load resource "file.yaml": no supportive loader found.');
+        $this->expectExceptionMessage('unable to load resource "file.yaml": no supportive loader found.');
 
         $resolver->resolve('file.yaml');
     }
@@ -75,7 +75,7 @@ final class ResolverTest extends TestCase
         $loader2->expects(static::once())->method('supports')->with([])->willReturn(false);
 
         $this->expectException(NoSupportiveLoaderException::class);
-        $this->expectExceptionMessage('Unable to load resource "{array}": no supportive loader found.');
+        $this->expectExceptionMessage('unable to load resource "{array}": no supportive loader found.');
 
         $resolver->resolve([]);
     }

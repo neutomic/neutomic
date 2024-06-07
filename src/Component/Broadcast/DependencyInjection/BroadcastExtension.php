@@ -26,11 +26,12 @@ use Neu\Component\Broadcast\Transport\LocalTransport;
 use Neu\Component\Broadcast\Transport\MemoryTransport;
 use Neu\Component\Broadcast\Transport\PostgresTransport;
 use Neu\Component\Broadcast\Transport\TransportInterface;
-use Neu\Component\Configuration\Exception\InvalidConfigurationException;
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
+use Neu\Component\DependencyInjection\Exception\InvalidConfigurationException;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\ExtensionInterface;
+use Neu\Component\DependencyInjection\RegistryInterface;
 use Psl\Class;
 use Psl\Type;
 
@@ -74,10 +75,9 @@ final class BroadcastExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    public function register(ContainerBuilderInterface $container): void
+    public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $configuration = $container
-            ->getConfiguration()
+        $configuration = $configurations
             ->getOfTypeOrDefault('broadcast', $this->getConfigurationType(), [])
         ;
 
@@ -88,23 +88,23 @@ final class BroadcastExtension implements ExtensionInterface
             $hubs = ['default' => ['transport' => 'local']];
         }
 
-        $hubServices = $this->registerHubs($container, $hubs);
+        $hubServices = $this->registerHubs($registry, $hubs);
         $defaultHub = $configuration['default'] ?? array_key_first($hubServices);
 
-        $this->setDefaultHub($container, $hubServices, $defaultHub);
+        $this->setDefaultHub($registry, $hubServices, $defaultHub);
 
-        $this->registerHubManager($container, $defaultHub, $hubServices);
+        $this->registerHubManager($registry, $defaultHub, $hubServices);
     }
 
     /**
      * Register broadcast hubs.
      *
-     * @param ContainerBuilderInterface $container
+     * @param RegistryInterface $registry
      * @param non-empty-array<non-empty-string, TransportConfiguration> $hubs
      *
      * @return non-empty-array<non-empty-string, non-empty-string> Map of hub names to hub service IDs
      */
-    private function registerHubs(ContainerBuilderInterface $container, array $hubs): array
+    private function registerHubs(RegistryInterface $registry, array $hubs): array
     {
         $hubServices = [];
 
@@ -120,18 +120,18 @@ final class BroadcastExtension implements ExtensionInterface
                 }
 
                 $registeredLocalTransport = true;
-                $this->registerLocalTransport($container, $transportServiceId);
+                $this->registerLocalTransport($registry, $transportServiceId);
             } elseif ('memory' === $transport) {
-                $this->registerMemoryTransport($container, $transportServiceId);
+                $this->registerMemoryTransport($registry, $transportServiceId);
             } elseif ('pgsql' === $transport || 'postgres' === $transport || 'postgresql' === $transport) {
                 /** @var PostgresTransportConfiguration $config */
-                $this->registerPostgresTransport($container, $transportServiceId, $config);
+                $this->registerPostgresTransport($registry, $transportServiceId, $config);
             } else {
                 /** @var ServiceTransportConfiguration $config */
-                $this->registerServiceTransport($container, $transportServiceId, $config);
+                $this->registerServiceTransport($registry, $transportServiceId, $config);
             }
 
-            $container->addDefinition(Definition::create($hubServiceId, HubInterface::class, new HubFactory($transportServiceId)));
+            $registry->addDefinition(Definition::create($hubServiceId, HubInterface::class, new HubFactory($transportServiceId)));
 
             $hubServices[$name] = $hubServiceId;
         }
@@ -142,39 +142,39 @@ final class BroadcastExtension implements ExtensionInterface
     /**
      * Register a memory transport.
      *
-     * @param ContainerBuilderInterface $container
+     * @param RegistryInterface $registry
      * @param non-empty-string $serviceId
      */
-    private function registerMemoryTransport(ContainerBuilderInterface $container, string $serviceId): void
+    private function registerMemoryTransport(RegistryInterface $registry, string $serviceId): void
     {
-        $container->addDefinition(Definition::create($serviceId, MemoryTransport::class, new MemoryTransportFactory()));
+        $registry->addDefinition(Definition::create($serviceId, MemoryTransport::class, new MemoryTransportFactory()));
     }
 
     /**
      * Register a local broadcast transport.
      *
-     * @param ContainerBuilderInterface $container
+     * @param RegistryInterface $registry
      * @param non-empty-string $serviceId
      */
-    private function registerLocalTransport(ContainerBuilderInterface $container, string $serviceId): void
+    private function registerLocalTransport(RegistryInterface $registry, string $serviceId): void
     {
-        $container->addDefinition(Definition::create($serviceId, LocalTransport::class, new LocalTransportFactory()));
+        $registry->addDefinition(Definition::create($serviceId, LocalTransport::class, new LocalTransportFactory()));
     }
 
     /**
      * Register a postgres broadcast transport.
      *
-     * @param ContainerBuilderInterface $container
+     * @param RegistryInterface $registry
      * @param non-empty-string $serviceId
      * @param PostgresTransportConfiguration $config
      */
-    private function registerPostgresTransport(ContainerBuilderInterface $container, string $serviceId, array $config): void
+    private function registerPostgresTransport(RegistryInterface $registry, string $serviceId, array $config): void
     {
         if (!Class\exists(PostgresConfig::class)) {
             throw new InvalidConfigurationException('The "amphp/postgres" package is required to use the postgres broadcast transport.');
         }
 
-        $container->addDefinition(Definition::create($serviceId, PostgresTransport::class, new PostgresTransportFactory(
+        $registry->addDefinition(Definition::create($serviceId, PostgresTransport::class, new PostgresTransportFactory(
             host: $config['host'],
             port: $config['port'] ?? null,
             user: $config['user'] ?? $config['username'] ?? null,
@@ -188,13 +188,13 @@ final class BroadcastExtension implements ExtensionInterface
     /**
      * Register a custom service transport.
      *
-     * @param ContainerBuilderInterface $container
+     * @param RegistryInterface $registry
      * @param non-empty-string $serviceId
      * @param ServiceTransportConfiguration $config
      */
-    private function registerServiceTransport(ContainerBuilderInterface $container, string $serviceId, array $config): void
+    private function registerServiceTransport(RegistryInterface $registry, string $serviceId, array $config): void
     {
-        $serviceDefinition = $container->getDefinition($config['service']);
+        $serviceDefinition = $registry->getDefinition($config['service']);
 
         if (!$serviceDefinition->isInstanceOf(TransportInterface::class)) {
             throw new InvalidConfigurationException('The service "' . $config['service'] . '" must implement "' . TransportInterface::class . '".');
@@ -206,20 +206,20 @@ final class BroadcastExtension implements ExtensionInterface
     /**
      * Set the default broadcast hub.
      *
-     * @param ContainerBuilderInterface $container
+     * @param RegistryInterface $registry
      * @param array<non-empty-string, non-empty-string> $hubServices
      * @param non-empty-string $defaultHub
      */
-    private function setDefaultHub(ContainerBuilderInterface $container, array $hubServices, string $defaultHub): void
+    private function setDefaultHub(RegistryInterface $registry, array $hubServices, string $defaultHub): void
     {
         if (!isset($hubServices[$defaultHub])) {
-            if (!$container->hasDefinition($defaultHub)) {
+            if (!$registry->hasDefinition($defaultHub)) {
                 throw new InvalidConfigurationException('The default broadcast hub "' . $defaultHub . '" is not defined.');
             }
 
-            $definition = $container->getDefinition($defaultHub);
+            $definition = $registry->getDefinition($defaultHub);
         } else {
-            $definition = $container->getDefinition($hubServices[$defaultHub]);
+            $definition = $registry->getDefinition($hubServices[$defaultHub]);
         }
 
         if (!$definition->isInstanceOf(HubInterface::class)) {
@@ -232,16 +232,16 @@ final class BroadcastExtension implements ExtensionInterface
     /**
      * Register the {@see HubManager} service.
      *
-     * @param ContainerBuilderInterface $container
+     * @param RegistryInterface $registry
      * @param non-empty-string $defaultHubId
      * @param array<non-empty-string, non-empty-string> $hubServices
      */
-    private function registerHubManager(ContainerBuilderInterface $container, string $defaultHubId, array $hubServices): void
+    private function registerHubManager(RegistryInterface $registry, string $defaultHubId, array $hubServices): void
     {
         $definition = Definition::ofType(HubManager::class, new HubManagerFactory($defaultHubId, $hubServices));
         $definition->addAlias(HubManagerInterface::class);
 
-        $container->addDefinition($definition);
+        $registry->addDefinition($definition);
     }
 
     /**

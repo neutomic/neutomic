@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\DependencyInjection;
 
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
+
 /**
  * Represents an extension that is composed of multiple extensions.
  *
@@ -33,7 +35,9 @@ interface CompositeExtensionInterface extends ExtensionInterface
      *
      * The extensions will be registered in the order they are returned.
      *
+     * @param DocumentInterface $configurations The configuration document.
+     *
      * @return list<ExtensionInterface> The extensions to be registered.
      */
-    public function getExtensions(): array;
+    public function getExtensions(DocumentInterface $configurations): array;
 }

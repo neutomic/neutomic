@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Server\DependencyInjection;
 
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
+use Neu\Component\DependencyInjection\RegistryInterface;
 use Neu\Component\Http\Server\Cluster;
 use Neu\Component\Http\Server\ClusterInterface;
 use Neu\Component\Http\Server\ClusterWorker;
@@ -54,21 +55,15 @@ use Psl\Type;
  */
 final readonly class ServerExtension implements ExtensionInterface
 {
-    public function register(ContainerBuilderInterface $container): void
+    /**
+     * @inheritDoc
+     */
+    public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $defaultLogger = $container
-            ->getConfiguration()
-            ->getContainer('http')
-            ->getOfTypeOrDefault('logger', Type\non_empty_string(), null)
-        ;
+        $defaultLogger = $configurations->getDocument('http')->getOfTypeOrDefault('logger', Type\non_empty_string(), null);
+        $configuration = $configurations->getDocument('http')->getOfTypeOrDefault('server', $this->getConfigurationType(), []);
 
-        $configuration = $container
-            ->getConfiguration()
-            ->getContainer('http')
-            ->getOfTypeOrDefault('server', $this->getConfigurationType(), [])
-        ;
-
-        $container->addDefinition(Definition::ofType(ServerInfrastructure::class, new ServerInfrastructureFactory(
+        $registry->addDefinition(Definition::ofType(ServerInfrastructure::class, new ServerInfrastructureFactory(
             serverSocketConfigurations: $configuration['sockets'] ?? null,
             connectionLimit: $configuration['connection-limit'] ?? null,
             connectionLimitPerIP: $configuration['connection-limit-per-ip'] ?? null,
@@ -79,27 +74,24 @@ final readonly class ServerExtension implements ExtensionInterface
             tlsHandshakeTimeout: $configuration['tls-handshake-timeout'] ?? null,
             logger: $configuration['logger'] ?? $defaultLogger ?? null,
         )));
-
-        $container->addDefinition(Definition::ofType(Server::class, new ServerFactory(
+        $registry->addDefinition(Definition::ofType(Server::class, new ServerFactory(
             runtime: $configuration['runtime'] ?? null,
             eventDispatcher: $configuration['event-dispatcher'] ?? null,
             logger: $configuration['logger'] ?? $defaultLogger ?? null,
         )));
-
-        $container->addDefinition(Definition::ofType(ClusterWorker::class, new ClusterWorkerFactory(
+        $registry->addDefinition(Definition::ofType(ClusterWorker::class, new ClusterWorkerFactory(
             dispatcher: $configuration['event-dispatcher'] ?? null,
             logger: $configuration['cluster']['logger'] ?? $defaultLogger ?? null,
         )));
-
-        $container->addDefinition(Definition::ofType(Cluster::class, new ClusterFactory(
+        $registry->addDefinition(Definition::ofType(Cluster::class, new ClusterFactory(
             logger: $configuration['cluster']['logger'] ?? $defaultLogger ?? null,
             eventDispatcher: $configuration['event-dispatcher'] ?? null,
             workers: $configuration['cluster']['workers'] ?? null,
         )));
 
-        $container->getDefinition(Server::class)->addAlias(ServerInterface::class);
-        $container->getDefinition(Cluster::class)->addAlias(ClusterInterface::class);
-        $container->getDefinition(ClusterWorker::class)->addAlias(ClusterWorkerInterface::class);
+        $registry->getDefinition(Server::class)->addAlias(ServerInterface::class);
+        $registry->getDefinition(Cluster::class)->addAlias(ClusterInterface::class);
+        $registry->getDefinition(ClusterWorker::class)->addAlias(ClusterWorkerInterface::class);
     }
 
     /**

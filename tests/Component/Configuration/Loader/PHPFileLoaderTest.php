@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Tests\Component\Configuration\Loader;
 
-use Neu\Component\Configuration\Exception\InvalidConfigurationException;
-use Neu\Component\Configuration\Loader\PHPFileLoader;
+use Neu\Component\DependencyInjection\Configuration\Loader\PhpFileLoader;
+use Neu\Component\DependencyInjection\Exception\InvalidConfigurationException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -22,7 +22,7 @@ final class PHPFileLoaderTest extends TestCase
 {
     public function testLoadFile(): void
     {
-        $loader = new PHPFileLoader();
+        $loader = new PhpFileLoader();
         $configuration = $loader->load(__DIR__ . '/../Resources/config/configuration.php');
 
         static::assertTrue($configuration->has('foo'));
@@ -31,10 +31,10 @@ final class PHPFileLoaderTest extends TestCase
 
     public function testLoadFileFails(): void
     {
-        $loader = new PHPFileLoader();
+        $loader = new PhpFileLoader();
 
         $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage('Failed to coerce php resource file');
+        $this->expectExceptionMessage('failed to coerce php resource file');
 
         $loader->load(__DIR__ . '/../Resources/invalid-config/configuration.invalid.php');
     }
@@ -43,7 +43,7 @@ final class PHPFileLoaderTest extends TestCase
     #[DataProvider('getSupportCases')]
     public function testSupport(mixed $resource, bool $supported): void
     {
-        $loader = new PHPFileLoader();
+        $loader = new PhpFileLoader();
 
         static::assertSame($supported, $loader->supports($resource));
     }

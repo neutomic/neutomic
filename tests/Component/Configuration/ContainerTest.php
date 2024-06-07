@@ -14,18 +14,19 @@ declare(strict_types=1);
 namespace Neu\Tests\Component\Configuration;
 
 use Closure;
-use Neu\Component\Configuration\ConfigurationContainer;
-use Neu\Component\Configuration\ConfigurationContainerInterface;
-use Neu\Component\Configuration\Exception\InvalidEntryException;
-use Neu\Component\Configuration\Exception\MissingEntryException;
+use Neu\Component\DependencyInjection\Configuration\Document;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
+use Neu\Component\DependencyInjection\Exception\InvalidEntryException;
+use Neu\Component\DependencyInjection\Exception\MissingEntryException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Psl\Type;
 
 final class ContainerTest extends TestCase
 {
     public function testHas(): void
     {
-        $configuration = new ConfigurationContainer([
+        $configuration = new Document([
             'foo' => null,
             'bar' => false,
             'baz' => []
@@ -39,7 +40,7 @@ final class ContainerTest extends TestCase
 
     public function testGet(): void
     {
-        $configuration = new ConfigurationContainer([
+        $configuration = new Document([
             'foo' => $this,
         ]);
 
@@ -48,7 +49,7 @@ final class ContainerTest extends TestCase
 
     public function testGetThrowsForUndefinedEntries(): void
     {
-        $configuration = new ConfigurationContainer([]);
+        $configuration = new Document([]);
 
         $this->expectException(MissingEntryException::class);
         $this->expectExceptionMessage('Entry "foo" does not exist within the container.');
@@ -58,7 +59,7 @@ final class ContainerTest extends TestCase
 
     public function testTypedGetters(): void
     {
-        $configuration = new ConfigurationContainer([
+        $configuration = new Document([
             'foo' => '12',
             'bar' => '0',
             'baz' => '1',
@@ -70,20 +71,16 @@ final class ContainerTest extends TestCase
             ],
         ]);
 
-        static::assertSame(12, $configuration->getInt('foo'));
-        static::assertSame(12.0, $configuration->getFloat('foo'));
-        static::assertSame('12', $configuration->getString('foo'));
-        static::assertFalse($configuration->getBool('bar'));
-        static::assertTrue($configuration->getBool('baz'));
-        static::assertTrue($configuration->getBool('qux'));
+        static::assertSame('12', $configuration->get('foo'));
+        static::assertSame(12, $configuration->getOfType('foo', Type\int()));
 
-        static::assertSame([1, 'two'], $configuration->getContainer('quxx')->getContainer('foo')->getIndices());
+        static::assertSame([1, 'two'], $configuration->getDocument('quxx')->getDocument('foo')->getIndices());
     }
 
     #[DataProvider('provideInvalidGetOperations')]
     public function testInvalidGetOperations(array $entries, Closure $operation, string $message): void
     {
-        $container = new ConfigurationContainer($entries);
+        $container = new Document($entries);
 
         $this->expectException(InvalidEntryException::class);
         $this->expectExceptionMessage($message);
@@ -92,46 +89,22 @@ final class ContainerTest extends TestCase
     }
 
     /**
-     * @return iterable<array{array, Closure(ConfigurationContainerInterface): mixed, string}>
+     * @return iterable<array{array, Closure(DocumentInterface): mixed, string}>
      */
     public static function provideInvalidGetOperations(): iterable
     {
         yield [
-            ['foo' => [1, 2, 3]],
-            static fn (ConfigurationContainerInterface $container) => $container->getString('foo'),
-            'Entry "foo" value cannot be coerced into the expected type string'
-        ];
-
-        yield [
-            ['foo' => [1, 2, 3]],
-            static fn (ConfigurationContainerInterface $container) => $container->getInt('foo'),
-            'Entry "foo" value cannot be coerced into the expected type int'
-        ];
-
-        yield [
-            ['foo' => [1, 2, 3]],
-            static fn (ConfigurationContainerInterface $container) => $container->getFloat('foo'),
-            'Entry "foo" value cannot be coerced into the expected type float'
-        ];
-
-        yield [
             ['foo' => 'hello'],
-            static fn (ConfigurationContainerInterface $container) => $container->getBool('foo'),
-            'Entry "foo" value cannot be coerced into the expected type bool'
-        ];
-
-        yield [
-            ['foo' => 'hello'],
-            static fn (ConfigurationContainerInterface $container) => $container->getContainer('foo'),
-            'Entry "foo" value cannot be coerced into the expected type dict<array-key, mixed>'
+            static fn (DocumentInterface $container) => $container->getDocument('foo'),
+            'Entry "foo" value cannot be coerced into the expected type "dict<array-key, mixed>"'
         ];
     }
 
     public function testMerge(): void
     {
-        $configuration1 = new ConfigurationContainer(['foo' => '12']);
-        $configuration2 = new ConfigurationContainer(['bar' => '13']);
-        $configuration3 = $configuration1->merge($configuration2);
+        $configuration1 = new Document(['foo' => '12']);
+        $configuration2 = new Document(['bar' => '13']);
+        $configuration3 = $configuration1->replace($configuration2);
 
         static::assertNotSame($configuration3, $configuration1);
         static::assertNotSame($configuration3, $configuration2);
@@ -150,9 +123,9 @@ final class ContainerTest extends TestCase
 
     public function testReplacesRecursive(): void
     {
-        $configuration1 = new ConfigurationContainer(['foo' => ['12'], 'bar' => ['qux' => ['1']]]);
-        $configuration2 = new ConfigurationContainer(['bar' => ['baz' => '2', 'qux' => ['2']]]);
-        $configuration3 = $configuration1->merge($configuration2);
+        $configuration1 = new Document(['foo' => ['12'], 'bar' => ['qux' => ['1']]]);
+        $configuration2 = new Document(['bar' => ['baz' => '2', 'qux' => ['2']]]);
+        $configuration3 = $configuration1->replace($configuration2);
 
         static::assertNotSame($configuration3, $configuration1);
         static::assertNotSame($configuration3, $configuration2);

@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Neu\Tests\Component\Configuration\Loader;
 
-use Neu\Component\Configuration\Exception\LogicException;
-use Neu\Component\Configuration\Loader\DirectoryLoader;
-use Neu\Component\Configuration\Loader\JsonFileLoader;
-use Neu\Component\Configuration\Loader\PHPFileLoader;
-use Neu\Component\Configuration\Resolver\Resolver;
+use Neu\Component\DependencyInjection\Configuration\Loader\DirectoryLoader;
+use Neu\Component\DependencyInjection\Configuration\Loader\JsonFileLoader;
+use Neu\Component\DependencyInjection\Configuration\Loader\PhpFileLoader;
+use Neu\Component\DependencyInjection\Configuration\Resolver\Resolver;
+use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -26,7 +26,7 @@ final class DirectoryLoaderTest extends TestCase
     public function testLoadFile(): void
     {
         $loader = new DirectoryLoader();
-        $resolver = new Resolver([new PHPFileLoader(), new JsonFileLoader(), $loader]);
+        $resolver = new Resolver([new PhpFileLoader(), new JsonFileLoader(), $loader]);
 
         $resource = __DIR__ . '/../Resources/config/';
 
@@ -45,7 +45,7 @@ final class DirectoryLoaderTest extends TestCase
     {
         $loader = new DirectoryLoader();
 
-        $this->expectException(LogicException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
             'Resolver has not been set on the "' . DirectoryLoader::class . '" loader, make sure to call "' . DirectoryLoader::class . '::setResolver()" before attempting to load resources.'
         );

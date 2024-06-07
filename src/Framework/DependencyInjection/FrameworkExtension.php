@@ -18,8 +18,9 @@ use Neu\Component\Cache\DependencyInjection\CacheExtension;
 use Neu\Component\Console\DependencyInjection\ConsoleExtension;
 use Neu\Component\Csrf\DependencyInjection\CsrfExtension;
 use Neu\Component\DependencyInjection\CompositeExtensionInterface;
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
+use Neu\Component\DependencyInjection\RegistryInterface;
 use Neu\Component\EventDispatcher\DependencyInjection\EventDispatcherExtension;
 use Neu\Component\Http\DependencyInjection\HttpExtension;
 use Neu\Framework\Command;
@@ -128,16 +129,13 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
     /**
      * @inheritDoc
      */
-    public function register(ContainerBuilderInterface $container): void
+    public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $configuration = $container
-            ->getConfiguration()
-            ->getOfTypeOrDefault('framework', $this->getConfigurationType(), [])
-        ;
+        $configuration = $configurations->getOfTypeOrDefault('framework', $this->getConfigurationType(), []);
 
         $advisoryAdviceCommandConfiguration = $configuration['commands']['advisory']['advice'] ?? [];
         if (false !== $advisoryAdviceCommandConfiguration) {
-            $container->addDefinition(Definition::ofType(
+            $registry->addDefinition(Definition::ofType(
                 Command\Advisory\AdviceCommand::class,
                 new Factory\Command\Advisory\AdviceCommandFactory(
                     advisory: $advisoryAdviceCommandConfiguration['advisory'] ?? null,
@@ -147,7 +145,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
 
         $httpServerStartCommandConfiguration = $configuration['commands']['http']['server']['start'] ?? [];
         if (false !== $httpServerStartCommandConfiguration) {
-            $container->addDefinition(Definition::ofType(
+            $registry->addDefinition(Definition::ofType(
                 Command\Http\Server\StartCommand::class,
                 new Factory\Command\Http\Server\StartCommandFactory(),
             ));
@@ -155,7 +153,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
 
         $httpServerClusterCommandConfiguration = $configuration['commands']['http']['server']['cluster'] ?? [];
         if (false !== $httpServerClusterCommandConfiguration) {
-            $container->addDefinition(Definition::ofType(
+            $registry->addDefinition(Definition::ofType(
                 Command\Http\Server\ClusterCommand::class,
                 new Factory\Command\Http\Server\ClusterCommandFactory(
                     watchInterval: $httpServerClusterCommandConfiguration['watch']['interval'] ?? null,
@@ -167,7 +165,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
 
         $advisoryBeforeExecuteEventListenerConfiguration = $configuration['listeners']['advisory']['before-execute'] ?? [];
         if (false !== $advisoryBeforeExecuteEventListenerConfiguration) {
-            $container->addDefinition(Definition::ofType(
+            $registry->addDefinition(Definition::ofType(
                 Listener\Advisory\BeforeExecuteEventListener::class,
                 new Factory\Listener\Advisory\BeforeExecuteEventListenerFactory(
                     advisory: $advisoryBeforeExecuteEventListenerConfiguration['advisory'] ?? null,
@@ -177,7 +175,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
 
         $broadcastServerStoppingEventListenerConfiguration = $configuration['listeners']['broadcast']['server-stopping'] ?? [];
         if (false !== $broadcastServerStoppingEventListenerConfiguration) {
-            $container->addDefinition(Definition::ofType(
+            $registry->addDefinition(Definition::ofType(
                 Listener\Broadcast\ServerStoppingEventListener::class,
                 new Factory\Listener\Broadcast\ServerStoppingEventListenerFactory(
                     hubManager: $broadcastServerStoppingEventListenerConfiguration['hub-manager'] ?? null,
@@ -187,7 +185,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
 
         $cacheServerStoppingEventListenerConfiguration = $configuration['listeners']['cache']['server-stopping'] ?? [];
         if (false !== $cacheServerStoppingEventListenerConfiguration) {
-            $container->addDefinition(Definition::ofType(
+            $registry->addDefinition(Definition::ofType(
                 Listener\Cache\ServerStoppingEventListener::class,
                 new Factory\Listener\Cache\ServerStoppingEventListenerFactory(
                     storeManager: $cacheServerStoppingEventListenerConfiguration['store-manager'] ?? null,
@@ -197,7 +195,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
 
         $databaseServerStoppingEventListenerConfiguration = $configuration['listeners']['database']['server-stopping'] ?? [];
         if (false !== $databaseServerStoppingEventListenerConfiguration) {
-            $container->addDefinition(Definition::ofType(
+            $registry->addDefinition(Definition::ofType(
                 Listener\Database\ServerStoppingEventListener::class,
                 new Factory\Listener\Database\ServerStoppingEventListenerFactory(
                     databaseManager: $databaseServerStoppingEventListenerConfiguration['database-manager'] ?? null,
@@ -207,7 +205,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
 
         $xPoweredByMiddlewareConfiguration = $configuration['middleware']['x-powered-by'] ?? [];
         if (false !== $xPoweredByMiddlewareConfiguration) {
-            $container->addDefinition(Definition::ofType(
+            $registry->addDefinition(Definition::ofType(
                 Middleware\XPoweredByMiddleware::class,
                 new Factory\Middleware\XPoweredByMiddlewareFactory(
                     poweredBy: $xPoweredByMiddlewareConfiguration['powered-by'] ?? null,
@@ -218,7 +216,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
 
         $accessLogMiddlewareConfiguration = $configuration['middleware']['access-log'] ?? [];
         if (false !== $accessLogMiddlewareConfiguration) {
-            $container->addDefinition(Definition::ofType(
+            $registry->addDefinition(Definition::ofType(
                 Middleware\AccessLogMiddleware::class,
                 new Factory\Middleware\AccessLogMiddlewareFactory(
                     logger: $accessLogMiddlewareConfiguration['logger'] ?? null,
@@ -229,7 +227,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
 
         $routerMiddlewareConfiguration = $configuration['middleware']['router'] ?? [];
         if (false !== $routerMiddlewareConfiguration) {
-            $container->addDefinition(Definition::ofType(
+            $registry->addDefinition(Definition::ofType(
                 Middleware\RouterMiddleware::class,
                 new Factory\Middleware\RouterMiddlewareFactory(
                     matcher: $routerMiddlewareConfiguration['matcher'] ?? null,
@@ -240,7 +238,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
 
         $sessionMiddlewareConfiguration = $configuration['middleware']['session'] ?? [];
         if (false !== $sessionMiddlewareConfiguration) {
-            $container->addDefinition(Definition::ofType(
+            $registry->addDefinition(Definition::ofType(
                 Middleware\SessionMiddleware::class,
                 new Factory\Middleware\SessionMiddlewareFactory(
                     persistence: $sessionMiddlewareConfiguration['persistence'] ?? null,
@@ -251,7 +249,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
 
         $compressionMiddlewareConfiguration = $configuration['middleware']['compression'] ?? [];
         if (false !== $compressionMiddlewareConfiguration) {
-            $container->addDefinition(Definition::ofType(
+            $registry->addDefinition(Definition::ofType(
                 Middleware\CompressionMiddleware::class,
                 new Factory\Middleware\CompressionMiddlewareFactory(
                     logger: $compressionMiddlewareConfiguration['logger'] ?? null,
@@ -267,7 +265,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
 
         $staticContentMiddlewareConfiguration = $configuration['middleware']['static-content'] ?? [];
         if (false !== $staticContentMiddlewareConfiguration) {
-            $container->addDefinition(Definition::ofType(
+            $registry->addDefinition(Definition::ofType(
                 Middleware\StaticContentMiddleware::class,
                 new Factory\Middleware\StaticContentMiddlewareFactory(
                     deliverer: $staticContentMiddlewareConfiguration['deliverer'] ?? null,
@@ -280,11 +278,11 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
         }
 
         // If no logger is defined, define a null logger to prevent errors.
-        if (!$container->hasDefinition(LoggerInterface::class)) {
+        if (!$registry->hasDefinition(LoggerInterface::class)) {
             $definition = Definition::ofType(NullLogger::class);
             $definition->addAlias(LoggerInterface::class);
 
-            $container->addDefinition($definition);
+            $registry->addDefinition($definition);
         }
 
         $definition = Definition::ofType(Engine::class, new Factory\EngineFactory(
@@ -298,13 +296,13 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
 
         $definition->addAlias(EngineInterface::class);
 
-        $container->addDefinition($definition);
+        $registry->addDefinition($definition);
     }
 
     /**
      * @inheritDoc
      */
-    public function getExtensions(): array
+    public function getExtensions(DocumentInterface $configurations): array
     {
         return [
             new AdvisoryExtension(),

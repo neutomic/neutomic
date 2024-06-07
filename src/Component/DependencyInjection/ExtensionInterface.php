@@ -13,18 +13,18 @@ declare(strict_types=1);
 
 namespace Neu\Component\DependencyInjection;
 
-use Neu\Component\Configuration\Exception\ExceptionInterface as ConfigurationExceptionInterface;
-use Neu\Component\DependencyInjection\Exception\ExceptionInterface as DependencyInjectionExceptionInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
+use Neu\Component\DependencyInjection\Exception\ExceptionInterface;
 
 interface ExtensionInterface
 {
     /**
-     * Register services, processors, etc. in the container.
+     * Register services, processors, etc.
      *
-     * @param ContainerBuilderInterface $container
+     * @param RegistryInterface $registry The container registry.
+     * @param DocumentInterface $configurations The configuration document.
      *
-     * @throws DependencyInjectionExceptionInterface If an error occurs.
-     * @throws ConfigurationExceptionInterface If the configuration is invalid.
+     * @throws ExceptionInterface If an error occurs.
      */
-    public function register(ContainerBuilderInterface $container): void;
+    public function register(RegistryInterface $registry, DocumentInterface $configurations): void;
 }

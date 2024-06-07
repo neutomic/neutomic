@@ -25,7 +25,8 @@ use Neu\Component\Console\DependencyInjection\Factory\Recovery\RecoveryFactory;
 use Neu\Component\Console\DependencyInjection\Hook\RegisterCommandsHook;
 use Neu\Component\Console\Recovery\Recovery;
 use Neu\Component\Console\Recovery\RecoveryInterface;
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
+use Neu\Component\DependencyInjection\RegistryInterface as DIRegistryInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Psl\Type;
@@ -62,6 +63,43 @@ use Psl\Type;
 final readonly class ConsoleExtension implements ExtensionInterface
 {
     /**
+     * @inheritDoc
+     */
+    public function register(DIRegistryInterface $registry, DocumentInterface $configurations): void
+    {
+        /** @var Configuration $configuration */
+        $configuration = $configurations->getOfTypeOrDefault('console', $this->getConfigurationType(), []);
+
+        $registry->addDefinition(Definition::ofType(Configuration::class, new ConfigurationFactory(
+            $configuration['name'] ?? null,
+            $configuration['version'] ?? null,
+            $configuration['banner'] ?? null,
+            $configuration['flags']['help'] ?? null,
+            $configuration['flags']['quiet'] ?? null,
+            $configuration['flags']['verbose'] ?? null,
+            $configuration['flags']['version'] ?? null,
+            $configuration['flags']['ansi'] ?? null,
+            $configuration['flags']['no-ansi'] ?? null,
+            $configuration['flags']['no-interaction'] ?? null,
+        )));
+        $registry->addDefinition(Definition::ofType(Registry::class, new RegistryFactory()));
+        $registry->addDefinition(Definition::ofType(Recovery::class, new RecoveryFactory()));
+        $registry->addDefinition(Definition::ofType(Application::class, new ApplicationFactory(
+            $configuration['application']['configuration'] ?? null,
+            $configuration['application']['registry'] ?? null,
+            $configuration['application']['recovery'] ?? null,
+        )));
+
+        $registry->getDefinition(Registry::class)->addAlias(RegistryInterface::class);
+        $registry->getDefinition(Recovery::class)->addAlias(RecoveryInterface::class);
+        $registry->getDefinition(Application::class)->addAlias(ApplicationInterface::class);
+
+        $registry->addHook(new RegisterCommandsHook(
+            $configuration['hooks']['register-commands']['registry'] ?? null,
+        ));
+    }
+
+    /**
      * @return Type\TypeInterface<Configuration>
      */
     public function getConfigurationType(): Type\TypeInterface
@@ -90,49 +128,5 @@ final readonly class ConsoleExtension implements ExtensionInterface
                 ])),
             ])),
         ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function register(ContainerBuilderInterface $container): void
-    {
-        /** @var Configuration $configurations */
-        $configurations = $container->getConfiguration()->getOfTypeOrDefault('console', $this->getConfigurationType(), []);
-
-        $configuration = Definition::ofType(Configuration::class, new ConfigurationFactory(
-            $configurations['name'] ?? null,
-            $configurations['version'] ?? null,
-            $configurations['banner'] ?? null,
-            $configurations['flags']['help'] ?? null,
-            $configurations['flags']['quiet'] ?? null,
-            $configurations['flags']['verbose'] ?? null,
-            $configurations['flags']['version'] ?? null,
-            $configurations['flags']['ansi'] ?? null,
-            $configurations['flags']['no-ansi'] ?? null,
-            $configurations['flags']['no-interaction'] ?? null,
-        ));
-
-        $container->addDefinition($configuration);
-
-        $registry = Definition::ofType(Registry::class, new RegistryFactory());
-        $registry->addAlias(RegistryInterface::class);
-        $container->addDefinition($registry);
-
-        $recovery = Definition::ofType(Recovery::class, new RecoveryFactory());
-        $recovery->addAlias(RecoveryInterface::class);
-        $container->addDefinition($recovery);
-
-        $application = Definition::ofType(Application::class, new ApplicationFactory(
-            $configurations['application']['configuration'] ?? null,
-            $configurations['application']['registry'] ?? null,
-            $configurations['application']['recovery'] ?? null,
-        ));
-        $application->addAlias(ApplicationInterface::class);
-        $container->addDefinition($application);
-
-        $container->addHook(new RegisterCommandsHook(
-            $configurations['hooks']['register-commands']['registry'] ?? null,
-        ));
     }
 }

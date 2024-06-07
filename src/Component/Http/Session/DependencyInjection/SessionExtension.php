@@ -13,9 +13,11 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Session\DependencyInjection;
 
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
+use Neu\Component\DependencyInjection\Exception\ExceptionInterface;
 use Neu\Component\DependencyInjection\ExtensionInterface;
+use Neu\Component\DependencyInjection\RegistryInterface;
 use Neu\Component\Http\Message\CookieSameSite;
 use Neu\Component\Http\Session\Configuration\CacheConfiguration;
 use Neu\Component\Http\Session\Configuration\CacheLimiter;
@@ -66,20 +68,19 @@ use Psl\Type;
  */
 final readonly class SessionExtension implements ExtensionInterface
 {
-    public function register(ContainerBuilderInterface $container): void
+    /**
+     * @inheritDoc
+     */
+    public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $configuration = $container
-            ->getConfiguration()
-            ->getContainer('http')
-            ->getOfTypeOrDefault('session', $this->getConfigurationType(), [])
-        ;
+        $configuration = $configurations->getDocument('http')->getOfTypeOrDefault('session', $this->getConfigurationType(), []);
 
-        $container->addDefinition(Definition::ofType(CacheConfiguration::class, new CacheConfigurationFactory(
+        $registry->addDefinition(Definition::ofType(CacheConfiguration::class, new CacheConfigurationFactory(
             $configuration['cache']['expires'] ?? null,
             $configuration['cache']['limiter'] ?? null,
         )));
 
-        $container->addDefinition(Definition::ofType(CookieConfiguration::class, new CookieConfigurationFactory(
+        $registry->addDefinition(Definition::ofType(CookieConfiguration::class, new CookieConfigurationFactory(
             $configuration['cookie']['name'] ?? null,
             $configuration['cookie']['lifetime'] ?? null,
             $configuration['cookie']['path'] ?? null,
@@ -92,13 +93,13 @@ final readonly class SessionExtension implements ExtensionInterface
         $handler = $configuration['handler'] ?? ['type' => 'encrypted', 'secret' => null];
         if ('cache' === $handler['type']) {
             /** @var CacheHandlerConfiguration $handler */
-            $this->registerCacheHandler($container, $handler);
+            $this->registerCacheHandler($registry, $handler);
         } else {
             /** @var EncryptedHandlerConfiguration $handler */
-            $this->registerEncryptedHandler($container, $handler);
+            $this->registerEncryptedHandler($registry, $handler);
         }
 
-        $container->addDefinition(Definition::ofType(PersistenceInterface::class, new PersistenceFactory(
+        $registry->addDefinition(Definition::ofType(PersistenceInterface::class, new PersistenceFactory(
             $configuration['persistence']['handler'] ?? null,
             $configuration['persistence']['cookie-configuration'] ?? null,
             $configuration['persistence']['cache-configuration'] ?? null,
@@ -108,33 +109,31 @@ final readonly class SessionExtension implements ExtensionInterface
     /**
      * Register the cache handler.
      *
-     * @param ContainerBuilderInterface $container
      * @param CacheHandlerConfiguration $configuration
+     *
+     * @throws ExceptionInterface
      */
-    private function registerCacheHandler(ContainerBuilderInterface $container, array $configuration): void
+    private function registerCacheHandler(RegistryInterface $registry, array $configuration): void
     {
-        $definition = Definition::ofType(CacheHandler::class, new CacheHandlerFactory(
+        $registry->addDefinition(Definition::ofType(CacheHandler::class, new CacheHandlerFactory(
             $configuration['store'] ?? null,
-        ));
-        $definition->addAlias(HandlerInterface::class);
-
-        $container->addDefinition($definition);
+        )));
+        $registry->getDefinition(CacheHandler::class)->addAlias(HandlerInterface::class);
     }
 
     /**
      * Register the encrypted handler.
      *
-     * @param ContainerBuilderInterface $container
      * @param EncryptedHandlerConfiguration $configuration
+     *
+     * @throws ExceptionInterface
      */
-    private function registerEncryptedHandler(ContainerBuilderInterface $container, array $configuration): void
+    private function registerEncryptedHandler(RegistryInterface $registry, array $configuration): void
     {
-        $definition = Definition::ofType(EncryptedHandler::class, new EncryptedHandlerFactory(
+        $registry->addDefinition(Definition::ofType(EncryptedHandler::class, new EncryptedHandlerFactory(
             $configuration['secret'] ?? null,
-        ));
-        $definition->addAlias(HandlerInterface::class);
-
-        $container->addDefinition($definition);
+        )));
+        $registry->getDefinition(EncryptedHandler::class)->addAlias(HandlerInterface::class);
     }
 
     /**

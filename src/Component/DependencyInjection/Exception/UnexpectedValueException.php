@@ -11,10 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Configuration\Exception;
+namespace Neu\Component\DependencyInjection\Exception;
 
-use Neu\Component\Exception\InvalidArgumentException as RootInvalidArgumentException;
+use Neu\Component\Exception\UnexpectedValueException as RootUnexpectedValueException;
 
-class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface
+class UnexpectedValueException extends RootUnexpectedValueException implements ExceptionInterface
 {
 }

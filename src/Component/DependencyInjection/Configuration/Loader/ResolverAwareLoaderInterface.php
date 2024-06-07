@@ -11,14 +11,14 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Configuration\Loader;
+namespace Neu\Component\DependencyInjection\Configuration\Loader;
 
-use Neu\Component\Configuration\Resolver\ResolverInterface;
+use Neu\Component\DependencyInjection\Configuration\Resolver\ResolverInterface;
 
 /**
- * @template T
+ * @template ResourceType
  *
- * @extends LoaderInterface<T>
+ * @extends LoaderInterface<ResourceType>
  */
 interface ResolverAwareLoaderInterface extends LoaderInterface
 {

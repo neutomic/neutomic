@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\DependencyInjection;
 
 use Neu\Component\DependencyInjection\Exception\InvalidArgumentException;
+use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Psl\Env;
 use Psl\Filesystem;
 use Psl\Str;
@@ -23,9 +24,6 @@ final readonly class Project
 {
     public const string MODE_ENVIRONMENT_VARIABLE = 'PROJECT_MODE';
     public const string DEBUG_ENVIRONMENT_VARIABLE = 'PROJECT_DEBUG';
-
-    private const string DEFAULT_CONFIG = 'config';
-    private const string DEFAULT_SOURCE = 'src';
 
     /**
      * The project mode.
@@ -59,20 +57,6 @@ final readonly class Project
     public string $directory;
 
     /**
-     * The project source, typically the project directory with `src` appended.
-     *
-     * @var non-empty-string|null
-     */
-    public null|string $source;
-
-    /**
-     * The project configuration, typically the project directory with `config` appended.
-     *
-     * @var non-empty-string|null
-     */
-    public null|string $config;
-
-    /**
      * The project entry point.
      *
      * @var non-empty-string
@@ -80,15 +64,13 @@ final readonly class Project
     public string $entrypoint;
 
     /**
-     * Create a new project instance.
+     * Create a new {@see Project} instance.
      *
      * @param ProjectMode $mode The project mode.
      * @param bool $debug The project debug mode.
      * @param non-empty-string $secret The project secret.
      * @param non-empty-string $name The project name.
      * @param non-empty-string $directory The project directory.
-     * @param non-empty-string|null $source The project source.
-     * @param non-empty-string|null $config The project configuration.
      * @param non-empty-string $entrypoint The project entry point.
      */
     private function __construct(
@@ -98,8 +80,6 @@ final readonly class Project
         string $secret,
         string $name,
         string $directory,
-        null|string $source,
-        null|string $config,
         string $entrypoint,
     ) {
         $this->mode = $mode;
@@ -107,8 +87,6 @@ final readonly class Project
         $this->secret = $secret;
         $this->name = $name;
         $this->directory = $directory;
-        $this->source = $source;
-        $this->config = $config;
         $this->entrypoint = $entrypoint;
     }
 
@@ -116,8 +94,6 @@ final readonly class Project
      * Create a new project instance from a directory, and an entry point.
      *
      * This method will infer the project mode from the environment, and use the directory name as the project name.
-     *
-     * For source and configuration, it will use the default values: `src` and `config`.
      *
      * @param string $secret The project secret.
      * @param non-empty-string $directory The project directory.
@@ -144,11 +120,34 @@ final readonly class Project
         $directory = Filesystem\canonicalize($directory) ?? $directory;
         $name = Filesystem\get_basename($directory);
 
-        $source = $directory . Filesystem\SEPARATOR . self::DEFAULT_SOURCE;
-        $config = $directory . Filesystem\SEPARATOR . self::DEFAULT_CONFIG;
+        /** @var non-empty-string $secret */
+        return new self($mode, $debug, $secret, $name, $directory, $entrypoint);
+    }
+
+    /**
+     * Retrieve the project secret from the environment.
+     *
+     * If the environment variable is not set, a RuntimeException will be thrown.
+     *
+     * @throws RuntimeException If the project secret is not set in the environment.
+     * @throws InvalidArgumentException If the project secret is not 32 characters long.
+     *
+     * @return non-empty-string The project secret.
+     */
+    public static function getSecretFromEnvironment(): string
+    {
+        /** @psalm-suppress MissingThrowsDocblock */
+        $secret = Env\get_var('PROJECT_SECRET');
+        if (null === $secret) {
+            throw new RuntimeException('The project secret is not set. Please set the "PROJECT_SECRET" environment variable.');
+        }
+
+        if (Str\length($secret, encoding: Str\Encoding::Ascii8bit) !== 32) {
+            throw new InvalidArgumentException('The project secret must be 32 characters long.');
+        }
 
         /** @var non-empty-string $secret */
-        return new self($mode, $debug, $secret, $name, $directory, $source, $config, $entrypoint);
+        return $secret;
     }
 
     /**
@@ -206,13 +205,23 @@ final readonly class Project
     }
 
     /**
+     * Create a new project instance with a different name.
+     *
+     * @param non-empty-string $name The project name.
+     */
+    public function withName(string $name): self
+    {
+        return new self($this->mode, $this->debug, $this->secret, $name, $this->directory, $this->entrypoint);
+    }
+
+    /**
      * Create a new project instance with a different mode.
      *
      * @param ProjectMode $mode The project mode.
      */
     public function withMode(ProjectMode $mode): self
     {
-        return new self($mode, $this->debug, $this->secret, $this->name, $this->directory, $this->source, $this->config, $this->entrypoint);
+        return new self($mode, $this->debug, $this->secret, $this->name, $this->directory, $this->entrypoint);
     }
 
     /**
@@ -222,7 +231,7 @@ final readonly class Project
      */
     public function withDebug(bool $debug): self
     {
-        return new self($this->mode, $debug, $this->secret, $this->name, $this->directory, $this->source, $this->config, $this->entrypoint);
+        return new self($this->mode, $debug, $this->secret, $this->name, $this->directory, $this->entrypoint);
     }
 
     /**
@@ -238,17 +247,7 @@ final readonly class Project
             throw new InvalidArgumentException('The project secret must be 32 characters long.');
         }
 
-        return new self($this->mode, $this->debug, $secret, $this->name, $this->directory, $this->source, $this->config, $this->entrypoint);
-    }
-
-    /**
-     * Create a new project instance with a different name.
-     *
-     * @param non-empty-string $name The project name.
-     */
-    public function withName(string $name): self
-    {
-        return new self($this->mode, $this->debug, $this->secret, $name, $this->directory, $this->source, $this->config, $this->entrypoint);
+        return new self($this->mode, $this->debug, $secret, $this->name, $this->directory, $this->entrypoint);
     }
 
     /**
@@ -266,47 +265,7 @@ final readonly class Project
 
         $directory = Filesystem\canonicalize($directory) ?? $directory;
 
-        return new self($this->mode, $this->debug, $this->secret, $this->name, $directory, $this->source, $this->config, $this->entrypoint);
-    }
-
-    /**
-     * Create a new project instance with a different source.
-     *
-     * @param non-empty-string|null $source The project source.
-     *
-     * @throws Exception\RuntimeException If the project source does not exist.
-     */
-    public function withSource(null|string $source): self
-    {
-        if (null !== $source && !Filesystem\is_directory($source)) {
-            throw new Exception\RuntimeException('The project source does not exist.');
-        }
-
-        if (null !== $source) {
-            $source = Filesystem\canonicalize($source);
-        }
-
-        return new self($this->mode, $this->debug, $this->secret, $this->name, $this->directory, $source, $this->config, $this->entrypoint);
-    }
-
-    /**
-     * Create a new project instance with a different configuration.
-     *
-     * @param non-empty-string|null $config The project configuration.
-     *
-     * @throws Exception\RuntimeException If the project configuration does not exist.
-     */
-    public function withConfig(null|string $config): self
-    {
-        if (null !== $config && !Filesystem\is_file($config) && !Filesystem\is_directory($config)) {
-            throw new Exception\RuntimeException('The project configuration does not exist.');
-        }
-
-        if (null !== $config) {
-            $config = Filesystem\canonicalize($config);
-        }
-
-        return new self($this->mode, $this->debug, $this->secret, $this->name, $this->directory, $this->source, $config, $this->entrypoint);
+        return new self($this->mode, $this->debug, $this->secret, $this->name, $directory, $this->entrypoint);
     }
 
     /**
@@ -316,7 +275,7 @@ final readonly class Project
      */
     public function withEntrypoint(string $entrypoint): self
     {
-        return new self($this->mode, $this->debug, $this->secret, $this->name, $this->directory, $this->source, $this->config, $entrypoint);
+        return new self($this->mode, $this->debug, $this->secret, $this->name, $this->directory, $entrypoint);
     }
 
     /**
@@ -337,14 +296,6 @@ final readonly class Project
             '%project%' => $this->directory,
             '%entry%' => $this->entrypoint,
         ];
-
-        if (null !== $this->source) {
-            $map['%source%'] = $this->source;
-        }
-
-        if (null !== $this->config) {
-            $map['%config%'] = $this->config;
-        }
 
         $normalizedPath = Str\Byte\trim_left($path, '/');
         $result = $this->directory . '/' . $normalizedPath;

@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Recovery\DependencyInjection;
 
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
+use Neu\Component\DependencyInjection\RegistryInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Neu\Component\Http\Recovery\DependencyInjection\Factory\RecoveryFactory;
@@ -38,26 +39,17 @@ final readonly class RecoveryExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    public function register(ContainerBuilderInterface $container): void
+    public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $defaultLogger = $container
-            ->getConfiguration()
-            ->getContainer('http')
-            ->getOfTypeOrDefault('logger', Type\non_empty_string(), null)
-        ;
+        $defaultLogger = $configurations->getDocument('http')->getOfTypeOrDefault('logger', Type\non_empty_string(), null);
+        $configuration = $configurations->getDocument('http')->getOfTypeOrDefault('recovery', $this->getConfigurationType(), []);
 
-        $configuration = $container
-            ->getConfiguration()
-            ->getContainer('http')
-            ->getOfTypeOrDefault('recovery', $this->getConfigurationType(), [])
-        ;
-
-        $container->addDefinition(Definition::ofType(Recovery::class, new RecoveryFactory(
+        $registry->addDefinition(Definition::ofType(Recovery::class, new RecoveryFactory(
             $configuration['logger'] ??  $defaultLogger ?? null,
             $configuration['throwables'] ?? [],
         )));
 
-        $container->getDefinition(Recovery::class)->addAlias(RecoveryInterface::class);
+        $registry->getDefinition(Recovery::class)->addAlias(RecoveryInterface::class);
     }
 
     /**

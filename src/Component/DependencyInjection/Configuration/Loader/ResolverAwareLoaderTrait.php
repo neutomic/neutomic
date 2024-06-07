@@ -11,10 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Configuration\Loader;
+namespace Neu\Component\DependencyInjection\Configuration\Loader;
 
-use Neu\Component\Configuration\Exception\LogicException;
-use Neu\Component\Configuration\Resolver\ResolverInterface;
+use Neu\Component\DependencyInjection\Configuration\Resolver\ResolverInterface;
+use Neu\Component\DependencyInjection\Exception\RuntimeException;
 
 /**
  * @psalm-require-implements ResolverAwareLoaderInterface
@@ -35,12 +35,12 @@ trait ResolverAwareLoaderTrait
     }
 
     /**
-     * @throws LogicException If the resolver has not been set.
+     * @throws RuntimeException If the resolver has not been set.
      */
     protected function getResolver(): ResolverInterface
     {
         if (null === $this->resolver) {
-            throw new LogicException(
+            throw new RuntimeException(
                 'Resolver has not been set on the "' . static::class . '" loader, make sure to call "' . static::class . '::setResolver()" before attempting to load resources.',
             );
         }

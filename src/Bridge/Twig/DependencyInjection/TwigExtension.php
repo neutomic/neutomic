@@ -18,10 +18,11 @@ use Neu\Bridge\Twig\DependencyInjection\Factory\Cache\FilesystemCacheFactory;
 use Neu\Bridge\Twig\DependencyInjection\Factory\EnvironmentFactory;
 use Neu\Bridge\Twig\DependencyInjection\Factory\FilesystemLoaderFactory;
 use Neu\Bridge\Twig\Loader\FilesystemLoader;
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\ExtensionInterface;
+use Neu\Component\DependencyInjection\RegistryInterface;
 use Psl\Class;
 use Psl\Type;
 use Twig\Cache\CacheInterface;
@@ -45,6 +46,45 @@ use Twig\Loader\LoaderInterface;
  */
 final readonly class TwigExtension implements ExtensionInterface
 {
+    /**
+     * @inheritDoc
+     */
+    public function register(RegistryInterface $registry, DocumentInterface $configurations): void
+    {
+        if (!Class\exists(Environment::class)) {
+            throw new RuntimeException('"' . self::class . '" extension requires the "twig/twig" package to be installed, please run "composer require twig/twig:^4.0".');
+        }
+
+        $configuration = $configurations->getOfTypeOrDefault('twig', $this->getConfigurationType(), []);
+
+        $cache = $configuration['cache'] ?? null;
+        if (null !== $cache) {
+            $registry->addDefinition(Definition::ofType(FilesystemCache::class, new FilesystemCacheFactory(
+                cache: $cache,
+                options: $configuration['cache-options'] ?? null,
+            )));
+
+            $registry->getDefinition(FilesystemCache::class)->addAlias(CacheInterface::class);
+        }
+
+        $registry->addDefinition(Definition::ofType(FilesystemLoader::class, new FilesystemLoaderFactory(
+            $configuration['paths'] ?? null,
+            $configuration['root'] ?? null,
+        )));
+
+        $registry->addDefinition(Definition::ofType(Environment::class, new EnvironmentFactory(
+            $configuration['debug'] ?? null,
+            $configuration['charset'] ?? null,
+            $configuration['auto-reload'] ?? null,
+            $configuration['strict-variables'] ?? null,
+            $configuration['auto-escape'] ?? null,
+            $configuration['optimizations'] ?? null,
+            $configuration['globals'] ?? null,
+        )));
+
+        $registry->getDefinition(FilesystemLoader::class)->addAlias(LoaderInterface::class);
+    }
+
     /**
      * @return Type\TypeInterface<Configuration>
      */
@@ -75,44 +115,5 @@ final readonly class TwigExtension implements ExtensionInterface
                 Type\mixed(),
             )),
         ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function register(ContainerBuilderInterface $container): void
-    {
-        if (!Class\exists(Environment::class)) {
-            throw new RuntimeException('"' . self::class . '" extension requires the "twig/twig" package to be installed, please run "composer require twig/twig:^4.0".');
-        }
-
-        $configuration = $container->getConfiguration()->getOfTypeOrDefault('twig', $this->getConfigurationType(), []);
-
-        $cache = $configuration['cache'] ?? null;
-        if (null !== $cache) {
-            $container->addDefinition(Definition::ofType(FilesystemCache::class, new FilesystemCacheFactory(
-                cache: $cache,
-                options: $configuration['cache-options'] ?? null,
-            )));
-
-            $container->getDefinition(FilesystemCache::class)->addAlias(CacheInterface::class);
-        }
-
-        $container->addDefinition(Definition::ofType(FilesystemLoader::class, new FilesystemLoaderFactory(
-            $configuration['paths'] ?? null,
-            $configuration['root'] ?? null,
-        )));
-
-        $container->addDefinition(Definition::ofType(Environment::class, new EnvironmentFactory(
-            $configuration['debug'] ?? null,
-            $configuration['charset'] ?? null,
-            $configuration['auto-reload'] ?? null,
-            $configuration['strict-variables'] ?? null,
-            $configuration['auto-escape'] ?? null,
-            $configuration['optimizations'] ?? null,
-            $configuration['globals'] ?? null,
-        )));
-
-        $container->getDefinition(FilesystemLoader::class)->addAlias(LoaderInterface::class);
     }
 }

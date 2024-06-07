@@ -13,43 +13,37 @@ declare(strict_types=1);
 
 namespace Neu\Component\DependencyInjection;
 
-use Neu\Component\Configuration\ConfigurationContainerInterface;
-use Neu\Component\DependencyInjection\Definition\DefinitionInterface;
+use Neu\Component\DependencyInjection\Configuration\Loader\LoaderInterface;
 
 interface ContainerBuilderInterface
 {
     /**
-     * Get the project instance.
+     * Add a configuration resource to the container builder.
      *
-     * @return Project The project instance.
+     * The configuration resource can be a file path, a directory path, an array of configuration, or any other supported type.
+     *
+     * @param mixed $resource The configuration resource to add.
      */
-    public function getProject(): Project;
+    public function addConfigurationResource(mixed $resource): void;
 
     /**
-     * Get the configuration container.
+     * Add a configuration loader to the container builder.
      *
-     * @return ConfigurationContainerInterface The configuration container.
+     * The configuration loader will be used to load the configuration resources.
+     *
+     * @param LoaderInterface $loader The configuration loader to add.
      */
-    public function getConfiguration(): ConfigurationContainerInterface;
+    public function addConfigurationLoader(LoaderInterface $loader): void;
 
     /**
-     * Add a configuration to the container.
-     *
-     * The configuration will be merged with the existing configuration.
-     *
-     * @param ConfigurationContainerInterface|array<array-key, mixed> $configuration The configuration to add.
-     */
-    public function addConfiguration(ConfigurationContainerInterface|array $configuration): void;
-
-    /**
-     * Check if the container has auto-discovery enabled.
+     * Check if the container builder has auto-discovery enabled.
      *
      * @return bool True if auto-discovery is enabled, false otherwise.
      */
     public function hasAutoDiscovery(): bool;
 
     /**
-     * Enable or disable auto-discovery for the container.
+     * Enable or disable auto-discovery for the container builder.
      *
      * Auto-discovery will automatically register services from the project's source, and entry point.
      *
@@ -58,115 +52,32 @@ interface ContainerBuilderInterface
     public function setAutoDiscovery(bool $autoDiscovery): void;
 
     /**
-     * Return whether the container has an extension.
+     * Add a path to the builder for auto-discovery.
      *
-     * @param class-string<ExtensionInterface> $extension
-     *
-     * @return bool True if the container has the extension, false otherwise.
+     * @param non-empty-string $path The path to add.
      */
-    public function hasExtension(string $extension): bool;
+    public function addPathForAutoDiscovery(string $path): void;
 
     /**
-     * Add an extension to the container.
+     * Add an extension to the container builder.
      *
      * @param ExtensionInterface $extension The extension to add.
      */
     public function addExtension(ExtensionInterface $extension): void;
 
     /**
-     * Add extensions to the container.
+     * Add extensions to the container builder.
      *
      * @param list<ExtensionInterface> $extensions The extensions to add.
      */
     public function addExtensions(array $extensions): void;
 
     /**
-     * Add a container hook to the builder.
+     * Get the registry.
      *
-     * @param HookInterface $hook The hook to add.
+     * @return RegistryInterface The registry.
      */
-    public function addHook(HookInterface $hook): void;
-
-    /**
-     * Add container hooks to the builder.
-     *
-     * @param list<HookInterface> $hooks The hooks to add.
-     */
-    public function addHooks(array $hooks): void;
-
-    /**
-     * Check if a definition exists in the container.
-     *
-     * @param non-empty-string $id The identifier of the definition.
-     *
-     * @return bool True if the definition exists, false otherwise.
-     */
-    public function hasDefinition(string $id): bool;
-
-    /**
-     * Get a definition from the container.
-     *
-     * @param non-empty-string $id The identifier of the definition.
-     *
-     * @throws Exception\ServiceNotFoundException If the definition does not exist.
-     */
-    public function getDefinition(string $id): DefinitionInterface;
-
-    /**
-     * Get all definitions from the container.
-     *
-     * @return array<non-empty-string, DefinitionInterface> The definitions.
-     */
-    public function getDefinitions(): array;
-
-    /**
-     * Add a definition to the container.
-     *
-     * @template T of object
-     *
-     * @param DefinitionInterface<T> $definition The definition to add.
-     */
-    public function addDefinition(DefinitionInterface $definition): void;
-
-    /**
-     * Add definitions to the container.
-     *
-     * @param list<DefinitionInterface> $definitions The definitions to add.
-     */
-    public function addDefinitions(array $definitions): void;
-
-    /**
-     * Add a processor for the container.
-     *
-     * The processor will be added to all service definitions, current and future.
-     *
-     * @param ProcessorInterface $processor The processor to register.
-     */
-    public function addProcessor(ProcessorInterface $processor): void;
-
-    /**
-     * Register a processor for a specific type.
-     *
-     * All services that are an instance of the given type will be processed by the processor.
-     *
-     * The processor will be added to all service definitions that are an instance of the type, current and future.
-     *
-     * @param class-string $type The type to register the processor for.
-     * @param ProcessorInterface $processor The processor to register.
-     */
-    public function addProcessorForInstanceOf(string $type, ProcessorInterface $processor): void;
-
-    /**
-     * Register a processor for an attribute.
-     *
-     * All services that have the attribute will be processed by the processor.
-     *
-     * The processor will be added to all service definitions that have the attribute, current and future.
-     *
-     * @param class-string $attribute The attribute to register the processor for.
-     * @param ProcessorInterface $processor The processor to register.
-     */
-    public function addProcessorForAttribute(string $attribute, ProcessorInterface $processor): void;
+    public function getRegistry(): RegistryInterface;
 
     /**
      * Build the container.

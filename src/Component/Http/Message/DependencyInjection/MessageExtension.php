@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Message\DependencyInjection;
 
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
+use Neu\Component\DependencyInjection\RegistryInterface;
 use Neu\Component\Http\Message\Form\MultipartParser;
 use Neu\Component\Http\Message\Form\Parser;
 use Neu\Component\Http\Message\Form\ParserInterface;
@@ -27,15 +28,13 @@ final readonly class MessageExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    public function register(ContainerBuilderInterface $container): void
+    public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $container->addDefinition(Definition::ofType(MultipartParser::class, new Factory\Form\MultipartParserFactory()));
-        $container->addDefinition(Definition::ofType(UrlEncodedParser::class, new Factory\Form\UrlEncodedParserFactory()));
+        $registry->addDefinition(Definition::ofType(MultipartParser::class, new Factory\Form\MultipartParserFactory()));
+        $registry->addDefinition(Definition::ofType(UrlEncodedParser::class, new Factory\Form\UrlEncodedParserFactory()));
+        $registry->addDefinition(Definition::ofType(Parser::class, new Factory\Form\ParserFactory()));
 
-        $definition = Definition::ofType(Parser::class, new Factory\Form\ParserFactory());
-        $definition->addAlias(ParserInterface::class);
-        $definition->addAlias(StreamedParserInterface::class);
-
-        $container->addDefinition($definition);
+        $registry->getDefinition(Parser::class)->addAlias(ParserInterface::class);
+        $registry->getDefinition(Parser::class)->addAlias(StreamedParserInterface::class);
     }
 }

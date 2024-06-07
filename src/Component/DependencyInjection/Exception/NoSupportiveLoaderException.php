@@ -11,8 +11,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Configuration\Exception;
+namespace Neu\Component\DependencyInjection\Exception;
 
-final class MissingEntryException extends InvalidArgumentException
+final class NoSupportiveLoaderException extends RuntimeException
 {
 }

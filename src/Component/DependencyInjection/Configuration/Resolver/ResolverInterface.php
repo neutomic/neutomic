@@ -11,11 +11,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Configuration\Resolver;
+namespace Neu\Component\DependencyInjection\Configuration\Resolver;
 
-use Neu\Component\Configuration\Exception\NoSupportiveLoaderException;
-use Neu\Component\Configuration\Loader\LoaderInterface;
-use Neu\Component\Configuration\Loader\ResolverAwareLoaderInterface;
+use Neu\Component\DependencyInjection\Configuration\Loader\LoaderInterface;
+use Neu\Component\DependencyInjection\Configuration\Loader\ResolverAwareLoaderInterface;
+use Neu\Component\DependencyInjection\Exception\NoSupportiveLoaderException;
 
 interface ResolverInterface
 {
@@ -25,13 +25,13 @@ interface ResolverInterface
      * If the loader implements {@see ResolverAwareLoaderInterface},
      * {@see ResolverAwareLoaderInterface::setResolver()} must be called with the current resolver.
      *
-     * @template T
+     * @template ResourceType
      *
-     * @param T $resource
+     * @param ResourceType $resource
      *
      * @throws NoSupportiveLoaderException If no supportive loader is found.
      *
-     * @return LoaderInterface<T>
+     * @return LoaderInterface<ResourceType>
      */
     public function resolve(mixed $resource): LoaderInterface;
 }

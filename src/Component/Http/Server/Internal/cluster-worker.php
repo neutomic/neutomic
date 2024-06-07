@@ -24,5 +24,5 @@ use Neu\Component\Http\Exception\RuntimeException;
     [$_, $entrypoint] = $argv;
 
     /** @psalm-suppress UnresolvableInclude */
-    @require $entrypoint;
+    require $entrypoint;
 })();

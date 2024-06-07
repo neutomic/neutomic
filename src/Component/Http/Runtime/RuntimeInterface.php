@@ -28,7 +28,7 @@ use Neu\Component\Http\Runtime\Handler\HandlerInterface;
  */
 interface RuntimeInterface extends HandlerInterface
 {
-    public const int DEFAULT_CONCURRENCY_LIMIT = 100;
+    public const int DEFAULT_CONCURRENCY_LIMIT = 1000;
 
     /**
      * Retrieves the maximum number of concurrent requests the runtime can handle.

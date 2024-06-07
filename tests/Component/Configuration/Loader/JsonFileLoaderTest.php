@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Tests\Component\Configuration\Loader;
 
-use Neu\Component\Configuration\Exception\InvalidConfigurationException;
-use Neu\Component\Configuration\Loader\JsonFileLoader;
+use Neu\Component\DependencyInjection\Configuration\Loader\JsonFileLoader;
+use Neu\Component\DependencyInjection\Exception\InvalidConfigurationException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -34,7 +34,7 @@ final class JsonFileLoaderTest extends TestCase
         $loader = new JsonFileLoader();
 
         $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage('Failed to decode json resource file "');
+        $this->expectExceptionMessage('failed to decode json resource file "');
 
         $loader->load(__DIR__ . '/../Resources/invalid-config/configuration.invalid.json');
     }

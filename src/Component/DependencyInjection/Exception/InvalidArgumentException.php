@@ -15,6 +15,6 @@ namespace Neu\Component\DependencyInjection\Exception;
 
 use Neu\Component\Exception\InvalidArgumentException as RootInvalidArgumentException;
 
-final class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface
+class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface
 {
 }

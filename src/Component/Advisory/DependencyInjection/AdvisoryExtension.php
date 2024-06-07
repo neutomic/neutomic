@@ -18,9 +18,10 @@ use Neu\Component\Advisory\Advisory;
 use Neu\Component\Advisory\AdvisoryInterface;
 use Neu\Component\Advisory\DependencyInjection\Factory\AdvisoryFactory;
 use Neu\Component\Advisory\DependencyInjection\Hook\AddAdvisersHook;
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
+use Neu\Component\DependencyInjection\RegistryInterface;
 use Psl\Type;
 
 /**
@@ -38,35 +39,32 @@ final readonly class AdvisoryExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    public function register(ContainerBuilderInterface $container): void
+    public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $configuration = $container
-            ->getConfiguration()
+        $configuration = $configurations
             ->getOfTypeOrDefault('advisory', $this->getConfigurationType(), [])
         ;
 
-        $container->addDefinition(Definition::ofType(Advisory::class, new AdvisoryFactory(
+        $registry->addDefinition(Definition::ofType(Advisory::class, new AdvisoryFactory(
             logger: $configuration['logger'] ?? null,
         )));
 
-        $container->getDefinition(Advisory::class)->addAlias(AdvisoryInterface::class);
+        $registry->getDefinition(Advisory::class)->addAlias(AdvisoryInterface::class);
 
-        $container->addDefinition(Definition::ofType(Adviser\AssertationAdviser::class));
-        $container->addDefinition(Definition::ofType(Adviser\BlackfireAdviser::class));
-        $container->addDefinition(Definition::ofType(Adviser\DatadogTraceAdviser::class));
-        $container->addDefinition(Definition::ofType(Adviser\EventLoopDriverAdviser::class));
-        $container->addDefinition(Definition::ofType(Adviser\EventLoopTracingAdviser::class));
-        $container->addDefinition(Definition::ofType(Adviser\HPackNghttp2Adviser::class));
-        $container->addDefinition(Definition::ofType(Adviser\MaxExecutionTimeAdviser::class));
-        $container->addDefinition(Definition::ofType(Adviser\MemoryLimitAdviser::class));
-        $container->addDefinition(Definition::ofType(Adviser\OPCacheAdviser::class));
-        $container->addDefinition(Definition::ofType(Adviser\PCovAdviser::class));
-        $container->addDefinition(Definition::ofType(Adviser\TidewaysAdviser::class));
-        $container->addDefinition(Definition::ofType(Adviser\XDebugAdviser::class));
-        $container->addDefinition(Definition::ofType(Adviser\ZlibExtensionAdviser::class));
-
-
-        $container->addHook(new AddAdvisersHook(
+        $registry->addDefinition(Definition::ofType(Adviser\AssertationAdviser::class));
+        $registry->addDefinition(Definition::ofType(Adviser\BlackfireAdviser::class));
+        $registry->addDefinition(Definition::ofType(Adviser\DatadogTraceAdviser::class));
+        $registry->addDefinition(Definition::ofType(Adviser\EventLoopDriverAdviser::class));
+        $registry->addDefinition(Definition::ofType(Adviser\EventLoopTracingAdviser::class));
+        $registry->addDefinition(Definition::ofType(Adviser\HPackNghttp2Adviser::class));
+        $registry->addDefinition(Definition::ofType(Adviser\MaxExecutionTimeAdviser::class));
+        $registry->addDefinition(Definition::ofType(Adviser\MemoryLimitAdviser::class));
+        $registry->addDefinition(Definition::ofType(Adviser\OPCacheAdviser::class));
+        $registry->addDefinition(Definition::ofType(Adviser\PCovAdviser::class));
+        $registry->addDefinition(Definition::ofType(Adviser\TidewaysAdviser::class));
+        $registry->addDefinition(Definition::ofType(Adviser\XDebugAdviser::class));
+        $registry->addDefinition(Definition::ofType(Adviser\ZlibExtensionAdviser::class));
+        $registry->addHook(new AddAdvisersHook(
             advisory: $configuration['hooks']['add-advisers']['advisory'] ?? null,
         ));
     }

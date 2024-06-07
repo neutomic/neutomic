@@ -14,7 +14,8 @@ declare(strict_types=1);
 namespace Neu\Component\Http\DependencyInjection;
 
 use Neu\Component\DependencyInjection\CompositeExtensionInterface;
-use Neu\Component\DependencyInjection\ContainerBuilderInterface;
+use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
+use Neu\Component\DependencyInjection\RegistryInterface;
 use Neu\Component\Http\Message\DependencyInjection\MessageExtension;
 use Neu\Component\Http\Recovery\DependencyInjection\RecoveryExtension;
 use Neu\Component\Http\Router\DependencyInjection\RouterExtension;
@@ -35,7 +36,7 @@ final readonly class HttpExtension implements CompositeExtensionInterface
     /**
      * @inheritDoc
      */
-    public function register(ContainerBuilderInterface $container): void
+    public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         // do nothing
     }
@@ -43,7 +44,7 @@ final readonly class HttpExtension implements CompositeExtensionInterface
     /**
      * @inheritDoc
      */
-    public function getExtensions(): array
+    public function getExtensions(DocumentInterface $configurations): array
     {
         return [
             new MessageExtension(),

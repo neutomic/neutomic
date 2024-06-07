@@ -11,10 +11,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Configuration\Exception;
+namespace Neu\Component\DependencyInjection\Exception;
 
-use Neu\Component\Exception\RuntimeException as RootRuntimeException;
-
-class RuntimeException extends RootRuntimeException implements ExceptionInterface
+final class MissingEntryException extends InvalidArgumentException
 {
 }

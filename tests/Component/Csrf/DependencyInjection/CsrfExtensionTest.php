@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Neu\Tests\Component\Csrf\DependencyInjection;
 
-use Neu\Component\Configuration\Exception\InvalidEntryException;
 use Neu\Component\Csrf\CsrfTokenManager;
 use Neu\Component\Csrf\CsrfTokenManagerInterface;
 use Neu\Component\Csrf\DependencyInjection\CsrfExtension;
@@ -23,6 +22,7 @@ use Neu\Component\Csrf\Storage\CsrfTokenStorageInterface;
 use Neu\Component\Csrf\Storage\SessionCsrfTokenStorage;
 use Neu\Component\DependencyInjection\ContainerBuilder;
 use Neu\Component\DependencyInjection\ContainerInterface;
+use Neu\Component\DependencyInjection\Exception\InvalidEntryException;
 use Neu\Component\DependencyInjection\Project;
 use Neu\Component\Http\Message\Method;
 use Neu\Component\Http\Message\Request;
@@ -35,25 +35,27 @@ final class CsrfExtensionTest extends TestCase
     public function testRegister(): void
     {
         $project = Project::create(SecureRandom\string(32), __DIR__, __FILE__);
-        $builder = new ContainerBuilder($project);
+        $builder = ContainerBuilder::create($project);
+        $builder->addExtension(new CsrfExtension());
+        $builder->build();
 
-        $extension = new CsrfExtension();
-        $extension->register($builder);
+        $registry = $builder->getRegistry();
 
-        static::assertTrue($builder->hasDefinition(CsrfTokenManager::class));
-        static::assertTrue($builder->hasDefinition(SessionCsrfTokenStorage::class));
-        static::assertTrue($builder->hasDefinition(UrlSafeCsrfTokenGenerator::class));
+        static::assertTrue($registry->hasDefinition(CsrfTokenManager::class));
+        static::assertTrue($registry->hasDefinition(SessionCsrfTokenStorage::class));
+        static::assertTrue($registry->hasDefinition(UrlSafeCsrfTokenGenerator::class));
 
-        static::assertContains(CsrfTokenManagerInterface::class, $builder->getDefinition(CsrfTokenManager::class)->getAliases());
-        static::assertContains(CsrfTokenGeneratorInterface::class, $builder->getDefinition(UrlSafeCsrfTokenGenerator::class)->getAliases());
-        static::assertContains(CsrfTokenStorageInterface::class, $builder->getDefinition(SessionCsrfTokenStorage::class)->getAliases());
+        static::assertContains(CsrfTokenManagerInterface::class, $registry->getDefinition(CsrfTokenManager::class)->getAliases());
+        static::assertContains(CsrfTokenStorageInterface::class, $registry->getDefinition(SessionCsrfTokenStorage::class)->getAliases());
+        static::assertContains(CsrfTokenGeneratorInterface::class, $registry->getDefinition(UrlSafeCsrfTokenGenerator::class)->getAliases());
     }
 
     public function testConfigurations(): void
     {
         $project = Project::create(SecureRandom\string(32), __DIR__, __FILE__);
-        $builder = new ContainerBuilder($project);
-        $builder->addConfiguration([
+        $builder = ContainerBuilder::create($project);
+        $builder->addExtension(new CsrfExtension());
+        $builder->addConfigurationResource([
             'csrf' => [
                 'storage' => [
                     'prefix' => 'custom_prefix'
@@ -65,16 +67,18 @@ final class CsrfExtensionTest extends TestCase
             ]
         ]);
 
-        $extension = new CsrfExtension();
-        $extension->register($builder);
+        $builder->addExtension(new CsrfExtension());
+        $builder->build();
 
-        static::assertTrue($builder->hasDefinition(CsrfTokenManager::class));
-        static::assertTrue($builder->hasDefinition(SessionCsrfTokenStorage::class));
-        static::assertTrue($builder->hasDefinition(UrlSafeCsrfTokenGenerator::class));
+        $registry = $builder->getRegistry();
 
-        static::assertContains(CsrfTokenManagerInterface::class, $builder->getDefinition(CsrfTokenManager::class)->getAliases());
-        static::assertContains(CsrfTokenGeneratorInterface::class, $builder->getDefinition(UrlSafeCsrfTokenGenerator::class)->getAliases());
-        static::assertContains(CsrfTokenStorageInterface::class, $builder->getDefinition(SessionCsrfTokenStorage::class)->getAliases());
+        static::assertTrue($registry->hasDefinition(CsrfTokenManager::class));
+        static::assertTrue($registry->hasDefinition(SessionCsrfTokenStorage::class));
+        static::assertTrue($registry->hasDefinition(UrlSafeCsrfTokenGenerator::class));
+
+        static::assertContains(CsrfTokenManagerInterface::class, $registry->getDefinition(CsrfTokenManager::class)->getAliases());
+        static::assertContains(CsrfTokenStorageInterface::class, $registry->getDefinition(SessionCsrfTokenStorage::class)->getAliases());
+        static::assertContains(CsrfTokenGeneratorInterface::class, $registry->getDefinition(UrlSafeCsrfTokenGenerator::class)->getAliases());
 
         $container = $this->createMock(ContainerInterface::class);
         $container->expects(static::exactly(2))
@@ -84,9 +88,9 @@ final class CsrfExtensionTest extends TestCase
                 ['custom_storage', CsrfTokenStorageInterface::class, $this->createMock(CsrfTokenStorageInterface::class)],
             ]);
 
-        $builder->getDefinition(CsrfTokenManager::class)->resolve($container);
+        $registry->getDefinition(CsrfTokenManager::class)->resolve($container);
 
-        $storage = $builder->getDefinition(SessionCsrfTokenStorage::class)->resolve($container);
+        $storage = $registry->getDefinition(SessionCsrfTokenStorage::class)->resolve($container);
 
         $request = Request::create(Method::Get, '/')->withSession(new Session([]));
 
@@ -98,8 +102,9 @@ final class CsrfExtensionTest extends TestCase
     public function testInvalidStoragePrefixConfiguration(): void
     {
         $project = Project::create(SecureRandom\string(32), __DIR__, __FILE__);
-        $builder = new ContainerBuilder($project);
-        $builder->addConfiguration([
+        $builder = ContainerBuilder::create($project);
+        $builder->addExtension(new CsrfExtension());
+        $builder->addConfigurationResource([
             'csrf' => [
                 'storage' => [
                     'prefix' => ['invalid']
@@ -111,17 +116,19 @@ final class CsrfExtensionTest extends TestCase
             ]
         ]);
 
+        $builder->addExtension(new CsrfExtension());
+
         $this->expectException(InvalidEntryException::class);
 
-        $extension = new CsrfExtension();
-        $extension->register($builder);
+        $builder->build();
     }
 
     public function testInvalidManagerConfiguration(): void
     {
         $project = Project::create(SecureRandom\string(32), __DIR__, __FILE__);
-        $builder = new ContainerBuilder($project);
-        $builder->addConfiguration([
+        $builder = ContainerBuilder::create($project);
+        $builder->addExtension(new CsrfExtension());
+        $builder->addConfigurationResource([
             'csrf' => [
                 'storage' => [
                     'prefix' => 'custom_prefix'
@@ -133,9 +140,10 @@ final class CsrfExtensionTest extends TestCase
             ]
         ]);
 
+        $builder->addExtension(new CsrfExtension());
+
         $this->expectException(InvalidEntryException::class);
 
-        $extension = new CsrfExtension();
-        $extension->register($builder);
+        $builder->build();
     }
 }
