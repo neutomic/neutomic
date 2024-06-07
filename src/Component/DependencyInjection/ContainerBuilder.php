@@ -34,6 +34,8 @@ use Roave\BetterReflection\SourceLocator\Type\SingleFileSourceLocator;
 
 use function array_walk_recursive;
 use function is_string;
+use function str_contains;
+use function str_replace;
 
 final class ContainerBuilder implements ContainerBuilderInterface
 {
@@ -337,11 +339,19 @@ final class ContainerBuilder implements ContainerBuilderInterface
      */
     private function processConfiguration(DocumentInterface $document): DocumentInterface
     {
+        $project = $this->registry->getProject();
         $configurations = $document->getAll();
 
-        array_walk_recursive($configurations, function (mixed &$value): void {
-            if (is_string($value) && '' !== $value) {
-                $value = $this->getRegistry()->getProject()->resolve($value);
+        $placeholders = $project->getPlaceholders();
+        array_walk_recursive($configurations, function (mixed &$value) use($placeholders): void {
+            if (!is_string($value) || '' === $value) {
+                return;
+            }
+
+            foreach ($placeholders as $placeholder => $replacement) {
+                if (str_contains($value, $placeholder)) {
+                    $value = str_replace($placeholder, $replacement, $value);
+                }
             }
         });
 

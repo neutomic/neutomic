@@ -279,34 +279,18 @@ final readonly class Project
     }
 
     /**
-     * Resolve a path relative to the project directory.
+     * Get the placeholders for the project.
      *
-     * @param non-empty-string $path The path to resolve.
-     *
-     * @return non-empty-string The resolved path.
+     * @return array<non-empty-string, non-empty-string> The placeholders.
      */
-    public function resolve(string $path): string
+    public function getPlaceholders(): array
     {
-        // $path is absolute, return it as is
-        if (Str\Byte\starts_with($path, '/')) {
-            return $path;
-        }
-
-        $map = [
-            '%project%' => $this->directory,
-            '%entry%' => $this->entrypoint,
+        return [
+            '%project.debug%' => $this->debug ? '1' : '0',
+            '%project.name%' => $this->name,
+            '%project.mode%' => $this->mode->value,
+            '%project.directory%' => $this->directory,
+            '%project.entrypoint%' => $this->entrypoint,
         ];
-
-        $normalizedPath = Str\Byte\trim_left($path, '/');
-        $result = $this->directory . '/' . $normalizedPath;
-        foreach ($map as $prefix => $directory) {
-            if (Str\Byte\starts_with($normalizedPath, $prefix)) {
-                $result = $directory . '/' . Str\Byte\trim_left(Str\Byte\strip_prefix($normalizedPath, $prefix), '/');
-                break;
-            }
-        }
-
-        /** @var non-empty-string */
-        return Str\Byte\replace($result, '%mode%', $this->mode->value);
     }
 }
