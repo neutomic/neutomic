@@ -111,7 +111,7 @@ final readonly class HelloWorldHandler implements HandlerInterface
                     'port' => 1337,
                 ]]
             ],
-        ]
+        ],
     ]);
 
     /* |----------------------------------------| */
@@ -142,5 +142,8 @@ final readonly class HelloWorldHandler implements HandlerInterface
     /* |----------------------------------------| */
     /* | Run the engine.                        | */
     /* |----------------------------------------| */
-    $engine->run();
+    $engine->run(match($project->mode->isProduction()) {
+        true => Neu\Framework\Mode::HttpCluster,
+        false => Neu\Framework\Mode::HttpServer,
+    });
 })();
