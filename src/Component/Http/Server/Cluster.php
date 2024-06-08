@@ -90,10 +90,7 @@ final class Cluster implements ClusterInterface
             throw new RuntimeException('Cluster cannot be started from within a worker process.');
         }
 
-        $this->watcher = $watcher = new ClusterWatcher([
-            __DIR__ . '/Internal/cluster-worker.php',
-            $this->entrypoint,
-        ], $this->logger);
+        $this->watcher = $watcher = new ClusterWatcher([$this->entrypoint], $this->logger);
 
         $workers = $workers ?? $this->workerCount;
 

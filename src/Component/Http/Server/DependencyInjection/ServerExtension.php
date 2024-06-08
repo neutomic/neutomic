@@ -36,8 +36,8 @@ use Psl\Type;
  * @psalm-import-type ServerSocketConfiguration from ServerInfrastructure
  *
  * @psalm-type Configuration = array{
- *     connection-limit?: positive-int,
- *     connection-limit-per-ip?: positive-int,
+ *     connection-limit?: int,
+ *     connection-limit-per-ip?: int,
  *     stream-timeout?: int,
  *     connection-timeout?: int,
  *     header-size-limit?: int,
@@ -100,8 +100,8 @@ final readonly class ServerExtension implements ExtensionInterface
     private function getConfigurationType(): Type\TypeInterface
     {
         return Type\shape([
-            'connection-limit' => Type\optional(Type\positive_int()),
-            'connection-limit-per-ip' => Type\optional(Type\positive_int()),
+            'connection-limit' => Type\optional(Type\int()),
+            'connection-limit-per-ip' => Type\optional(Type\int()),
             'stream-timeout' => Type\optional(Type\int()),
             'connection-timeout' => Type\optional(Type\int()),
             'header-size-limit' => Type\optional(Type\int()),

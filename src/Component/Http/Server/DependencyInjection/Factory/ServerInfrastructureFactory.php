@@ -35,14 +35,14 @@ final readonly class ServerInfrastructureFactory implements FactoryInterface
     /**
      * The maximum number of connections allowed.
      *
-     * @var positive-int
+     * @var int
      */
     private int $connectionLimit;
 
     /**
      * The maximum number of connections allowed per IP address.
      *
-     * @var positive-int
+     * @var int
      */
     private int $connectionLimitPerIP;
 
@@ -92,8 +92,8 @@ final readonly class ServerInfrastructureFactory implements FactoryInterface
      * Create a new {@see ServerInfrastructureFactory} instance.
      *
      * @param list<ServerSocketConfiguration>|null $serverSocketConfigurations
-     * @param positive-int|null $connectionLimit
-     * @param positive-int|null $connectionLimitPerIP
+     * @param int|null $connectionLimit
+     * @param int|null $connectionLimitPerIP
      * @param int|null $streamTimeout
      * @param int|null $connectionTimeout
      * @param int|null $headerSizeLimit
@@ -129,7 +129,6 @@ final readonly class ServerInfrastructureFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container): object
     {
         return new ServerInfrastructure(
-            $container->getProject()->debug,
             $this->serverSocketConfigurations,
             $this->connectionLimit,
             $this->connectionLimitPerIP,

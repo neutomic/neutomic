@@ -14,19 +14,17 @@ declare(strict_types=1);
 namespace Neu\Component\Http\Server;
 
 use Amp\Cluster\Cluster;
-use Amp\Http\Server\Driver\ClientFactory;
 use Amp\Http\Server\Driver\ConnectionLimitingClientFactory;
 use Amp\Http\Server\Driver\ConnectionLimitingServerSocketFactory;
 use Amp\Http\Server\Driver\DefaultHttpDriverFactory;
-use Amp\Http\Server\Driver\HttpDriverFactory;
+use Amp\Http\Server\Driver\HttpDriver;
 use Amp\Http\Server\Driver\SocketClientFactory;
+use Amp\Http\Server\SocketHttpServer;
 use Amp\Socket\BindContext;
 use Amp\Socket\Certificate;
 use Amp\Socket\InternetAddress;
-use Amp\Socket\ServerSocket;
 use Amp\Socket\ServerTlsContext;
 use Amp\Sync\LocalSemaphore;
-use Generator;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -78,50 +76,49 @@ final readonly class ServerInfrastructure
      */
     public const array DEFAULT_SERVER_SOCKET_CONFIGURATIONS = [
         [
-            'host' => '0.0.0.0',
-            'port' => 0,
-        ]
+            'host' => '127.0.0.1',
+            'port' => 8080,
+        ],
+        [
+            'host' => '::1',
+            'port' => 8080,
+        ],
     ];
 
     /**
      * Default number of connections allowed at any given time.
      */
-    public const int DEFAULT_CONNECTION_LIMIT = 1000;
+    public const int DEFAULT_CONNECTION_LIMIT = 1024;
 
     /**
      * Default number of connections allowed per IP address.
      */
-    public const int DEFAULT_CONNECTION_LIMIT_PER_IP = 100;
+    public const int DEFAULT_CONNECTION_LIMIT_PER_IP = 256;
 
     /**
-     * Default maximum duration in milliseconds that a stream can remain open.
+     * Default maximum duration in seconds that a stream can remain open.
      */
-    public const int DEFAULT_STREAM_TIMEOUT = 1000;
+    public const int DEFAULT_STREAM_TIMEOUT = HttpDriver::DEFAULT_STREAM_TIMEOUT;
 
     /**
      * Default timeout in milliseconds for establishing a connection.
      */
-    public const int DEFAULT_CONNECTION_TIMEOUT = 1000;
+    public const int DEFAULT_CONNECTION_TIMEOUT = HttpDriver::DEFAULT_CONNECTION_TIMEOUT;
 
     /**
      * Default maximum size in bytes of a request header.
      */
-    public const int DEFAULT_HEADER_SIZE_LIMIT = 1000;
+    public const int DEFAULT_HEADER_SIZE_LIMIT = HttpDriver::DEFAULT_HEADER_SIZE_LIMIT;
 
     /**
      * Default maximum size in bytes of a request body.
      */
-    public const int DEFAULT_BODY_SIZE_LIMIT = 1000;
+    public const int DEFAULT_BODY_SIZE_LIMIT = HttpDriver::DEFAULT_BODY_SIZE_LIMIT;
 
     /**
-     * The default timeout in milliseconds for the TLS handshake.
+     * The default timeout in seconds for the TLS handshake.
      */
-    public const int DEFAULT_TLS_HANDSHAKE_TIMEOUT = 5000;
-
-    /**
-     * Whether to enable debug mode.
-     */
-    private bool $debug;
+    public const int DEFAULT_TLS_HANDSHAKE_TIMEOUT = 5;
 
     /**
      * @var list<ServerSocketConfiguration> The socket configurations.
@@ -173,10 +170,9 @@ final readonly class ServerInfrastructure
     /**
      * Create a new instance of {@see ServerInfrastructure}.
      *
-     * @param bool $debug Whether to enable debug mode.
      * @param list<ServerSocketConfiguration> $serverSocketConfigurations The socket configurations.
-     * @param positive-int $connectionLimit The connection limit.
-     * @param positive-int $connectionLimitPerIP The connection limit per IP.
+     * @param int $connectionLimit The connection limit.
+     * @param int $connectionLimitPerIP The connection limit per IP.
      * @param int $streamTimeout The stream timeout.
      * @param int $connectionTimeout The connection timeout.
      * @param int $headerSizeLimit The header size limit.
@@ -185,7 +181,6 @@ final readonly class ServerInfrastructure
      * @param LoggerInterface $logger The logger.
      */
     public function __construct(
-        bool $debug,
         array $serverSocketConfigurations = self::DEFAULT_SERVER_SOCKET_CONFIGURATIONS,
         int $connectionLimit = self::DEFAULT_CONNECTION_LIMIT,
         int $connectionLimitPerIP = self::DEFAULT_CONNECTION_LIMIT_PER_IP,
@@ -196,7 +191,6 @@ final readonly class ServerInfrastructure
         int $tlsHandshakeTimeout = self::DEFAULT_TLS_HANDSHAKE_TIMEOUT,
         LoggerInterface $logger = new NullLogger(),
     ) {
-        $this->debug = $debug;
         $this->serverSocketConfigurations = $serverSocketConfigurations;
         $this->connectionLimit = $connectionLimit;
         $this->connectionLimitPerIP = $connectionLimitPerIP;
@@ -209,34 +203,39 @@ final readonly class ServerInfrastructure
     }
 
     /**
-     * Create a client factory.
+     * Create a new socket HTTP server.
      *
-     * @return ClientFactory The client factory.
+     * @return SocketHttpServer The socket HTTP server.
      */
-    public function createClientFactory(): ClientFactory
+    public function createSocketHttpServer(): SocketHttpServer
     {
-        return new ConnectionLimitingClientFactory(
-            new SocketClientFactory($this->logger, $this->tlsHandshakeTimeout),
-            $this->logger,
-            $this->connectionLimitPerIP,
-        );
-    }
+        $serverFactory = Cluster::getServerSocketFactory();
+        if ($this->connectionLimit > 0) {
+            assert($this->logger->debug(
+                'Connection limiting enabled, limiting to ' . $this->connectionLimit . ' connections.',
+            ) || true);
 
-    /**
-     * Create server sockets that the server will listen on.
-     *
-     * @return Generator<int, ServerSocket, null, HttpDriverFactory> Yielded server sockets, and returns the HTTP driver factory.
-     */
-    public function createServerSockets(): Generator
-    {
-        $serverSocketConfigurations = $this->serverSocketConfigurations;
-        if ([] === $serverSocketConfigurations) {
-            $serverSocketConfigurations = self::DEFAULT_SERVER_SOCKET_CONFIGURATIONS;
+            $serverFactory = new ConnectionLimitingServerSocketFactory(
+                new LocalSemaphore($this->connectionLimit),
+                $serverFactory,
+            );
+        }
+
+        $clientFactory = new SocketClientFactory($this->logger, $this->tlsHandshakeTimeout);
+        if ($this->connectionLimitPerIP > 0) {
+            assert($this->logger->debug(
+                'Connection limiting per IP enabled, limiting to ' . $this->connectionLimitPerIP . ' connections per IP.',
+            ) || true);
+
+            $clientFactory = new ConnectionLimitingClientFactory(
+                $clientFactory,
+                $this->logger,
+                $this->connectionLimitPerIP,
+            );
         }
 
         $httpDriverFactory = new DefaultHttpDriverFactory(
-            // disable Amp logs when debug is disabled
-            $this->debug ? $this->logger : new NullLogger(),
+            $this->logger,
             $this->streamTimeout,
             $this->connectionTimeout,
             $this->headerSizeLimit,
@@ -246,10 +245,18 @@ final readonly class ServerInfrastructure
             pushEnabled: true,
         );
 
-        $serverFactory = new ConnectionLimitingServerSocketFactory(
-            new LocalSemaphore($this->connectionLimit),
-            Cluster::getServerSocketFactory(),
+        $server = new SocketHttpServer(
+            $this->logger,
+            $serverFactory,
+            $clientFactory,
+            allowedMethods: null,
+            httpDriverFactory: $httpDriverFactory,
         );
+
+        $serverSocketConfigurations = $this->serverSocketConfigurations;
+        if ([] === $serverSocketConfigurations) {
+            $serverSocketConfigurations = self::DEFAULT_SERVER_SOCKET_CONFIGURATIONS;
+        }
 
         foreach ($serverSocketConfigurations as $socketConfiguration) {
             /** @var string $host */
@@ -260,14 +267,10 @@ final readonly class ServerInfrastructure
             $address = new InternetAddress($host, $port);
             $bindContext = $this->createBindContext($socketConfiguration['bind'] ?? null);
 
-            $tlsContext = $bindContext->getTlsContext()?->withApplicationLayerProtocols(
-                $httpDriverFactory->getApplicationLayerProtocols(),
-            );
-
-            yield $serverFactory->listen($address, $bindContext->withTlsContext($tlsContext));
+            $server->expose($address, $bindContext);
         }
 
-        return $httpDriverFactory;
+        return $server;
     }
 
     /**
