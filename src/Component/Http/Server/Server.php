@@ -58,7 +58,7 @@ final class Server implements ServerInterface
     /**
      * The socket HTTP server instance.
      */
-    private ?SocketHttpServer $socketHttpServer = null;
+    private null|SocketHttpServer $socketHttpServer = null;
 
     public function __construct(ServerInfrastructure $infrastructureFactory, RuntimeInterface $runtime, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger = new NullLogger())
     {
