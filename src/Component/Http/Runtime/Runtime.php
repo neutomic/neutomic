@@ -65,6 +65,13 @@ final class Runtime implements RuntimeInterface
     private Async\Semaphore $semaphore;
 
     /**
+     * The total number of requests handled by the runtime since its initialization.
+     *
+     * @var int<0, max>
+     */
+    private int $totalRequestsCount = 0;
+
+    /**
      * Constructs a new Runtime instance with specified components for handling HTTP requests.
      *
      * @param EventDispatcherInterface $dispatcher The event dispatcher to trigger various lifecycle events.
@@ -108,6 +115,14 @@ final class Runtime implements RuntimeInterface
     /**
      * @inheritDoc
      */
+    public function getTotalRequestsCount(): int
+    {
+        return $this->totalRequestsCount;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         try {
@@ -142,6 +157,8 @@ final class Runtime implements RuntimeInterface
      */
     private function handleRequest(array $input): ResponseInterface
     {
+        $this->totalRequestsCount++;
+
         [$context, $request] = $input;
 
         try {

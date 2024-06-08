@@ -52,6 +52,13 @@ interface RuntimeInterface extends HandlerInterface
     public function getPendingRequestsCount(): int;
 
     /**
+     * Retrieves the total number of requests handled by the runtime since its initialization.
+     *
+     * @return int<0, max> The total number of requests handled.
+     */
+    public function getTotalRequestsCount(): int;
+
+    /**
      * Handles the given HTTP request and produces a response.
      *
      * This method is responsible for processing an incoming request and generating the
