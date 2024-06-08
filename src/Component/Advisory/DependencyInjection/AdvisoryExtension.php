@@ -26,7 +26,6 @@ use Psl\Type;
 
 /**
  * @psalm-type Configuration = array{
- *     logger?: non-empty-string,
  *     hooks?: array{
  *         add-advisers?: array{
  *             advisory?: non-empty-string,
@@ -45,9 +44,7 @@ final readonly class AdvisoryExtension implements ExtensionInterface
             ->getOfTypeOrDefault('advisory', $this->getConfigurationType(), [])
         ;
 
-        $registry->addDefinition(Definition::ofType(Advisory::class, new AdvisoryFactory(
-            logger: $configuration['logger'] ?? null,
-        )));
+        $registry->addDefinition(Definition::ofType(Advisory::class, new AdvisoryFactory()));
 
         $registry->getDefinition(Advisory::class)->addAlias(AdvisoryInterface::class);
 
@@ -75,7 +72,6 @@ final readonly class AdvisoryExtension implements ExtensionInterface
     private function getConfigurationType(): Type\TypeInterface
     {
         return Type\shape([
-            'logger' => Type\optional(Type\non_empty_string()),
             'hooks' => Type\optional(Type\shape([
                 'add-advisers' => Type\optional(Type\shape([
                     'advisory' => Type\optional(Type\non_empty_string()),

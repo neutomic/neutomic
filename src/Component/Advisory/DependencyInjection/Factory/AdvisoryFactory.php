@@ -16,7 +16,6 @@ namespace Neu\Component\Advisory\DependencyInjection\Factory;
 use Neu\Component\Advisory\Advisory;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
-use Psr\Log\LoggerInterface;
 
 /**
  * Factory for creating a {@see Advisory} instance.
@@ -25,27 +24,8 @@ use Psr\Log\LoggerInterface;
  */
 final readonly class AdvisoryFactory implements FactoryInterface
 {
-    /**
-     * The logger service to use.
-     *
-     * @var non-empty-string
-     */
-    private string $logger;
-
-    /**
-     * Create a new {@see AdvisoryFactory} instance.
-     *
-     * @param null|non-empty-string $logger The logger service to use.
-     */
-    public function __construct(null|string $logger = null)
-    {
-        $this->logger = $logger ?? LoggerInterface::class;
-    }
-
     public function __invoke(ContainerInterface $container): object
     {
-        $logger = $container->getTyped($this->logger, LoggerInterface::class);
-
-        return new Advisory($logger);
+        return new Advisory();
     }
 }
