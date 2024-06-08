@@ -357,6 +357,10 @@ final readonly class MonologExtension implements ExtensionInterface
             $registry->addDefinition(Definition::create('monolog.logger.default', Logger::class, new LoggerFactory(
                 channel: 'default',
                 handlers: ['monolog.handler.stderr'],
+                processors: [
+                    'monolog.processor.psr-log-message',
+                    'monolog.processor.process-id',
+                ],
             )));
 
             $registered['default'] = 'monolog.logger.default';

@@ -40,7 +40,7 @@ final readonly class FileHandlerFactory implements FactoryInterface
     /**
      * The logging level.
      */
-    private int|string|Level $level;
+    private null|int|string|Level $level;
 
     /**
      * Whether the handler should bubble.
@@ -73,7 +73,7 @@ final readonly class FileHandlerFactory implements FactoryInterface
     public function __construct(string $file, null|int|string|Level $level = null, null|bool $bubble = null, null|string $formatter = null, null|array $processors = null)
     {
         $this->file = $file;
-        $this->level = $level ?? Level::Debug;
+        $this->level = $level;
         $this->bubble = $bubble ?? true;
         $this->formatter = $formatter;
         $this->processors = $processors ?? [];
@@ -84,13 +84,20 @@ final readonly class FileHandlerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container): object
     {
+        $level = $this->level;
+        if ($container->getProject()->debug) {
+            $level = Level::Debug;
+        } elseif (null === $level) {
+            $level = $container->getProject()->mode->isProduction() ? Level::Warning : Level::Info;
+        }
+
         try {
             $fileStream = File\openFile($this->file, mode: 'a');
         } catch (FilesystemException $e) {
             throw new RuntimeException('Failed to open log file', 0, $e);
         }
 
-        $handler = new StreamHandler($fileStream, $this->level, $this->bubble);
+        $handler = new StreamHandler($fileStream, $level, $this->bubble);
         if (null !== $this->formatter) {
             $handler->setFormatter($container->getTyped($this->formatter, FormatterInterface::class));
         }

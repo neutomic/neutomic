@@ -30,7 +30,7 @@ final readonly class NullHandlerFactory implements FactoryInterface
     /**
      * The logging level.
      */
-    private int|string|Level $level;
+    private null|int|string|Level $level;
 
     /**
      * Create a new {@see NullHandlerFactory} instance.
@@ -39,7 +39,7 @@ final readonly class NullHandlerFactory implements FactoryInterface
      */
     public function __construct(null|int|string|Level $level = null)
     {
-        $this->level = $level ?? Level::Debug;
+        $this->level = $level;
     }
 
     /**
@@ -47,6 +47,13 @@ final readonly class NullHandlerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container): object
     {
-        return new NullHandler($this->level);
+        $level = $this->level;
+        if ($container->getProject()->debug) {
+            $level = Level::Debug;
+        } elseif (null === $level) {
+            $level = $container->getProject()->mode->isProduction() ? Level::Warning : Level::Info;
+        }
+
+        return new NullHandler($level);
     }
 }

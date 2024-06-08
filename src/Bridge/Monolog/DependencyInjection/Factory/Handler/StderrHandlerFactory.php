@@ -33,7 +33,7 @@ final readonly class StderrHandlerFactory implements FactoryInterface
     /**
      * The logging level.
      */
-    private int|string|Level $level;
+    private null|int|string|Level $level;
 
     /**
      * Whether the handler should bubble.
@@ -64,7 +64,7 @@ final readonly class StderrHandlerFactory implements FactoryInterface
      */
     public function __construct(null|int|string|Level $level = null, null|bool $bubble = null, null|string $formatter = null, null|array $processors = null)
     {
-        $this->level = $level ?? Level::Debug;
+        $this->level = $level;
         $this->bubble = $bubble ?? true;
         $this->formatter = $formatter;
         $this->processors = $processors ?? [];
@@ -75,7 +75,14 @@ final readonly class StderrHandlerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container): object
     {
-        $handler = new StreamHandler(ByteStream\getStderr(), $this->level, $this->bubble);
+        $level = $this->level;
+        if ($container->getProject()->debug) {
+            $level = Level::Debug;
+        } elseif (null === $level) {
+            $level = $container->getProject()->mode->isProduction() ? Level::Warning : Level::Info;
+        }
+
+        $handler = new StreamHandler(ByteStream\getStderr(), $level, $this->bubble);
 
         if (null !== $this->formatter) {
             $handler->setFormatter($container->getTyped($this->formatter, FormatterInterface::class));
