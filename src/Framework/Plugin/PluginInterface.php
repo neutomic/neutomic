@@ -17,6 +17,7 @@ use Neu\Component\Console\Command\Registry\RegistryInterface as ConsoleRegistryI
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\EventDispatcher\Listener\Registry\RegistryInterface as EventRegistryInterface;
 use Neu\Component\Http\Router\Registry\RegistryInterface as RouterRegistryInterface;
+use Neu\Component\Http\Router\RouteCollector;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
 
 /**
@@ -24,8 +25,6 @@ use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
  *
  * Defines the contract for a plugin in the Neu framework. Plugins can add routes, commands,
  * event listeners, middleware, and perform initialization and cleanup tasks.
- *
- * @package Neu\Framework\Plugin
  */
 interface PluginInterface
 {
@@ -47,8 +46,9 @@ interface PluginInterface
      *
      * @param ContainerInterface $container The dependency injection container.
      * @param RouterRegistryInterface $registry The router registry.
+     * @param RouteCollector $collector The route collector.
      */
-    public function route(ContainerInterface $container, RouterRegistryInterface $registry): void;
+    public function route(ContainerInterface $container, RouterRegistryInterface $registry, RouteCollector $collector): void;
 
     /**
      * Enqueue middleware.

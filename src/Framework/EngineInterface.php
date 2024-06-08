@@ -39,5 +39,5 @@ interface EngineInterface
      *
      * @throws RuntimeException If an error occurs while running the engine.
      */
-    public function run(): void;
+    public function run(Mode $mode = Mode::Application): void;
 }

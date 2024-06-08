@@ -18,23 +18,24 @@ use Neu\Component\Console\Event\BeforeExecuteEvent;
 use Neu\Component\DependencyInjection\ProjectMode;
 use Neu\Component\EventDispatcher\Attribute\Listener;
 use Neu\Component\EventDispatcher\Listener\ListenerInterface;
-use Neu\Framework\Internal\Advisory\ConsoleTrait;
+use Neu\Component\Http\Server\Event\ServerStartedEvent;
+use Psr\Log\LoggerInterface;
 
 /**
  * @implements ListenerInterface<BeforeExecuteEvent>
  */
-#[Listener(BeforeExecuteEvent::class)]
-final readonly class BeforeExecuteEventListener implements ListenerInterface
+#[Listener(ServerStartedEvent::class)]
+final readonly class ServerStartedEventListener implements ListenerInterface
 {
-    use ConsoleTrait;
-
     private ProjectMode $mode;
     private AdvisoryInterface $advisory;
+    private LoggerInterface $logger;
 
-    public function __construct(ProjectMode $mode, AdvisoryInterface $advisory)
+    public function __construct(ProjectMode $mode, AdvisoryInterface $advisory, LoggerInterface $logger)
     {
         $this->mode = $mode;
         $this->advisory = $advisory;
+        $this->logger = $logger;
     }
 
     /**
@@ -50,7 +51,12 @@ final readonly class BeforeExecuteEventListener implements ListenerInterface
             $advices = $this->advisory->getAdvices();
 
             foreach ($advices as $advice) {
-                $this->display($event->output, $advice);
+                $this->logger->warning('[advice][{category}] {message} - {solution}', [
+                    'category' => $advice->category->value,
+                    'message' => $advice->message,
+                    'description' => $advice->description,
+                    'solution' => $advice->solution,
+                ]);
             }
         }
 

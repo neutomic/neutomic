@@ -16,14 +16,15 @@ namespace Neu\Framework\DependencyInjection\Factory\Listener\Advisory;
 use Neu\Component\Advisory\AdvisoryInterface;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
-use Neu\Framework\Listener\Advisory\BeforeExecuteEventListener;
+use Neu\Framework\Listener\Advisory\ServerStartedEventListener;
+use Psr\Log\LoggerInterface;
 
 /**
- * Factory for creating a {@see BeforeExecuteEventListener} instance.
+ * Factory for creating a {@see ServerStartedEventListener} instance.
  *
- * @implements FactoryInterface<BeforeExecuteEventListener>
+ * @implements FactoryInterface<ServerStartedEventListener>
  */
-final readonly class BeforeExecuteEventListenerFactory implements FactoryInterface
+final readonly class ServerStartedEventListenerFactory implements FactoryInterface
 {
     /**
      * The advisory service to use.
@@ -33,21 +34,30 @@ final readonly class BeforeExecuteEventListenerFactory implements FactoryInterfa
     private string $advisory;
 
     /**
+     * The logger service to use.
+     *
+     * @var non-empty-string
+     */
+    private string $logger;
+
+    /**
      * @param null|non-empty-string $advisory The advisory service to use.
      */
-    public function __construct(null|string $advisory = null)
+    public function __construct(null|string $advisory = null, null|string $logger = null)
     {
         $this->advisory = $advisory ?? AdvisoryInterface::class;
+        $this->logger = $logger ?? LoggerInterface::class;
     }
 
     /**
      * @inheritDoc
      */
-    public function __invoke(ContainerInterface $container): BeforeExecuteEventListener
+    public function __invoke(ContainerInterface $container): ServerStartedEventListener
     {
-        return new BeforeExecuteEventListener(
+        return new ServerStartedEventListener(
             $container->getProject()->mode,
             $container->getTyped($this->advisory, AdvisoryInterface::class),
+            $container->getTyped($this->logger, LoggerInterface::class),
         );
     }
 }

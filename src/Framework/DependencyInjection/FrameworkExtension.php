@@ -56,8 +56,9 @@ use Psr\Log\NullLogger;
  * }
  * @psalm-type ListenersConfiguration = array{
  *     advisory?: array{
- *         before-execute?: false|array{
+ *         server-started?: false|array{
  *             advisory?: non-empty-string,
+ *             logger?: non-empty-string,
  *         }
  *     },
  *     broadcast?: array{
@@ -116,8 +117,11 @@ use Psr\Log\NullLogger;
  *     middleware?: MiddlewareConfiguration,
  *     engine?: array{
  *          application?: non-empty-string,
+ *          server?: non-empty-string,
+ *          cluster?: non-empty-string,
  *          cluster-worker?: non-empty-string,
  *          router-registry?: non-empty-string,
+ *          route-collector?: non-empty-string,
  *          middleware-queue?: non-empty-string,
  *          event-dispatcher-registry?: non-empty-string,
  *          console-registry?: non-empty-string,
@@ -163,12 +167,13 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
             ));
         }
 
-        $advisoryBeforeExecuteEventListenerConfiguration = $configuration['listeners']['advisory']['before-execute'] ?? [];
-        if (false !== $advisoryBeforeExecuteEventListenerConfiguration) {
+        $advisoryServerStartedEventListenerConfiguration = $configuration['listeners']['advisory']['server-started'] ?? [];
+        if (false !== $advisoryServerStartedEventListenerConfiguration) {
             $registry->addDefinition(Definition::ofType(
-                Listener\Advisory\BeforeExecuteEventListener::class,
-                new Factory\Listener\Advisory\BeforeExecuteEventListenerFactory(
-                    advisory: $advisoryBeforeExecuteEventListenerConfiguration['advisory'] ?? null,
+                Listener\Advisory\ServerStartedEventListener::class,
+                new Factory\Listener\Advisory\ServerStartedEventListenerFactory(
+                    advisory: $advisoryServerStartedEventListenerConfiguration['advisory'] ?? null,
+                    logger: $advisoryServerStartedEventListenerConfiguration['logger'] ?? null,
                 ),
             ));
         }
@@ -287,8 +292,11 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
 
         $definition = Definition::ofType(Engine::class, new Factory\EngineFactory(
             application: $configuration['engine']['application'] ?? null,
+            server: $configuration['engine']['server'] ?? null,
+            cluster: $configuration['engine']['cluster'] ?? null,
             clusterWorker: $configuration['engine']['cluster-worker'] ?? null,
             routerRegistry: $configuration['engine']['router-registry'] ?? null,
+            routeCollector: $configuration['engine']['route-collector'] ?? null,
             middlewareQueue: $configuration['engine']['middleware-queue'] ?? null,
             eventDispatcherRegistry: $configuration['engine']['event-dispatcher-registry'] ?? null,
             consoleRegistry: $configuration['engine']['console-registry'] ?? null,
@@ -324,6 +332,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
                 'advisory' => Type\optional(Type\shape([
                     'advice' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
                         'advisory' => Type\optional(Type\non_empty_string()),
+                        'logger' => Type\optional(Type\non_empty_string()),
                     ]))),
                 ])),
                 'http' => Type\optional(Type\shape([
@@ -341,7 +350,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
             ])),
             'listeners' => Type\optional(Type\shape([
                 'advisory' => Type\optional(Type\shape([
-                    'before-execute' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
+                    'server-started' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
                         'advisory' => Type\optional(Type\non_empty_string()),
                     ]))),
                 ])),
@@ -428,8 +437,11 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
             ])),
             'engine' => Type\optional(Type\shape([
                 'application' => Type\optional(Type\non_empty_string()),
+                'server' => Type\optional(Type\non_empty_string()),
+                'cluster' => Type\optional(Type\non_empty_string()),
                 'cluster-worker' => Type\optional(Type\non_empty_string()),
                 'router-registry' => Type\optional(Type\non_empty_string()),
+                'route-collector' => Type\optional(Type\non_empty_string()),
                 'middleware-queue' => Type\optional(Type\non_empty_string()),
                 'event-dispatcher-registry' => Type\optional(Type\non_empty_string()),
                 'console-registry' => Type\optional(Type\non_empty_string()),

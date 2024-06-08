@@ -17,6 +17,7 @@ use Neu\Component\Console\Command\Registry\RegistryInterface as ConsoleRegistryI
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\EventDispatcher\Listener\Registry\RegistryInterface as EventRegistryInterface;
 use Neu\Component\Http\Router\Registry\RegistryInterface as RouterRegistryInterface;
+use Neu\Component\Http\Router\RouteCollector;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
 
 /**
@@ -36,7 +37,7 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * @inheritDoc
      */
-    public function route(ContainerInterface $container, RouterRegistryInterface $registry): void
+    public function route(ContainerInterface $container, RouterRegistryInterface $registry, RouteCollector $collector): void
     {
         // Default implementation does nothing
     }
