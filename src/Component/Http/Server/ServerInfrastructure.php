@@ -275,6 +275,31 @@ final readonly class ServerInfrastructure
     }
 
     /**
+     * Get the server urls.
+     *
+     * @return list<non-empty-string> The server urls.
+     */
+    public function getUrls(): array
+    {
+        $urls = [];
+        foreach ($this->serverSocketConfigurations as $socketConfiguration) {
+            $scheme = ($socketConfiguration['bind']['tls'] ?? null) !== null ? 'https' : 'http';
+            $host = $socketConfiguration['host'];
+            $port = $socketConfiguration['port'];
+            $url = $scheme . '://' . $host;
+            if ('http' === $scheme && 80 !== $port) {
+                $url .= ':' . ((string) $port);
+            } elseif ('https' === $scheme && 443 !== $port) {
+                $url .= ':' . ((string) $port);
+            }
+
+            $urls[] = $url;
+        }
+
+        return $urls;
+    }
+
+    /**
      * Create a bind context from the configuration.
      *
      * @param ServerSocketBindConfiguration|null $bindConfiguration The bind configuration.

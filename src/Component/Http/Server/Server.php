@@ -116,6 +116,10 @@ final class Server implements ServerInterface
             }
         }
 
+        foreach ($this->infrastructure->getUrls() as $url) {
+            $this->logger->notice('Server is listening on "{url}".', ['url' => $url]);
+        }
+
         $this->dispatcher->dispatch(new ServerStartedEvent());
     }
 

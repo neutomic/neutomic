@@ -94,11 +94,9 @@ final class Cluster implements ClusterInterface
 
         $workers = $workers ?? $this->workerCount;
 
-        $this->logger->info('Starting cluster with {workers} workers...', ['workers' => $workers]);
+        $this->logger->notice('Starting cluster with {workers} workers...', ['workers' => $workers]);
 
         $watcher->start($workers);
-
-        $this->logger->info('Cluster started with {workers} workers.', ['workers' => $workers]);
 
         EventLoop::defer(function () use ($watcher): void {
             $iterator = $watcher->getMessageIterator();
@@ -120,6 +118,8 @@ final class Cluster implements ClusterInterface
             }
         });
 
+        $this->logger->notice('Cluster started with {workers} workers.', ['workers' => $workers]);
+
         $this->dispatcher->dispatch(new ClusterStartedEvent($workers));
     }
 
@@ -136,11 +136,11 @@ final class Cluster implements ClusterInterface
 
         $watcher = $this->watcher;
 
-        $this->logger->info('Restarting cluster...');
+        $this->logger->notice('Restarting cluster...');
 
         $watcher->restart();
 
-        $this->logger->info('Cluster restarted.');
+        $this->logger->notice('Cluster restarted.');
 
         $this->dispatcher->dispatch(new ClusterRestartedEvent());
     }
@@ -156,12 +156,12 @@ final class Cluster implements ClusterInterface
 
         $watcher = $this->watcher;
 
-        $this->logger->info('Stopping cluster...');
+        $this->logger->notice('Stopping cluster...');
 
         try {
             $watcher->stop();
 
-            $this->logger->info('Cluster stopped successfully.');
+            $this->logger->notice('Cluster stopped successfully.');
         } catch (Throwable $exception) {
             $this->logger->error('Error while stopping cluster.', [
                 'exception' => $exception,
