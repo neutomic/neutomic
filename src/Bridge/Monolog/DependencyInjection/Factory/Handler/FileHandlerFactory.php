@@ -88,7 +88,7 @@ final readonly class FileHandlerFactory implements FactoryInterface
         if ($container->getProject()->debug) {
             $level = Level::Debug;
         } elseif (null === $level) {
-            $level = $container->getProject()->mode->isProduction() ? Level::Warning : Level::Info;
+            $level = $container->getProject()->mode->isProduction() ? Level::Notice : Level::Info;
         }
 
         try {
