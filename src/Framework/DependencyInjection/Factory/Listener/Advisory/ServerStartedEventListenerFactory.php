@@ -42,6 +42,7 @@ final readonly class ServerStartedEventListenerFactory implements FactoryInterfa
 
     /**
      * @param null|non-empty-string $advisory The advisory service to use.
+     * @param null|non-empty-string $logger The logger service to use.
      */
     public function __construct(null|string $advisory = null, null|string $logger = null)
     {

@@ -332,7 +332,6 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
                 'advisory' => Type\optional(Type\shape([
                     'advice' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
                         'advisory' => Type\optional(Type\non_empty_string()),
-                        'logger' => Type\optional(Type\non_empty_string()),
                     ]))),
                 ])),
                 'http' => Type\optional(Type\shape([
@@ -352,6 +351,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
                 'advisory' => Type\optional(Type\shape([
                     'server-started' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
                         'advisory' => Type\optional(Type\non_empty_string()),
+                        'logger' => Type\optional(Type\non_empty_string()),
                     ]))),
                 ])),
                 'broadcast' => Type\optional(Type\shape([

@@ -68,6 +68,7 @@ use Psr\Log\NullLogger;
  * }
  *
  * @psalm-suppress MissingThrowsDocblock
+ * @psalm-suppress RedundantCondition
  */
 final readonly class ServerInfrastructure
 {
@@ -127,8 +128,6 @@ final readonly class ServerInfrastructure
 
     /**
      * The connections limit.
-     *
-     * @var positive-int
      */
     private int $connectionLimit;
 
@@ -211,26 +210,28 @@ final readonly class ServerInfrastructure
     {
         $serverFactory = Cluster::getServerSocketFactory();
         if ($this->connectionLimit > 0) {
+            $connectionLimit = $this->connectionLimit;
             assert($this->logger->debug(
-                'Connection limiting enabled, limiting to ' . $this->connectionLimit . ' connections.',
+                'Connection limiting enabled, limiting to ' . ((string) $connectionLimit) . ' connections.',
             ) || true);
 
             $serverFactory = new ConnectionLimitingServerSocketFactory(
-                new LocalSemaphore($this->connectionLimit),
+                new LocalSemaphore($connectionLimit),
                 $serverFactory,
             );
         }
 
         $clientFactory = new SocketClientFactory($this->logger, $this->tlsHandshakeTimeout);
         if ($this->connectionLimitPerIP > 0) {
+            $connectionLimitPerIP = $this->connectionLimitPerIP;
             assert($this->logger->debug(
-                'Connection limiting per IP enabled, limiting to ' . $this->connectionLimitPerIP . ' connections per IP.',
+                'Connection limiting per IP enabled, limiting to ' . ((string) $connectionLimitPerIP) . ' connections per IP.',
             ) || true);
 
             $clientFactory = new ConnectionLimitingClientFactory(
                 $clientFactory,
                 $this->logger,
-                $this->connectionLimitPerIP,
+                $connectionLimitPerIP,
             );
         }
 

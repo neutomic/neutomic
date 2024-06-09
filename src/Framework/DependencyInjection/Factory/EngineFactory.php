@@ -104,6 +104,7 @@ final readonly class EngineFactory implements FactoryInterface
      * @param null|non-empty-string $cluster The cluster service id.
      * @param null|non-empty-string $clusterWorker The cluster worker service id.
      * @param null|non-empty-string $routerRegistry The router registry service id.
+     * @param null|non-empty-string $routeCollector The route collector service id.
      * @param null|non-empty-string $middlewareQueue The middleware queue service id.
      * @param null|non-empty-string $eventDispatcherRegistry The event dispatcher registry service id.
      * @param null|non-empty-string $consoleRegistry The command registry service id.
