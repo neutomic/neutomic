@@ -277,12 +277,17 @@ final readonly class ServerInfrastructure
     /**
      * Get the server urls.
      *
-     * @return list<non-empty-string> The server urls.
+     * @return non-empty-list<non-empty-string> The server urls.
      */
     public function getUrls(): array
     {
+        $serverSocketConfigurations = $this->serverSocketConfigurations;
+        if ([] === $serverSocketConfigurations) {
+            $serverSocketConfigurations = self::DEFAULT_SERVER_SOCKET_CONFIGURATIONS;
+        }
+
         $urls = [];
-        foreach ($this->serverSocketConfigurations as $socketConfiguration) {
+        foreach ($serverSocketConfigurations as $socketConfiguration) {
             $scheme = ($socketConfiguration['bind']['tls'] ?? null) !== null ? 'https' : 'http';
             $host = $socketConfiguration['host'];
             $port = $socketConfiguration['port'];
