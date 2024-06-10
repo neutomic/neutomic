@@ -129,6 +129,14 @@ final readonly class SubHandler implements HandlerInterface
                 'compression' => false,
             ]
         ],
+        'broadcast' => [
+            'hubs' => [
+                'default' => [
+                    'transport' => 'socket',
+                    'address' => 'unix:///tmp/neutomic-broadcast-default-hub.sock'
+                ],
+            ],
+        ],
         'http' => [
             'server' => [
                 'sockets' => [[

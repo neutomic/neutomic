@@ -21,6 +21,8 @@ use Amp\Pipeline\ConcurrentIterator;
  * A local transport mechanism that sends and receives messages based on the current execution context.
  *
  * Unlike {@see MemoryTransport}, this transport is intended for use in a distributed environment ( i.e. multiple workers ).
+ *
+ * @deprecated
  */
 final readonly class LocalTransport implements TransportInterface
 {

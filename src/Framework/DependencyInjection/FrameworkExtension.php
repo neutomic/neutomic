@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Framework\DependencyInjection;
 
 use Neu\Component\Advisory\DependencyInjection\AdvisoryExtension;
+use Neu\Component\Broadcast\DependencyInjection\BroadcastExtension;
 use Neu\Component\Cache\DependencyInjection\CacheExtension;
 use Neu\Component\Console\DependencyInjection\ConsoleExtension;
 use Neu\Component\Csrf\DependencyInjection\CsrfExtension;
@@ -313,6 +314,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
             new CsrfExtension(),
             new ConsoleExtension(),
             new HttpExtension(),
+            new BroadcastExtension(),
         ];
     }
 

@@ -19,6 +19,7 @@ use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 
 /**
  * @implements FactoryInterface<LocalTransport>
+ * @deprecated
  */
 final readonly class LocalTransportFactory implements FactoryInterface
 {

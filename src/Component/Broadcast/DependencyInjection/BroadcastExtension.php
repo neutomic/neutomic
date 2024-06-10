@@ -16,32 +16,37 @@ namespace Neu\Component\Broadcast\DependencyInjection;
 use Amp\Postgres\PostgresConfig;
 use Neu\Component\Broadcast\DependencyInjection\Factory\HubFactory;
 use Neu\Component\Broadcast\DependencyInjection\Factory\HubManagerFactory;
-use Neu\Component\Broadcast\DependencyInjection\Factory\Transport\LocalTransportFactory;
+use Neu\Component\Broadcast\DependencyInjection\Factory\Transport\LazyTransportFactory;
 use Neu\Component\Broadcast\DependencyInjection\Factory\Transport\MemoryTransportFactory;
 use Neu\Component\Broadcast\DependencyInjection\Factory\Transport\PostgresTransportFactory;
+use Neu\Component\Broadcast\DependencyInjection\Factory\Transport\SocketTransportFactory;
 use Neu\Component\Broadcast\HubInterface;
 use Neu\Component\Broadcast\HubManager;
 use Neu\Component\Broadcast\HubManagerInterface;
-use Neu\Component\Broadcast\Transport\LocalTransport;
+use Neu\Component\Broadcast\Server\DependencyInjection\Factory\ServerFactory;
+use Neu\Component\Broadcast\Server\Server;
+use Neu\Component\Broadcast\Server\ServerInterface;
 use Neu\Component\Broadcast\Transport\MemoryTransport;
 use Neu\Component\Broadcast\Transport\PostgresTransport;
+use Neu\Component\Broadcast\Transport\SocketTransport;
 use Neu\Component\Broadcast\Transport\TransportInterface;
 use Neu\Component\Configuration\Exception\InvalidConfigurationException;
 use Neu\Component\DependencyInjection\ContainerBuilderInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
-use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\ExtensionInterface;
+use Neu\Framework\Command\Broadcast\Server\StartCommand;
+use Neu\Framework\DependencyInjection\Factory\Command\Broadcast\Server\StartCommandFactory;
 use Psl\Class;
 use Psl\Type;
-
 use function array_key_first;
 
 /**
  * A dependency injection extension for the broadcast component.
  *
  * @psalm-type PostgresSslMode = 'disable'|'allow'|'prefer'|'require'|'verify-ca'|'verify-full'
- * @psalm-type LocalTransportConfiguration = array{
- *     transport: 'local',
+ * @psalm-type SocketTransportConfiguration = array{
+ *     transport: 'socket',
+ *     address: non-empty-string
  * }
  * @psalm-type MemoryTransportConfiguration = array{
  *     transport: 'memory'
@@ -61,7 +66,7 @@ use function array_key_first;
  *      transport: 'service',
  *      service: non-empty-string
  * }
- * @psalm-type TransportConfiguration = LocalTransportConfiguration|MemoryTransportConfiguration|PostgresTransportConfiguration|ServiceTransportConfiguration
+ * @psalm-type TransportConfiguration = SocketTransportConfiguration|MemoryTransportConfiguration|PostgresTransportConfiguration|ServiceTransportConfiguration
  * @psalm-type Configuration = array{
  *      default?: non-empty-string,
  *      hubs?: array<non-empty-string, TransportConfiguration>
@@ -83,10 +88,10 @@ final class BroadcastExtension implements ExtensionInterface
 
         $hubs = $configuration['hubs'] ?? [];
 
-        // If no hubs are defined, default to a single local hub.
-        if (empty($hubs)) {
-            $hubs = ['default' => ['transport' => 'local']];
-        }
+        // If no hubs are defined, default to a single socket hub.
+        // if (empty($hubs)) {
+        //     $hubs = ['default' => ['transport' => 'socket']];
+        // }
 
         $hubServices = $this->registerHubs($container, $hubs);
         $defaultHub = $configuration['default'] ?? array_key_first($hubServices);
@@ -94,6 +99,9 @@ final class BroadcastExtension implements ExtensionInterface
         $this->setDefaultHub($container, $hubServices, $defaultHub);
 
         $this->registerHubManager($container, $defaultHub, $hubServices);
+
+        $this->registerCommands($container);
+        $this->registerServers($container);
     }
 
     /**
@@ -108,19 +116,14 @@ final class BroadcastExtension implements ExtensionInterface
     {
         $hubServices = [];
 
-        $registeredLocalTransport = false;
         foreach ($hubs as $name => $config) {
             $transportServiceId = 'broadcast.transport.' . $name;
             $hubServiceId = 'broadcast.hub.' . $name;
 
             $transport = $config['transport'];
-            if ('local' === $transport) {
-                if ($registeredLocalTransport) {
-                    throw new RuntimeException('Only one local broadcast transport can be registered.');
-                }
-
-                $registeredLocalTransport = true;
-                $this->registerLocalTransport($container, $transportServiceId);
+            if ('socket' === $transport) {
+                /** @var SocketTransportConfiguration $config */
+                $this->registerSocketTransport($container, $transportServiceId, $config);
             } elseif ('memory' === $transport) {
                 $this->registerMemoryTransport($container, $transportServiceId);
             } elseif ('pgsql' === $transport || 'postgres' === $transport || 'postgresql' === $transport) {
@@ -151,14 +154,22 @@ final class BroadcastExtension implements ExtensionInterface
     }
 
     /**
-     * Register a local broadcast transport.
+     * Register a socket broadcast transport.
      *
      * @param ContainerBuilderInterface $container
      * @param non-empty-string $serviceId
+     * @param SocketTransportConfiguration
      */
-    private function registerLocalTransport(ContainerBuilderInterface $container, string $serviceId): void
+    private function registerSocketTransport(ContainerBuilderInterface $container, string $serviceId, array $config): void
     {
-        $container->addDefinition(Definition::create($serviceId, LocalTransport::class, new LocalTransportFactory()));
+        $socketTransportFactory = new SocketTransportFactory(
+            address: $config['address']
+        );
+
+        // Make a config flag to make the connection eager or lazy?
+        $socketTransportFactory = new LazyTransportFactory($socketTransportFactory);
+
+        $container->addDefinition(Definition::create($serviceId, SocketTransport::class, $socketTransportFactory));
     }
 
     /**
@@ -255,10 +266,11 @@ final class BroadcastExtension implements ExtensionInterface
                 Type\non_empty_string(),
                 Type\union(
                     Type\shape([
-                        'transport' => Type\literal_scalar('local'),
+                        'transport' => Type\literal_scalar('memory'),
                     ]),
                     Type\shape([
-                        'transport' => Type\literal_scalar('memory'),
+                        'transport' => Type\literal_scalar('socket'),
+                        'address' => Type\non_empty_string(),
                     ]),
                     Type\shape([
                         'transport' => Type\union(
@@ -289,5 +301,17 @@ final class BroadcastExtension implements ExtensionInterface
                 ),
             )),
         ]);
+    }
+
+    private function registerCommands(ContainerBuilderInterface $container)
+    {
+        $container->addDefinition(Definition::ofType(StartCommand::class, new StartCommandFactory()));
+    }
+
+    private function registerServers(ContainerBuilderInterface $container): void
+    {
+        // TODO: launch memory server only if cluster mode
+        $container->addDefinition(Definition::ofType(Server::class, new ServerFactory()));
+        $container->getDefinition(Server::class)->addAlias(ServerInterface::class);
     }
 }
