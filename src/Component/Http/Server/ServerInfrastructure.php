@@ -81,7 +81,7 @@ final readonly class ServerInfrastructure
             'port' => 8080,
         ],
         [
-            'host' => '::1',
+            'host' => '[::1]',
             'port' => 8080,
         ],
     ];

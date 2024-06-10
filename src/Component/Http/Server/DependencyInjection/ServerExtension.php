@@ -110,7 +110,7 @@ final readonly class ServerExtension implements ExtensionInterface
             'logger' => Type\optional(Type\non_empty_string()),
             'runtime' => Type\optional(Type\non_empty_string()),
             'event-dispatcher' => Type\optional(Type\non_empty_string()),
-            'sockets' => Type\vec(Type\shape([
+            'sockets' => Type\optional(Type\vec(Type\shape([
                 'host' => Type\non_empty_string(),
                 'port' => Type\int(),
                 'bind' => Type\optional(Type\shape([
@@ -152,7 +152,7 @@ final readonly class ServerExtension implements ExtensionInterface
                         )),
                     ])),
                 ])),
-            ])),
+            ]))),
             'cluster' => Type\optional(Type\shape([
                 'workers' => Type\optional(Type\positive_int()),
                 'logger' => Type\optional(Type\non_empty_string()),
