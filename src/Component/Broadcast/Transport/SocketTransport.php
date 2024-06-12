@@ -5,33 +5,22 @@ declare(strict_types=1);
 namespace Neu\Component\Broadcast\Transport;
 
 use Amp\Pipeline\ConcurrentIterator;
-use Amp\Pipeline\Queue;
-use Amp\Serialization\NativeSerializer;
-use Amp\Serialization\Serializer;
-use Amp\Socket\Socket;
 use Amp;
-use Psl;
-use Neu\Component\Broadcast\Address\SocketAddressInterface;
-use Neu\Component\Broadcast\Exception\AlreadyListeningException;
 use Neu\Component\Broadcast\Exception\ClosedTransportException;
-use Neu\Component\Broadcast\Exception\RuntimeException;
-use function Amp\Socket\connect;
+use Neu\Component\Broadcast\Transport\Internal\ChannelTransport;
 
 final class SocketTransport implements TransportInterface
 {
-    private Socket $connection;
+    private TransportInterface $transport;
 
-    private NativeSerializer|Serializer $serializer;
+    private bool $explicitlyClosed = false;
 
     /**
-     * @var array<non-empty-string, Queue>
+     * @param string $address
      */
-    private array $listeners = [];
-
-    public function __construct(Socket $connection, null|Serializer $serializer = null)
+    public function __construct(private string $address)
     {
-        $this->connection = $connection;
-        $this->serializer = $serializer ?? new NativeSerializer();
+        $this->connect();
     }
 
     /**
@@ -39,17 +28,9 @@ final class SocketTransport implements TransportInterface
      */
     public function send(string $channel, mixed $message): void
     {
-        try {
-            $serialized = $this->serializer->serialize(new Internal\Data($channel, $message));
-        } catch (Amp\Serialization\SerializationException $e) {
-            throw new RuntimeException('Failed to serialize message.', previous: $e);
-        }
+        $this->reconnect();
 
-        if ($this->connection->isClosed()) {
-            throw new ClosedTransportException('The transport is closed.');
-        }
-
-        $this->connection->write($serialized);
+        $this->transport->send($channel, $message);
     }
 
     /**
@@ -57,7 +38,7 @@ final class SocketTransport implements TransportInterface
      */
     public function isListening(string $channel): bool
     {
-        return isset($this->listeners[$channel]);
+        return $this->transport->isListening($channel);
     }
 
     /**
@@ -65,33 +46,9 @@ final class SocketTransport implements TransportInterface
      */
     public function listen(string $channel): ConcurrentIterator
     {
-        if ($this->connection->isClosed()) {
-            throw new ClosedTransportException('The transport is closed.');
-        }
+        $this->reconnect();
 
-        if ($this->isListening($channel)) {
-            throw new AlreadyListeningException('Already listening to channel "' . $channel . '".');
-        }
-
-        $queue = new Queue();
-        $this->listeners[$channel] = $queue;
-
-        Amp\async(function () use ($queue): void {
-            while (null !== $notification = $this->connection->read()) {
-                /** @var Internal\Data $data */
-                $data = $this->serializer->unserialize($notification);
-
-                if (!isset($this->listeners[$data->channel])) {
-                    continue;
-                }
-
-                $this->listeners[$data->channel]->push($data->message);
-            }
-
-            $queue->complete();
-        });
-
-        return $queue->iterate();
+        return $this->transport->listen($channel);
     }
 
     /**
@@ -99,17 +56,8 @@ final class SocketTransport implements TransportInterface
      */
     public function close(): void
     {
-        if ($this->connection->isClosed()) {
-            return;
-        }
-
-        foreach ($this->listeners as $channel => $listener) {
-            $listener->complete();
-        }
-
-        $this->listeners = [];
-
-        $this->connection->close();
+        $this->explicitlyClosed = true;
+        $this->transport->close();
     }
 
     /**
@@ -117,6 +65,30 @@ final class SocketTransport implements TransportInterface
      */
     public function isClosed(): bool
     {
-        return $this->connection->isClosed();
+        return $this->transport->isClosed();
+    }
+
+    /**
+     * This method should only be called on slf::__construct() and self::reconnect()
+     */
+    private function connect(): void
+    {
+        $connection = Amp\Socket\connect($this->address);
+        $streamChannel = new Amp\ByteStream\StreamChannel($connection, $connection);
+
+        $this->transport = new ChannelTransport($streamChannel, $streamChannel);
+    }
+
+    /**
+     * Ensure that there is an active connection, if not, try to connect one more time.
+     */
+    private function reconnect(): void
+    {
+        if (!$this->transport->isClosed() || $this->explicitlyClosed) {
+            return;
+        }
+
+        $this->transport->close();
+        $this->connect();
     }
 }

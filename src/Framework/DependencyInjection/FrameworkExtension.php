@@ -314,7 +314,6 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
             new CsrfExtension(),
             new ConsoleExtension(),
             new HttpExtension(),
-            new BroadcastExtension(),
         ];
     }
 

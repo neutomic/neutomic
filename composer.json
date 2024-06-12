@@ -32,7 +32,8 @@
         "amphp/pipeline": "^1.2",
         "amphp/log": "^2.0",
         "symfony/yaml": "^7.0",
-        "azjezz/assess": "^1.0.2"
+        "azjezz/assess": "^1.0.2",
+        "amphp/parser": "^1.1"
     },
     "require-dev": {
         "amphp/postgres": "^2.0.0",

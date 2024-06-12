@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Broadcast\Server;
 
+use Amp\Pipeline\Queue;
 use Amp\Socket;
 use Neu\Component\Broadcast\Address\TcpAddress;
 use Neu\Component\Broadcast\Address\UnixAddress;
@@ -27,12 +28,13 @@ final class Server implements ServerInterface
      * @var array<non-empty-string, Socket\ResourceSocket>
      */
     private array $clients = [];
+    private Queue $queue;
 
     public function __construct(
-        private EventDispatcherInterface $eventDispatcher,
         private LoggerInterface $logger = new NullLogger(),
     )
     {
+        $this->queue = new Queue();
     }
 
     public function start(UnixAddress|TcpAddress $address): void
@@ -65,7 +67,7 @@ final class Server implements ServerInterface
 
                         async(function () use ($client) {
                             foreach ($client->getIterator() as $message) {
-                                $this->broadcast($message);
+                                $this->queue->pushAsync($message);
                             }
                         });
 
@@ -74,6 +76,12 @@ final class Server implements ServerInterface
                             $this->logger->notice('Client disconnected', ['localAddress' => $client->getLocalAddress()]);
                         });
                     });
+                }
+            });
+
+            async(function () {
+                foreach ($this->queue->iterate() as $message) {
+                    $this->broadcast($message);
                 }
             });
 
@@ -110,11 +118,12 @@ final class Server implements ServerInterface
             invariant(null !== $this->address, 'There must be an address');
             invariant(null !== $this->server, 'There must be a server');
 
-            // Is it neceessary to close connections on by one gracefully?
-            // foreach ($this->clients as $client) {
-            //     $this->logger->info('Closing connection '. $client->getLocalAddress());
-            //     $client->end();
-            // }
+            $this->queue->complete();
+
+            foreach ($this->clients as $client) {
+                $this->logger->info('Closing connection '. $client->getLocalAddress());
+                $client->end();
+            }
 
             $this->server->close();
 

@@ -27,8 +27,6 @@ final readonly class SocketTransportFactory implements FactoryInterface
 
     public function __invoke(ContainerInterface $container): object
     {
-        $connection = connect($this->address);
-
-        return new SocketTransport($connection);
+        return new SocketTransport($this->address);
     }
 }

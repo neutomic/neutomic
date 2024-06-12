@@ -24,6 +24,7 @@ use Neu\Component\Broadcast\Exception\RuntimeException;
 use Neu\Component\Broadcast\Transport\LocalTransport;
 use Neu\Component\Broadcast\Transport\MemoryTransport;
 use Neu\Component\Broadcast\Transport\TransportInterface;
+use Psl\Iter;
 
 /**
  * A transport mechanism that sends and receives messages using channels.
@@ -76,8 +77,10 @@ final class ChannelTransport implements TransportInterface
                             unset($this->listeners[$data->channel]);
                         }
                     }
-                } catch (ChannelException) {
+                } catch (ChannelException $e) {
                     // Channel was closed, we can break the loop
+                    // this is still hanging the SSE connection when we close the broadcast server, not sure how to propagate it
+                    $this->close();
                     break;
                 }
             }
