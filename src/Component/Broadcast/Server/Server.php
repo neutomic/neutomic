@@ -6,8 +6,6 @@ namespace Neu\Component\Broadcast\Server;
 
 use Amp\Pipeline\Queue;
 use Amp\Socket;
-use Neu\Component\Broadcast\Address\TcpAddress;
-use Neu\Component\Broadcast\Address\UnixAddress;
 use Neu\Component\Broadcast\Server\Exception\ServerStateConflictException;
 use Neu\Component\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
@@ -20,14 +18,14 @@ final class Server implements ServerInterface
 {
     private Status $status = Status::Stopped;
 
+    private Socket\SocketAddress|null $socketAddress;
     private Socket\ResourceServerSocket|null $server;
-
-    private UnixAddress|TcpAddress|null $address;
 
     /**
      * @var array<non-empty-string, Socket\ResourceSocket>
      */
     private array $clients = [];
+
     private Queue $queue;
 
     public function __construct(
@@ -37,7 +35,7 @@ final class Server implements ServerInterface
         $this->queue = new Queue();
     }
 
-    public function start(UnixAddress|TcpAddress $address): void
+    public function start(string $address): void
     {
         if ($this->status === Status::Started) {
             return;
@@ -51,11 +49,11 @@ final class Server implements ServerInterface
 
         $this->logger->notice('Server is starting...');
 
-        $this->logger->notice(sprintf('Starting broadcast server at socket %s', $address->toString()));
+        $this->logger->notice(sprintf('Starting broadcast server at address %s', $address));
 
         try {
-            $this->address = $address;
-            $this->server = $this->createServerSocket();
+            $this->socketAddress = Socket\SocketAddress\fromString($address);
+            $this->server = Socket\listen($this->socketAddress);
 
             async(function () {
                 while ($client = $this->server->accept()) {
@@ -114,10 +112,9 @@ final class Server implements ServerInterface
 
         $this->logger->notice('Server is stopping...');
 
-        try {
-            invariant(null !== $this->address, 'There must be an address');
-            invariant(null !== $this->server, 'There must be a server');
+        invariant(null !== $this->server, 'There must be a server');
 
+        try {
             $this->queue->complete();
 
             foreach ($this->clients as $client) {
@@ -137,10 +134,12 @@ final class Server implements ServerInterface
         } finally {
             $this->status = Status::Stopped;
             $this->clients = [];
-            $this->server = null;
-            if ($this->address instanceof UnixAddress) {
-                unlink($this->address->socket);
+
+            if ($this->socketAddress->getType() === Socket\SocketAddressType::Unix) {
+                unlink($this->socketAddress->toString());
             }
+
+            $this->server = null;
         }
     }
 
@@ -153,15 +152,5 @@ final class Server implements ServerInterface
         foreach ($this->clients as $clientId => $client) {
             $client->write($message);
         }
-    }
-
-    private function createServerSocket(): Socket\ResourceServerSocket
-    {
-        if ($this->address instanceof TcpAddress) {
-            /** @psalm-suppress MissingThrowsDocblock */
-            throw new \RuntimeException('Not implemented');
-        }
-
-        return Socket\listen('unix://' . $this->address->socket);
     }
 }

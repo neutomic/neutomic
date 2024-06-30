@@ -19,7 +19,6 @@ final class ServerFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container): ServerInterface
     {
         return new Server(
-            $container->getTyped(EventDispatcherInterface::class, EventDispatcherInterface::class),
             $container->getTyped(LoggerInterface::class, LoggerInterface::class),
         );
     }

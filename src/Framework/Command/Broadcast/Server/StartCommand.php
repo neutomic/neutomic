@@ -12,7 +12,9 @@ use Neu\Component\Console\Attribute\Command;
 use Neu\Component\Console\Block\BlockFactoryTrait;
 use Neu\Component\Console\Command\CommandInterface;
 use Neu\Component\Console\Command\ExitCode;
+use Neu\Component\Console\Input\Bag\ArgumentBag;
 use Neu\Component\Console\Input\Bag\OptionBag;
+use Neu\Component\Console\Input\Definition\Argument;
 use Neu\Component\Console\Input\Definition\Option;
 use Neu\Component\Console\Input\InputInterface;
 use Neu\Component\Console\Output\OutputInterface;
@@ -21,11 +23,9 @@ use function Amp\trapSignal;
 
 #[Command(
     name: 'broadcast:server:start',
-    description: 'Starts the socket broadcast server',
-    options: new OptionBag([
-        new Option('socket', 's', 'Unix socket path')
-        // new Option('host', 'h', 'Host address to listen'),
-        // new Option('port', 'p', 'Port to listen'),
+    description: 'Starts a socket broadcast server',
+    arguments: new ArgumentBag([
+        new Argument('address', 'a', 'Socket address of the broadcast server')
     ])
 )]
 final class StartCommand implements CommandInterface
@@ -41,10 +41,7 @@ final class StartCommand implements CommandInterface
      */
     public function run(InputInterface $input, OutputInterface $output): ExitCode|int
     {
-        if (null === $address = $this->getAddress($input)) {
-            $this->createErrorBlock($output)->display('--socket option is required');
-            return ExitCode::Failure;
-        }
+        $address = $input->getArgument('address')->getValue();
 
         $this->server->start($address);
 
@@ -71,16 +68,5 @@ final class StartCommand implements CommandInterface
 
 
         return ExitCode::Success;
-    }
-
-    private function getAddress(InputInterface $input): UnixAddress|TcpAddress|null
-    {
-        $socketOption = $input->getOption('socket');
-
-        if ($socketOption->exists() && '' !== $socket = $socketOption->getValue()) {
-            return new UnixAddress($socket);
-        }
-
-        return null;
     }
 }

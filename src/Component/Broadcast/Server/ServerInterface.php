@@ -9,6 +9,9 @@ use Neu\Component\Broadcast\Address\UnixAddress;
 
 interface ServerInterface
 {
-    public function start(UnixAddress|TcpAddress $address): void;
+    /**
+     * @param non-empty-string $address
+     */
+    public function start(string $address): void;
     public function stop(): void;
 }
