@@ -89,9 +89,9 @@ final class BroadcastExtension implements ExtensionInterface
         $hubs = $configuration['hubs'] ?? [];
 
         // If no hubs are defined, default to a single socket hub.
-        // if (empty($hubs)) {
-        //     $hubs = ['default' => ['transport' => 'socket']];
-        // }
+        if ([] === $hubs) {
+            $hubs = ['default' => ['transport' => 'socket']];
+        }
 
         $hubServices = $this->registerHubs($container, $hubs);
         $defaultHub = $configuration['default'] ?? array_key_first($hubServices);
@@ -158,7 +158,7 @@ final class BroadcastExtension implements ExtensionInterface
      *
      * @param ContainerBuilderInterface $container
      * @param non-empty-string $serviceId
-     * @param SocketTransportConfiguration
+     * @param SocketTransportConfiguration $config
      */
     private function registerSocketTransport(ContainerBuilderInterface $container, string $serviceId, array $config): void
     {
@@ -303,7 +303,7 @@ final class BroadcastExtension implements ExtensionInterface
         ]);
     }
 
-    private function registerCommands(ContainerBuilderInterface $container)
+    private function registerCommands(ContainerBuilderInterface $container): void
     {
         $container->addDefinition(Definition::ofType(StartCommand::class, new StartCommandFactory()));
     }

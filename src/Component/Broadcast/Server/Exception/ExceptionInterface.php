@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\Broadcast\Server\Exception;
 
-use Neu\Component\Broadcast\Exception\RuntimeException;
+use Neu\Component\Exception\ExceptionInterface as RootExceptionInterface;
 
-final class ServerStateConflictException extends RuntimeException implements ExceptionInterface
+interface ExceptionInterface extends RootExceptionInterface
 {
 }

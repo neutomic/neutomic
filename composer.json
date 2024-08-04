@@ -56,6 +56,7 @@
             "Neu\\": "src/"
         },
         "files": [
+            "src/Component/Broadcast/Dsn/functions.php",
             "src/Component/Http/Message/Response/html.php",
             "src/Component/Http/Message/Response/xml.php",
             "src/Component/Http/Message/Response/text.php",

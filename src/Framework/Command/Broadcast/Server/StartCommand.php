@@ -38,6 +38,8 @@ final class StartCommand implements CommandInterface
 
     /**
      * @throws Neu\Component\Console\Exception\MissingValueException
+     * @throws Neu\Component\Console\Exception\InvalidInputDefinitionException
+     * @throws Neu\Component\Broadcast\Server\Exception\ServerStateConflictException
      */
     public function run(InputInterface $input, OutputInterface $output): ExitCode|int
     {
@@ -46,26 +48,14 @@ final class StartCommand implements CommandInterface
         $this->server->start($address);
 
         try {
-            $output->writeLine('Awaiting termination');
-            trapSignal([
-                SIGHUP,
-                SIGINT,
-                SIGQUIT,
-                SIGTERM,
-            ]);
-            // Cluster::awaitTermination();
-            $output->writeLine('Terminated');
+            trapSignal([SIGHUP, SIGINT, SIGQUIT, SIGTERM]);
         } catch (UnsupportedFeatureException) {
             $this->createWarningBlock($output)->display(
                 'Signal handling is not supported on this platform. The server will not be able to gracefully shut down.'
             );
         }
 
-
-        $output->writeLine('Stopping');
         $this->server->stop();
-        $output->writeLine('Stopped');
-
 
         return ExitCode::Success;
     }

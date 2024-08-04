@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\Broadcast\Server\Exception;
 
-use Neu\Component\Broadcast\Exception\RuntimeException;
+use InvalidArgumentException as RootInvalidArgumentException;
 
-final class ServerStateConflictException extends RuntimeException implements ExceptionInterface
+class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface
 {
 }

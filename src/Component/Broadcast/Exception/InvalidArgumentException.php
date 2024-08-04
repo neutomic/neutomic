@@ -11,10 +11,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Neu\Component\Broadcast\Server\Exception;
+namespace Neu\Component\Broadcast\Exception;
 
-use Neu\Component\Broadcast\Exception\RuntimeException;
+use InvalidArgumentException as RootInvalidArgumentException;
 
-final class ServerStateConflictException extends RuntimeException implements ExceptionInterface
+class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface
 {
 }

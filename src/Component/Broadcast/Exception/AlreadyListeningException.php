@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Broadcast\Exception;
 
-final class AlreadyListeningException extends LogicException implements ExceptionInterface
+final class AlreadyListeningException extends LogicException
 {
     /**
      * Create an exception for a channel that is already being listened to.

@@ -7,6 +7,7 @@ namespace Neu\Component\Broadcast\Transport;
 use Amp\Pipeline\ConcurrentIterator;
 use Amp;
 use Neu\Component\Broadcast\Exception\ClosedTransportException;
+use Neu\Component\Broadcast\Exception\RuntimeException;
 use Neu\Component\Broadcast\Transport\Internal\ChannelTransport;
 
 final class SocketTransport implements TransportInterface
@@ -17,6 +18,8 @@ final class SocketTransport implements TransportInterface
 
     /**
      * @param string $address
+     *
+     * @throws RuntimeException if fails to connect to the server
      */
     public function __construct(private string $address)
     {
@@ -70,10 +73,17 @@ final class SocketTransport implements TransportInterface
 
     /**
      * This method should only be called on slf::__construct() and self::reconnect()
+     *
+     * @throws RuntimeException if fails to connect to the server
      */
     private function connect(): void
     {
-        $connection = Amp\Socket\connect($this->address);
+        try {
+            $connection = Amp\Socket\connect($this->address);
+        } catch (Amp\CancelledException|Amp\Socket\ConnectException $e) {
+            throw new RuntimeException('Failed to connect to "'.$this->address.'"', previous: $e);
+        }
+
         $streamChannel = new Amp\ByteStream\StreamChannel($connection, $connection);
 
         $this->transport = new ChannelTransport($streamChannel, $streamChannel);
@@ -81,6 +91,8 @@ final class SocketTransport implements TransportInterface
 
     /**
      * Ensure that there is an active connection, if not, try to connect one more time.
+     *
+     * @throws RuntimeException if fails to connect to the server
      */
     private function reconnect(): void
     {

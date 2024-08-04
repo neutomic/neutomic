@@ -15,7 +15,7 @@ namespace Neu\Component\Broadcast\Exception;
 
 use Throwable;
 
-final class ClosedTransportException extends LogicException implements ExceptionInterface
+final class ClosedTransportException extends LogicException
 {
     /**
      * Create a new instance of the exception while attempting to send a message to a channel.

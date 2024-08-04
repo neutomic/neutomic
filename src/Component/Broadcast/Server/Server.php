@@ -6,32 +6,41 @@ namespace Neu\Component\Broadcast\Server;
 
 use Amp\Pipeline\Queue;
 use Amp\Socket;
+use Neu\Component\Broadcast\Dsn;
+use Neu\Component\Broadcast\Server\Exception\InvalidArgumentException;
 use Neu\Component\Broadcast\Server\Exception\ServerStateConflictException;
-use Neu\Component\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
 use function Amp\async;
 use function Psl\invariant;
 
+/**
+ * @psalm-suppress MissingThrowsDocblock
+ */
 final class Server implements ServerInterface
 {
     private Status $status = Status::Stopped;
 
-    private Socket\SocketAddress|null $socketAddress;
-    private Socket\ResourceServerSocket|null $server;
+    private Dsn\DsnInterface|null $dsn = null;
+
+    private Socket\ResourceServerSocket|null $server = null;
 
     /**
      * @var array<non-empty-string, Socket\ResourceSocket>
      */
     private array $clients = [];
 
+    /**
+     * @var Queue<non-empty-string>
+     */
     private Queue $queue;
 
     public function __construct(
         private LoggerInterface $logger = new NullLogger(),
     )
     {
+        /** @var Queue<non-empty-string> */
         $this->queue = new Queue();
     }
 
@@ -49,31 +58,15 @@ final class Server implements ServerInterface
 
         $this->logger->notice('Server is starting...');
 
-        $this->logger->notice(sprintf('Starting broadcast server at address %s', $address));
-
         try {
-            $this->socketAddress = Socket\SocketAddress\fromString($address);
-            $this->server = Socket\listen($this->socketAddress);
+            $dsn = Dsn\from_string($address);
+            $this->logger->notice(sprintf('Starting broadcast server at address %s', $dsn->toString()));
+
+            $this->server = $this->buildServer($dsn);
 
             async(function () {
-                while ($client = $this->server->accept()) {
-                    async(function () use ($client) {
-                        $this->logger->notice('New client connected', ['localAddress' => $client->getLocalAddress()]);
-
-                        $clientId = uniqid('', true);
-                        $this->clients[$clientId] = $client;
-
-                        async(function () use ($client) {
-                            foreach ($client->getIterator() as $message) {
-                                $this->queue->pushAsync($message);
-                            }
-                        });
-
-                        $client->onClose(function () use ($client, $clientId) {
-                            unset($this->clients[$clientId]);
-                            $this->logger->notice('Client disconnected', ['localAddress' => $client->getLocalAddress()]);
-                        });
-                    });
+                while ($client = $this->server?->accept()) {
+                    $this->onClientConnect($client);
                 }
             });
 
@@ -84,6 +77,7 @@ final class Server implements ServerInterface
             });
 
             $this->status = Status::Started;
+            $this->dsn = $dsn;
         } catch (Throwable $exception) {
             $this->logger->error('Error while starting server.', [
                 'exception' => $exception,
@@ -112,17 +106,17 @@ final class Server implements ServerInterface
 
         $this->logger->notice('Server is stopping...');
 
-        invariant(null !== $this->server, 'There must be a server');
+        invariant(null !== $server = $this->server, 'There must be a server');
 
         try {
             $this->queue->complete();
 
             foreach ($this->clients as $client) {
-                $this->logger->info('Closing connection '. $client->getLocalAddress());
+                $this->logger->info('Closing connection '.$client->getLocalAddress()->toString());
                 $client->end();
             }
 
-            $this->server->close();
+            $server->close();
 
             $this->logger->notice('Server stopped successfully.');
         } catch (Throwable $exception) {
@@ -135,8 +129,8 @@ final class Server implements ServerInterface
             $this->status = Status::Stopped;
             $this->clients = [];
 
-            if ($this->socketAddress->getType() === Socket\SocketAddressType::Unix) {
-                unlink($this->socketAddress->toString());
+            if ($this->dsn instanceof Dsn\Unix) {
+                unlink($this->dsn->path);
             }
 
             $this->server = null;
@@ -152,5 +146,42 @@ final class Server implements ServerInterface
         foreach ($this->clients as $clientId => $client) {
             $client->write($message);
         }
+    }
+
+    private function buildServer(Dsn\DsnInterface $dsn): Socket\ResourceServerSocket
+    {
+        if ($dsn instanceof Dsn\Unix) {
+            $address = new Socket\UnixAddress($dsn->path);
+        } elseif ($dsn instanceof Dsn\Tcp) {
+            $address = new Socket\InternetAddress($dsn->host, $dsn->port);
+        } else {
+            throw new InvalidArgumentException('Unexpected invalid "'.$dsn::class.'" instance');
+        }
+
+        return Socket\listen($address);
+    }
+
+    private function onClientClose(string $clientId, Socket\ResourceSocket $client): void
+    {
+        unset($this->clients[$clientId]);
+        $this->logger->notice('Client disconnected', ['localAddress' => $client->getLocalAddress()]);
+    }
+
+    private function onClientConnect(Socket\ResourceSocket $client): void
+    {
+        $this->logger->notice('New client connected', ['localAddress' => $client->getLocalAddress()]);
+
+        $clientId = uniqid('', true);
+        $this->clients[$clientId] = $client;
+
+        async(function () use ($client) {
+            foreach ($client->getIterator() as $message) {
+                if ('' !== $message) {
+                    $this->queue->pushAsync($message);
+                }
+            }
+        });
+
+        $client->onClose(fn () => $this->onClientClose($clientId, $client));
     }
 }

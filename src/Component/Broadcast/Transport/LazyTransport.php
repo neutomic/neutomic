@@ -35,7 +35,7 @@ final class LazyTransport implements TransportInterface
      */
     public function isListening(string $channel): bool
     {
-        $this->getTransportInstance()->isListening($channel);
+        return $this->getTransportInstance()->isListening($channel);
     }
 
     /**
