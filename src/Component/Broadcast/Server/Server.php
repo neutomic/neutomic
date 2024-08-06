@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Neu\Component\Broadcast\Server;
 
-use Amp\Pipeline\Queue;
+use Amp\ByteStream\ClosedException;
+use Amp\ByteStream\StreamException;
+use Amp\Pipeline\Pipeline;
 use Amp\Socket;
 use Neu\Component\Broadcast\Dsn;
 use Neu\Component\Broadcast\Server\Exception\InvalidArgumentException;
@@ -31,17 +33,10 @@ final class Server implements ServerInterface
      */
     private array $clients = [];
 
-    /**
-     * @var Queue<non-empty-string>
-     */
-    private Queue $queue;
-
     public function __construct(
         private LoggerInterface $logger = new NullLogger(),
     )
     {
-        /** @var Queue<non-empty-string> */
-        $this->queue = new Queue();
     }
 
     public function start(string $address): void
@@ -67,12 +62,6 @@ final class Server implements ServerInterface
             async(function () {
                 while ($client = $this->server?->accept()) {
                     $this->onClientConnect($client);
-                }
-            });
-
-            async(function () {
-                foreach ($this->queue->iterate() as $message) {
-                    $this->broadcast($message);
                 }
             });
 
@@ -109,8 +98,6 @@ final class Server implements ServerInterface
         invariant(null !== $server = $this->server, 'There must be a server');
 
         try {
-            $this->queue->complete();
-
             foreach ($this->clients as $client) {
                 $this->logger->info('Closing connection '.$client->getLocalAddress()->toString());
                 $client->end();
@@ -139,12 +126,16 @@ final class Server implements ServerInterface
 
     /**
      * @param string $message
-     * @param non-empty-string $from
      */
     private function broadcast(string $message): void
     {
-        foreach ($this->clients as $clientId => $client) {
-            $client->write($message);
+        foreach (Pipeline::fromIterable($this->clients) as $client) {
+            try {
+                $client->write($message);
+            } catch (ClosedException) {
+            } catch (StreamException $exception) {
+                $this->logger->error('Error when writing to stream', ['exception' => $exception]);
+            }
         }
     }
 
@@ -177,7 +168,7 @@ final class Server implements ServerInterface
         async(function () use ($client) {
             foreach ($client->getIterator() as $message) {
                 if ('' !== $message) {
-                    $this->queue->pushAsync($message);
+                    $this->broadcast($message);
                 }
             }
         });
