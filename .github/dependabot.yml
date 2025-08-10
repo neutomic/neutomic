@@ -9,7 +9,7 @@ updates:
     commit-message:
       prefix: "chore(deps): "
     assignees:
-      - "azjezz"
+      - "devnix"
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -20,4 +20,4 @@ updates:
     commit-message:
       prefix: "chore(ci): "
     assignees:
-      - "azjezz"
+      - "devnix"
