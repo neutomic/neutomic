@@ -38,7 +38,7 @@ final class DirectoryLoaderTest extends TestCase
         static::assertSame(['bar' => true, 'baz' => false], $configuration->get('foo'));
         static::assertTrue($configuration->has('format'));
         static::assertCount(1, $configuration->get('format'));
-        static::assertContains('json', $configuration->get('format'));
+        static::assertContains('php', $configuration->get('format'));
     }
 
     public function testLoadWithoutResolver(): void

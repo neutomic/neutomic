@@ -20,6 +20,7 @@ use Neu\Component\DependencyInjection\Exception\NoSupportiveLoaderException;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Psl\Filesystem;
 use Psl\Type;
+use Psl\Vec;
 
 /**
  * A loader that loads documents from a directory.
@@ -53,7 +54,7 @@ final class DirectoryLoader implements ResolverAwareLoaderInterface
         try {
             $document = new Document([]);
             $resolver = $this->getResolver();
-            foreach (Filesystem\read_directory($resource) as $node) {
+            foreach (Vec\sort(Filesystem\read_directory($resource)) as $node) {
                 if (Filesystem\is_file($node)) {
                     try {
                         $loader = $resolver->resolve($node);
