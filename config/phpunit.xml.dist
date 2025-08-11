@@ -17,6 +17,7 @@
     <testsuites>
         <testsuite name="Neu unit tests suite">
             <directory>../tests/</directory>
+
         </testsuite>
     </testsuites>
 
@@ -27,4 +28,10 @@
             <directory>../src</directory>
         </include>
     </source>
+
+    <coverage>
+        <report>
+            <clover outputFile="../var/clover.xml"/>
+        </report>
+    </coverage>
 </phpunit>

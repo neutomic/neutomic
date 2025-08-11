@@ -28,7 +28,7 @@ security-analysis:                                                              
 	./vendor/bin/psalm -c config/psalm.xml --taint-analysis
 
 unit-tests:                                                                     ## run unit test suite
-	php vendor/bin/phpunit -c config/phpunit.xml.dist
+	XDEBUG_MODE=coverage php vendor/bin/phpunit -c config/phpunit.xml.dist
 
 code-coverage: unit-tests                                                       ## generate and upload test coverage metrics to https://coveralls.io/
 	./vendor/bin/php-coveralls -x var/clover.xml -o var/coveralls-upload.json -v
