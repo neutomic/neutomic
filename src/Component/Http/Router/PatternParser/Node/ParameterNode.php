@@ -73,6 +73,7 @@ final readonly class ParameterNode implements Node
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function toRegularExpression(string $delimiter): string
     {
         $re = $this->getRegexp();
@@ -86,6 +87,7 @@ final readonly class ParameterNode implements Node
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function toString(): string
     {
         $re = $this->getRegexp();
@@ -100,6 +102,7 @@ final readonly class ParameterNode implements Node
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __serialize(): array
     {
         return [
@@ -111,6 +114,7 @@ final readonly class ParameterNode implements Node
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __unserialize(array $data): void
     {
         /** @var State $data */

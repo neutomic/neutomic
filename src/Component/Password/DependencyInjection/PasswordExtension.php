@@ -53,6 +53,7 @@ final readonly class PasswordExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $configuration = $configurations

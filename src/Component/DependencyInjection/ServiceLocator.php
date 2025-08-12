@@ -56,6 +56,7 @@ final readonly class ServiceLocator implements ServiceLocatorInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getAvailableServices(): array
     {
         return Vec\keys($this->services);
@@ -64,6 +65,7 @@ final readonly class ServiceLocator implements ServiceLocatorInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function has(string $id): bool
     {
         return '' !== $id && isset($this->services[$id]);
@@ -72,6 +74,7 @@ final readonly class ServiceLocator implements ServiceLocatorInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function get(string $id): object
     {
         if ('' === $id || !isset($this->services[$id])) {

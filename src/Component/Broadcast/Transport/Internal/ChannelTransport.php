@@ -87,6 +87,7 @@ final class ChannelTransport implements TransportInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function send(string $channel, mixed $message): void
     {
         try {
@@ -101,6 +102,7 @@ final class ChannelTransport implements TransportInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isListening(string $channel): bool
     {
         return isset($this->listeners[$channel]);
@@ -109,6 +111,7 @@ final class ChannelTransport implements TransportInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function listen(string $channel): ConcurrentIterator
     {
         if (isset($this->listeners[$channel])) {
@@ -125,6 +128,7 @@ final class ChannelTransport implements TransportInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function close(): void
     {
         foreach ($this->listeners as $queue) {
@@ -139,6 +143,7 @@ final class ChannelTransport implements TransportInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isClosed(): bool
     {
         return $this->sender->isClosed();

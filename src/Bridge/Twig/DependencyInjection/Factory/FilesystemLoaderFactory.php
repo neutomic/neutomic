@@ -42,6 +42,7 @@ final readonly class FilesystemLoaderFactory implements FactoryInterface
         $this->root = $root;
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): FilesystemLoader
     {
         if ($this->root !== null) {

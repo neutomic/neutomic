@@ -22,6 +22,7 @@ use Neu\Component\Http\Router\Registry\Registry;
  */
 final readonly class RegistryFactory implements FactoryInterface
 {
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         return new Registry();

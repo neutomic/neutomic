@@ -33,6 +33,7 @@ final readonly class Transaction extends Link implements TransactionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getIsolationLevel(): TransactionIsolationLevel
     {
         return match ($this->transaction->getIsolation()->getLabel()) {
@@ -47,6 +48,7 @@ final readonly class Transaction extends Link implements TransactionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isActive(): bool
     {
         return $this->transaction->isActive();
@@ -55,6 +57,7 @@ final readonly class Transaction extends Link implements TransactionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function commit(): void
     {
         try {
@@ -67,6 +70,7 @@ final readonly class Transaction extends Link implements TransactionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function rollback(): void
     {
         try {
@@ -79,6 +83,7 @@ final readonly class Transaction extends Link implements TransactionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getUnderlyingSqlTransaction(): SqlTransaction
     {
         return $this->transaction;

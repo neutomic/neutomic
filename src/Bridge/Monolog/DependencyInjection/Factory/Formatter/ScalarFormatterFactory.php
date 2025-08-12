@@ -44,6 +44,7 @@ final readonly class ScalarFormatterFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         try {

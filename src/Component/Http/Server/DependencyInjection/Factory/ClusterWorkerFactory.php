@@ -54,6 +54,7 @@ final readonly class ClusterWorkerFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): ClusterWorker
     {
         return new ClusterWorker(

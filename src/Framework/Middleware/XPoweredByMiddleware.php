@@ -32,8 +32,6 @@ final readonly class XPoweredByMiddleware implements MiddlewareInterface
     /**
      * The PHP version string, e.g. "PHP/8.3".
      *
-     * @psalm-suppress InvalidOperand
-     *
      * @var non-empty-string
      */
     private const string PHP_VERSION = 'PHP/' . PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;
@@ -77,6 +75,7 @@ final readonly class XPoweredByMiddleware implements MiddlewareInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
         $response = $next->handle($context, $request);

@@ -129,11 +129,13 @@ abstract class AbstractBag implements Countable, IteratorAggregate
      *
      * @return Iterator<Tk, Tv>
      */
+    #[\Override]
     public function getIterator(): Iterator
     {
         return new ArrayIterator($this->data);
     }
 
+    #[\Override]
     public function count(): int
     {
         return Iter\count($this->data);

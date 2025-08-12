@@ -44,6 +44,7 @@ final class HandleInput extends AbstractInput
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getUserInput(null|int $length = null): string
     {
         if (!$this->isInteractive()) {
@@ -60,6 +61,7 @@ final class HandleInput extends AbstractInput
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getStream(): mixed
     {
         $handle = $this->reader->getHandle();

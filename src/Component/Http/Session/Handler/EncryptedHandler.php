@@ -67,6 +67,7 @@ final readonly class EncryptedHandler implements HandlerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function load(string $identifier): SessionInterface
     {
         // Decode the message from a URL-safe base64 format
@@ -131,6 +132,7 @@ final readonly class EncryptedHandler implements HandlerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function flush(string $identifier): void
     {
         // No need to flush the session data.
@@ -139,6 +141,7 @@ final readonly class EncryptedHandler implements HandlerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function save(SessionInterface $session, null|int $ttl = null): string
     {
         try {

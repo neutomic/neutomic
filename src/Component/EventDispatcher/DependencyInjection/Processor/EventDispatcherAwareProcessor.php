@@ -42,6 +42,7 @@ final class EventDispatcherAwareProcessor implements ProcessorInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function process(ContainerInterface $container, DefinitionInterface $definition, object $service): object
     {
         if ($service instanceof EventDispatcherAwareInterface) {

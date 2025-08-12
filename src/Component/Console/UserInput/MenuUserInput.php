@@ -30,6 +30,7 @@ final class MenuUserInput extends AbstractUserInput
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function prompt(string $message): string
     {
         $keys = Vec\keys($this->acceptedValues);

@@ -57,6 +57,7 @@ final readonly class ClusterCommandFactory implements FactoryInterface
         $this->watchExtensions = $watchExtensions ?? [];
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): ClusterCommand
     {
         $project = $container->getProject();

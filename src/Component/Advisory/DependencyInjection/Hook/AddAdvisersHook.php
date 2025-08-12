@@ -44,6 +44,7 @@ final readonly class AddAdvisersHook implements HookInterface
     /**
      * @throws ExceptionInterface
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): void
     {
         $advisory = $container->getTyped($this->advisory, AdvisoryInterface::class);

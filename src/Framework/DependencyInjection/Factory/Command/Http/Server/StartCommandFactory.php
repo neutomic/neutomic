@@ -23,6 +23,7 @@ use Neu\Framework\Command\Http\Server\StartCommand;
  */
 final readonly class StartCommandFactory implements FactoryInterface
 {
+    #[\Override]
     public function __invoke(ContainerInterface $container): StartCommand
     {
         return new StartCommand(

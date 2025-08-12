@@ -65,6 +65,7 @@ final readonly class ConsoleExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function register(DIRegistryInterface $registry, DocumentInterface $configurations): void
     {
         /** @var Configuration $configuration */

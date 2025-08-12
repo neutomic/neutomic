@@ -50,6 +50,7 @@ final readonly class StoreManagerFactory implements FactoryInterface
         $this->defaultStoreId = $defaultStoreId;
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         $locator = $container->getLocator(StoreInterface::class, $this->services);

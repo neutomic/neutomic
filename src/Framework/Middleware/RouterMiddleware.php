@@ -40,6 +40,7 @@ final readonly class RouterMiddleware implements PrioritizedMiddlewareInterface
         $this->priority = $priority;
     }
 
+    #[\Override]
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
         $result = $this->matcher->match($request);
@@ -57,6 +58,7 @@ final readonly class RouterMiddleware implements PrioritizedMiddlewareInterface
         return $next->handle($context, $request);
     }
 
+    #[\Override]
     public function getPriority(): int
     {
         return $this->priority;

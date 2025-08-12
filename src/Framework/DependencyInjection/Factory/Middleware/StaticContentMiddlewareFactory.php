@@ -72,6 +72,7 @@ final readonly class StaticContentMiddlewareFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): StaticContentMiddleware
     {
         return new StaticContentMiddleware(

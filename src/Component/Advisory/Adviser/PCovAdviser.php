@@ -27,6 +27,7 @@ final readonly class PCovAdviser implements AdviserInterface
      *
      * @return Advice|null An instance of Advice if PCov is enabled, or null if it is disabled.
      */
+    #[\Override]
     public function getAdvice(): null|Advice
     {
         if (!extension_loaded('pcov')) {

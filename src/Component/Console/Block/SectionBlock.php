@@ -31,6 +31,7 @@ final readonly class SectionBlock implements BlockInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function display(string $message, Verbosity $verbosity = Verbosity::Normal): self
     {
         $this->output->writeLine('', $verbosity);

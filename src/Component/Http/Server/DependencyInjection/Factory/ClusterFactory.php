@@ -61,6 +61,7 @@ final readonly class ClusterFactory implements FactoryInterface
         $this->workers = $workers;
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): Cluster
     {
         $entrypoint = $container->getProject()->entrypoint;

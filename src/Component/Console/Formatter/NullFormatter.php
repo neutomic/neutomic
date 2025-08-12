@@ -18,6 +18,7 @@ final class NullFormatter extends AbstractFormatter
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function format(string $message, int $width = 0): string
     {
         return $message;

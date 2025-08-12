@@ -101,6 +101,7 @@ final readonly class CompressionMiddlewareFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): CompressionMiddleware
     {
         return new CompressionMiddleware(

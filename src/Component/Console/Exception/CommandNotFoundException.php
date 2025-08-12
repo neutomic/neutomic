@@ -20,6 +20,7 @@ use Neu\Component\Console\Command\ExitCode;
  */
 final class CommandNotFoundException extends RuntimeException implements ConsoleExceptionInterface
 {
+    #[\Override]
     public function getExitCode(): ExitCode
     {
         return ExitCode::CommandNotFound;

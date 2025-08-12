@@ -62,6 +62,7 @@ final class LocalDriver extends AbstractDriver
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function get(string $key): mixed
     {
         if (array_key_exists($key, $this->cache)) {
@@ -82,6 +83,7 @@ final class LocalDriver extends AbstractDriver
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function set(string $key, mixed $value, null|int $ttl = null): void
     {
         $this->cache[$key] = $value;
@@ -97,6 +99,7 @@ final class LocalDriver extends AbstractDriver
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function delete(string $key): void
     {
         unset($this->cache[$key], $this->cacheExpiration[$key]);
@@ -105,6 +108,7 @@ final class LocalDriver extends AbstractDriver
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function clear(): void
     {
         $this->cache = [];
@@ -114,6 +118,7 @@ final class LocalDriver extends AbstractDriver
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function prune(): void
     {
         foreach ($this->cacheExpiration as $key => $time) {
@@ -126,6 +131,7 @@ final class LocalDriver extends AbstractDriver
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function close(): void
     {
         parent::close();

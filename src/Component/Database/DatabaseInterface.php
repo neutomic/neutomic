@@ -23,6 +23,7 @@ interface DatabaseInterface extends AbstractionLayerInterface
     /**
      * Creates a transaction that can be used to execute queries in isolation, with the given isolation level.
      */
+    #[\Override]
     public function createTransaction(TransactionIsolationLevel $isolation = TransactionIsolationLevel::ReadUncommitted): TransactionInterface;
 
     /**
@@ -38,6 +39,7 @@ interface DatabaseInterface extends AbstractionLayerInterface
      *
      * @return T
      */
+    #[\Override]
     public function transactional(Closure $operation, TransactionIsolationLevel $isolation = TransactionIsolationLevel::ReadUncommitted): mixed;
 
     /**

@@ -33,6 +33,7 @@ final readonly class PrioritizedMiddleware implements PrioritizedMiddlewareInter
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
         return $this->middleware->process($context, $request, $next);
@@ -41,6 +42,7 @@ final readonly class PrioritizedMiddleware implements PrioritizedMiddlewareInter
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getPriority(): int
     {
         return $this->priority;

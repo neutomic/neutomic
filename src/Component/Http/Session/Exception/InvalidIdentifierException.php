@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Neutomic package.
+ * This file is part of the Neutomic pfinal ackage.
  *
  * (c) Saif Eddin Gmati <azjezz@protonmail.com>
  *

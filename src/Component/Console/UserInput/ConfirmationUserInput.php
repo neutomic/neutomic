@@ -44,6 +44,7 @@ final class ConfirmationUserInput extends AbstractUserInput
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function prompt(string $message): bool
     {
         $cursor = null;
@@ -86,6 +87,7 @@ final class ConfirmationUserInput extends AbstractUserInput
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setDefault(null|string $default): self
     {
         parent::setDefault($default);

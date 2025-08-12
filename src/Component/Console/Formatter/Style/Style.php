@@ -50,6 +50,7 @@ final class Style implements StyleInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setForeground(null|ForegroundColor $color = null): self
     {
         if ($color === null) {
@@ -65,6 +66,7 @@ final class Style implements StyleInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setBackground(null|BackgroundColor $color = null): self
     {
         if ($color === null) {
@@ -80,6 +82,7 @@ final class Style implements StyleInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setEffect(Effect $effect): self
     {
         $closing = match ($effect) {
@@ -98,6 +101,7 @@ final class Style implements StyleInterface
     /**
      * @ignore
      */
+    #[\Override]
     public function setHref(string $url): self
     {
         $this->href = $url;
@@ -108,6 +112,7 @@ final class Style implements StyleInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function apply(string $text): string
     {
         $openCodes = [];

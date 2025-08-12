@@ -48,6 +48,7 @@ final readonly class SessionMiddlewareFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): SessionMiddleware
     {
         return new SessionMiddleware(

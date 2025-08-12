@@ -50,6 +50,7 @@ abstract class AbstractOutput implements OutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function write(string $message, Verbosity $verbosity = Verbosity::Normal, Type $type = Type::Normal): void
     {
         if (!$this->shouldOutput($verbosity)) {
@@ -62,6 +63,7 @@ abstract class AbstractOutput implements OutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     final public function writeLine(string $message, Verbosity $verbosity = Verbosity::Normal, Type $type = Type::Normal): void
     {
         $this->write($message . OutputInterface::END_OF_LINE, $verbosity, $type);
@@ -70,6 +72,7 @@ abstract class AbstractOutput implements OutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getCursor(): Cursor
     {
         if ($this->cursor === null) {
@@ -82,6 +85,7 @@ abstract class AbstractOutput implements OutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getFormatter(): FormatterInterface
     {
         return $this->formatter;
@@ -90,6 +94,7 @@ abstract class AbstractOutput implements OutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setFormatter(FormatterInterface $formatter): self
     {
         $this->formatter = $formatter;
@@ -100,6 +105,7 @@ abstract class AbstractOutput implements OutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getVerbosity(): Verbosity
     {
         return $this->verbosity;
@@ -108,6 +114,7 @@ abstract class AbstractOutput implements OutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setVerbosity(Verbosity $verbosity): self
     {
         $this->verbosity = $verbosity;
@@ -126,6 +133,7 @@ abstract class AbstractOutput implements OutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function format(string $message, Type $type = Type::Normal): string
     {
         return match ($type) {
@@ -138,6 +146,7 @@ abstract class AbstractOutput implements OutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isDecorated(): bool
     {
         return $this->getFormatter()->isDecorated();
@@ -146,6 +155,7 @@ abstract class AbstractOutput implements OutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setDecorated(bool $decorated): self
     {
         $this->getFormatter()->setDecorated($decorated);

@@ -63,6 +63,7 @@ final readonly class RouterExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function register(DIRegistryInterface $registry, DocumentInterface $configurations): void
     {
         $configuration = $configurations->getDocument('http')->getOfTypeOrDefault('router', $this->getRouterConfigurationType(), []);

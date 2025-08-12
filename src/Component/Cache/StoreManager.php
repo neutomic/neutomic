@@ -50,6 +50,7 @@ final class StoreManager implements StoreManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getDefaultStore(): StoreInterface
     {
         return $this->getStore($this->defaultStoreId);
@@ -58,6 +59,7 @@ final class StoreManager implements StoreManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function hasStore(string $identifier): bool
     {
         return $this->locator->has($identifier);
@@ -66,6 +68,7 @@ final class StoreManager implements StoreManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getStore(string $identifier): StoreInterface
     {
         try {
@@ -80,6 +83,7 @@ final class StoreManager implements StoreManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getAvailableStores(): array
     {
         $services = $this->locator->getAvailableServices();

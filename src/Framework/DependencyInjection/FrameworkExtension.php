@@ -133,6 +133,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $configuration = $configurations->getOfTypeOrDefault('framework', $this->getConfigurationType(), []);
@@ -310,6 +311,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getExtensions(DocumentInterface $configurations): array
     {
         return [

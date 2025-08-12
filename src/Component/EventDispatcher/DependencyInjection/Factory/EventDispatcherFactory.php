@@ -41,6 +41,7 @@ final readonly class EventDispatcherFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): EventDispatcher
     {
         return new EventDispatcher(

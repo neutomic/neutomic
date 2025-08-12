@@ -51,6 +51,7 @@ final readonly class HasherManager implements HasherManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getDefaultHasher(): HasherInterface
     {
         return $this->getHasher($this->defaultStoreId);
@@ -59,6 +60,7 @@ final readonly class HasherManager implements HasherManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function hasHasher(string $identifier): bool
     {
         return $this->locator->has($identifier);
@@ -67,6 +69,7 @@ final readonly class HasherManager implements HasherManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getHasher(string $identifier): HasherInterface
     {
         try {
@@ -81,6 +84,7 @@ final readonly class HasherManager implements HasherManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getAvailableHashers(): array
     {
         $services = $this->locator->getAvailableServices();

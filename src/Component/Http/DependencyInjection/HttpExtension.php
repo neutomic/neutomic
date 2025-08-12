@@ -36,6 +36,7 @@ final readonly class HttpExtension implements CompositeExtensionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         // do nothing
@@ -44,6 +45,7 @@ final readonly class HttpExtension implements CompositeExtensionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getExtensions(DocumentInterface $configurations): array
     {
         return [

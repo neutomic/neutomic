@@ -24,6 +24,7 @@ interface RequestInterface extends ExchangeInterface
      *
      * @return null|RequestBodyInterface Returns the body of the request or null if the body has not been set.
      */
+    #[\Override]
     public function getBody(): null|RequestBodyInterface;
 
     /**

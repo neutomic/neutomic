@@ -147,6 +147,7 @@ use function array_key_first;
  */
 final readonly class MonologExtension implements ExtensionInterface
 {
+    #[\Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $configuration = $configurations->getOfTypeOrDefault('monolog', $this->getConfigurationType(), []);

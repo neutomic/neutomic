@@ -38,6 +38,7 @@ final class ByteStreamOutput extends AbstractOutput
     /**
      * @inheritDoc
      */
+    #[\Override]
     protected function doWrite(string $content): void
     {
         $this->outputStream->write($content);
@@ -46,6 +47,7 @@ final class ByteStreamOutput extends AbstractOutput
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getStream(): mixed
     {
         if ($this->outputStream instanceof ByteStream\ResourceStream) {

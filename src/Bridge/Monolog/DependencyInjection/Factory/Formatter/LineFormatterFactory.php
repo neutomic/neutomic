@@ -72,6 +72,7 @@ final readonly class LineFormatterFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         try {

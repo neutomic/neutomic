@@ -189,6 +189,7 @@ readonly class Block implements BlockInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function display(string $message, Verbosity $verbosity = Verbosity::Normal): self
     {
         $type = $this->type;

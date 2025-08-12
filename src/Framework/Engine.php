@@ -74,6 +74,7 @@ final class Engine implements EngineInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function inject(PluginInterface $plugin): void
     {
         $this->plugins[] = $plugin;
@@ -82,6 +83,7 @@ final class Engine implements EngineInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function run(Mode $mode = Mode::Application): void
     {
         $project = $this->container->getProject();

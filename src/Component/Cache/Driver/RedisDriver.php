@@ -43,6 +43,7 @@ final class RedisDriver implements DriverInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function get(string $key): mixed
     {
         if (null === $this->client) {
@@ -70,6 +71,7 @@ final class RedisDriver implements DriverInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function set(string $key, mixed $value, null|int $ttl = null): void
     {
         if (null === $this->client) {
@@ -93,6 +95,7 @@ final class RedisDriver implements DriverInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function delete(string $key): void
     {
         if (null === $this->client) {
@@ -111,6 +114,7 @@ final class RedisDriver implements DriverInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function clear(): void
     {
         if (null === $this->client) {
@@ -129,6 +133,7 @@ final class RedisDriver implements DriverInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function prune(): void
     {
         // Redis automatically prunes expired keys.
@@ -137,6 +142,7 @@ final class RedisDriver implements DriverInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function close(): void
     {
         $this->client = null;

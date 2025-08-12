@@ -44,6 +44,7 @@ final readonly class SessionCsrfTokenStorageFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): SessionCsrfTokenStorage
     {
         return new SessionCsrfTokenStorage($this->prefix);

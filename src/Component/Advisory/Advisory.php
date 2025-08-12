@@ -34,6 +34,7 @@ final class Advisory implements AdvisoryInterface
         $this->advisers = $advisers;
     }
 
+    #[\Override]
     public function addAdviser(AdviserInterface $adviser): void
     {
         $this->advisers[] = $adviser;
@@ -42,6 +43,7 @@ final class Advisory implements AdvisoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getAdvices(): array
     {
         $advices = [];

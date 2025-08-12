@@ -38,6 +38,7 @@ final readonly class CacheHandlerFactory implements FactoryInterface
         $this->store = $store ?? StoreInterface::class;
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): CacheHandler
     {
         return new CacheHandler(

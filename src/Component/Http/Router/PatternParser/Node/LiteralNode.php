@@ -53,6 +53,7 @@ final readonly class LiteralNode implements Node
     /**
      * @internal
      */
+    #[\Override]
     public function toRegularExpression(string $delimiter): string
     {
         /** @var non-empty-string */
@@ -62,6 +63,7 @@ final readonly class LiteralNode implements Node
     /**
      * @internal
      */
+    #[\Override]
     public function toString(): string
     {
         /** @var non-empty-string */
@@ -71,6 +73,7 @@ final readonly class LiteralNode implements Node
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __serialize(): array
     {
         return [
@@ -81,6 +84,7 @@ final readonly class LiteralNode implements Node
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __unserialize(array $data): void
     {
         /** @var State $data */

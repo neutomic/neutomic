@@ -128,6 +128,7 @@ abstract class AbstractFeedback implements FeedbackInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function advance(int $increment = 1): void
     {
         $this->current = Math\minva($this->total, $this->current + $increment);
@@ -193,6 +194,7 @@ abstract class AbstractFeedback implements FeedbackInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function finish(): void
     {
         if ($this->current === $this->total) {
@@ -232,6 +234,7 @@ abstract class AbstractFeedback implements FeedbackInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setPosition(null|array $position): void
     {
         $this->position = $position;
@@ -240,6 +243,7 @@ abstract class AbstractFeedback implements FeedbackInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setInterval(int $interval): self
     {
         $this->interval = $interval;
@@ -250,6 +254,7 @@ abstract class AbstractFeedback implements FeedbackInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setMessage(string $message): self
     {
         $this->message = $message;
@@ -260,6 +265,7 @@ abstract class AbstractFeedback implements FeedbackInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setPrefix(string $prefix): self
     {
         $this->prefix = $prefix;
@@ -270,6 +276,7 @@ abstract class AbstractFeedback implements FeedbackInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setSuffix(string $suffix): self
     {
         $this->suffix = $suffix;
@@ -280,6 +287,7 @@ abstract class AbstractFeedback implements FeedbackInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setTotal(int $total): self
     {
         $this->total = $total;

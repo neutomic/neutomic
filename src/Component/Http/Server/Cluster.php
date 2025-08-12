@@ -80,6 +80,7 @@ final class Cluster implements ClusterInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function start(null|int $workers = null): void
     {
         if (null !== $this->watcher) {
@@ -126,6 +127,7 @@ final class Cluster implements ClusterInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function restart(): void
     {
         if (null === $this->watcher) {
@@ -148,6 +150,7 @@ final class Cluster implements ClusterInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function stop(): void
     {
         if (null === $this->watcher) {

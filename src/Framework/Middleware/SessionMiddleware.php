@@ -33,6 +33,7 @@ final readonly class SessionMiddleware implements PrioritizedMiddlewareInterface
         $this->priority = $priority;
     }
 
+    #[\Override]
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
         $request = $this->persistence->initialize($context, $request);
@@ -42,6 +43,7 @@ final readonly class SessionMiddleware implements PrioritizedMiddlewareInterface
         return $this->persistence->persist($context, $request, $response);
     }
 
+    #[\Override]
     public function getPriority(): int
     {
         return $this->priority;

@@ -32,6 +32,7 @@ interface ContainerInterface extends DisposableInterface, PsrContainerInterface
      *
      * @return bool
      */
+    #[\Override]
     public function has(string $id): bool;
 
     /**
@@ -42,6 +43,7 @@ interface ContainerInterface extends DisposableInterface, PsrContainerInterface
      * @throws Exception\ServiceNotFoundException No entry was found for **this** identifier.
      * @throws Exception\ExceptionInterface Error while retrieving the entry.
      */
+    #[\Override]
     public function get(string $id): object;
 
     /**

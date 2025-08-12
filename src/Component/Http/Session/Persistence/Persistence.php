@@ -84,6 +84,7 @@ final class Persistence implements PersistenceInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function initialize(Context $context, RequestInterface $request): RequestInterface
     {
         $values = $request->getCookie($this->cookie->name);
@@ -106,6 +107,7 @@ final class Persistence implements PersistenceInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function persist(Context $context, RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         // Check if session exists in the request

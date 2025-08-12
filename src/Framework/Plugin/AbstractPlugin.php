@@ -29,6 +29,7 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function boot(ContainerInterface $container): void
     {
         // Default implementation does nothing
@@ -37,6 +38,7 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function route(ContainerInterface $container, RouterRegistryInterface $registry, RouteCollector $collector): void
     {
         // Default implementation does nothing
@@ -45,6 +47,7 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function enqueue(ContainerInterface $container, MiddlewareQueueInterface $queue): void
     {
         // Default implementation does nothing
@@ -53,6 +56,7 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function listen(ContainerInterface $container, EventRegistryInterface $registry): void
     {
         // Default implementation does nothing
@@ -61,6 +65,7 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function command(ContainerInterface $container, ConsoleRegistryInterface $registry): void
     {
         // Default implementation does nothing
@@ -69,6 +74,7 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function shutdown(ContainerInterface $container): void
     {
         // Default implementation does nothing

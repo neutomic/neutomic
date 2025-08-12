@@ -28,6 +28,7 @@ final readonly class UrlSafeCsrfTokenGenerator implements CsrfTokenGeneratorInte
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function generate(): string
     {
         try {

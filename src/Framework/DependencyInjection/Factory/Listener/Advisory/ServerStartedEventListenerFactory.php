@@ -53,6 +53,7 @@ final readonly class ServerStartedEventListenerFactory implements FactoryInterfa
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): ServerStartedEventListener
     {
         return new ServerStartedEventListener(

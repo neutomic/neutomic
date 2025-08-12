@@ -47,6 +47,7 @@ final readonly class DatabaseFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): Database
     {
         /** @var SqlConnection<SqlConfig, SqlResult, SqlStatement<SqlResult>, SqlTransaction> $connection */

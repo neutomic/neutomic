@@ -48,6 +48,7 @@ final readonly class CacheHandler implements HandlerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function save(SessionInterface $session, null|int $ttl = null): string
     {
         try {
@@ -67,6 +68,7 @@ final readonly class CacheHandler implements HandlerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function load(string $identifier): SessionInterface
     {
         try {
@@ -82,6 +84,7 @@ final readonly class CacheHandler implements HandlerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function flush(string $identifier): void
     {
         try {

@@ -36,6 +36,7 @@ final readonly class PostgresNotifier implements NotifierInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getChannel(): string
     {
         return $this->channel;
@@ -44,6 +45,7 @@ final readonly class PostgresNotifier implements NotifierInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function notify(string $message = ''): QueryResultInterface
     {
         try {

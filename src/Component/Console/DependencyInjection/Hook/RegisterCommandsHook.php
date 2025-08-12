@@ -48,6 +48,7 @@ final readonly class RegisterCommandsHook implements HookInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): void
     {
         $registry = $container->getTyped($this->registry, RegistryInterface::class);

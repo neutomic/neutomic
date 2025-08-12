@@ -93,6 +93,7 @@ final readonly class PostgresTransportFactory implements FactoryInterface
         $this->sslMode = $sslMode;
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): PostgresTransport
     {
         $config = new PostgresConfig(

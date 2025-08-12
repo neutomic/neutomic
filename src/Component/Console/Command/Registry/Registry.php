@@ -37,6 +37,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function register(Configuration $configuration, CommandInterface $command): void
     {
         $this->configurations[$configuration->name] = $configuration;
@@ -51,6 +52,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function incorporate(RegistryInterface $registry): void
     {
         foreach ($registry->getConfigurations() as $configuration) {
@@ -61,6 +63,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function has(string $name): bool
     {
         return Iter\contains_key($this->configurations, $name);
@@ -69,6 +72,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getConfiguration(string $name): Configuration
     {
         if (Iter\contains_key($this->configurations, $name)) {
@@ -81,6 +85,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getCommand(string $name): CommandInterface
     {
         if (Iter\contains_key($this->commands, $name)) {
@@ -93,6 +98,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getConfigurations(): array
     {
         $configurations = [];

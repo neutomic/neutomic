@@ -50,6 +50,7 @@ final readonly class HubManagerFactory implements FactoryInterface
         $this->services = $services;
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): HubManager
     {
         $locator = $container->getLocator(HubInterface::class, $this->services);

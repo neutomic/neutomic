@@ -40,6 +40,7 @@ final class ProgressBarFeedback extends AbstractFeedback
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setCharacterSequence(array $characters): static
     {
         if (Iter\count($characters) !== 3) {
@@ -54,6 +55,7 @@ final class ProgressBarFeedback extends AbstractFeedback
     /**
      * @inheritDoc
      */
+    #[\Override]
     protected function display(bool $finish = false): void
     {
         if (!$finish && $this->current === $this->total) {

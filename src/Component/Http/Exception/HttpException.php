@@ -47,6 +47,7 @@ class HttpException extends RuntimeException implements HttpExceptionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getStatusCode(): StatusCode
     {
         return $this->statusCode;
@@ -55,6 +56,7 @@ class HttpException extends RuntimeException implements HttpExceptionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getHeaders(): array
     {
         return $this->headers;

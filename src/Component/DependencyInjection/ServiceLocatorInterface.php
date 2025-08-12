@@ -32,6 +32,7 @@ interface ServiceLocatorInterface extends ContainerInterface
      *
      * @psalm-assert-if-true non-empty-string $id
      */
+    #[\Override]
     public function has(string $id): bool;
 
     /**
@@ -44,5 +45,6 @@ interface ServiceLocatorInterface extends ContainerInterface
      *
      * @psalm-assert non-empty-string $id
      */
+    #[\Override]
     public function get(string $id): object;
 }

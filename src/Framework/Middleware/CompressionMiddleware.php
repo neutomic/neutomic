@@ -182,6 +182,7 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
         $response = $next->handle($context, $request);
@@ -365,6 +366,7 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
         yield $chunk;
     }
 
+    #[\Override]
     public function getPriority(): int
     {
         return $this->priority;

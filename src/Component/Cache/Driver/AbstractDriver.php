@@ -59,6 +59,7 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function close(): void
     {
         if (EventLoop::isEnabled($this->pruneWatcher)) {

@@ -109,6 +109,7 @@ final readonly class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withProtocolVersion(ProtocolVersion $version): static
     {
         if ($this->protocolVersion === $version) {
@@ -121,6 +122,7 @@ final readonly class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getBody(): null|BodyInterface
     {
         return $this->body;
@@ -129,6 +131,7 @@ final readonly class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withBody(null|BodyInterface $body): static
     {
         return new self($this->protocolVersion, $this->statusCode, $this->headerStorage, $this->cookieStorage, $body, $this->trailers);
@@ -137,6 +140,7 @@ final readonly class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getStatusCode(): int
     {
         return $this->statusCode;
@@ -145,6 +149,7 @@ final readonly class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withStatus(int|StatusCode $code): static
     {
         if ($code instanceof StatusCode) {
@@ -161,6 +166,7 @@ final readonly class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getCookies(): array
     {
         return $this->cookieStorage->getCookies();
@@ -169,6 +175,7 @@ final readonly class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function hasCookie(string $name): bool
     {
         return $this->cookieStorage->hasCookie($name);
@@ -177,6 +184,7 @@ final readonly class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getCookie(string $name): null|array
     {
         return $this->cookieStorage->getCookie($name);
@@ -185,6 +193,7 @@ final readonly class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withCookie(string $name, CookieInterface|array $value): static
     {
         $cookieStorage = $this->cookieStorage->withCookie($name, $value);
@@ -195,6 +204,7 @@ final readonly class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withAddedCookie(string $name, CookieInterface|array $value): static
     {
         $cookieStorage = $this->cookieStorage->withAddedCookie($name, $value);
@@ -205,6 +215,7 @@ final readonly class Response implements ResponseInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withoutCookie(string $name): static
     {
         $cookieStorage = $this->cookieStorage->withoutCookie($name);
@@ -212,6 +223,7 @@ final readonly class Response implements ResponseInterface
         return new self($this->protocolVersion, $this->statusCode, $this->headerStorage, $cookieStorage, $this->body, $this->trailers);
     }
 
+    #[\Override]
     protected function cloneWithHeaderStorage(HeaderStorage $headerStorage): static
     {
         return new self($this->protocolVersion, $this->statusCode, $headerStorage, $this->cookieStorage, $this->body, $this->trailers);
@@ -220,6 +232,7 @@ final readonly class Response implements ResponseInterface
     /**
      * @param array<non-empty-string, TrailerInterface> $trailers
      */
+    #[\Override]
     protected function cloneWithTrailers(array $trailers): static
     {
         return new self($this->protocolVersion, $this->statusCode, $this->headerStorage, $this->cookieStorage, $this->body, $trailers);

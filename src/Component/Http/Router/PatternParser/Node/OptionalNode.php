@@ -46,6 +46,7 @@ final readonly class OptionalNode implements Node
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function toRegularExpression(string $delimiter): string
     {
         return '(?:' . $this->pattern->toRegularExpression($delimiter) . ')?';
@@ -54,6 +55,7 @@ final readonly class OptionalNode implements Node
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function toString(): string
     {
         return '?' . $this->pattern->toString();
@@ -62,6 +64,7 @@ final readonly class OptionalNode implements Node
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __unserialize(array $data): void
     {
         /** @var State $data */
@@ -71,6 +74,7 @@ final readonly class OptionalNode implements Node
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __serialize(): array
     {
         return [

@@ -21,6 +21,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function and(string|CompositeExpressionInterface $expression, string|CompositeExpressionInterface ...$expressions): CompositeExpressionInterface
     {
         return CompositeExpression::and($expression, ...$expressions);
@@ -29,6 +30,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function or(string|CompositeExpressionInterface $expression, string|CompositeExpressionInterface ...$expressions): CompositeExpressionInterface
     {
         return CompositeExpression::or($expression, ...$expressions);
@@ -37,6 +39,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function comparison(string $left, Operator $operator, string $right): string
     {
         return $this->rawComparison($left, $operator->value, $right);
@@ -45,6 +48,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function equal(string $left, string $right): string
     {
         return $this->comparison($left, Operator::Equal, $right);
@@ -53,6 +57,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function notEqual(string $left, string $right): string
     {
         return $this->comparison($left, Operator::NotEqual, $right);
@@ -61,6 +66,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function lowerThan(string $left, string $right): string
     {
         return $this->comparison($left, Operator::LowerThan, $right);
@@ -69,6 +75,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function lowerThanOrEqual(string $left, string $right): string
     {
         return $this->comparison($left, Operator::LowerThanOrEqual, $right);
@@ -77,6 +84,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function greaterThan(string $left, string $right): string
     {
         return $this->comparison($left, Operator::GreaterThan, $right);
@@ -85,6 +93,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function greaterThanOrEqual(string $left, string $right): string
     {
         return $this->comparison($left, Operator::GreaterThanOrEqual, $right);
@@ -93,6 +102,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isNull(string $expression): string
     {
         return $expression . ' IS NULL';
@@ -101,6 +111,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isNotNull(string $expression): string
     {
         return $expression . ' IS NOT NULL';
@@ -109,6 +120,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function like(string $expression, string $pattern, null|string $escapeCharacters = null): string
     {
         $comparison = $this->rawComparison($expression, 'LIKE', $pattern);
@@ -122,6 +134,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function notLike(string $expression, string $pattern, null|string $escapeCharacters = null): string
     {
         $comparison = $this->rawComparison($expression, 'NOT LIKE', $pattern);
@@ -135,6 +148,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function in(string $expression, string $setExpression, string ...$setExpressions): string
     {
         return $this->rawComparison($expression, 'IN', '(' . Str\join(Vec\concat([$setExpression], $setExpressions), ', ') . ')');
@@ -143,6 +157,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function notIn(string $expression, string $setExpression, string ...$setExpressions): string
     {
         return $this->rawComparison($expression, 'NOT IN', '(' . Str\join(Vec\concat([$setExpression], $setExpressions), ', ') . ')');

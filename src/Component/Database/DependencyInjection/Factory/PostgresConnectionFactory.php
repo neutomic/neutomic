@@ -98,6 +98,7 @@ final readonly class PostgresConnectionFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): PostgresConnection
     {
         $config = new PostgresConfig(

@@ -64,6 +64,7 @@ final readonly class ConsoleFormatterFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         return new ConsoleFormatter(

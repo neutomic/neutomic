@@ -57,6 +57,7 @@ final readonly class CsrfTokenManagerFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): CsrfTokenManager
     {
         $generator = $container->getTyped($this->generator, CsrfTokenGeneratorInterface::class);

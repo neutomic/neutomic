@@ -27,6 +27,7 @@ final readonly class MultipartParserFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): MultipartParser
     {
         return new MultipartParser();

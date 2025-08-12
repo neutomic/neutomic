@@ -30,6 +30,7 @@ final readonly class HPackNghttp2Adviser implements AdviserInterface
      *
      * @return Advice|null An instance of Advice if HPack is not supported, or null if it is supported.
      */
+    #[\Override]
     public function getAdvice(): null|Advice
     {
         if (!extension_loaded('ffi') || !class_exists(FFI::class)) {

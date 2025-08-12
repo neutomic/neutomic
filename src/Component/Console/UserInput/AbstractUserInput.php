@@ -66,6 +66,7 @@ abstract class AbstractUserInput implements UserInputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setPosition(null|array $position): void
     {
         $this->position = $position;

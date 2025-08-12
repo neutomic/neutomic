@@ -51,6 +51,7 @@ final readonly class CsrfTokenManager implements CsrfTokenManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getToken(RequestInterface $request, string $identifier): string
     {
         return $this->storage->getToken($request, $identifier);
@@ -59,6 +60,7 @@ final readonly class CsrfTokenManager implements CsrfTokenManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getOrCreateToken(RequestInterface $request, string $identifier): string
     {
         if ($this->storage->hasToken($request, $identifier)) {
@@ -75,6 +77,7 @@ final readonly class CsrfTokenManager implements CsrfTokenManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function rotateToken(RequestInterface $request, string $identifier): string
     {
         $token = $this->generator->generate();
@@ -87,6 +90,7 @@ final readonly class CsrfTokenManager implements CsrfTokenManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function removeToken(RequestInterface $request, string $identifier): void
     {
         $this->storage->removeToken($request, $identifier);
@@ -95,6 +99,7 @@ final readonly class CsrfTokenManager implements CsrfTokenManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function validateToken(RequestInterface $request, string $identifier, #[SensitiveParameter] string $value): bool
     {
         if (!$this->storage->hasToken($request, $identifier)) {

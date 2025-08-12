@@ -63,6 +63,7 @@ final readonly class Recovery implements RecoveryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function recover(Context $context, RequestInterface $request, Throwable $throwable): ResponseInterface
     {
         $log_level = LogLevel::ERROR;

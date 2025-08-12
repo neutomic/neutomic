@@ -35,6 +35,7 @@ abstract readonly class AbstractExecutableQuery implements QueryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function execute(array $parameters = []): QueryResultInterface
     {
         return $this->dbal->query((string) $this, $parameters);
@@ -43,6 +44,7 @@ abstract readonly class AbstractExecutableQuery implements QueryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function prepare(): PreparedStatementInterface
     {
         return $this->dbal->prepare((string) $this);

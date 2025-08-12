@@ -56,6 +56,7 @@ final readonly class AccessLogMiddleware implements PrioritizedMiddlewareInterfa
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
         $time = DateTime\Timestamp::monotonic();
@@ -85,6 +86,7 @@ final readonly class AccessLogMiddleware implements PrioritizedMiddlewareInterfa
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getPriority(): int
     {
         return $this->priority;

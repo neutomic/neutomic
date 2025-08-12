@@ -45,6 +45,7 @@ final readonly class ServerStoppingEventListenerFactory implements FactoryInterf
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         $storeManager = $container->getTyped($this->storeManager, StoreManagerInterface::class);

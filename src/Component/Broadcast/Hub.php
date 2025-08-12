@@ -46,6 +46,7 @@ final class Hub implements HubInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getChannel(string $name): Channel
     {
         try {
@@ -61,6 +62,7 @@ final class Hub implements HubInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function close(): void
     {
         foreach ($this->channels as $channel) {

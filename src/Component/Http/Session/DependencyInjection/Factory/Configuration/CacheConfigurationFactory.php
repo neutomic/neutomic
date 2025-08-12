@@ -46,6 +46,7 @@ final readonly class CacheConfigurationFactory implements FactoryInterface
         $this->limiter = $limiter;
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): CacheConfiguration
     {
         return new CacheConfiguration(

@@ -75,6 +75,7 @@ final class Store implements StoreInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function get(string $key): mixed
     {
         /** @var (Closure(): mixed) $computer */
@@ -106,6 +107,7 @@ final class Store implements StoreInterface
      *
      * @return T
      */
+    #[\Override]
     public function compute(string $key, Closure $computer, null|int $ttl = null): mixed
     {
         /** @var T */
@@ -135,6 +137,7 @@ final class Store implements StoreInterface
      *
      * @return T
      */
+    #[\Override]
     public function update(string $key, Closure $computer, null|int $ttl = null): mixed
     {
         /** @var T */
@@ -144,6 +147,7 @@ final class Store implements StoreInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function delete(string $key): void
     {
         // wait for pending operations associated with the given key.
@@ -155,6 +159,7 @@ final class Store implements StoreInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function close(): void
     {
         $this->driver->close();

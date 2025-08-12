@@ -31,6 +31,7 @@ final class JsonFileLoader implements LoaderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function load(mixed $resource): DocumentInterface
     {
         try {
@@ -57,6 +58,7 @@ final class JsonFileLoader implements LoaderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function supports(mixed $resource): bool
     {
         if (!Type\non_empty_string()->matches($resource) || !Str\ends_with($resource, '.json')) {

@@ -33,6 +33,7 @@ final readonly class Router implements RouterInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function match(RequestInterface $request): Result
     {
         return $this->matcher->match($request);
@@ -41,6 +42,7 @@ final readonly class Router implements RouterInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function generate(string $name, array $parameters = []): UriInterface
     {
         return $this->generator->generate($name, $parameters);

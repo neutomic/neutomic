@@ -132,6 +132,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getId(): string
     {
         return $this->id;
@@ -140,6 +141,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setId(string $id): void
     {
         $this->id = $id;
@@ -148,6 +150,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getType(): string
     {
         return $this->type;
@@ -156,6 +159,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setType(string $type): void
     {
         $this->type = $type;
@@ -164,6 +168,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getFactory(): null|FactoryInterface
     {
         return $this->factory;
@@ -172,6 +177,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setFactory(null|FactoryInterface $factory): static
     {
         $this->factory = $factory;
@@ -182,6 +188,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isInstanceOf(string $type): bool
     {
         $reflection = $this->getReflectionClass(false);
@@ -200,6 +207,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function hasAttribute(string $name): bool
     {
         $attributes = $this->getReflectionClass(false)->getAttributes();
@@ -215,6 +223,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getAliases(): array
     {
         return $this->aliases;
@@ -223,6 +232,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function addAlias(string $name): static
     {
         $this->aliases[] = $name;
@@ -233,6 +243,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setAliases(array $aliases): static
     {
         $this->aliases = $aliases;
@@ -243,6 +254,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getProcessors(): array
     {
         return $this->processors;
@@ -251,6 +263,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function addProcessor(ProcessorInterface $processor): static
     {
         $this->processors[] = $processor;
@@ -261,6 +274,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setProcessors(array $processors): static
     {
         $this->processors = $processors;
@@ -271,6 +285,7 @@ final class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function resolve(ContainerInterface $container): object
     {
         if ($this->instance !== null) {

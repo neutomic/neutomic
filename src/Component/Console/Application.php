@@ -91,6 +91,7 @@ final class Application implements ApplicationInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getConfiguration(): Configuration
     {
         return $this->configuration;
@@ -99,6 +100,7 @@ final class Application implements ApplicationInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getRegistry(): RegistryInterface
     {
         return $this->registry;
@@ -107,6 +109,7 @@ final class Application implements ApplicationInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getRecovery(): RecoveryInterface
     {
         return $this->errorHandler;
@@ -115,6 +118,7 @@ final class Application implements ApplicationInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getEventDispatcher(): null|EventDispatcherInterface
     {
         return $this->dispatcher;
@@ -123,6 +127,7 @@ final class Application implements ApplicationInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
         $this->dispatcher = $eventDispatcher;
@@ -131,6 +136,7 @@ final class Application implements ApplicationInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function run(null|InputInterface $input = null, null|OutputInterface $output = null): int
     {
         Env\set_var('COLUMNS', (string) Terminal::getWidth());

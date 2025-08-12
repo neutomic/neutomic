@@ -39,6 +39,7 @@ final readonly class RecoveryExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $defaultLogger = $configurations->getDocument('http')->getOfTypeOrDefault('logger', Type\non_empty_string(), null);

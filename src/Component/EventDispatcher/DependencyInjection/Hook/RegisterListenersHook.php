@@ -46,6 +46,7 @@ final readonly class RegisterListenersHook implements HookInterface
     /**
      * @throws ExceptionInterface
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): void
     {
         $registry = $container->getTyped($this->registry, RegistryInterface::class);

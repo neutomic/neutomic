@@ -48,6 +48,7 @@ final readonly class RouterMiddlewareFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): RouterMiddleware
     {
         return new RouterMiddleware(

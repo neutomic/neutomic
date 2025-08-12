@@ -87,6 +87,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getProject(): Project
     {
         DisposedObjectException::guard($this);
@@ -97,6 +98,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function has(string $id): bool
     {
         DisposedObjectException::guard($this);
@@ -115,6 +117,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function get(string $id): object
     {
         DisposedObjectException::guard($this);
@@ -154,6 +157,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getTyped(string $id, string $type): object
     {
         DisposedObjectException::guard($this);
@@ -170,6 +174,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getInstancesOf(string $type): iterable
     {
         DisposedObjectException::guard($this);
@@ -184,6 +189,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getAttributed(string $attribute): iterable
     {
         DisposedObjectException::guard($this);
@@ -198,6 +204,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getLocator(string $type, array $services): ServiceLocatorInterface
     {
         DisposedObjectException::guard($this);
@@ -208,6 +215,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isDisposed(): bool
     {
         return $this->isDisposed;
@@ -216,6 +224,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function dispose(): void
     {
         if ($this->isDisposed) {

@@ -26,6 +26,7 @@ final class NullOutput extends AbstractOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setFormatter(FormatterInterface $formatter): self
     {
         return $this;
@@ -34,6 +35,7 @@ final class NullOutput extends AbstractOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setVerbosity(Verbosity $verbosity): self
     {
         return $this;
@@ -42,6 +44,7 @@ final class NullOutput extends AbstractOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getVerbosity(): Verbosity
     {
         return Verbosity::Quite;
@@ -50,6 +53,7 @@ final class NullOutput extends AbstractOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function write(string $message, Verbosity $verbosity = Verbosity::Normal, Type $type = Type::Normal): void
     {
     }
@@ -57,6 +61,7 @@ final class NullOutput extends AbstractOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getErrorOutput(): OutputInterface
     {
         return new NullOutput();
@@ -65,6 +70,7 @@ final class NullOutput extends AbstractOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     protected function doWrite(string $content): void
     {
     }
@@ -72,6 +78,7 @@ final class NullOutput extends AbstractOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getStream(): null
     {
         return null;

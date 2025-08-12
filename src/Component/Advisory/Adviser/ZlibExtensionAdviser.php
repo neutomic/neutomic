@@ -27,6 +27,7 @@ final readonly class ZlibExtensionAdviser implements AdviserInterface
      *
      * @return Advice|null An instance of Advice if ext-zlib is not installed, or null if it is installed.
      */
+    #[\Override]
     public function getAdvice(): null|Advice
     {
         if (!extension_loaded('zlib')) {

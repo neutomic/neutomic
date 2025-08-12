@@ -23,6 +23,7 @@ final class FilesystemLoader extends TwigFilesystemLoader implements Modificatio
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getSourceContext(string $name): Source
     {
         $path = (string) $this->findTemplate($name);
@@ -33,6 +34,7 @@ final class FilesystemLoader extends TwigFilesystemLoader implements Modificatio
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isFresh(string $name, int $time): bool
     {
         return $this->getLastModificationTime($name) <= $time;
@@ -41,6 +43,7 @@ final class FilesystemLoader extends TwigFilesystemLoader implements Modificatio
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getLastModificationTime(string $name): int
     {
         $path = (string) $this->findTemplate($name);

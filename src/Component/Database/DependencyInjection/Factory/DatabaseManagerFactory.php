@@ -57,6 +57,7 @@ final readonly class DatabaseManagerFactory implements FactoryInterface
      *
      * @return DatabaseManager
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         $locator = $container->getLocator(DatabaseInterface::class, $this->services);

@@ -25,6 +25,7 @@ final class TabDelimitedTable extends AbstractTable
     /**
      * Display the table in the console.
      */
+    #[\Override]
     public function display(): void
     {
         $this->output->writeLine(Str\join($this->headers, OutputInterface::TAB));

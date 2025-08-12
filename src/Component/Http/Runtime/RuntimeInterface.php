@@ -82,5 +82,6 @@ interface RuntimeInterface extends HandlerInterface
      * @see Event\ResponseEvent for the response preparation event.
      * @see Event\ThrowableEvent for the exception handling event.
      */
+    #[\Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface;
 }

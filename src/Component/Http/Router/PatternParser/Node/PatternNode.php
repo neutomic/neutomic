@@ -53,6 +53,7 @@ final readonly class PatternNode implements Node
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function toRegularExpression(string $delimiter): string
     {
         /** @var non-empty-string */
@@ -65,6 +66,7 @@ final readonly class PatternNode implements Node
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function toString(): string
     {
         return '[' . Str\join(Vec\map(
@@ -76,6 +78,7 @@ final readonly class PatternNode implements Node
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __serialize(): array
     {
         return [
@@ -86,6 +89,7 @@ final readonly class PatternNode implements Node
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __unserialize(array $data): void
     {
         /** @var State $data */

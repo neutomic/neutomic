@@ -71,6 +71,7 @@ final readonly class SessionExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $configuration = $configurations->getDocument('http')->getOfTypeOrDefault('session', $this->getConfigurationType(), []);
@@ -137,7 +138,7 @@ final readonly class SessionExtension implements ExtensionInterface
     }
 
     /**
-     * @return Type\TypeInterface<Configuration>
+     * @psalm-return Type\TypeInterface<array{cookie?: array{name?: string, lifetime?: int, path?: string, domain?: string, secure?: bool, 'http-only'?: bool, 'same-site'?: CookieSameSite}, cache?: array{expires?: int, limiter?: CacheLimiter|\BackedEnum}, handler?: array{type: 'cache'|'encrypted', store?: string, secret?: string}, persistence?: array{handler?: string, 'cookie-configuration'?: string, 'cache-configuration'?: string}}>
      */
     private function getConfigurationType(): Type\TypeInterface
     {

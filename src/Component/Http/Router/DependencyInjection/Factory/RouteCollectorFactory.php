@@ -45,6 +45,7 @@ final readonly class RouteCollectorFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         $registry = $container->getTyped($this->registry, RegistryInterface::class);

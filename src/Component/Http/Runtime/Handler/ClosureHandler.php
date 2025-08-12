@@ -45,6 +45,7 @@ final readonly class ClosureHandler implements HandlerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         return ($this->closure)($context, $request);

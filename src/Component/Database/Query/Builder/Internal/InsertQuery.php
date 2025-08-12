@@ -66,6 +66,7 @@ final readonly class InsertQuery extends AbstractExecutableQuery implements Inse
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function values(array $first, array ...$rest): static
     {
         $values = [$first];
@@ -79,6 +80,7 @@ final readonly class InsertQuery extends AbstractExecutableQuery implements Inse
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getType(): Type
     {
         return Type::Insert;

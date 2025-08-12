@@ -27,6 +27,7 @@ final readonly class RegistryFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): Registry
     {
         return new Registry();

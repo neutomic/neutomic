@@ -27,6 +27,7 @@ final readonly class UrlSafeCsrfTokenGeneratorFactory implements FactoryInterfac
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): UrlSafeCsrfTokenGenerator
     {
         return new UrlSafeCsrfTokenGenerator();

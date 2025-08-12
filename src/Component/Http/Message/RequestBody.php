@@ -112,6 +112,7 @@ final class RequestBody implements RequestBodyInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function upgradeSizeLimit(int $sizeLimit): void
     {
         if ($this->upgradeSize !== null) {
@@ -122,6 +123,7 @@ final class RequestBody implements RequestBodyInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getMode(): BodyMode
     {
         return $this->mode;
@@ -130,6 +132,7 @@ final class RequestBody implements RequestBodyInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getChunk(null|float $timeout = null): null|string
     {
         if ($this->mode === BodyMode::Closed) {
@@ -161,6 +164,7 @@ final class RequestBody implements RequestBodyInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getContents(null|float $timeout = null): string
     {
         if ($this->mode === BodyMode::Buffered) {
@@ -196,6 +200,7 @@ final class RequestBody implements RequestBodyInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getIterator(): Traversable
     {
         if ($this->mode === BodyMode::Closed) {
@@ -223,6 +228,7 @@ final class RequestBody implements RequestBodyInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function close(): void
     {
         $this->payload->close();

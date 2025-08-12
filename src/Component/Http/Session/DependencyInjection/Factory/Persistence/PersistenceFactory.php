@@ -54,6 +54,7 @@ final readonly class PersistenceFactory implements FactoryInterface
         $this->cacheConfiguration = $cacheConfiguration ?? CacheConfiguration::class;
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): Persistence
     {
         return new Persistence(

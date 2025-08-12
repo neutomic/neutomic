@@ -58,6 +58,7 @@ final class MiddlewareQueue implements MiddlewareQueueInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function enqueue(MiddlewareInterface $middleware, int $priority = 0): void
     {
         if ($middleware instanceof PrioritizedMiddlewareInterface) {
@@ -71,6 +72,7 @@ final class MiddlewareQueue implements MiddlewareQueueInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function wrap(HandlerInterface $handler): HandlerInterface
     {
         /** @var HandlerInterface */

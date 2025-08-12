@@ -51,6 +51,7 @@ final readonly class XPoweredByMiddlewareFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): XPoweredByMiddleware
     {
         return new XPoweredByMiddleware($this->poweredBy, $this->exposePhpVersion);

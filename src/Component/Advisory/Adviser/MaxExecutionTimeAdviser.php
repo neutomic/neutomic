@@ -28,6 +28,7 @@ final readonly class MaxExecutionTimeAdviser implements AdviserInterface
      *
      * @return Advice|null An instance of Advice if the max execution time is not set to unlimited, or null if it is set correctly.
      */
+    #[\Override]
     public function getAdvice(): null|Advice
     {
         $maxExecutionTime = (string) ini_get('max_execution_time');

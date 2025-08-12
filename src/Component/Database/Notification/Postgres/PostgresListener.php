@@ -32,6 +32,7 @@ final readonly class PostgresListener implements ListenerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getChannel(): string
     {
         return $this->channel;
@@ -40,6 +41,7 @@ final readonly class PostgresListener implements ListenerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isAlive(): bool
     {
         return $this->listener->isListening();
@@ -48,6 +50,7 @@ final readonly class PostgresListener implements ListenerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function close(): void
     {
         $this->listener->unlisten();
@@ -56,6 +59,7 @@ final readonly class PostgresListener implements ListenerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function listen(): Iterator
     {
         foreach ($this->listener as $notification) {

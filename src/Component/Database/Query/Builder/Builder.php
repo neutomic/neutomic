@@ -33,6 +33,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function select(string $select, string ...$selects): SelectQueryInterface
     {
         /** @psalm-suppress ArgumentTypeCoercion - false positive */
@@ -42,6 +43,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function delete(string $table, null|string $alias = null): DeleteQueryInterface
     {
         return new DeleteQuery($this->dbal, $table, $alias);
@@ -50,6 +52,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function update(string $table, null|string $alias = null): UpdateQueryInterface
     {
         return new UpdateQuery($this->dbal, $table, $alias);
@@ -58,6 +61,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function insert(string $table): InsertQueryInterface
     {
         return new InsertQuery($this->dbal, $table);

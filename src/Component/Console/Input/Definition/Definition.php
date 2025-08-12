@@ -79,6 +79,7 @@ abstract class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function exists(): bool
     {
         return $this->exists;
@@ -87,6 +88,7 @@ abstract class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getAlias(): null|string
     {
         return $this->alias;
@@ -112,6 +114,7 @@ abstract class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getDescription(): string
     {
         return $this->description;
@@ -120,6 +123,7 @@ abstract class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getFormattedName(string $name): string
     {
         if (Str\Byte\length($name) === 1) {
@@ -132,6 +136,7 @@ abstract class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getMode(): Mode
     {
         return $this->mode;
@@ -140,6 +145,7 @@ abstract class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getName(): string
     {
         return $this->name;
@@ -148,6 +154,7 @@ abstract class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getValue(): mixed
     {
         if ($this->exists) {

@@ -96,6 +96,7 @@ final class Resolver implements ResolverInterface
      *
      * @return LoaderInterface<ResourceType>
      */
+    #[\Override]
     public function resolve(mixed $resource): LoaderInterface
     {
         foreach ($this->loaders as $loader) {

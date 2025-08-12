@@ -91,6 +91,7 @@ final readonly class Trailer implements TrailerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getField(): string
     {
         return $this->field;
@@ -99,6 +100,7 @@ final readonly class Trailer implements TrailerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getValue(): array
     {
         return $this->value->await();

@@ -27,6 +27,7 @@ final readonly class PlainHasherFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): PlainHasher
     {
         return new PlainHasher();

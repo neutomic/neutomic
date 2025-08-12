@@ -66,6 +66,7 @@ final readonly class ServerFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): Server
     {
         return new Server(

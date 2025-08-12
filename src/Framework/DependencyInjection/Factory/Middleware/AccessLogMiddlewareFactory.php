@@ -52,6 +52,7 @@ final readonly class AccessLogMiddlewareFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): AccessLogMiddleware
     {
         return new AccessLogMiddleware(

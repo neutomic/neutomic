@@ -50,6 +50,7 @@ final class HubManager implements HubManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getDefaultHub(): HubInterface
     {
         return $this->getHub($this->defaultHubId);
@@ -58,6 +59,7 @@ final class HubManager implements HubManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function hasHub(string $identifier): bool
     {
         return $this->locator->has($identifier);
@@ -66,6 +68,7 @@ final class HubManager implements HubManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getHub(string $identifier): HubInterface
     {
         try {
@@ -80,6 +83,7 @@ final class HubManager implements HubManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getAvailableHubs(): array
     {
         $hubs = [];

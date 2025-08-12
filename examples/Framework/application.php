@@ -36,6 +36,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 #[Route(name: 'redirect', pattern: '/', methods: [Method::Get])]
 final readonly class RedirectHandler implements HandlerInterface
 {
+    #[\Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         return Response\redirect('/index.html', StatusCode::TemporaryRedirect);
@@ -45,6 +46,7 @@ final readonly class RedirectHandler implements HandlerInterface
 #[Route(name: 'server-sent-events', pattern: '/sse', methods: [Method::Get])]
 final readonly class ServerSentEventsHandler implements HandlerInterface
 {
+    #[\Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         $stream = ServerSentEvent\EventStream::forContext($context);

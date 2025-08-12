@@ -38,6 +38,7 @@ final readonly class ContentDelivererFactory implements FactoryInterface
         $this->logger = $logger ?? LoggerInterface::class;
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): ContentDeliverer
     {
         return new ContentDeliverer(

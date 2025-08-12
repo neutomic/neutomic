@@ -43,6 +43,7 @@ final readonly class NormalizerFormatterFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         try {

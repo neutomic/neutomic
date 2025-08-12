@@ -48,6 +48,7 @@ final readonly class RouterFactory implements FactoryInterface
         $this->generator = $generator ?? GeneratorInterface::class;
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         return new Router(

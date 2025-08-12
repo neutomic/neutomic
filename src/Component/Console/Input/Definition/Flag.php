@@ -99,6 +99,7 @@ final class Flag extends Definition
      * name and the alias set is long, the 'alias' given here will serve as the
      * 'name' and the original name will be set to the 'alias'.
      */
+    #[\Override]
     public function alias(string $alias): self
     {
         parent::alias($alias);

@@ -87,6 +87,7 @@ final class Formatter extends AbstractFormatter
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function format(string $message, int $width = 0): string
     {
         $offset = 0;

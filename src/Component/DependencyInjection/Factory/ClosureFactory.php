@@ -38,6 +38,7 @@ final readonly class ClosureFactory implements FactoryInterface
      *
      * @return T
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         return ($this->closure)($container);

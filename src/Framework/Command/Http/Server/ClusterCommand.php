@@ -68,6 +68,7 @@ final readonly class ClusterCommand extends AbstractCommand
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function execute(InputInterface $input, OutputInterface $output): ExitCode
     {
         $option = $input->getOption('workers');

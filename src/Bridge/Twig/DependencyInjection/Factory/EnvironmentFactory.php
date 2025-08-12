@@ -98,6 +98,7 @@ final readonly class EnvironmentFactory implements FactoryInterface
         $this->globals = $globals ?? [];
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         $options = [

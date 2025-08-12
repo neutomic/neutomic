@@ -51,6 +51,7 @@ final readonly class RedisDriverFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): RedisDriver
     {
         try {

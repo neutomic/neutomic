@@ -99,6 +99,7 @@ final readonly class EventStream implements IteratorAggregate
      *
      * @return ConcurrentIterator<Event> An iterator over the queued events.
      */
+    #[\Override]
     public function getIterator(): ConcurrentIterator
     {
         return $this->queue->iterate();

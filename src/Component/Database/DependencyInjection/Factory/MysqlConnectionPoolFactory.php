@@ -144,6 +144,7 @@ final readonly class MysqlConnectionPoolFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): Mysql\MysqlConnectionPool
     {
         $config = new Mysql\MysqlConfig(

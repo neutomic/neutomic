@@ -80,6 +80,7 @@ final class DatabaseExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $configuration = $configurations->getOfTypeOrDefault('database', $this->getConfigurationType(), []);

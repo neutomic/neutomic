@@ -68,6 +68,7 @@ final class CycleFeedback extends AbstractFeedback
     /**
      * @inheritDoc
      */
+    #[\Override]
     protected function display(bool $finish = false): void
     {
         $variables = $this->buildOutputVariables();
@@ -96,6 +97,7 @@ final class CycleFeedback extends AbstractFeedback
     /**
      * Set the maximum length of the available character sequence characters.
      */
+    #[\Override]
     protected function setMaxLength(): self
     {
         parent::setMaxLength();

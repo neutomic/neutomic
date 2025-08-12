@@ -41,6 +41,7 @@ final readonly class HandlerResolverFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): HandlerResolver
     {
         $fallback = null;

@@ -36,6 +36,7 @@ final readonly class TextBlock implements BlockInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function display(string $message, Verbosity $verbosity = Verbosity::Normal): self
     {
         $message = Str\wrap($message, (int)(((int)(Terminal::getWidth() / 3)) * 2), cut: true);

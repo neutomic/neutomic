@@ -38,6 +38,7 @@ final readonly class StoreFactory implements FactoryInterface
         $this->driver = $driver ?? DriverInterface::class;
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): Store
     {
         return new Store(

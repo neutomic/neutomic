@@ -47,6 +47,7 @@ final readonly class StartCommand implements CommandInterface
      *
      * @throws ExceptionInterface If an error occurs while starting or stopping the server.
      */
+    #[\Override]
     public function run(InputInterface $input, OutputInterface $output): ExitCode
     {
         $this->server->start();

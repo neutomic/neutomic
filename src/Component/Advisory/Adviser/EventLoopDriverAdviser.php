@@ -30,6 +30,7 @@ final readonly class EventLoopDriverAdviser implements AdviserInterface
      *
      * @return Advice|null An instance of Advice if the StreamSelectDriver is used and no high-performance extensions are installed, or advice to switch the driver if high-performance extensions are installed.
      */
+    #[\Override]
     public function getAdvice(): null|Advice
     {
         $driver = EventLoop::getDriver();

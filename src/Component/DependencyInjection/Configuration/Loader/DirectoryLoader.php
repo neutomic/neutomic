@@ -49,6 +49,7 @@ final class DirectoryLoader implements ResolverAwareLoaderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function load(mixed $resource): DocumentInterface
     {
         try {
@@ -93,6 +94,7 @@ final class DirectoryLoader implements ResolverAwareLoaderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function supports(mixed $resource): bool
     {
         if (!Type\non_empty_string()->matches($resource)) {

@@ -40,6 +40,7 @@ final readonly class HandlerResolver implements HandlerResolverInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         return $this->resolve($context, $request)->handle($context, $request);
@@ -48,6 +49,7 @@ final readonly class HandlerResolver implements HandlerResolverInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function resolve(Context $context, RequestInterface $request): HandlerInterface
     {
         if (!$request->hasAttribute(HandlerInterface::class)) {

@@ -37,6 +37,7 @@ final readonly class HubFactory implements FactoryInterface
     {
         $this->transport = $transport ?? TransportInterface::class;
     }
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         $transport = $container->getTyped($this->transport, TransportInterface::class);

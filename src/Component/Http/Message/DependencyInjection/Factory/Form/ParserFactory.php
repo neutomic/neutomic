@@ -27,6 +27,7 @@ final readonly class ParserFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): Parser
     {
         return new Parser();

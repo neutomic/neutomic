@@ -111,6 +111,7 @@ final class Channel implements ChannelInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function broadcast(mixed $message): void
     {
         if ($this->iterator === null) {
@@ -129,6 +130,7 @@ final class Channel implements ChannelInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function subscribe(): Subscription
     {
         if ($this->iterator === null) {
@@ -153,6 +155,7 @@ final class Channel implements ChannelInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getSubscribersCount(): int
     {
         return count($this->queues);
@@ -161,6 +164,7 @@ final class Channel implements ChannelInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function close(): void
     {
         if ($this->iterator === null) {

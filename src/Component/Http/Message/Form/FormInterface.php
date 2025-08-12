@@ -29,6 +29,7 @@ interface FormInterface extends StreamedFormInterface
      *
      * @return list<FieldInterface> A list of {@see FieldInterface} implementations.
      */
+    #[\Override]
     public function getFields(): array;
 
     /**

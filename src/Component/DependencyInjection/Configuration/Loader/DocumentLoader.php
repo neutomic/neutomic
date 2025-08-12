@@ -23,6 +23,7 @@ final class DocumentLoader implements LoaderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function load(mixed $resource): DocumentInterface
     {
         return $resource;
@@ -31,6 +32,7 @@ final class DocumentLoader implements LoaderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function supports(mixed $resource): bool
     {
         return $resource instanceof DocumentInterface;

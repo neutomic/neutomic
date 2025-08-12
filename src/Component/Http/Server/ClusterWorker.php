@@ -60,6 +60,7 @@ final readonly class ClusterWorker implements ClusterWorkerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function start(): void
     {
         $workerId = Cluster::getContextId();
@@ -89,6 +90,7 @@ final readonly class ClusterWorker implements ClusterWorkerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function stop(): void
     {
         $workerId = Cluster::getContextId();

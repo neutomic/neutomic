@@ -50,6 +50,7 @@ final class PostgresTransport implements TransportInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function send(string $channel, mixed $message): void
     {
         try {
@@ -72,6 +73,7 @@ final class PostgresTransport implements TransportInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isListening(string $channel): bool
     {
         return isset($this->listeners[$channel]);
@@ -80,6 +82,7 @@ final class PostgresTransport implements TransportInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function listen(string $channel): ConcurrentIterator
     {
         if ($this->connection->isClosed()) {
@@ -125,6 +128,7 @@ final class PostgresTransport implements TransportInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function close(): void
     {
         if ($this->connection->isClosed()) {
@@ -143,6 +147,7 @@ final class PostgresTransport implements TransportInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isClosed(): bool
     {
         return $this->connection->isClosed();

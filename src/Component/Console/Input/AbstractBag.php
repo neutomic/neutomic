@@ -66,6 +66,7 @@ class AbstractBag extends Bag\AbstractBag
      *
      * @return null|T
      */
+    #[\Override]
     public function get(string|int $key, mixed $default = null): mixed
     {
         $value = parent::get($key, $default);

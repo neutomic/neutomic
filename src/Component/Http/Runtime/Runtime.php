@@ -91,6 +91,7 @@ final class Runtime implements RuntimeInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getConcurrencyLimit(): int
     {
         return $this->semaphore->getConcurrencyLimit();
@@ -99,6 +100,7 @@ final class Runtime implements RuntimeInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getActiveRequestsCount(): int
     {
         return $this->semaphore->getIngoingOperations();
@@ -107,6 +109,7 @@ final class Runtime implements RuntimeInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getPendingRequestsCount(): int
     {
         return $this->semaphore->getPendingOperations();
@@ -115,6 +118,7 @@ final class Runtime implements RuntimeInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getTotalRequestsCount(): int
     {
         return $this->totalRequestsCount;
@@ -123,6 +127,7 @@ final class Runtime implements RuntimeInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         try {

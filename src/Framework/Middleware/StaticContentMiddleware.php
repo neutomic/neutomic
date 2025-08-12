@@ -85,6 +85,7 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
         if ([] === $this->roots) {
@@ -183,6 +184,7 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getPriority(): int
     {
         return $this->priority;

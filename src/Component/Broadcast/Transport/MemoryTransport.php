@@ -36,6 +36,7 @@ final class MemoryTransport implements TransportInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function send(string $channel, mixed $message): void
     {
         $this->transport->send($channel, $message);
@@ -44,6 +45,7 @@ final class MemoryTransport implements TransportInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isListening(string $channel): bool
     {
         return $this->transport->isListening($channel);
@@ -52,6 +54,7 @@ final class MemoryTransport implements TransportInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function listen(string $channel): ConcurrentIterator
     {
         return $this->transport->listen($channel);
@@ -60,6 +63,7 @@ final class MemoryTransport implements TransportInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function close(): void
     {
         $this->transport->close();
@@ -68,6 +72,7 @@ final class MemoryTransport implements TransportInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isClosed(): bool
     {
         return $this->transport->isClosed();

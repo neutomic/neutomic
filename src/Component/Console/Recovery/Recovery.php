@@ -36,6 +36,7 @@ final class Recovery implements RecoveryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function recover(InputInterface $input, OutputInterface $output, Throwable $throwable): int
     {
         if ($output instanceof ConsoleOutputInterface) {

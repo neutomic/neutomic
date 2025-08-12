@@ -50,6 +50,7 @@ final readonly class HasherManagerFactory implements FactoryInterface
         $this->defaultHasherId = $defaultHasherId;
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): HasherManager
     {
         $locator = $container->getLocator(HasherInterface::class, $this->services);

@@ -15,6 +15,6 @@ namespace Neu\Component\Password\Exception;
 
 use Neu\Component\Exception\InvalidArgumentException as RootInvalidArgumentException;
 
-class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface
+final class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface
 {
 }

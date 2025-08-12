@@ -52,6 +52,7 @@ final readonly class RecoveryFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): Recovery
     {
         $logger = $container->getTyped($this->logger, LoggerInterface::class);

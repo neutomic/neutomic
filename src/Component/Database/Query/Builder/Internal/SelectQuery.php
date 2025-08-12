@@ -109,6 +109,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getType(): Type
     {
         return Type::Select;
@@ -117,6 +118,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function distinct(): static
     {
         return new static(
@@ -137,6 +139,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function from(string $table, null|string $alias = null): static
     {
         $from = $this->from;
@@ -160,6 +163,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function innerJoin(string $from, string $join, string $alias, null|string $condition = null): static
     {
         $joins = $this->joins;
@@ -183,6 +187,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function leftJoin(string $from, string $join, string $alias, null|string $condition = null): static
     {
         $joins = $this->joins;
@@ -206,6 +211,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function rightJoin(string $from, string $join, string $alias, null|string $condition = null): static
     {
         $joins = $this->joins;
@@ -229,6 +235,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function groupBy(string $expression, string ...$expressions): static
     {
         $group_by = Vec\concat([$expression], $expressions);
@@ -251,6 +258,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function andGroupBy(string $expression, string ...$expressions): static
     {
         $group_by = Vec\concat($this->groupBy, [$expression], $expressions);
@@ -273,6 +281,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function andHaving(CompositeExpressionInterface|string $restriction): SelectQueryInterface
     {
         $previous_restriction = $this->having;
@@ -290,6 +299,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function having(CompositeExpressionInterface|string $restriction): SelectQueryInterface
     {
         return new static(
@@ -310,6 +320,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function orHaving(CompositeExpressionInterface|string $restriction): SelectQueryInterface
     {
         $previous_restriction = $this->having;
@@ -327,6 +338,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function orderBy(string $sort, OrderDirection $direction = OrderDirection::Ascending): static
     {
         return new static(
@@ -347,6 +359,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function andOrderBy(string $sort, OrderDirection $direction = OrderDirection::Ascending): static
     {
         $order_by = $this->orderBy;
@@ -370,6 +383,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function offset(int $offset): static
     {
         return new static(
@@ -390,6 +404,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function limit(int $limit): static
     {
         return new static(
@@ -410,6 +425,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function where(CompositeExpressionInterface|string $expression): static
     {
         return new static(
@@ -578,6 +594,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function fetchOneNumeric(array $parameters = []): null|array
     {
         $row = $this->fetchOneAssociative();
@@ -591,6 +608,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function fetchOneAssociative(array $parameters = []): null|array
     {
         $result = $this->execute($parameters);
@@ -604,6 +622,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function fetchAllNumeric(array $parameters = []): array
     {
         return Vec\map($this->fetchAllAssociative($parameters), Vec\values(...));
@@ -612,6 +631,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function fetchAllAssociative(array $parameters = []): array
     {
         /** @var list<array<non-empty-string, mixed>>*/

@@ -21,5 +21,6 @@ interface WrappingFormatterInterface extends FormatterInterface
     /**
      * Formats a message according to the given styles, wrapping at `$width` (0 means no wrapping).
      */
+    #[\Override]
     public function format(string $message, int $width = 0): string;
 }

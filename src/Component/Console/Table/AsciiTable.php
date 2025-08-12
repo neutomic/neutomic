@@ -136,6 +136,7 @@ final class AsciiTable extends AbstractTable
     /**
      * Render the table to the console.
      */
+    #[\Override]
     public function display(): void
     {
         $header = $this->buildRow($this->headers);

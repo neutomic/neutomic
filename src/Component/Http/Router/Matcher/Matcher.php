@@ -48,6 +48,7 @@ final class Matcher implements MatcherInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function match(RequestInterface $request): Result
     {
         try {

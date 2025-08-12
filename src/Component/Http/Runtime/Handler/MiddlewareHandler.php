@@ -29,6 +29,7 @@ final readonly class MiddlewareHandler implements HandlerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         return $this->middleware->process($context, $request, $this->next);

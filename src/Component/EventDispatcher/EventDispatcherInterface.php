@@ -29,5 +29,6 @@ interface EventDispatcherInterface extends EventDispatcher\EventDispatcherInterf
      *
      * @return T The event object that was passed, now modified by listeners.
      */
+    #[\Override]
     public function dispatch(object $event): object;
 }

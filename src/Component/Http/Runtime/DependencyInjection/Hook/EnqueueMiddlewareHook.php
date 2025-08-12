@@ -48,6 +48,7 @@ final readonly class EnqueueMiddlewareHook implements HookInterface
     /**
      * @throws ExceptionInterface
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): void
     {
         $middlewareStack = $container->getTyped($this->queue, MiddlewareQueueInterface::class);

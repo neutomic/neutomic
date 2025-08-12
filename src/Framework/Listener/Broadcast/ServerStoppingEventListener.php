@@ -46,6 +46,7 @@ final readonly class ServerStoppingEventListener implements ListenerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function process(object $event): object
     {
         if (null !== $this->hubManager) {

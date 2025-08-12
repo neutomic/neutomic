@@ -71,6 +71,7 @@ final class Server implements ServerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getStatus(): Status
     {
         return $this->status;
@@ -79,6 +80,7 @@ final class Server implements ServerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function start(): void
     {
         if ($this->status === Status::Started) {
@@ -126,6 +128,7 @@ final class Server implements ServerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function stop(): void
     {
         if ($this->status === Status::Stopped) {

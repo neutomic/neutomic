@@ -61,6 +61,7 @@ final readonly class CookieConfigurationFactory implements FactoryInterface
     }
 
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): CookieConfiguration
     {
         return new CookieConfiguration(

@@ -53,6 +53,7 @@ abstract class AbstractTable implements TableInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setHeaders(array $headers): self
     {
         $this->setColumnWidths($headers);
@@ -66,6 +67,7 @@ abstract class AbstractTable implements TableInterface
      *
      * @param list<list<string>> $rows
      */
+    #[\Override]
     public function setRows(array $rows): self
     {
         $this->rows = [];
@@ -81,6 +83,7 @@ abstract class AbstractTable implements TableInterface
      *
      * @param list<string> $row
      */
+    #[\Override]
     public function addRow(array $row): self
     {
         $this->setColumnWidths($row);

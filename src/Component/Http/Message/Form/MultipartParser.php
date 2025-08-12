@@ -28,6 +28,7 @@ final readonly class MultipartParser implements ParserInterface, StreamedParserI
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function parse(RequestInterface $request, null|ParseOptions $options = null): FormInterface
     {
         $body = $request->getBody();
@@ -50,6 +51,7 @@ final readonly class MultipartParser implements ParserInterface, StreamedParserI
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function parseStreamed(RequestInterface $request, null|ParseOptions $options = null): StreamedFormInterface
     {
         $body = $request->getBody();

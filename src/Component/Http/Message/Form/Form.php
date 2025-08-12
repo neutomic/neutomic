@@ -38,6 +38,7 @@ final readonly class Form implements FormInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getFields(): array
     {
         return $this->fields;
@@ -46,6 +47,7 @@ final readonly class Form implements FormInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getFiles(): array
     {
         /** @var list<FileInterface> */
@@ -58,6 +60,7 @@ final readonly class Form implements FormInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getFieldsByName(string $name): array
     {
         return Vec\filter(
@@ -69,6 +72,7 @@ final readonly class Form implements FormInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getFirstFieldByName(string $name): null|FieldInterface
     {
         foreach ($this->fields as $field) {
@@ -83,6 +87,7 @@ final readonly class Form implements FormInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function hasFieldWithName(string $name): bool
     {
         return null !== $this->getFirstFieldByName($name);

@@ -39,26 +39,31 @@ final readonly class LocalTransport implements TransportInterface
         }
     }
 
+    #[\Override]
     public function send(string $channel, mixed $message): void
     {
         $this->transport->send($channel, $message);
     }
 
+    #[\Override]
     public function isListening(string $channel): bool
     {
         return $this->transport->isListening($channel);
     }
 
+    #[\Override]
     public function listen(string $channel): ConcurrentIterator
     {
         return $this->transport->listen($channel);
     }
 
+    #[\Override]
     public function close(): void
     {
         $this->transport->close();
     }
 
+    #[\Override]
     public function isClosed(): bool
     {
         return $this->transport->isClosed();

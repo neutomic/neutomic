@@ -40,6 +40,7 @@ final readonly class EncryptedHandlerFactory implements FactoryInterface
         $this->secret = $secret;
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): EncryptedHandler
     {
         $secret = $this->secret ?? $container->getProject()->secret;

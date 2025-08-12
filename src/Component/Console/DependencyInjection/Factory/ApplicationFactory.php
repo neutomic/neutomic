@@ -65,6 +65,7 @@ final readonly class ApplicationFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         return new Application(

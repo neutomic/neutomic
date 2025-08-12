@@ -24,6 +24,7 @@ use Neu\Component\Http\Runtime\Middleware\MiddlewareQueue;
  */
 final readonly class MiddlewareQueueFactory implements FactoryInterface
 {
+    #[\Override]
     public function __invoke(ContainerInterface $container): MiddlewareQueue
     {
         return new MiddlewareQueue();

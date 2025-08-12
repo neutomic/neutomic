@@ -38,6 +38,7 @@ final class HandleOutput extends AbstractOutput
     /**
      * @inheritDoc
      */
+    #[\Override]
     protected function doWrite(string $content): void
     {
         $this->outputHandle->writeAll($content);
@@ -46,6 +47,7 @@ final class HandleOutput extends AbstractOutput
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getStream(): mixed
     {
         if ($this->outputHandle instanceof IO\StreamHandleInterface) {

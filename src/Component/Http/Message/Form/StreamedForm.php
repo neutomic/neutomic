@@ -35,6 +35,7 @@ final readonly class StreamedForm implements StreamedFormInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getFields(): iterable
     {
         /** @var FieldInterface $field */

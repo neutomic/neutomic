@@ -51,6 +51,7 @@ final readonly class PrefixedRegistry implements RegistryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function register(Route $route, HandlerInterface $handler): void
     {
         $pattern = $this->prefix . '/' . Str\Byte\trim_left($route->pattern, '/');
@@ -61,6 +62,7 @@ final readonly class PrefixedRegistry implements RegistryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function incorporate(RegistryInterface $registry): void
     {
         foreach ($registry->getRoutes() as $route) {
@@ -71,6 +73,7 @@ final readonly class PrefixedRegistry implements RegistryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function has(string $name): bool
     {
         return $this->registry->has($name);
@@ -79,6 +82,7 @@ final readonly class PrefixedRegistry implements RegistryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getRoute(string $name): Route
     {
         return $this->registry->getRoute($name);
@@ -87,6 +91,7 @@ final readonly class PrefixedRegistry implements RegistryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getHandler(string $name): HandlerInterface
     {
         return $this->registry->getHandler($name);
@@ -95,6 +100,7 @@ final readonly class PrefixedRegistry implements RegistryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getRoutes(): array
     {
         return $this->registry->getRoutes();
@@ -103,6 +109,7 @@ final readonly class PrefixedRegistry implements RegistryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getPrefixMaps(): array
     {
         return $this->registry->getPrefixMaps();

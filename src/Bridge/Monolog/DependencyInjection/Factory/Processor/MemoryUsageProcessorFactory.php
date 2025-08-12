@@ -24,6 +24,7 @@ use Neu\Component\DependencyInjection\Factory\FactoryInterface;
  */
 final readonly class MemoryUsageProcessorFactory implements FactoryInterface
 {
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         return new MemoryUsageProcessor();

@@ -27,6 +27,7 @@ final readonly class UrlEncodedParserFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): UrlEncodedParser
     {
         return new UrlEncodedParser();

@@ -98,6 +98,7 @@ final readonly class LoggerFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         $logger = new Logger(name: $this->channel, timezone: $this->timezone);

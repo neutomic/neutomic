@@ -134,6 +134,7 @@ final readonly class EngineFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): Engine
     {
         return new Engine(

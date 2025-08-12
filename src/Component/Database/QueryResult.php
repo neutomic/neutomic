@@ -26,6 +26,7 @@ final readonly class QueryResult implements QueryResultInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function nextQueryResult(): null|QueryResultInterface
     {
         $next = $this->result->getNextResult();
@@ -39,6 +40,7 @@ final readonly class QueryResult implements QueryResultInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getRows(): array
     {
         $rows = [];
@@ -53,6 +55,7 @@ final readonly class QueryResult implements QueryResultInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getRowCount(): null|int
     {
         if ($this->result instanceof SqlCommandResult) {
@@ -65,6 +68,7 @@ final readonly class QueryResult implements QueryResultInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getAffectedRowCount(): null|int
     {
         /** @var null|int<0, max> */
@@ -74,6 +78,7 @@ final readonly class QueryResult implements QueryResultInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getUnderlyingSqlResult(): SqlResult
     {
         return $this->result;

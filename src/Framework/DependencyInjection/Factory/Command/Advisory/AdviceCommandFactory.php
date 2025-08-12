@@ -43,6 +43,7 @@ final readonly class AdviceCommandFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): AdviceCommand
     {
         return new AdviceCommand(

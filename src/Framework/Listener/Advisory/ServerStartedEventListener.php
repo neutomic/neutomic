@@ -45,6 +45,7 @@ final readonly class ServerStartedEventListener implements ListenerInterface
      *
      * @return BeforeExecuteEvent
      */
+    #[\Override]
     public function process(object $event): object
     {
         if ($this->mode->isProduction()) {

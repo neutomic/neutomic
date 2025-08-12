@@ -47,6 +47,7 @@ final readonly class LocalDriverFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): LocalDriver
     {
         return new LocalDriver($this->pruneInterval, $this->size);

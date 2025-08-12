@@ -40,6 +40,7 @@ final readonly class MatcherFactory implements FactoryInterface
         $this->registry = $registry ?? RegistryInterface::class;
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         return new Matcher(

@@ -52,6 +52,7 @@ final class ByteStreamInput extends AbstractInput
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getUserInput(null|int $length = null): string
     {
         if (!$this->isInteractive()) {
@@ -76,6 +77,7 @@ final class ByteStreamInput extends AbstractInput
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getStream(): mixed
     {
         if ($this->stream instanceof ByteStream\ResourceStream) {

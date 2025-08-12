@@ -44,6 +44,7 @@ final class LoggerAwareProcessor implements ProcessorInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function process(ContainerInterface $container, DefinitionInterface $definition, object $service): object
     {
         if ($service instanceof LoggerAwareInterface) {

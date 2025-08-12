@@ -46,6 +46,7 @@ abstract readonly class AbstractWhereQuery extends AbstractExecutableQuery imple
      *
      * @see where()
      */
+    #[\Override]
     public function orWhere(string|CompositeExpressionInterface $expression): static
     {
         if ($this->where === null) {
@@ -69,6 +70,7 @@ abstract readonly class AbstractWhereQuery extends AbstractExecutableQuery imple
      *
      *@see where()
      */
+    #[\Override]
     public function andWhere(string|CompositeExpressionInterface $expression): static
     {
         if ($this->where === null) {

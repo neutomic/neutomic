@@ -26,6 +26,7 @@ final readonly class EventLoopTracingAdviser implements AdviserInterface
      *
      * @return Advice|null An instance of Advice if event loop tracing is enabled, or null if it is disabled.
      */
+    #[\Override]
     public function getAdvice(): null|Advice
     {
         $driver = EventLoop::getDriver();

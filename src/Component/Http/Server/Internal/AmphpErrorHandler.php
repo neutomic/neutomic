@@ -28,6 +28,7 @@ final readonly class AmphpErrorHandler implements ErrorHandler
         $this->logger = $logger;
     }
 
+    #[\Override]
     public function handleError(int $status, null|string $reason = null, null|Request $request = null): Response
     {
         $context = [

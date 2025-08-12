@@ -101,6 +101,7 @@ final readonly class ThrowableEvent implements StoppableEventInterface
      *
      * @return bool True if a response has been set and the event propagation is stopped, otherwise false.
      */
+    #[\Override]
     public function isPropagationStopped(): bool
     {
         return $this->response !== null;

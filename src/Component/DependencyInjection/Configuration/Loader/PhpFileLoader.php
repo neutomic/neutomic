@@ -28,6 +28,7 @@ final class PhpFileLoader implements LoaderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function load(mixed $resource): DocumentInterface
     {
         /** @var mixed $data */
@@ -51,6 +52,7 @@ final class PhpFileLoader implements LoaderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function supports(mixed $resource): bool
     {
         if (!Type\non_empty_string()->matches($resource) || !Str\ends_with($resource, '.php')) {

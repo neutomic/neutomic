@@ -41,6 +41,7 @@ final readonly class Generator implements GeneratorInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function generate(string $name, array $parameters = []): UriInterface
     {
         $route = $this->registry->getRoute($name);

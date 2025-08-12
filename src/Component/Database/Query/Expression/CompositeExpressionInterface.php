@@ -38,5 +38,6 @@ interface CompositeExpressionInterface extends Countable, Stringable
     /**
      * Retrieves the amount of expressions on composite expression.
      */
+    #[\Override]
     public function count(): int;
 }

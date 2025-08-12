@@ -148,6 +148,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withProtocolVersion(ProtocolVersion $version): static
     {
         if ($this->protocolVersion === $version) {
@@ -171,6 +172,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getBody(): null|RequestBodyInterface
     {
         return $this->body;
@@ -179,6 +181,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withBody(null|BodyInterface $body): static
     {
         if (null !== $body && !$body instanceof RequestBodyInterface) {
@@ -203,6 +206,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getMethod(): Method
     {
         return $this->method;
@@ -211,6 +215,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withMethod(Method $method): static
     {
         if ($this->method === $method) {
@@ -234,6 +239,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getRequestTarget(): string
     {
         return $this->requestTarget;
@@ -242,6 +248,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withRequestTarget(string $requestTarget): static
     {
         if ($this->requestTarget === $requestTarget) {
@@ -265,6 +272,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getUri(): UriInterface
     {
         return $this->uri;
@@ -273,6 +281,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withUri(UriInterface $uri, bool $preserveHost = false): static
     {
         if ($this->uri === $uri) {
@@ -313,6 +322,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getCookies(): array
     {
         return $this->cookies->getCookies();
@@ -321,6 +331,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function hasCookie(string $name): bool
     {
         return $this->cookies->hasCookie($name);
@@ -329,6 +340,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getCookie(string $name): null|array
     {
         return $this->cookies->getCookie($name);
@@ -337,6 +349,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withCookies(array $cookies): static
     {
         $cookieStorage = CookieStorage::fromCookies($cookies);
@@ -358,6 +371,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withCookie(string $name, array|string $value): static
     {
         $cookies = $this->cookies->withCookie($name, $value);
@@ -379,6 +393,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withAddedCookie(string $name, array|string $value): static
     {
         $cookies = $this->cookies->withAddedCookie($name, $value);
@@ -400,6 +415,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withoutCookie(string $name): static
     {
         $cookies = $this->cookies->withoutCookie($name);
@@ -421,6 +437,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getQueryParameters(): array
     {
         return $this->queryParameters;
@@ -429,6 +446,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function hasQueryParameter(string $name): bool
     {
         return isset($this->queryParameters[$name]);
@@ -437,6 +455,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getQueryParameter(string $name): null|array
     {
         return $this->queryParameters[$name] ?? null;
@@ -445,6 +464,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withQueryParameters(array $query): static
     {
         $query_parameters = [];
@@ -469,6 +489,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withQueryParameter(string $name, string|array $value): static
     {
         $query = $this->queryParameters;
@@ -480,6 +501,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withAddedQueryParameter(string $name, string|array $value): static
     {
         $query = $this->queryParameters;
@@ -491,6 +513,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withoutQueryParameter(string $name): static
     {
         $query = $this->queryParameters;
@@ -502,6 +525,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getAttributes(): array
     {
         return $this->attributes;
@@ -510,6 +534,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function hasAttribute(string $name): bool
     {
         return isset($this->attributes[$name]);
@@ -518,6 +543,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getAttribute(string $name): mixed
     {
         return $this->attributes[$name] ?? null;
@@ -526,6 +552,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withAttributes(array $attributes): static
     {
         return new self(
@@ -545,6 +572,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withAddedAttributes(array $attributes): static
     {
         return new self(
@@ -564,6 +592,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withAttribute(string $name, mixed $value): static
     {
         $attributes = $this->attributes;
@@ -587,6 +616,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withoutAttribute(string $name): static
     {
         $attributes = $this->attributes;
@@ -609,6 +639,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function hasSession(): bool
     {
         return $this->session !== null;
@@ -617,6 +648,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getSession(): SessionInterface
     {
         if ($this->session === null) {
@@ -629,6 +661,7 @@ final readonly class Request implements RequestInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withSession(null|SessionInterface $session): static
     {
         return new self(
@@ -645,6 +678,7 @@ final readonly class Request implements RequestInterface
         );
     }
 
+    #[\Override]
     protected function cloneWithHeaderStorage(HeaderStorage $headerStorage): static
     {
         return new self(
@@ -661,6 +695,7 @@ final readonly class Request implements RequestInterface
         );
     }
 
+    #[\Override]
     protected function cloneWithTrailers(array $trailers): static
     {
         return new self(

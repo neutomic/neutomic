@@ -28,6 +28,7 @@ final readonly class MessageExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $registry->addDefinition(Definition::ofType(MultipartParser::class, new Factory\Form\MultipartParserFactory()));

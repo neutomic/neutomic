@@ -70,6 +70,7 @@ abstract class AbstractFormatter implements WrappingFormatterInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function setDecorated(bool $decorated): self
     {
         $this->decorated = $decorated;
@@ -80,6 +81,7 @@ abstract class AbstractFormatter implements WrappingFormatterInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function isDecorated(): bool
     {
         return $this->decorated;
@@ -88,6 +90,7 @@ abstract class AbstractFormatter implements WrappingFormatterInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function addStyle(string $name, StyleInterface $style): self
     {
         $this->styles[Str\lowercase($name)] = $style;
@@ -98,6 +101,7 @@ abstract class AbstractFormatter implements WrappingFormatterInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function hasStyle(string $name): bool
     {
         return Iter\contains_key($this->styles, Str\lowercase($name));
@@ -106,6 +110,7 @@ abstract class AbstractFormatter implements WrappingFormatterInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getStyle(string $name): StyleInterface
     {
         return $this->styles[Str\lowercase($name)];

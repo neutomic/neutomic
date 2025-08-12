@@ -66,6 +66,7 @@ final readonly class EventDispatcher implements EventDispatcherInterface
      *
      * @return T The event object that was passed, now modified by listeners.
      */
+    #[\Override]
     public function dispatch(object $event): object
     {
         /** @var T */

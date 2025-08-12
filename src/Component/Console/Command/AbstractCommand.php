@@ -56,6 +56,7 @@ abstract readonly class AbstractCommand implements ApplicationAwareCommandInterf
     /**
      * @inheritDoc
      */
+    #[\Override]
     final public function run(InputInterface $input, OutputInterface $output): ExitCode|int
     {
         $this->input = $input;

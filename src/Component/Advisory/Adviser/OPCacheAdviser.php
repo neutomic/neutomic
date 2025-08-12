@@ -36,6 +36,7 @@ final readonly class OPCacheAdviser implements AdviserInterface
      *
      * @return Advice|null An instance of Advice if OPCache configuration is not optimal, or null if it is set correctly.
      */
+    #[\Override]
     public function getAdvice(): null|Advice
     {
         if (!$this->isOpcacheInstalled()) {

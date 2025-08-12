@@ -44,6 +44,7 @@ final readonly class FilesystemCacheFactory implements FactoryInterface
         $this->options = $options ?? 0;
     }
 
+    #[\Override]
     public function __invoke(ContainerInterface $container): FilesystemCache
     {
         return new FilesystemCache($this->cache, $this->options);

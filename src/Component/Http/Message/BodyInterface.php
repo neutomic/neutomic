@@ -81,6 +81,7 @@ interface BodyInterface extends IteratorAggregate
      *
      * @return Traversable<int, string> An iterator for the body content.
      */
+    #[\Override]
     public function getIterator(): Traversable;
 
     /**

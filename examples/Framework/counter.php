@@ -32,6 +32,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 #[Route(name: 'counter', pattern: '/', methods: [Method::Get])]
 final readonly class CounterHandler implements HandlerInterface
 {
+    #[\Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         $session = $request->getSession();

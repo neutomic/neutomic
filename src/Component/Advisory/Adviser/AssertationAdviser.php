@@ -27,6 +27,7 @@ final readonly class AssertationAdviser implements AdviserInterface
      *
      * @return Advice|null An instance of Advice if assertions are not disabled, or null if they are.
      */
+    #[\Override]
     public function getAdvice(): null|Advice
     {
         $configuration = ini_get('zend.assertions');

@@ -33,6 +33,7 @@ final readonly class AdviceCommand implements CommandInterface
         $this->advisory = $advisory;
     }
 
+    #[\Override]
     public function run(InputInterface $input, OutputInterface $output): ExitCode
     {
         $advices = $this->advisory->getAdvices();

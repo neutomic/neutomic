@@ -50,6 +50,7 @@ final class DatabaseManager implements DatabaseManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getDefaultDatabase(): DatabaseInterface
     {
         return $this->getDatabase($this->defaultDatabaseId);
@@ -58,6 +59,7 @@ final class DatabaseManager implements DatabaseManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function hasDatabase(string $name): bool
     {
         return $this->locator->has($name);
@@ -66,6 +68,7 @@ final class DatabaseManager implements DatabaseManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getDatabase(string $name): DatabaseInterface
     {
         try {
@@ -80,6 +83,7 @@ final class DatabaseManager implements DatabaseManagerInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getAvailableDatabases(): array
     {
         $services = $this->locator->getAvailableServices();

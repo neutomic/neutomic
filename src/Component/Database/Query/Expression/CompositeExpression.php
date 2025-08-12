@@ -60,6 +60,7 @@ final readonly class CompositeExpression implements CompositeExpressionInterface
         return new self(CompositionType::Disjunction, Vec\concat([$expression], $expressions));
     }
 
+    #[\Override]
     public function getType(): CompositionType
     {
         return $this->type;
@@ -68,6 +69,7 @@ final readonly class CompositeExpression implements CompositeExpressionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function with(string|CompositeExpressionInterface $expression, string|CompositeExpressionInterface ...$expressions): static
     {
         $parts = Vec\concat($this->expressions, [$expression], $expressions);
@@ -92,6 +94,7 @@ final readonly class CompositeExpression implements CompositeExpressionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function count(): int
     {
         return Iter\count($this->expressions);

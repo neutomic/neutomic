@@ -58,6 +58,7 @@ final readonly class UpdateQuery extends AbstractWhereQuery implements UpdateQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getType(): Type
     {
         return Type::Update;
@@ -66,6 +67,7 @@ final readonly class UpdateQuery extends AbstractWhereQuery implements UpdateQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function set(string $column, string $value): static
     {
         $sets = $this->sets;
@@ -77,6 +79,7 @@ final readonly class UpdateQuery extends AbstractWhereQuery implements UpdateQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function where(CompositeExpressionInterface|string $expression): static
     {
         return new self($this->dbal, $this->table, $this->alias, $this->sets, $expression);

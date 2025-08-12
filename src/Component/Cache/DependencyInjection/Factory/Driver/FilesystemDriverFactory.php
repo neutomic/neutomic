@@ -56,6 +56,7 @@ final readonly class FilesystemDriverFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): FilesystemDriver
     {
         if (Str\contains($this->directory, "\0")) {

@@ -117,6 +117,7 @@ final readonly class ConfigurationFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         $name = $this->name ?? $container->getProject()->name;

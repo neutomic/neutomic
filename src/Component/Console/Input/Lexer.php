@@ -97,6 +97,7 @@ final class Lexer implements Iterator
      *
      * @return Token
      */
+    #[\Override]
     public function current(): array
     {
         return $this->current;
@@ -113,6 +114,7 @@ final class Lexer implements Iterator
     /**
      * Retrieve the current position of the lexer.
      */
+    #[\Override]
     public function key(): int
     {
         return $this->position;
@@ -121,6 +123,7 @@ final class Lexer implements Iterator
     /**
      * Progress the lexer to its next item (if available).
      */
+    #[\Override]
     public function next(): void
     {
         if ($this->valid()) {
@@ -131,6 +134,7 @@ final class Lexer implements Iterator
     /**
      * Return whether the lexer has any more items to parse.
      */
+    #[\Override]
     public function valid(): bool
     {
         return ($this->position < $this->length);
@@ -232,6 +236,7 @@ final class Lexer implements Iterator
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function rewind(): void
     {
         $this->shift();

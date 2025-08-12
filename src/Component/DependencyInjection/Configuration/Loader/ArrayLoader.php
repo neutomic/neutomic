@@ -25,6 +25,7 @@ final class ArrayLoader implements LoaderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function load(mixed $resource): DocumentInterface
     {
         return new Document($resource);
@@ -33,6 +34,7 @@ final class ArrayLoader implements LoaderInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function supports(mixed $resource): bool
     {
         return Type\mixed_dict()->matches($resource);

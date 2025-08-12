@@ -24,6 +24,7 @@ final class Argument extends Definition
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getFormattedName(string $name): string
     {
         return $name;

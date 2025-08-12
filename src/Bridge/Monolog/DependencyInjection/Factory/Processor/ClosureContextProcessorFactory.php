@@ -24,6 +24,7 @@ use Neu\Component\DependencyInjection\Factory\FactoryInterface;
  */
 final readonly class ClosureContextProcessorFactory implements FactoryInterface
 {
+    #[\Override]
     public function __invoke(ContainerInterface $container): object
     {
         return new ClosureContextProcessor();

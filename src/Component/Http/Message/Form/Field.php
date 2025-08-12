@@ -64,6 +64,7 @@ final readonly class Field implements FieldInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getName(): string
     {
         return $this->name;
@@ -72,6 +73,7 @@ final readonly class Field implements FieldInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function getBody(): null|BodyInterface
     {
         return $this->body;
@@ -80,6 +82,7 @@ final readonly class Field implements FieldInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function withBody(null|BodyInterface $body): static
     {
         return new self($this->name, $this->headerStorage, $body);
@@ -88,6 +91,7 @@ final readonly class Field implements FieldInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     protected function cloneWithHeaderStorage(HeaderStorage $headerStorage): static
     {
         return new self($this->name, $headerStorage, $this->body);
