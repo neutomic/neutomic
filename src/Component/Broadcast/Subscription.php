@@ -16,13 +16,18 @@ namespace Neu\Component\Broadcast;
 use Amp\Pipeline\ConcurrentIterator;
 use Amp\Pipeline\DisposedException;
 use Closure;
+use Traversable;
+use IteratorAggregate;
+use Override;
 
 /**
  * Represents a subscription to a channel, providing an iterator to receive messages.
  *
  * @template T
+ *
+ * @implements IteratorAggregate<Message<T>>
  */
-final class Subscription
+final class Subscription implements IteratorAggregate
 {
     /**
      * The channel to which the subscription is made.
@@ -57,6 +62,12 @@ final class Subscription
         $this->channel = $channel;
         $this->iterator = $iterator;
         $this->release = $release;
+    }
+
+    #[Override]
+    public function getIterator(): Traversable
+    {
+        return $this->iterator;
     }
 
     /**
