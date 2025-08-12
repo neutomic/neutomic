@@ -17,6 +17,7 @@ use Monolog\Formatter\NormalizerFormatter;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * The factory for the normalizer formatter.
@@ -43,7 +44,7 @@ final readonly class NormalizerFormatterFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         try {

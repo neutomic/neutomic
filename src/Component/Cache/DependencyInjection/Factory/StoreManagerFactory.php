@@ -18,6 +18,7 @@ use Neu\Component\Cache\StoreManager;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * Factory for creating a {@see StoreManager} instance.
@@ -50,7 +51,7 @@ final readonly class StoreManagerFactory implements FactoryInterface
         $this->defaultStoreId = $defaultStoreId;
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         $locator = $container->getLocator(StoreInterface::class, $this->services);

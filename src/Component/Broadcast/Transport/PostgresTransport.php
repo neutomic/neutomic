@@ -24,6 +24,7 @@ use Amp;
 use Neu\Component\Broadcast\Exception\AlreadyListeningException;
 use Neu\Component\Broadcast\Exception\ClosedTransportException;
 use Neu\Component\Broadcast\Exception\RuntimeException;
+use Override;
 
 final class PostgresTransport implements TransportInterface
 {
@@ -50,7 +51,7 @@ final class PostgresTransport implements TransportInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function send(string $channel, mixed $message): void
     {
         try {
@@ -73,7 +74,7 @@ final class PostgresTransport implements TransportInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isListening(string $channel): bool
     {
         return isset($this->listeners[$channel]);
@@ -82,7 +83,7 @@ final class PostgresTransport implements TransportInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function listen(string $channel): ConcurrentIterator
     {
         if ($this->connection->isClosed()) {
@@ -128,7 +129,7 @@ final class PostgresTransport implements TransportInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function close(): void
     {
         if ($this->connection->isClosed()) {
@@ -147,7 +148,7 @@ final class PostgresTransport implements TransportInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isClosed(): bool
     {
         return $this->connection->isClosed();

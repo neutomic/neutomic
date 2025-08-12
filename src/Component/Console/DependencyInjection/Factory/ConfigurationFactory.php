@@ -16,6 +16,7 @@ namespace Neu\Component\Console\DependencyInjection\Factory;
 use Neu\Component\Console\Configuration;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * A factory for creating a new instance of the {@see Configuration}.
@@ -117,7 +118,7 @@ final readonly class ConfigurationFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         $name = $this->name ?? $container->getProject()->name;

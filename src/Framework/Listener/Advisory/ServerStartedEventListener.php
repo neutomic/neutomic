@@ -20,6 +20,7 @@ use Neu\Component\EventDispatcher\Attribute\Listener;
 use Neu\Component\EventDispatcher\Listener\ListenerInterface;
 use Neu\Component\Http\Server\Event\ServerStartedEvent;
 use Psr\Log\LoggerInterface;
+use Override;
 
 /**
  * @implements ListenerInterface<BeforeExecuteEvent>
@@ -45,7 +46,7 @@ final readonly class ServerStartedEventListener implements ListenerInterface
      *
      * @return BeforeExecuteEvent
      */
-    #[\Override]
+    #[Override]
     public function process(object $event): object
     {
         if ($this->mode->isProduction()) {

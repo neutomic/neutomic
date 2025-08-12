@@ -18,6 +18,7 @@ use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\EventDispatcher\EventDispatcherInterface;
 use Neu\Component\Http\Server\Cluster;
 use Psr\Log\LoggerInterface;
+use Override;
 
 /**
  * Factory for creating a {@see Cluster} instance.
@@ -61,7 +62,7 @@ final readonly class ClusterFactory implements FactoryInterface
         $this->workers = $workers;
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): Cluster
     {
         $entrypoint = $container->getProject()->entrypoint;

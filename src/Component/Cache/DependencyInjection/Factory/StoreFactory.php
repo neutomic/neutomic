@@ -17,6 +17,7 @@ use Neu\Component\Cache\Driver\DriverInterface;
 use Neu\Component\Cache\Store;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * A factory for creating a {@see Store} instance.
@@ -38,7 +39,7 @@ final readonly class StoreFactory implements FactoryInterface
         $this->driver = $driver ?? DriverInterface::class;
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): Store
     {
         return new Store(

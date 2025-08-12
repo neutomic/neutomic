@@ -19,6 +19,7 @@ use Neu\Component\EventDispatcher\Listener\Registry\RegistryInterface as EventRe
 use Neu\Component\Http\Router\Registry\RegistryInterface as RouterRegistryInterface;
 use Neu\Component\Http\Router\RouteCollector;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
+use Override;
 
 /**
  * Provides a base implementation of the {@see PluginInterface}, allowing derived classes to
@@ -29,7 +30,7 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function boot(ContainerInterface $container): void
     {
         // Default implementation does nothing
@@ -38,7 +39,7 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function route(ContainerInterface $container, RouterRegistryInterface $registry, RouteCollector $collector): void
     {
         // Default implementation does nothing
@@ -47,7 +48,7 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function enqueue(ContainerInterface $container, MiddlewareQueueInterface $queue): void
     {
         // Default implementation does nothing
@@ -56,7 +57,7 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function listen(ContainerInterface $container, EventRegistryInterface $registry): void
     {
         // Default implementation does nothing
@@ -65,7 +66,7 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function command(ContainerInterface $container, ConsoleRegistryInterface $registry): void
     {
         // Default implementation does nothing
@@ -74,7 +75,7 @@ abstract class AbstractPlugin implements PluginInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function shutdown(ContainerInterface $container): void
     {
         // Default implementation does nothing

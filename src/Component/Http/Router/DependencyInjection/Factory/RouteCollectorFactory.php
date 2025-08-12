@@ -17,6 +17,7 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Router\Registry\RegistryInterface;
 use Neu\Component\Http\Router\RouteCollector;
+use Override;
 
 /**
  * A factory for creating a route collector.
@@ -45,7 +46,7 @@ final readonly class RouteCollectorFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         $registry = $container->getTyped($this->registry, RegistryInterface::class);

@@ -16,6 +16,7 @@ namespace Neu\Component\Http\Message;
 use Neu\Component\Http\Exception\InvalidArgumentException;
 use Neu\Component\Http\Exception\LogicException;
 use Neu\Component\Http\Session\SessionInterface;
+use Override;
 
 interface RequestInterface extends ExchangeInterface
 {
@@ -24,7 +25,7 @@ interface RequestInterface extends ExchangeInterface
      *
      * @return null|RequestBodyInterface Returns the body of the request or null if the body has not been set.
      */
-    #[\Override]
+    #[Override]
     public function getBody(): null|RequestBodyInterface;
 
     /**

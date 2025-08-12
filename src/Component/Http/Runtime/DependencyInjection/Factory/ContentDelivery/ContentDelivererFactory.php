@@ -17,6 +17,7 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Runtime\ContentDelivery\ContentDeliverer;
 use Psr\Log\LoggerInterface;
+use Override;
 
 /**
  * Factory for creating a {@see ContentDeliverer} instance.
@@ -38,7 +39,7 @@ final readonly class ContentDelivererFactory implements FactoryInterface
         $this->logger = $logger ?? LoggerInterface::class;
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): ContentDeliverer
     {
         return new ContentDeliverer(

@@ -16,6 +16,7 @@ namespace Neu\Component\Cache\DependencyInjection\Factory\Driver;
 use Neu\Component\Cache\Driver\LocalDriver;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * A factory for creating a {@see LocalDriver} instance.
@@ -47,7 +48,7 @@ final readonly class LocalDriverFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): LocalDriver
     {
         return new LocalDriver($this->pruneInterval, $this->size);

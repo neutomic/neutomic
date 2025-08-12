@@ -16,6 +16,7 @@ namespace Neu\Component\EventDispatcher;
 use Neu\Component\EventDispatcher\Listener\Registry\RegistryInterface;
 use Psl\Async;
 use Psr\EventDispatcher\StoppableEventInterface;
+use Override;
 
 final readonly class EventDispatcher implements EventDispatcherInterface
 {
@@ -66,7 +67,7 @@ final readonly class EventDispatcher implements EventDispatcherInterface
      *
      * @return T The event object that was passed, now modified by listeners.
      */
-    #[\Override]
+    #[Override]
     public function dispatch(object $event): object
     {
         /** @var T */

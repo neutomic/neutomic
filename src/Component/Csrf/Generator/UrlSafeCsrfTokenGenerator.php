@@ -16,6 +16,7 @@ namespace Neu\Component\Csrf\Generator;
 use Neu\Component\Csrf\Exception\RuntimeException;
 use Psl\Encoding\Base64;
 use Psl\SecureRandom;
+use Override;
 
 /**
  * A token generator implementation using {@see SecureRandom\bytes()}
@@ -28,7 +29,7 @@ final readonly class UrlSafeCsrfTokenGenerator implements CsrfTokenGeneratorInte
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function generate(): string
     {
         try {

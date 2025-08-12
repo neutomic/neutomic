@@ -15,6 +15,7 @@ namespace Neu\Component\Console\Input\Definition;
 
 use Neu\Component\Console\Exception\MissingValueException;
 use Psl\Str;
+use Override;
 
 /**
  * A {@see Definition} is an object that designates the parameters accepted by
@@ -79,7 +80,7 @@ abstract class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function exists(): bool
     {
         return $this->exists;
@@ -88,7 +89,7 @@ abstract class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getAlias(): null|string
     {
         return $this->alias;
@@ -114,7 +115,7 @@ abstract class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getDescription(): string
     {
         return $this->description;
@@ -123,7 +124,7 @@ abstract class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getFormattedName(string $name): string
     {
         if (Str\Byte\length($name) === 1) {
@@ -136,7 +137,7 @@ abstract class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getMode(): Mode
     {
         return $this->mode;
@@ -145,7 +146,7 @@ abstract class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getName(): string
     {
         return $this->name;
@@ -154,7 +155,7 @@ abstract class Definition implements DefinitionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getValue(): mixed
     {
         if ($this->exists) {

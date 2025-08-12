@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\Advisory\Adviser;
 
 use Neu\Component\Advisory\Advice;
+use Override;
 
 use function ini_get;
 
@@ -29,7 +30,7 @@ final readonly class MemoryLimitAdviser implements AdviserInterface
      *
      * @return Advice|null An instance of Advice if the memory limit is set too low, or null if it is set appropriately.
      */
-    #[\Override]
+    #[Override]
     public function getAdvice(): null|Advice
     {
         $memoryLimit = (string) ini_get('memory_limit');

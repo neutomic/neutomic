@@ -18,6 +18,7 @@ use Neu\Component\Database\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\Exception\ExceptionInterface;
 use Neu\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Neu\Component\DependencyInjection\ServiceLocatorInterface;
+use Override;
 
 final class DatabaseManager implements DatabaseManagerInterface
 {
@@ -50,7 +51,7 @@ final class DatabaseManager implements DatabaseManagerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getDefaultDatabase(): DatabaseInterface
     {
         return $this->getDatabase($this->defaultDatabaseId);
@@ -59,7 +60,7 @@ final class DatabaseManager implements DatabaseManagerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function hasDatabase(string $name): bool
     {
         return $this->locator->has($name);
@@ -68,7 +69,7 @@ final class DatabaseManager implements DatabaseManagerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getDatabase(string $name): DatabaseInterface
     {
         try {
@@ -83,7 +84,7 @@ final class DatabaseManager implements DatabaseManagerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getAvailableDatabases(): array
     {
         $services = $this->locator->getAvailableServices();

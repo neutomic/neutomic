@@ -19,6 +19,7 @@ use Neu\Component\Console\Input\InputInterface;
 use Neu\Component\Console\Output\OutputInterface;
 use Neu\Component\Console\Table\TableFactoryTrait;
 use Neu\Component\Console\UserInput\UserInputFactoryTrait;
+use Override;
 
 /**
  * A base class that simplifies the creation of new commands.
@@ -56,7 +57,7 @@ abstract readonly class AbstractCommand implements ApplicationAwareCommandInterf
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     final public function run(InputInterface $input, OutputInterface $output): ExitCode|int
     {
         $this->input = $input;

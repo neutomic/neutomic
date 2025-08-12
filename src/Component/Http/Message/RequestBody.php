@@ -29,6 +29,7 @@ use Neu\Component\Http\Exception\LogicException;
 use Neu\Component\Http\Exception\RuntimeException;
 use Neu\Component\Http\Message\Exception\TimeoutException;
 use Traversable;
+use Override;
 
 final class RequestBody implements RequestBodyInterface
 {
@@ -112,7 +113,7 @@ final class RequestBody implements RequestBodyInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function upgradeSizeLimit(int $sizeLimit): void
     {
         if ($this->upgradeSize !== null) {
@@ -123,7 +124,7 @@ final class RequestBody implements RequestBodyInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getMode(): BodyMode
     {
         return $this->mode;
@@ -132,7 +133,7 @@ final class RequestBody implements RequestBodyInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getChunk(null|float $timeout = null): null|string
     {
         if ($this->mode === BodyMode::Closed) {
@@ -164,7 +165,7 @@ final class RequestBody implements RequestBodyInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getContents(null|float $timeout = null): string
     {
         if ($this->mode === BodyMode::Buffered) {
@@ -200,7 +201,7 @@ final class RequestBody implements RequestBodyInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getIterator(): Traversable
     {
         if ($this->mode === BodyMode::Closed) {
@@ -228,7 +229,7 @@ final class RequestBody implements RequestBodyInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function close(): void
     {
         $this->payload->close();

@@ -24,6 +24,7 @@ use Neu\Component\Broadcast\Exception\RuntimeException;
 use Neu\Component\Broadcast\Transport\LocalTransport;
 use Neu\Component\Broadcast\Transport\MemoryTransport;
 use Neu\Component\Broadcast\Transport\TransportInterface;
+use Override;
 
 /**
  * A transport mechanism that sends and receives messages using channels.
@@ -87,7 +88,7 @@ final class ChannelTransport implements TransportInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function send(string $channel, mixed $message): void
     {
         try {
@@ -102,7 +103,7 @@ final class ChannelTransport implements TransportInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isListening(string $channel): bool
     {
         return isset($this->listeners[$channel]);
@@ -111,7 +112,7 @@ final class ChannelTransport implements TransportInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function listen(string $channel): ConcurrentIterator
     {
         if (isset($this->listeners[$channel])) {
@@ -128,7 +129,7 @@ final class ChannelTransport implements TransportInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function close(): void
     {
         foreach ($this->listeners as $queue) {
@@ -143,7 +144,7 @@ final class ChannelTransport implements TransportInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isClosed(): bool
     {
         return $this->sender->isClosed();

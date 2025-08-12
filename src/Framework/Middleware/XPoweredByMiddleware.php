@@ -18,6 +18,7 @@ use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareInterface;
+use Override;
 
 use const PHP_MAJOR_VERSION;
 use const PHP_MINOR_VERSION;
@@ -75,7 +76,7 @@ final readonly class XPoweredByMiddleware implements MiddlewareInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
         $response = $next->handle($context, $request);

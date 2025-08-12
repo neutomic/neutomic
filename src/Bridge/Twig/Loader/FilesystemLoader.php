@@ -17,13 +17,14 @@ use Amp\File;
 use Twig\Error\LoaderError;
 use Twig\Loader\FilesystemLoader as TwigFilesystemLoader;
 use Twig\Source;
+use Override;
 
 final class FilesystemLoader extends TwigFilesystemLoader implements ModificationAwareLoaderInterface
 {
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getSourceContext(string $name): Source
     {
         $path = (string) $this->findTemplate($name);
@@ -34,7 +35,7 @@ final class FilesystemLoader extends TwigFilesystemLoader implements Modificatio
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isFresh(string $name, int $time): bool
     {
         return $this->getLastModificationTime($name) <= $time;
@@ -43,7 +44,7 @@ final class FilesystemLoader extends TwigFilesystemLoader implements Modificatio
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getLastModificationTime(string $name): int
     {
         $path = (string) $this->findTemplate($name);

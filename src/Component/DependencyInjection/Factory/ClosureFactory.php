@@ -15,6 +15,7 @@ namespace Neu\Component\DependencyInjection\Factory;
 
 use Closure;
 use Neu\Component\DependencyInjection\ContainerInterface;
+use Override;
 
 /**
  * A factory that creates a service using a closure.
@@ -38,7 +39,7 @@ final readonly class ClosureFactory implements FactoryInterface
      *
      * @return T
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         return ($this->closure)($container);

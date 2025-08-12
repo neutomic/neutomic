@@ -19,6 +19,7 @@ use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Exception\HandlerNotFoundHttpException;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
+use Override;
 
 use function get_debug_type;
 
@@ -40,7 +41,7 @@ final readonly class HandlerResolver implements HandlerResolverInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         return $this->resolve($context, $request)->handle($context, $request);
@@ -49,7 +50,7 @@ final readonly class HandlerResolver implements HandlerResolverInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function resolve(Context $context, RequestInterface $request): HandlerInterface
     {
         if (!$request->hasAttribute(HandlerInterface::class)) {

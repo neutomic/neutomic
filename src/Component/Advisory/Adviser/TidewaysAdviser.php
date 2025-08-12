@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\Advisory\Adviser;
 
 use Neu\Component\Advisory\Advice;
+use Override;
 
 use function extension_loaded;
 
@@ -27,7 +28,7 @@ final readonly class TidewaysAdviser implements AdviserInterface
      *
      * @return Advice|null An instance of Advice if Tideways is enabled, or null if it is disabled.
      */
-    #[\Override]
+    #[Override]
     public function getAdvice(): null|Advice
     {
         if (!extension_loaded('tideways')) {

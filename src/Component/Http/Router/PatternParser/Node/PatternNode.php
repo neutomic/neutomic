@@ -15,6 +15,7 @@ namespace Neu\Component\Http\Router\PatternParser\Node;
 
 use Psl\Str;
 use Psl\Vec;
+use Override;
 
 /**
  * A node representing a pattern.
@@ -53,7 +54,7 @@ final readonly class PatternNode implements Node
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function toRegularExpression(string $delimiter): string
     {
         /** @var non-empty-string */
@@ -66,7 +67,7 @@ final readonly class PatternNode implements Node
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function toString(): string
     {
         return '[' . Str\join(Vec\map(
@@ -78,7 +79,7 @@ final readonly class PatternNode implements Node
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __serialize(): array
     {
         return [
@@ -89,7 +90,7 @@ final readonly class PatternNode implements Node
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __unserialize(array $data): void
     {
         /** @var State $data */

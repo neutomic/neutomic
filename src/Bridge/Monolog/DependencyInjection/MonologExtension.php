@@ -54,6 +54,7 @@ use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Psl\Type;
 use Psr\Log\LoggerInterface;
+use Override;
 
 use function array_key_exists;
 use function array_key_first;
@@ -147,7 +148,7 @@ use function array_key_first;
  */
 final readonly class MonologExtension implements ExtensionInterface
 {
-    #[\Override]
+    #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $configuration = $configurations->getOfTypeOrDefault('monolog', $this->getConfigurationType(), []);

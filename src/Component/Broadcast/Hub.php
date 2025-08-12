@@ -16,6 +16,7 @@ namespace Neu\Component\Broadcast;
 use Neu\Component\Broadcast\Exception\AlreadyListeningException;
 use Neu\Component\Broadcast\Exception\RuntimeException;
 use Neu\Component\Broadcast\Transport\TransportInterface;
+use Override;
 
 final class Hub implements HubInterface
 {
@@ -46,7 +47,7 @@ final class Hub implements HubInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getChannel(string $name): Channel
     {
         try {
@@ -62,7 +63,7 @@ final class Hub implements HubInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function close(): void
     {
         foreach ($this->channels as $channel) {

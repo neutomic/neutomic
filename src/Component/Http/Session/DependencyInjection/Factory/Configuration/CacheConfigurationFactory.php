@@ -17,6 +17,7 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Session\Configuration\CacheConfiguration;
 use Neu\Component\Http\Session\Configuration\CacheLimiter;
+use Override;
 
 /**
  * @implements FactoryInterface<CacheConfiguration>
@@ -46,7 +47,7 @@ final readonly class CacheConfigurationFactory implements FactoryInterface
         $this->limiter = $limiter;
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): CacheConfiguration
     {
         return new CacheConfiguration(

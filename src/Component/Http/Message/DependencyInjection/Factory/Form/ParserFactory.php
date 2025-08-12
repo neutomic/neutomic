@@ -16,6 +16,7 @@ namespace Neu\Component\Http\Message\DependencyInjection\Factory\Form;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Message\Form\Parser;
+use Override;
 
 /**
  * Factory for the form parser.
@@ -27,7 +28,7 @@ final readonly class ParserFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): Parser
     {
         return new Parser();

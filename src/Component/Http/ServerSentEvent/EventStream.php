@@ -22,6 +22,7 @@ use Neu\Component\Http\Message\Body;
 use Neu\Component\Http\Message\Response;
 use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Context;
+use Override;
 
 /**
  * Represents a stream of Server-Sent Events (SSE).
@@ -99,7 +100,7 @@ final readonly class EventStream implements IteratorAggregate
      *
      * @return ConcurrentIterator<Event> An iterator over the queued events.
      */
-    #[\Override]
+    #[Override]
     public function getIterator(): ConcurrentIterator
     {
         return $this->queue->iterate();

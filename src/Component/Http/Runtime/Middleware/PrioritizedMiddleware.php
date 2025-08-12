@@ -17,6 +17,7 @@ use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
+use Override;
 
 final readonly class PrioritizedMiddleware implements PrioritizedMiddlewareInterface
 {
@@ -33,7 +34,7 @@ final readonly class PrioritizedMiddleware implements PrioritizedMiddlewareInter
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
         return $this->middleware->process($context, $request, $next);
@@ -42,7 +43,7 @@ final readonly class PrioritizedMiddleware implements PrioritizedMiddlewareInter
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getPriority(): int
     {
         return $this->priority;

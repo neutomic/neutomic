@@ -16,6 +16,7 @@ namespace Neu\Component\Csrf\DependencyInjection\Factory\Storage;
 use Neu\Component\Csrf\Storage\SessionCsrfTokenStorage;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * Factory for creating a {@see SessionCsrfTokenStorage} instance.
@@ -44,7 +45,7 @@ final readonly class SessionCsrfTokenStorageFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): SessionCsrfTokenStorage
     {
         return new SessionCsrfTokenStorage($this->prefix);

@@ -21,6 +21,7 @@ use Neu\Component\Http\Server\Event\ClusterWorkerStoppedEvent;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
+use Override;
 
 /**
  * A worker that manages a server instance within a cluster.
@@ -60,7 +61,7 @@ final readonly class ClusterWorker implements ClusterWorkerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function start(): void
     {
         $workerId = Cluster::getContextId();
@@ -90,7 +91,7 @@ final readonly class ClusterWorker implements ClusterWorkerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function stop(): void
     {
         $workerId = Cluster::getContextId();

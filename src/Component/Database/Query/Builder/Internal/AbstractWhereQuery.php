@@ -18,6 +18,7 @@ use Neu\Component\Database\Query\Expression\CompositeExpression;
 use Neu\Component\Database\Query\Expression\CompositeExpressionInterface;
 use Neu\Component\Database\Query\Expression\CompositionType;
 use Neu\Component\Database\Query\WhereQueryInterface;
+use Override;
 
 /**
  * @internal
@@ -46,7 +47,7 @@ abstract readonly class AbstractWhereQuery extends AbstractExecutableQuery imple
      *
      * @see where()
      */
-    #[\Override]
+    #[Override]
     public function orWhere(string|CompositeExpressionInterface $expression): static
     {
         if ($this->where === null) {
@@ -70,7 +71,7 @@ abstract readonly class AbstractWhereQuery extends AbstractExecutableQuery imple
      *
      *@see where()
      */
-    #[\Override]
+    #[Override]
     public function andWhere(string|CompositeExpressionInterface $expression): static
     {
         if ($this->where === null) {

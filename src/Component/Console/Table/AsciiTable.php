@@ -15,6 +15,7 @@ namespace Neu\Component\Console\Table;
 
 use Psl\Iter;
 use Psl\Str;
+use Override;
 
 /**
  * The `AsciiTable` object with output a human-readable ASCII table in of the
@@ -136,7 +137,7 @@ final class AsciiTable extends AbstractTable
     /**
      * Render the table to the console.
      */
-    #[\Override]
+    #[Override]
     public function display(): void
     {
         $header = $this->buildRow($this->headers);

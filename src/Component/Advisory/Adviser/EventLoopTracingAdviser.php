@@ -15,6 +15,7 @@ namespace Neu\Component\Advisory\Adviser;
 
 use Neu\Component\Advisory\Advice;
 use Revolt\EventLoop;
+use Override;
 
 /**
  * Adviser that provides advice on disabling event loop tracing.
@@ -26,7 +27,7 @@ final readonly class EventLoopTracingAdviser implements AdviserInterface
      *
      * @return Advice|null An instance of Advice if event loop tracing is enabled, or null if it is disabled.
      */
-    #[\Override]
+    #[Override]
     public function getAdvice(): null|Advice
     {
         $driver = EventLoop::getDriver();

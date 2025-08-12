@@ -21,6 +21,7 @@ use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\Runtime\Middleware\PrioritizedMiddlewareInterface;
+use Override;
 
 /**
  * A middleware that matches the request to a route.
@@ -40,7 +41,7 @@ final readonly class RouterMiddleware implements PrioritizedMiddlewareInterface
         $this->priority = $priority;
     }
 
-    #[\Override]
+    #[Override]
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
         $result = $this->matcher->match($request);
@@ -58,7 +59,7 @@ final readonly class RouterMiddleware implements PrioritizedMiddlewareInterface
         return $next->handle($context, $request);
     }
 
-    #[\Override]
+    #[Override]
     public function getPriority(): int
     {
         return $this->priority;

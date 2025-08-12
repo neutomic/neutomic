@@ -28,6 +28,7 @@ use Neu\Framework\Plugin\PluginInterface;
 use Psl\Env;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
 use Throwable;
+use Override;
 
 /**
  * An engine that initializes the project, manages plugins, and runs the application.
@@ -74,7 +75,7 @@ final class Engine implements EngineInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function inject(PluginInterface $plugin): void
     {
         $this->plugins[] = $plugin;
@@ -83,7 +84,7 @@ final class Engine implements EngineInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function run(Mode $mode = Mode::Application): void
     {
         $project = $this->container->getProject();

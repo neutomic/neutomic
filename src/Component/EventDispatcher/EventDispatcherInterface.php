@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\EventDispatcher;
 
 use Psr\EventDispatcher;
+use Override;
 
 /**
  * All implementations of this interface *MUST* be atomic per event.
@@ -29,6 +30,6 @@ interface EventDispatcherInterface extends EventDispatcher\EventDispatcherInterf
      *
      * @return T The event object that was passed, now modified by listeners.
      */
-    #[\Override]
+    #[Override]
     public function dispatch(object $event): object;
 }

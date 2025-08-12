@@ -25,6 +25,7 @@ use Neu\Component\Http\Server\ClusterWorkerInterface;
 use Neu\Component\Http\Server\ServerInterface;
 use Neu\Framework\Engine;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
+use Override;
 
 /**
  * Factory for the engine.
@@ -134,7 +135,7 @@ final readonly class EngineFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): Engine
     {
         return new Engine(

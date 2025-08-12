@@ -23,6 +23,7 @@ use Psl\Iter;
 use Psl\Regex;
 use Psl\Str;
 use Psl\Str\Byte;
+use Override;
 
 /**
  * @psalm-suppress MissingThrowsDocblock
@@ -70,7 +71,7 @@ abstract class AbstractFormatter implements WrappingFormatterInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function setDecorated(bool $decorated): self
     {
         $this->decorated = $decorated;
@@ -81,7 +82,7 @@ abstract class AbstractFormatter implements WrappingFormatterInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isDecorated(): bool
     {
         return $this->decorated;
@@ -90,7 +91,7 @@ abstract class AbstractFormatter implements WrappingFormatterInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function addStyle(string $name, StyleInterface $style): self
     {
         $this->styles[Str\lowercase($name)] = $style;
@@ -101,7 +102,7 @@ abstract class AbstractFormatter implements WrappingFormatterInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function hasStyle(string $name): bool
     {
         return Iter\contains_key($this->styles, Str\lowercase($name));
@@ -110,7 +111,7 @@ abstract class AbstractFormatter implements WrappingFormatterInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getStyle(string $name): StyleInterface
     {
         return $this->styles[Str\lowercase($name)];

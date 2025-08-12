@@ -17,6 +17,7 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Router\Generator\Generator;
 use Neu\Component\Http\Router\Registry\RegistryInterface;
+use Override;
 
 /**
  * Factory for creating a router generator.
@@ -43,7 +44,7 @@ final readonly class GeneratorFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         return new Generator(

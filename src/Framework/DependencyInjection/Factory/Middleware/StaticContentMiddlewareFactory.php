@@ -18,6 +18,7 @@ use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Runtime\ContentDelivery\ContentDeliverer;
 use Neu\Framework\Middleware\StaticContentMiddleware;
 use Psr\Log\LoggerInterface;
+use Override;
 
 /**
  * Factory for creating a {@see StaticContentMiddleware} instance.
@@ -72,7 +73,7 @@ final readonly class StaticContentMiddlewareFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): StaticContentMiddleware
     {
         return new StaticContentMiddleware(

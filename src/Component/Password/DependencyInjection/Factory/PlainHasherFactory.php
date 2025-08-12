@@ -16,6 +16,7 @@ namespace Neu\Component\Password\DependencyInjection\Factory;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Password\PlainHasher;
+use Override;
 
 /**
  * A factory for creating plain password hashers.
@@ -27,7 +28,7 @@ final readonly class PlainHasherFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): PlainHasher
     {
         return new PlainHasher();

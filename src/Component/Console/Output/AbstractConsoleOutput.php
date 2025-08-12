@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\Console\Output;
 
 use Neu\Component\Console\Formatter\FormatterInterface;
+use Override;
 
 abstract class AbstractConsoleOutput implements ConsoleOutputInterface
 {
@@ -45,7 +46,7 @@ abstract class AbstractConsoleOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function format(string $message, Type $type = Type::Normal): string
     {
         return $this->standardOutput->format($message, $type);
@@ -54,7 +55,7 @@ abstract class AbstractConsoleOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function write(string $message, Verbosity $verbosity = Verbosity::Normal, Type $type = Type::Normal): void
     {
         $this->standardOutput->write($message, $verbosity, $type);
@@ -63,7 +64,7 @@ abstract class AbstractConsoleOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function writeLine(string $message, Verbosity $verbosity = Verbosity::Normal, Type $type = Type::Normal): void
     {
         $this->standardOutput->writeLine($message, $verbosity, $type);
@@ -72,7 +73,7 @@ abstract class AbstractConsoleOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getCursor(): Cursor
     {
         return $this->standardOutput->getCursor();
@@ -81,7 +82,7 @@ abstract class AbstractConsoleOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function setFormatter(FormatterInterface $formatter): self
     {
         $this->standardOutput->setFormatter($formatter);
@@ -93,7 +94,7 @@ abstract class AbstractConsoleOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getFormatter(): FormatterInterface
     {
         return $this->standardOutput->getFormatter();
@@ -102,7 +103,7 @@ abstract class AbstractConsoleOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function setVerbosity(Verbosity $verbosity): self
     {
         $this->standardOutput->setVerbosity($verbosity);
@@ -114,7 +115,7 @@ abstract class AbstractConsoleOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getVerbosity(): Verbosity
     {
         return $this->standardOutput->getVerbosity();
@@ -123,7 +124,7 @@ abstract class AbstractConsoleOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getErrorOutput(): OutputInterface
     {
         return $this->standardErrorOutput;
@@ -132,7 +133,7 @@ abstract class AbstractConsoleOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isDecorated(): bool
     {
         return $this->standardOutput->isDecorated();
@@ -141,7 +142,7 @@ abstract class AbstractConsoleOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function setDecorated(bool $decorated): self
     {
         $this->standardOutput->setDecorated($decorated);
@@ -153,7 +154,7 @@ abstract class AbstractConsoleOutput implements ConsoleOutputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getStream(): mixed
     {
         return $this->standardOutput->getStream();

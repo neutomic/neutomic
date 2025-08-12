@@ -22,6 +22,7 @@ use Neu\Component\Http\Server\Exception\ServerStateConflictException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
+use Override;
 
 /**
  * A server that listens for incoming HTTP requests and dispatches them to the appropriate handler.
@@ -71,7 +72,7 @@ final class Server implements ServerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getStatus(): Status
     {
         return $this->status;
@@ -80,7 +81,7 @@ final class Server implements ServerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function start(): void
     {
         if ($this->status === Status::Started) {
@@ -128,7 +129,7 @@ final class Server implements ServerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function stop(): void
     {
         if ($this->status === Status::Stopped) {

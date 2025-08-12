@@ -20,6 +20,7 @@ use Neu\Component\Console\Command\ExitCode;
 use Neu\Component\Console\Input\InputInterface;
 use Neu\Component\Console\Output\OutputInterface;
 use Neu\Framework\Internal\Advisory\ConsoleTrait;
+use Override;
 
 #[Command('advisory:advice', 'Retrieve advisory messages')]
 final readonly class AdviceCommand implements CommandInterface
@@ -33,7 +34,7 @@ final readonly class AdviceCommand implements CommandInterface
         $this->advisory = $advisory;
     }
 
-    #[\Override]
+    #[Override]
     public function run(InputInterface $input, OutputInterface $output): ExitCode
     {
         $advices = $this->advisory->getAdvices();

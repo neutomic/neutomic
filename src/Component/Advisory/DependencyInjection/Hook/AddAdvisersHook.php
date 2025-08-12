@@ -18,6 +18,7 @@ use Neu\Component\Advisory\AdvisoryInterface;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\ExceptionInterface;
 use Neu\Component\DependencyInjection\HookInterface;
+use Override;
 
 /**
  * A hook to add advisers to the advisory.
@@ -44,7 +45,7 @@ final readonly class AddAdvisersHook implements HookInterface
     /**
      * @throws ExceptionInterface
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): void
     {
         $advisory = $container->getTyped($this->advisory, AdvisoryInterface::class);

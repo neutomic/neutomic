@@ -19,6 +19,7 @@ use Neu\Component\Console\Configuration;
 use Neu\Component\Console\Recovery\RecoveryInterface;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * A factory for creating a new instance of the {@see Application}.
@@ -65,7 +66,7 @@ final readonly class ApplicationFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         return new Application(

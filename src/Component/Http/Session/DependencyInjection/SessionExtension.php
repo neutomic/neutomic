@@ -32,6 +32,7 @@ use Neu\Component\Http\Session\Handler\EncryptedHandler;
 use Neu\Component\Http\Session\Persistence\PersistenceInterface;
 use Neu\Component\Http\Session\Handler\HandlerInterface;
 use Psl\Type;
+use Override;
 
 /**
  * A container extension for the session component.
@@ -71,7 +72,7 @@ final readonly class SessionExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $configuration = $configurations->getDocument('http')->getOfTypeOrDefault('session', $this->getConfigurationType(), []);
@@ -138,7 +139,7 @@ final readonly class SessionExtension implements ExtensionInterface
     }
 
     /**
-     * @psalm-return Type\TypeInterface<Configuration>
+     * @return Type\TypeInterface<Configuration>
      */
     private function getConfigurationType(): Type\TypeInterface
     {
@@ -163,7 +164,7 @@ final readonly class SessionExtension implements ExtensionInterface
                             Type\literal_scalar('private-no-expire'),
                         ),
                         Type\backed_enum(CacheLimiter::class),
-                        static fn(string $value): CacheLimiter => CacheLimiter::from($value),
+                        static fn (string $value): CacheLimiter => CacheLimiter::from($value),
                     )
                 ),
             ])),

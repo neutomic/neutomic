@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Router\PatternParser\Node;
 
+use Override;
+
 use function preg_quote;
 use function var_export;
 
@@ -53,7 +55,7 @@ final readonly class LiteralNode implements Node
     /**
      * @internal
      */
-    #[\Override]
+    #[Override]
     public function toRegularExpression(string $delimiter): string
     {
         /** @var non-empty-string */
@@ -63,7 +65,7 @@ final readonly class LiteralNode implements Node
     /**
      * @internal
      */
-    #[\Override]
+    #[Override]
     public function toString(): string
     {
         /** @var non-empty-string */
@@ -73,7 +75,7 @@ final readonly class LiteralNode implements Node
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __serialize(): array
     {
         return [
@@ -84,7 +86,7 @@ final readonly class LiteralNode implements Node
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __unserialize(array $data): void
     {
         /** @var State $data */

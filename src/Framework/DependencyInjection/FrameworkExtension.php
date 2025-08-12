@@ -31,6 +31,7 @@ use Neu\Framework\Middleware;
 use Psl\Type;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Override;
 
 /**
  * The framework extension.
@@ -133,7 +134,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $configuration = $configurations->getOfTypeOrDefault('framework', $this->getConfigurationType(), []);
@@ -311,7 +312,7 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getExtensions(DocumentInterface $configurations): array
     {
         return [

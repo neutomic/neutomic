@@ -26,6 +26,7 @@ use Neu\Component\Http\Router\Registry\RegistryInterface;
 use Psl\Iter;
 use Psl\Regex;
 use Psl\Str;
+use Override;
 
 use function rawurlencode;
 
@@ -41,7 +42,7 @@ final readonly class Generator implements GeneratorInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function generate(string $name, array $parameters = []): UriInterface
     {
         $route = $this->registry->getRoute($name);

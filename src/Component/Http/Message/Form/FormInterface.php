@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Message\Form;
 
+use Override;
+
 /**
  * Interface for form data.
  *
@@ -29,7 +31,7 @@ interface FormInterface extends StreamedFormInterface
      *
      * @return list<FieldInterface> A list of {@see FieldInterface} implementations.
      */
-    #[\Override]
+    #[Override]
     public function getFields(): array;
 
     /**

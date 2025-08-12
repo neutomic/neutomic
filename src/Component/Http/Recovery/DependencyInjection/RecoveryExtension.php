@@ -23,6 +23,7 @@ use Neu\Component\Http\Recovery\RecoveryInterface;
 use Psl\Type;
 use Psr\Log\LogLevel;
 use Throwable;
+use Override;
 
 /**
  * An extension for registering the recovery service.
@@ -39,7 +40,7 @@ final readonly class RecoveryExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $defaultLogger = $configurations->getDocument('http')->getOfTypeOrDefault('logger', Type\non_empty_string(), null);

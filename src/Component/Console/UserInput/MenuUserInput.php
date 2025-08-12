@@ -16,6 +16,7 @@ namespace Neu\Component\Console\UserInput;
 use Psl\Iter;
 use Psl\Str;
 use Psl\Vec;
+use Override;
 
 /**
  * The {@see MenuUserInput} class presents the user with a prompt and a list of available
@@ -30,7 +31,7 @@ final class MenuUserInput extends AbstractUserInput
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function prompt(string $message): string
     {
         $keys = Vec\keys($this->acceptedValues);

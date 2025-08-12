@@ -17,6 +17,7 @@ use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareInterface;
+use Override;
 
 final readonly class MiddlewareHandler implements HandlerInterface
 {
@@ -29,7 +30,7 @@ final readonly class MiddlewareHandler implements HandlerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         return $this->middleware->process($context, $request, $this->next);

@@ -33,6 +33,7 @@ use Neu\Component\Http\Router\RouteCollector;
 use Neu\Component\Http\Router\Router;
 use Neu\Component\Http\Router\RouterInterface;
 use Psl\Type;
+use Override;
 
 /**
  * A dependency injection extension for the router component.
@@ -63,7 +64,7 @@ final readonly class RouterExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(DIRegistryInterface $registry, DocumentInterface $configurations): void
     {
         $configuration = $configurations->getDocument('http')->getOfTypeOrDefault('router', $this->getRouterConfigurationType(), []);

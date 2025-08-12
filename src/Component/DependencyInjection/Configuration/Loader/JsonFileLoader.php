@@ -22,6 +22,7 @@ use Psl\Filesystem;
 use Psl\Json;
 use Psl\Str;
 use Psl\Type;
+use Override;
 
 /**
  * @implements LoaderInterface<non-empty-string>
@@ -31,7 +32,7 @@ final class JsonFileLoader implements LoaderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function load(mixed $resource): DocumentInterface
     {
         try {
@@ -58,7 +59,7 @@ final class JsonFileLoader implements LoaderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function supports(mixed $resource): bool
     {
         if (!Type\non_empty_string()->matches($resource) || !Str\ends_with($resource, '.json')) {

@@ -19,6 +19,7 @@ use Neu\Component\EventDispatcher\EventDispatcherInterface;
 use Neu\Component\Http\Server\ClusterWorker;
 use Neu\Component\Http\Server\ServerInterface;
 use Psr\Log\LoggerInterface;
+use Override;
 
 /**
  * @implements FactoryInterface<ClusterWorker>
@@ -54,7 +55,7 @@ final readonly class ClusterWorkerFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): ClusterWorker
     {
         return new ClusterWorker(

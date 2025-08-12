@@ -18,6 +18,7 @@ use Amp\Postgres\PostgresConfig;
 use Amp\Sql\Common\SqlCommonConnectionPool;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * Factory for creating a {@see Postgres\PostgresConnectionPool} instance.
@@ -125,7 +126,7 @@ final readonly class PostgresConnectionPoolFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): Postgres\PostgresConnectionPool
     {
         $config = new PostgresConfig(

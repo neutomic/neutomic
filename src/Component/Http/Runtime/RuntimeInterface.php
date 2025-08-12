@@ -17,6 +17,7 @@ use Neu\Component\Http\Exception\ExceptionInterface;
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
+use Override;
 
 /**
  * Defines the interface for the HTTP runtime.
@@ -82,6 +83,6 @@ interface RuntimeInterface extends HandlerInterface
      * @see Event\ResponseEvent for the response preparation event.
      * @see Event\ThrowableEvent for the exception handling event.
      */
-    #[\Override]
+    #[Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface;
 }

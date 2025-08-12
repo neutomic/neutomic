@@ -18,6 +18,7 @@ use Monolog\Formatter\ScalarFormatter;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * The factory for the scalar formatter.
@@ -44,7 +45,7 @@ final readonly class ScalarFormatterFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         try {

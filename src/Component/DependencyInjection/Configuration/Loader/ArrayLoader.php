@@ -16,6 +16,7 @@ namespace Neu\Component\DependencyInjection\Configuration\Loader;
 use Neu\Component\DependencyInjection\Configuration\Document;
 use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Psl\Type;
+use Override;
 
 /**
  * @implements LoaderInterface<array<array-key, mixed>>
@@ -25,7 +26,7 @@ final class ArrayLoader implements LoaderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function load(mixed $resource): DocumentInterface
     {
         return new Document($resource);
@@ -34,7 +35,7 @@ final class ArrayLoader implements LoaderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function supports(mixed $resource): bool
     {
         return Type\mixed_dict()->matches($resource);

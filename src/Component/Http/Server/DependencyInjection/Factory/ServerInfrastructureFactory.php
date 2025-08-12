@@ -17,6 +17,7 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Server\ServerInfrastructure;
 use Psr\Log\LoggerInterface;
+use Override;
 
 /**
  * A factory for creating a {@see ServerInfrastructure} instance.
@@ -126,7 +127,7 @@ final readonly class ServerInfrastructureFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         return new ServerInfrastructure(

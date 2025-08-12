@@ -33,6 +33,7 @@ use Psl\Async;
 use Psl\DateTime\Duration;
 use Psl\Str;
 use Revolt\EventLoop\UnsupportedFeatureException;
+use Override;
 
 /**
  * Starts the HTTP server cluster, initializing multiple worker processes to handle requests.
@@ -68,7 +69,7 @@ final readonly class ClusterCommand extends AbstractCommand
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function execute(InputInterface $input, OutputInterface $output): ExitCode
     {
         $option = $input->getOption('workers');

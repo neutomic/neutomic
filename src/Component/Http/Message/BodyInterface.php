@@ -18,6 +18,7 @@ use Neu\Component\Http\Exception\LogicException;
 use Neu\Component\Http\Exception\RuntimeException;
 use Neu\Component\Http\Message\Exception\TimeoutException;
 use Traversable;
+use Override;
 
 /**
  * Interface for HTTP message bodies supporting various modes of operation, such as chunked reading and buffering.
@@ -81,7 +82,7 @@ interface BodyInterface extends IteratorAggregate
      *
      * @return Traversable<int, string> An iterator for the body content.
      */
-    #[\Override]
+    #[Override]
     public function getIterator(): Traversable;
 
     /**

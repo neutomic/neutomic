@@ -18,6 +18,7 @@ use Neu\Component\Broadcast\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\Exception\ExceptionInterface;
 use Neu\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Neu\Component\DependencyInjection\ServiceLocatorInterface;
+use Override;
 
 final class HubManager implements HubManagerInterface
 {
@@ -50,7 +51,7 @@ final class HubManager implements HubManagerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getDefaultHub(): HubInterface
     {
         return $this->getHub($this->defaultHubId);
@@ -59,7 +60,7 @@ final class HubManager implements HubManagerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function hasHub(string $identifier): bool
     {
         return $this->locator->has($identifier);
@@ -68,7 +69,7 @@ final class HubManager implements HubManagerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getHub(string $identifier): HubInterface
     {
         try {
@@ -83,7 +84,7 @@ final class HubManager implements HubManagerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getAvailableHubs(): array
     {
         $hubs = [];

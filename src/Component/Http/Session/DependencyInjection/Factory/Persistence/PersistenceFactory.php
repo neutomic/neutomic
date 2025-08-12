@@ -19,6 +19,7 @@ use Neu\Component\Http\Session\Configuration\CacheConfiguration;
 use Neu\Component\Http\Session\Configuration\CookieConfiguration;
 use Neu\Component\Http\Session\Persistence\Persistence;
 use Neu\Component\Http\Session\Handler\HandlerInterface;
+use Override;
 
 /**
  * Factory for creating {@see Persistence} instances.
@@ -54,7 +55,7 @@ final readonly class PersistenceFactory implements FactoryInterface
         $this->cacheConfiguration = $cacheConfiguration ?? CacheConfiguration::class;
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): Persistence
     {
         return new Persistence(

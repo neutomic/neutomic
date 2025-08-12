@@ -33,6 +33,7 @@ use Neu\Component\DependencyInjection\ExtensionInterface;
 use Neu\Component\DependencyInjection\RegistryInterface;
 use Psl\Class;
 use Psl\Type;
+use Override;
 
 /**
  * A dependency injection extension for database connections.
@@ -80,7 +81,7 @@ final class DatabaseExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $configuration = $configurations->getOfTypeOrDefault('database', $this->getConfigurationType(), []);

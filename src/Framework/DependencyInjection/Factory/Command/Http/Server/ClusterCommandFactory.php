@@ -18,6 +18,7 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Server\ClusterInterface;
 use Neu\Framework\Command\Http\Server\ClusterCommand;
+use Override;
 
 /**
  * @implements FactoryInterface<ClusterCommand>
@@ -57,7 +58,7 @@ final readonly class ClusterCommandFactory implements FactoryInterface
         $this->watchExtensions = $watchExtensions ?? [];
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): ClusterCommand
     {
         $project = $container->getProject();

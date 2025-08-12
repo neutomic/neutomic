@@ -20,6 +20,7 @@ use Neu\Component\Console\Output\Verbosity;
 use Neu\Component\Console\Terminal;
 use Psl\Str;
 use Psl\Vec;
+use Override;
 
 /**
  * The {@see Block} class is used to display a block of text in the output.
@@ -189,7 +190,7 @@ readonly class Block implements BlockInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function display(string $message, Verbosity $verbosity = Verbosity::Normal): self
     {
         $type = $this->type;

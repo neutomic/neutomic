@@ -17,6 +17,7 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Message\CookieSameSite;
 use Neu\Component\Http\Session\Configuration\CookieConfiguration;
+use Override;
 
 /**
  * A factory to create a cookie configuration instance.
@@ -61,7 +62,7 @@ final readonly class CookieConfigurationFactory implements FactoryInterface
     }
 
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): CookieConfiguration
     {
         return new CookieConfiguration(

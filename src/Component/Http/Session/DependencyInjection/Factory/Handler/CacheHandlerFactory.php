@@ -17,6 +17,7 @@ use Neu\Component\Cache\StoreInterface;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Session\Handler\CacheHandler;
+use Override;
 
 /**
  * A factory to create a storage instance.
@@ -38,7 +39,7 @@ final readonly class CacheHandlerFactory implements FactoryInterface
         $this->store = $store ?? StoreInterface::class;
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): CacheHandler
     {
         return new CacheHandler(

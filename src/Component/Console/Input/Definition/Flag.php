@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\Console\Input\Definition;
 
 use Psl\Str;
+use Override;
 
 /**
  * A {@see Flag} is a boolean parameter (denoted by an integer) specified by a user.
@@ -99,7 +100,7 @@ final class Flag extends Definition
      * name and the alias set is long, the 'alias' given here will serve as the
      * 'name' and the original name will be set to the 'alias'.
      */
-    #[\Override]
+    #[Override]
     public function alias(string $alias): self
     {
         parent::alias($alias);

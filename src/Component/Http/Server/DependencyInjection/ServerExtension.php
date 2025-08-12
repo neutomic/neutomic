@@ -29,6 +29,7 @@ use Neu\Component\Http\Server\Server;
 use Neu\Component\Http\Server\ServerInfrastructure;
 use Neu\Component\Http\Server\ServerInterface;
 use Psl\Type;
+use Override;
 
 /**
  * A dependency injection extension for the HTTP server component.
@@ -58,7 +59,7 @@ final readonly class ServerExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $defaultLogger = $configurations->getDocument('http')->getOfTypeOrDefault('logger', Type\non_empty_string(), null);

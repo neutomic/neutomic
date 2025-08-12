@@ -18,6 +18,7 @@ use Amp\Http\Server\Request;
 use Amp\Http\Server\Response;
 use Neu\Component\Http\Message\StatusCode;
 use Psr\Log\LoggerInterface;
+use Override;
 
 final readonly class AmphpErrorHandler implements ErrorHandler
 {
@@ -28,7 +29,7 @@ final readonly class AmphpErrorHandler implements ErrorHandler
         $this->logger = $logger;
     }
 
-    #[\Override]
+    #[Override]
     public function handleError(int $status, null|string $reason = null, null|Request $request = null): Response
     {
         $context = [

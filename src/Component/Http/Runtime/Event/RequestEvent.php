@@ -19,6 +19,7 @@ use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\Runtime\RuntimeInterface;
 use Psr\EventDispatcher\StoppableEventInterface;
+use Override;
 
 /**
  * Represents an event that is triggered when a request is received by the {@see RuntimeInterface}.
@@ -116,7 +117,7 @@ final readonly class RequestEvent implements StoppableEventInterface
      *
      * @return bool True if a response has been set and the event propagation is stopped, otherwise false.
      */
-    #[\Override]
+    #[Override]
     public function isPropagationStopped(): bool
     {
         return $this->response !== null || $this->handler !== null;

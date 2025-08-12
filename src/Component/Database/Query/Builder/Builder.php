@@ -22,6 +22,7 @@ use Neu\Component\Database\Query\DeleteQueryInterface;
 use Neu\Component\Database\Query\InsertQueryInterface;
 use Neu\Component\Database\Query\SelectQueryInterface;
 use Neu\Component\Database\Query\UpdateQueryInterface;
+use Override;
 
 final readonly class Builder implements BuilderInterface
 {
@@ -33,7 +34,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function select(string $select, string ...$selects): SelectQueryInterface
     {
         /** @psalm-suppress ArgumentTypeCoercion - false positive */
@@ -43,7 +44,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function delete(string $table, null|string $alias = null): DeleteQueryInterface
     {
         return new DeleteQuery($this->dbal, $table, $alias);
@@ -52,7 +53,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function update(string $table, null|string $alias = null): UpdateQueryInterface
     {
         return new UpdateQuery($this->dbal, $table, $alias);
@@ -61,7 +62,7 @@ final readonly class Builder implements BuilderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function insert(string $table): InsertQueryInterface
     {
         return new InsertQuery($this->dbal, $table);

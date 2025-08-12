@@ -26,6 +26,7 @@ use Psl\Regex;
 use Psl\Str;
 use Psl\Str\Byte;
 use Psl\Vec;
+use Override;
 
 use function preg_match_all;
 
@@ -87,7 +88,7 @@ final class Formatter extends AbstractFormatter
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function format(string $message, int $width = 0): string
     {
         $offset = 0;

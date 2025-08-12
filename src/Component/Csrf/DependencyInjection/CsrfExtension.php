@@ -27,6 +27,7 @@ use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Neu\Component\DependencyInjection\RegistryInterface;
 use Psl\Type;
+use Override;
 
 /**
  * The extension for the CSRF component.
@@ -46,7 +47,7 @@ final readonly class CsrfExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $configuration = $configurations->getOfTypeOrDefault('csrf', $this->getConfigurationType(), []);

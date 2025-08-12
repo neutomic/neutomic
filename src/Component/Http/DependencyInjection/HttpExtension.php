@@ -22,6 +22,7 @@ use Neu\Component\Http\Router\DependencyInjection\RouterExtension;
 use Neu\Component\Http\Runtime\DependencyInjection\RuntimeExtension;
 use Neu\Component\Http\Server\DependencyInjection\ServerExtension;
 use Neu\Component\Http\Session\DependencyInjection\SessionExtension;
+use Override;
 
 /**
  * A composite extension that registers multiple HTTP-related extensions.
@@ -36,7 +37,7 @@ final readonly class HttpExtension implements CompositeExtensionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         // do nothing
@@ -45,7 +46,7 @@ final readonly class HttpExtension implements CompositeExtensionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getExtensions(DocumentInterface $configurations): array
     {
         return [

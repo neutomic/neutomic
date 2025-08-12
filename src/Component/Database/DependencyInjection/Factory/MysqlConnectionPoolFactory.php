@@ -17,6 +17,7 @@ use Amp\Mysql;
 use Amp\Sql\Common\SqlCommonConnectionPool;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * Factory for creating a {@see Mysql\MysqlConnectionPool} instance.
@@ -144,7 +145,7 @@ final readonly class MysqlConnectionPoolFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): Mysql\MysqlConnectionPool
     {
         $config = new Mysql\MysqlConfig(

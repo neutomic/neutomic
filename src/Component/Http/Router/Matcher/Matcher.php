@@ -23,6 +23,7 @@ use Neu\Component\Http\Router\PrefixMap\PrefixMap;
 use Neu\Component\Http\Router\Registry\RegistryInterface;
 use Neu\Component\Http\Router\Route;
 use Throwable;
+use Override;
 
 use function array_key_exists;
 use function array_map;
@@ -48,7 +49,7 @@ final class Matcher implements MatcherInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function match(RequestInterface $request): Result
     {
         try {

@@ -16,6 +16,7 @@ namespace Neu\Bridge\Twig\DependencyInjection\Factory;
 use Neu\Bridge\Twig\Loader\FilesystemLoader;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * @implements FactoryInterface<FilesystemLoader>
@@ -42,7 +43,7 @@ final readonly class FilesystemLoaderFactory implements FactoryInterface
         $this->root = $root;
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): FilesystemLoader
     {
         if ($this->root !== null) {

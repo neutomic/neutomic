@@ -23,6 +23,7 @@ use Psl\SecureRandom;
 use Psl\Json;
 use Psl\Encoding;
 use Psl\Str;
+use Override;
 
 use function hash_equals;
 use function pack;
@@ -67,7 +68,7 @@ final readonly class EncryptedHandler implements HandlerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function load(string $identifier): SessionInterface
     {
         // Decode the message from a URL-safe base64 format
@@ -132,7 +133,7 @@ final readonly class EncryptedHandler implements HandlerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function flush(string $identifier): void
     {
         // No need to flush the session data.
@@ -141,7 +142,7 @@ final readonly class EncryptedHandler implements HandlerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function save(SessionInterface $session, null|int $ttl = null): string
     {
         try {

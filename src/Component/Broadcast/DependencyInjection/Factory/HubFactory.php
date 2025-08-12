@@ -17,6 +17,7 @@ use Neu\Component\Broadcast\Hub;
 use Neu\Component\Broadcast\Transport\TransportInterface;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * The factory for creating broadcast hubs.
@@ -37,7 +38,7 @@ final readonly class HubFactory implements FactoryInterface
     {
         $this->transport = $transport ?? TransportInterface::class;
     }
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         $transport = $container->getTyped($this->transport, TransportInterface::class);

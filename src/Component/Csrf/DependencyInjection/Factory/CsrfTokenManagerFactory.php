@@ -18,6 +18,7 @@ use Neu\Component\Csrf\Generator\CsrfTokenGeneratorInterface;
 use Neu\Component\Csrf\Storage\CsrfTokenStorageInterface;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * Factory for creating a {@see CsrfTokenManager} instance.
@@ -57,7 +58,7 @@ final readonly class CsrfTokenManagerFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): CsrfTokenManager
     {
         $generator = $container->getTyped($this->generator, CsrfTokenGeneratorInterface::class);

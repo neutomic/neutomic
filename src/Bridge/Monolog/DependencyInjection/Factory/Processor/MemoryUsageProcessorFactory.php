@@ -16,6 +16,7 @@ namespace Neu\Bridge\Monolog\DependencyInjection\Factory\Processor;
 use Monolog\Processor\MemoryUsageProcessor;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * The factory for creating the memory usage processor.
@@ -24,7 +25,7 @@ use Neu\Component\DependencyInjection\Factory\FactoryInterface;
  */
 final readonly class MemoryUsageProcessorFactory implements FactoryInterface
 {
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         return new MemoryUsageProcessor();

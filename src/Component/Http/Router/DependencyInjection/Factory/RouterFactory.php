@@ -18,6 +18,7 @@ use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Router\Generator\GeneratorInterface;
 use Neu\Component\Http\Router\Matcher\MatcherInterface;
 use Neu\Component\Http\Router\Router;
+use Override;
 
 /**
  * A factory for creating instances of the Router.
@@ -48,7 +49,7 @@ final readonly class RouterFactory implements FactoryInterface
         $this->generator = $generator ?? GeneratorInterface::class;
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         return new Router(

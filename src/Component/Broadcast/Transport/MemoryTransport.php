@@ -15,6 +15,7 @@ namespace Neu\Component\Broadcast\Transport;
 
 use Amp\Pipeline\ConcurrentIterator;
 use Amp\Sync;
+use Override;
 
 /**
  * A transport mechanism that sends and receives messages in memory.
@@ -36,7 +37,7 @@ final class MemoryTransport implements TransportInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function send(string $channel, mixed $message): void
     {
         $this->transport->send($channel, $message);
@@ -45,7 +46,7 @@ final class MemoryTransport implements TransportInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isListening(string $channel): bool
     {
         return $this->transport->isListening($channel);
@@ -54,7 +55,7 @@ final class MemoryTransport implements TransportInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function listen(string $channel): ConcurrentIterator
     {
         return $this->transport->listen($channel);
@@ -63,7 +64,7 @@ final class MemoryTransport implements TransportInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function close(): void
     {
         $this->transport->close();
@@ -72,7 +73,7 @@ final class MemoryTransport implements TransportInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isClosed(): bool
     {
         return $this->transport->isClosed();

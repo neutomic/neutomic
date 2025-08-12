@@ -25,6 +25,7 @@ use Neu\Component\Http\Server\Event\ClusterStoppedEvent;
 use Psr\Log\LoggerInterface;
 use Revolt\EventLoop;
 use Throwable;
+use Override;
 
 use function Amp\Cluster\countCpuCores;
 
@@ -80,7 +81,7 @@ final class Cluster implements ClusterInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function start(null|int $workers = null): void
     {
         if (null !== $this->watcher) {
@@ -127,7 +128,7 @@ final class Cluster implements ClusterInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function restart(): void
     {
         if (null === $this->watcher) {
@@ -150,7 +151,7 @@ final class Cluster implements ClusterInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function stop(): void
     {
         if (null === $this->watcher) {

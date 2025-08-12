@@ -18,6 +18,7 @@ use Neu\Component\Cache\Exception\StoreNotFoundException;
 use Neu\Component\DependencyInjection\Exception\ExceptionInterface;
 use Neu\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Neu\Component\DependencyInjection\ServiceLocatorInterface;
+use Override;
 
 final class StoreManager implements StoreManagerInterface
 {
@@ -50,7 +51,7 @@ final class StoreManager implements StoreManagerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getDefaultStore(): StoreInterface
     {
         return $this->getStore($this->defaultStoreId);
@@ -59,7 +60,7 @@ final class StoreManager implements StoreManagerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function hasStore(string $identifier): bool
     {
         return $this->locator->has($identifier);
@@ -68,7 +69,7 @@ final class StoreManager implements StoreManagerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getStore(string $identifier): StoreInterface
     {
         try {
@@ -83,7 +84,7 @@ final class StoreManager implements StoreManagerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getAvailableStores(): array
     {
         $services = $this->locator->getAvailableServices();

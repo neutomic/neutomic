@@ -15,6 +15,7 @@ namespace Neu\Component\Http\Exception;
 
 use Neu\Component\Http\Message\StatusCode;
 use Throwable;
+use Override;
 
 class HttpException extends RuntimeException implements HttpExceptionInterface
 {
@@ -47,7 +48,7 @@ class HttpException extends RuntimeException implements HttpExceptionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getStatusCode(): StatusCode
     {
         return $this->statusCode;
@@ -56,7 +57,7 @@ class HttpException extends RuntimeException implements HttpExceptionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getHeaders(): array
     {
         return $this->headers;

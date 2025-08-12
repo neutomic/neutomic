@@ -16,6 +16,7 @@ namespace Neu\Component\Csrf\DependencyInjection\Factory\Generator;
 use Neu\Component\Csrf\Generator\UrlSafeCsrfTokenGenerator;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * Factory for creating a {@see UrlSafeCsrfTokenGenerator} instance.
@@ -27,7 +28,7 @@ final readonly class UrlSafeCsrfTokenGeneratorFactory implements FactoryInterfac
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): UrlSafeCsrfTokenGenerator
     {
         return new UrlSafeCsrfTokenGenerator();

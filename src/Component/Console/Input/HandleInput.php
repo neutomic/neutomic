@@ -16,6 +16,7 @@ namespace Neu\Component\Console\Input;
 use Neu\Component\Console\Exception\NonInteractiveInputException;
 use Psl\IO;
 use Psl\Str;
+use Override;
 
 /**
  * A {@see InputInterface} implementation based on {@see IO\ReadHandleInterface}.
@@ -44,7 +45,7 @@ final class HandleInput extends AbstractInput
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getUserInput(null|int $length = null): string
     {
         if (!$this->isInteractive()) {
@@ -61,7 +62,7 @@ final class HandleInput extends AbstractInput
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getStream(): mixed
     {
         $handle = $this->reader->getHandle();

@@ -26,6 +26,7 @@ use Psl\Vec;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Throwable;
+use Override;
 
 /**
  * @psalm-type ThrowablesConfiguration = array<class-string<Throwable>, array{
@@ -63,7 +64,7 @@ final readonly class Recovery implements RecoveryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function recover(Context $context, RequestInterface $request, Throwable $throwable): ResponseInterface
     {
         $log_level = LogLevel::ERROR;

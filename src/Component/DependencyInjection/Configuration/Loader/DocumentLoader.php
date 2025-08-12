@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\DependencyInjection\Configuration\Loader;
 
 use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
+use Override;
 
 /**
  * @implements LoaderInterface<DocumentInterface>
@@ -23,7 +24,7 @@ final class DocumentLoader implements LoaderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function load(mixed $resource): DocumentInterface
     {
         return $resource;
@@ -32,7 +33,7 @@ final class DocumentLoader implements LoaderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function supports(mixed $resource): bool
     {
         return $resource instanceof DocumentInterface;

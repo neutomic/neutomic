@@ -21,6 +21,7 @@ use Neu\Component\Http\Runtime\Handler\Resolver\HandlerResolverInterface;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
 use Neu\Component\Http\Runtime\Runtime;
 use Neu\Component\Http\Runtime\RuntimeInterface;
+use Override;
 
 /**
  * Factory for creating the runtime.
@@ -73,7 +74,7 @@ final readonly class RuntimeFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         return new Runtime(

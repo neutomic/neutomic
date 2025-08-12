@@ -19,6 +19,7 @@ use Revolt\EventLoop\Driver\EvDriver;
 use Revolt\EventLoop\Driver\EventDriver;
 use Revolt\EventLoop\Driver\StreamSelectDriver;
 use Revolt\EventLoop\Driver\UvDriver;
+use Override;
 
 /**
  * Adviser that provides advice on using and installing ext-uv, ext-event, or ext-ev for better performance.
@@ -30,7 +31,7 @@ final readonly class EventLoopDriverAdviser implements AdviserInterface
      *
      * @return Advice|null An instance of Advice if the StreamSelectDriver is used and no high-performance extensions are installed, or advice to switch the driver if high-performance extensions are installed.
      */
-    #[\Override]
+    #[Override]
     public function getAdvice(): null|Advice
     {
         $driver = EventLoop::getDriver();

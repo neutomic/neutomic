@@ -21,6 +21,7 @@ use Neu\Component\Database\Exception\RuntimeException;
 use Neu\Component\Database\Notification\NotifierInterface;
 use Neu\Component\Database\QueryResult;
 use Neu\Component\Database\QueryResultInterface;
+use Override;
 
 final readonly class PostgresNotifier implements NotifierInterface
 {
@@ -36,7 +37,7 @@ final readonly class PostgresNotifier implements NotifierInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getChannel(): string
     {
         return $this->channel;
@@ -45,7 +46,7 @@ final readonly class PostgresNotifier implements NotifierInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function notify(string $message = ''): QueryResultInterface
     {
         try {

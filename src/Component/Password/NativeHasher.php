@@ -19,6 +19,7 @@ use Psl\Str\Byte;
 use Psl\Password;
 use Psl\Hash;
 use ValueError;
+use Override;
 
 use const PASSWORD_ARGON2_DEFAULT_MEMORY_COST;
 use const PASSWORD_ARGON2_DEFAULT_THREADS;
@@ -86,7 +87,7 @@ final readonly class NativeHasher implements HasherInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     final public function hashPassword(#[SensitiveParameter] string $plainPassword): string
     {
         if (Byte\length($plainPassword) > self::MAX_PASSWORD_LENGTH || Byte\contains($plainPassword, "\0")) {
@@ -107,7 +108,7 @@ final readonly class NativeHasher implements HasherInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     final public function verifyPassword(string $hashedPassword, #[SensitiveParameter] string $plainPassword): bool
     {
         try {
@@ -123,7 +124,7 @@ final readonly class NativeHasher implements HasherInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     final public function passwordNeedsRehash(string $hashedPassword): bool
     {
         return Password\needs_rehash(

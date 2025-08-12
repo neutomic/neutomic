@@ -21,6 +21,7 @@ use Neu\Component\Http\Session\Session;
 use Neu\Component\Http\Session\SessionInterface;
 use Psl\SecureRandom\Exception\ExceptionInterface as SecureRandomException;
 use Psl\SecureRandom;
+use Override;
 
 /**
  * A {@see HandlerInterface} implementation that stores the session data in a cache store.
@@ -48,7 +49,7 @@ final readonly class CacheHandler implements HandlerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function save(SessionInterface $session, null|int $ttl = null): string
     {
         try {
@@ -68,7 +69,7 @@ final readonly class CacheHandler implements HandlerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function load(string $identifier): SessionInterface
     {
         try {
@@ -84,7 +85,7 @@ final readonly class CacheHandler implements HandlerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function flush(string $identifier): void
     {
         try {

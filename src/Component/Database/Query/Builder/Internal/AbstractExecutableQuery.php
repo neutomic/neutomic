@@ -19,6 +19,7 @@ use Neu\Component\Database\IdentifierQuoterInterface;
 use Neu\Component\Database\PreparedStatementInterface;
 use Neu\Component\Database\Query\QueryInterface;
 use Neu\Component\Database\QueryResultInterface;
+use Override;
 
 /**
  * A Query that can be executed.
@@ -35,7 +36,7 @@ abstract readonly class AbstractExecutableQuery implements QueryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function execute(array $parameters = []): QueryResultInterface
     {
         return $this->dbal->query((string) $this, $parameters);
@@ -44,7 +45,7 @@ abstract readonly class AbstractExecutableQuery implements QueryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function prepare(): PreparedStatementInterface
     {
         return $this->dbal->prepare((string) $this);

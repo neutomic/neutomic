@@ -17,6 +17,7 @@ use Closure;
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Context;
+use Override;
 
 /**
  * Handles a request using a closure.
@@ -45,7 +46,7 @@ final readonly class ClosureHandler implements HandlerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         return ($this->closure)($context, $request);

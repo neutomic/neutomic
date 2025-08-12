@@ -17,6 +17,7 @@ use Neu\Component\Broadcast\HubManagerInterface;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Framework\Listener\Broadcast\ServerStoppingEventListener;
+use Override;
 
 /**
  * The factory for the server stopping event listener.
@@ -45,7 +46,7 @@ final readonly class ServerStoppingEventListenerFactory implements FactoryInterf
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         if (null === $this->hubManager) {

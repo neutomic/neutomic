@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\Http\Message\Form;
 
 use Amp\Pipeline\ConcurrentIterator;
+use Override;
 
 final readonly class StreamedForm implements StreamedFormInterface
 {
@@ -35,7 +36,7 @@ final readonly class StreamedForm implements StreamedFormInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getFields(): iterable
     {
         /** @var FieldInterface $field */

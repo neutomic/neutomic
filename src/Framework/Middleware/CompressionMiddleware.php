@@ -25,6 +25,7 @@ use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\Runtime\Middleware\PrioritizedMiddlewareInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Override;
 
 use function array_map;
 use function deflate_add;
@@ -182,7 +183,7 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
         $response = $next->handle($context, $request);
@@ -366,7 +367,7 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
         yield $chunk;
     }
 
-    #[\Override]
+    #[Override]
     public function getPriority(): int
     {
         return $this->priority;

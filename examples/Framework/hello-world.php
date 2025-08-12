@@ -26,13 +26,14 @@ use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Framework\EngineInterface;
 use Psl\SecureRandom;
 use Psl\Env;
+use Override;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 #[Route(name: 'index', pattern: '/', methods: [Method::Get])]
 final readonly class HelloWorldHandler implements HandlerInterface
 {
-    #[\Override]
+    #[Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         return Response\text('Hello, World!');

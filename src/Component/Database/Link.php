@@ -32,6 +32,7 @@ use Neu\Component\Database\Exception\UnsupportedFeatureException;
 use Neu\Component\Database\Notification\NotifierInterface;
 use Neu\Component\Database\Notification\Postgres\PostgresNotifier;
 use Throwable;
+use Override;
 
 use function array_map;
 use function explode;
@@ -60,7 +61,7 @@ abstract readonly class Link implements LinkInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function prepare(string $query): PreparedStatementInterface
     {
         try {
@@ -79,7 +80,7 @@ abstract readonly class Link implements LinkInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function query(string $query, array $parameters = []): QueryResultInterface
     {
         try {
@@ -113,7 +114,7 @@ abstract readonly class Link implements LinkInterface
      *
      * @return T
      */
-    #[\Override]
+    #[Override]
     public function transactional(Closure $operation): mixed
     {
         $transaction = $this->createTransaction();
@@ -136,7 +137,7 @@ abstract readonly class Link implements LinkInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function createTransaction(): TransactionInterface
     {
         return new Transaction(
@@ -148,7 +149,7 @@ abstract readonly class Link implements LinkInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getNotifier(string $channel): NotifierInterface
     {
         if ($this->link instanceof PostgresExecutor) {
@@ -161,7 +162,7 @@ abstract readonly class Link implements LinkInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getUnderlyingSqlLink(): SqlLink
     {
         return $this->link;
@@ -170,7 +171,7 @@ abstract readonly class Link implements LinkInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getUnderlyingPlatform(): Platform
     {
         return $this->platform;
@@ -179,7 +180,7 @@ abstract readonly class Link implements LinkInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function quoteIdentifier(string $identifier): string
     {
         if (str_contains($identifier, '.')) {
@@ -194,7 +195,7 @@ abstract readonly class Link implements LinkInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function quoteSingleIdentifier(string $identifier): string
     {
         if ($this->link instanceof MysqlLink) {
@@ -215,7 +216,7 @@ abstract readonly class Link implements LinkInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getLastUsedAt(): int
     {
         return $this->link->getLastUsedAt();
@@ -224,7 +225,7 @@ abstract readonly class Link implements LinkInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isClosed(): bool
     {
         return $this->link->isClosed();
@@ -233,7 +234,7 @@ abstract readonly class Link implements LinkInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function close(): void
     {
         $this->link->close();

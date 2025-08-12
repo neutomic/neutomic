@@ -29,6 +29,7 @@ use Psl\Iter;
 use Psl\Str;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Override;
 
 use const Psl\Filesystem;
 
@@ -85,7 +86,7 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
         if ([] === $this->roots) {
@@ -184,7 +185,7 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getPriority(): int
     {
         return $this->priority;

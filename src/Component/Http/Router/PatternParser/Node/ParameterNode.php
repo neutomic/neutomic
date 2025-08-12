@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\Http\Router\PatternParser\Node;
 
 use Psl\Str;
+use Override;
 
 use function preg_quote;
 
@@ -73,7 +74,7 @@ final readonly class ParameterNode implements Node
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function toRegularExpression(string $delimiter): string
     {
         $re = $this->getRegexp();
@@ -87,7 +88,7 @@ final readonly class ParameterNode implements Node
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function toString(): string
     {
         $re = $this->getRegexp();
@@ -102,7 +103,7 @@ final readonly class ParameterNode implements Node
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __serialize(): array
     {
         return [
@@ -114,7 +115,7 @@ final readonly class ParameterNode implements Node
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __unserialize(array $data): void
     {
         /** @var State $data */

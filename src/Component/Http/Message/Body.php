@@ -28,6 +28,7 @@ use Neu\Component\Http\Exception\LogicException;
 use Neu\Component\Http\Exception\RuntimeException;
 use Neu\Component\Http\Message\Exception\TimeoutException;
 use Traversable;
+use Override;
 
 final class Body implements BodyInterface
 {
@@ -111,7 +112,7 @@ final class Body implements BodyInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getMode(): BodyMode
     {
         return $this->mode;
@@ -120,7 +121,7 @@ final class Body implements BodyInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getChunk(null|float $timeout = null): null|string
     {
         if ($this->mode === BodyMode::Closed) {
@@ -152,7 +153,7 @@ final class Body implements BodyInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getContents(null|float $timeout = null): string
     {
         if ($this->mode === BodyMode::Buffered) {
@@ -188,7 +189,7 @@ final class Body implements BodyInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getIterator(): Traversable
     {
         if ($this->mode === BodyMode::Closed) {
@@ -216,7 +217,7 @@ final class Body implements BodyInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function close(): void
     {
         if ($this->mode === BodyMode::Closed) {

@@ -16,6 +16,7 @@ namespace Neu\Component\Console\UserInput;
 use Neu\Component\Console\Exception\InvalidArgumentException;
 use Neu\Component\Console\Input\InputInterface;
 use Neu\Component\Console\Output\OutputInterface;
+use Override;
 
 /**
  * `AbstractUserInput` handles core functionality for prompting and accepting
@@ -66,7 +67,7 @@ abstract class AbstractUserInput implements UserInputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function setPosition(null|array $position): void
     {
         $this->position = $position;

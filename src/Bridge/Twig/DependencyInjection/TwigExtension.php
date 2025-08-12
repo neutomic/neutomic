@@ -28,6 +28,7 @@ use Psl\Type;
 use Twig\Cache\CacheInterface;
 use Twig\Environment;
 use Twig\Loader\LoaderInterface;
+use Override;
 
 /**
  * @psalm-type Configuration = array{
@@ -49,7 +50,7 @@ final readonly class TwigExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         if (!Class\exists(Environment::class)) {

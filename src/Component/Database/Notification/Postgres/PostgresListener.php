@@ -17,6 +17,7 @@ use Amp\Postgres\PostgresListener as AmpPostgresListener;
 use Iterator;
 use Neu\Component\Database\Notification\ListenerInterface;
 use Neu\Component\Database\Notification\Notification;
+use Override;
 
 final readonly class PostgresListener implements ListenerInterface
 {
@@ -32,7 +33,7 @@ final readonly class PostgresListener implements ListenerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getChannel(): string
     {
         return $this->channel;
@@ -41,7 +42,7 @@ final readonly class PostgresListener implements ListenerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isAlive(): bool
     {
         return $this->listener->isListening();
@@ -50,7 +51,7 @@ final readonly class PostgresListener implements ListenerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function close(): void
     {
         $this->listener->unlisten();
@@ -59,7 +60,7 @@ final readonly class PostgresListener implements ListenerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function listen(): Iterator
     {
         foreach ($this->listener as $notification) {

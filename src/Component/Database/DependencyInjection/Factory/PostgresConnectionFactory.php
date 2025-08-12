@@ -21,6 +21,7 @@ use Error;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * Factory for creating a {@see PostgresConnection} instance.
@@ -98,7 +99,7 @@ final readonly class PostgresConnectionFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): PostgresConnection
     {
         $config = new PostgresConfig(

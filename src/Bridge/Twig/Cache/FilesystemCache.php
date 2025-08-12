@@ -15,6 +15,7 @@ namespace Neu\Bridge\Twig\Cache;
 
 use Amp\File;
 use Twig\Cache\FilesystemCache as TwigFilesystemCache;
+use Override;
 
 use function dirname;
 use function function_exists;
@@ -43,7 +44,7 @@ final class FilesystemCache extends TwigFilesystemCache
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function load(string $key): void
     {
         if (File\exists($key)) {
@@ -51,7 +52,7 @@ final class FilesystemCache extends TwigFilesystemCache
         }
     }
 
-    #[\Override]
+    #[Override]
     public function write(string $key, string $content): void
     {
         $dir = dirname($key);
@@ -70,7 +71,7 @@ final class FilesystemCache extends TwigFilesystemCache
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getTimestamp(string $key): int
     {
         if (!File\isFile($key)) {

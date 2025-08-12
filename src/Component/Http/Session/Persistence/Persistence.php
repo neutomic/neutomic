@@ -26,6 +26,7 @@ use Neu\Component\Http\Session\Handler\HandlerInterface;
 use Psl\Str;
 use Psl\Env;
 use Psl\DateTime;
+use Override;
 
 use function Amp\File\getModificationTime;
 
@@ -84,7 +85,7 @@ final class Persistence implements PersistenceInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function initialize(Context $context, RequestInterface $request): RequestInterface
     {
         $values = $request->getCookie($this->cookie->name);
@@ -107,7 +108,7 @@ final class Persistence implements PersistenceInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function persist(Context $context, RequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         // Check if session exists in the request

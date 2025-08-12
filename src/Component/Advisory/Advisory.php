@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\Advisory;
 
 use Neu\Component\Advisory\Adviser\AdviserInterface;
+use Override;
 
 final class Advisory implements AdvisoryInterface
 {
@@ -34,7 +35,7 @@ final class Advisory implements AdvisoryInterface
         $this->advisers = $advisers;
     }
 
-    #[\Override]
+    #[Override]
     public function addAdviser(AdviserInterface $adviser): void
     {
         $this->advisers[] = $adviser;
@@ -43,7 +44,7 @@ final class Advisory implements AdvisoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getAdvices(): array
     {
         $advices = [];

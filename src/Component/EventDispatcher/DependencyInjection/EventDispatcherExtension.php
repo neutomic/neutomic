@@ -28,6 +28,7 @@ use Neu\Component\EventDispatcher\Listener\Registry\Registry;
 use Neu\Component\EventDispatcher\Listener\Registry\RegistryInterface;
 use Psl\Type;
 use Psr\EventDispatcher\EventDispatcherInterface as PsrEventDispatcherInterface;
+use Override;
 
 /**
  * A container extension for the event dispatcher component.
@@ -53,7 +54,7 @@ final readonly class EventDispatcherExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(DIRegistryInterface $registry, DocumentInterface $configurations): void
     {
         $configuration = $configurations->getOfTypeOrDefault('event-dispatcher', $this->getConfigurationType(), []);

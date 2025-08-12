@@ -15,6 +15,7 @@ namespace Neu\Component\DependencyInjection;
 
 use Neu\Component\DependencyInjection\Definition\DefinitionInterface;
 use Psl\Iter;
+use Override;
 
 final class Registry implements RegistryInterface
 {
@@ -81,7 +82,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getProject(): Project
     {
         return $this->project;
@@ -90,7 +91,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function addDefinition(DefinitionInterface $definition): void
     {
         $this->definitions[$definition->getId()] = $definition;
@@ -99,7 +100,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function addDefinitions(array $definitions): void
     {
         foreach ($definitions as $definition) {
@@ -110,7 +111,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function hasDefinition(string $id): bool
     {
         foreach ($this->definitions as $definition) {
@@ -129,7 +130,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getDefinition(string $id): DefinitionInterface
     {
         return $this->definitions[$id] ?? throw new Exception\ServiceNotFoundException($id);
@@ -138,7 +139,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getDefinitions(): array
     {
         return $this->definitions;
@@ -147,7 +148,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function addProcessor(ProcessorInterface $processor): void
     {
         $this->processors[] = $processor;
@@ -156,7 +157,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function addProcessorForInstanceOf(string $type, ProcessorInterface $processor): void
     {
         $processorsForInstanceOf = $this->processorsForInstanceOf[$type] ?? [];
@@ -168,7 +169,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function addProcessorForAttribute(string $attribute, ProcessorInterface $processor): void
     {
         $processorsForAttributes = $this->processorsForAttributes[$attribute] ?? [];
@@ -180,7 +181,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getProcessors(): array
     {
         return $this->processors;
@@ -189,7 +190,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getInstanceOfProcessors(): array
     {
         return $this->processorsForInstanceOf;
@@ -198,7 +199,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getAttributeProcessors(): array
     {
         return $this->processorsForAttributes;
@@ -207,7 +208,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function addHook(HookInterface $hook): void
     {
         $this->hooks[] = $hook;
@@ -216,7 +217,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function addHooks(array $hooks): void
     {
         foreach ($hooks as $hook) {
@@ -227,7 +228,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getHooks(): array
     {
         return $this->hooks;

@@ -17,13 +17,14 @@ use Amp\Sql\SqlConnection;
 use Closure;
 use Neu\Component\Database\Exception\TransactionException;
 use Neu\Component\Database\Notification\ListenerInterface;
+use Override;
 
 interface DatabaseInterface extends AbstractionLayerInterface
 {
     /**
      * Creates a transaction that can be used to execute queries in isolation, with the given isolation level.
      */
-    #[\Override]
+    #[Override]
     public function createTransaction(TransactionIsolationLevel $isolation = TransactionIsolationLevel::ReadUncommitted): TransactionInterface;
 
     /**
@@ -39,7 +40,7 @@ interface DatabaseInterface extends AbstractionLayerInterface
      *
      * @return T
      */
-    #[\Override]
+    #[Override]
     public function transactional(Closure $operation, TransactionIsolationLevel $isolation = TransactionIsolationLevel::ReadUncommitted): mixed;
 
     /**

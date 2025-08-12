@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\Database;
 
 use Amp\Sql\SqlStatement;
+use Override;
 
 final readonly class PreparedStatement implements PreparedStatementInterface
 {
@@ -29,7 +30,7 @@ final readonly class PreparedStatement implements PreparedStatementInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function execute(array $parameters = []): QueryResultInterface
     {
         return new QueryResult($this->statement->execute($parameters));
@@ -38,7 +39,7 @@ final readonly class PreparedStatement implements PreparedStatementInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getSqlTemplate(): string
     {
         return $this->sql;
@@ -47,7 +48,7 @@ final readonly class PreparedStatement implements PreparedStatementInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getUnderlyingStatement(): SqlStatement
     {
         return $this->statement;
@@ -56,7 +57,7 @@ final readonly class PreparedStatement implements PreparedStatementInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getLastUsedAt(): int
     {
         return $this->statement->getLastUsedAt();
@@ -65,7 +66,7 @@ final readonly class PreparedStatement implements PreparedStatementInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isClosed(): bool
     {
         return $this->statement->isClosed();
@@ -74,7 +75,7 @@ final readonly class PreparedStatement implements PreparedStatementInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function close(): void
     {
         $this->statement->close();

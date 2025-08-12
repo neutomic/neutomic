@@ -17,6 +17,7 @@ use Neu\Component\Database\AbstractionLayerInterface;
 use Neu\Component\Database\Query\DeleteQueryInterface;
 use Neu\Component\Database\Query\Expression\CompositeExpressionInterface;
 use Neu\Component\Database\Query\Type;
+use Override;
 
 /**
  * @internal
@@ -49,7 +50,7 @@ final readonly class DeleteQuery extends AbstractWhereQuery implements DeleteQue
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getType(): Type
     {
         return Type::Delete;
@@ -58,7 +59,7 @@ final readonly class DeleteQuery extends AbstractWhereQuery implements DeleteQue
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function where(CompositeExpressionInterface|string $expression): static
     {
         return new self($this->dbal, $this->table, $this->alias, $expression);

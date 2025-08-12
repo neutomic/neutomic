@@ -16,6 +16,7 @@ namespace Neu\Component\Advisory\DependencyInjection\Factory;
 use Neu\Component\Advisory\Advisory;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * Factory for creating a {@see Advisory} instance.
@@ -24,7 +25,7 @@ use Neu\Component\DependencyInjection\Factory\FactoryInterface;
  */
 final readonly class AdvisoryFactory implements FactoryInterface
 {
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         return new Advisory();

@@ -17,6 +17,7 @@ use Neu\Component\Advisory\AdvisoryInterface;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Framework\Command\Advisory\AdviceCommand;
+use Override;
 
 /**
  * Factory for creating a {@see AdviceCommand} instance.
@@ -43,7 +44,7 @@ final readonly class AdviceCommandFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): AdviceCommand
     {
         return new AdviceCommand(

@@ -18,6 +18,7 @@ use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Password\HasherInterface;
 use Neu\Component\Password\HasherManager;
+use Override;
 
 /**
  * Factory for creating a {@see HasherManager} instance.
@@ -50,7 +51,7 @@ final readonly class HasherManagerFactory implements FactoryInterface
         $this->defaultHasherId = $defaultHasherId;
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): HasherManager
     {
         $locator = $container->getLocator(HasherInterface::class, $this->services);

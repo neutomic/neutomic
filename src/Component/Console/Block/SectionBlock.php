@@ -18,6 +18,7 @@ use Neu\Component\Console\Output\OutputInterface;
 use Neu\Component\Console\Output\Type;
 use Neu\Component\Console\Output\Verbosity;
 use Psl\Str;
+use Override;
 
 final readonly class SectionBlock implements BlockInterface
 {
@@ -31,7 +32,7 @@ final readonly class SectionBlock implements BlockInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function display(string $message, Verbosity $verbosity = Verbosity::Normal): self
     {
         $this->output->writeLine('', $verbosity);

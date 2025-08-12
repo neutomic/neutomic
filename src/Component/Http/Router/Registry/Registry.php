@@ -23,6 +23,7 @@ use Psl\Dict;
 use Psl\Iter;
 use Psl\Str;
 use Psl\Vec;
+use Override;
 
 final class Registry implements RegistryInterface
 {
@@ -50,7 +51,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(Route $route, HandlerInterface $handler): void
     {
         $this->prefixMaps = null;
@@ -62,7 +63,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function incorporate(RegistryInterface $registry): void
     {
         foreach ($registry->getRoutes() as $route) {
@@ -73,7 +74,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function has(string $name): bool
     {
         return Iter\contains_key($this->routes, $name);
@@ -82,7 +83,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getRoute(string $name): Route
     {
         if (Iter\contains_key($this->routes, $name)) {
@@ -95,7 +96,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getHandler(string $name): HandlerInterface
     {
         if (Iter\contains_key($this->handlers, $name)) {
@@ -108,7 +109,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getRoutes(): array
     {
         return Vec\sort($this->routes, static function (Route $a, Route $b): int {
@@ -119,7 +120,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getPrefixMaps(): array
     {
         if (null === $this->prefixMaps) {

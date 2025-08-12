@@ -18,6 +18,7 @@ use Neu\Component\Database\DatabaseManager;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * Factory for creating a {@see DatabaseManager} instance.
@@ -57,7 +58,7 @@ final readonly class DatabaseManagerFactory implements FactoryInterface
      *
      * @return DatabaseManager
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         $locator = $container->getLocator(DatabaseInterface::class, $this->services);

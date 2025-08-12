@@ -27,6 +27,7 @@ use Neu\Component\Console\Terminal;
 use Psl\Regex;
 use Psl\Str;
 use Psl\Vec;
+use Override;
 
 /**
  * The {@see AbstractInput} class contains all available {@see Flag}, {@see Argument}, and {@see Option}
@@ -98,7 +99,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function addArgument(Argument $argument): self
     {
         $this->arguments->set($argument->getName(), $argument);
@@ -109,7 +110,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function addFlag(Flag $flag): self
     {
         $this->flags->set($flag->getName(), $flag);
@@ -120,7 +121,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function addOption(Option $option): self
     {
         $this->options->set($option->getName(), $option);
@@ -131,7 +132,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getActiveCommand(): null|string
     {
         if ($this->parsed) {
@@ -150,7 +151,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function parse(bool $rewind = false): void
     {
         $lexer = $this->input;
@@ -306,7 +307,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getArgument(string $key): Argument
     {
         $argument = $this->arguments->get($key);
@@ -322,7 +323,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getArguments(): ArgumentBag
     {
         return $this->arguments;
@@ -331,7 +332,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function setArguments(ArgumentBag $arguments): self
     {
         $this->arguments = $arguments;
@@ -342,7 +343,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getFlag(string $key): Flag
     {
         $flag = $this->flags->get($key);
@@ -358,7 +359,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getFlags(): FlagBag
     {
         return $this->flags;
@@ -367,7 +368,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function setFlags(FlagBag $flags): self
     {
         $this->flags = $flags;
@@ -378,7 +379,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getOption(string $key): Option
     {
         $option = $this->options->get($key);
@@ -394,7 +395,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getOptions(): OptionBag
     {
         return $this->options;
@@ -403,7 +404,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function setOptions(OptionBag $options): self
     {
         $this->options = $options;
@@ -414,7 +415,7 @@ abstract class AbstractInput implements InputInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function validate(): void
     {
         foreach ($this->flags->getIterator() as $name => $flag) {
@@ -464,13 +465,13 @@ abstract class AbstractInput implements InputInterface
         }
     }
 
-    #[\Override]
+    #[Override]
     public function isInteractive(): bool
     {
         return $this->interactive;
     }
 
-    #[\Override]
+    #[Override]
     public function setInteractive(bool $interactive): self
     {
         $this->interactive = $interactive;

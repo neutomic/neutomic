@@ -17,6 +17,7 @@ use Monolog\Handler\NullHandler;
 use Monolog\Level;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * Factory for creating a null handler.
@@ -45,7 +46,7 @@ final readonly class NullHandlerFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         $level = $this->level;

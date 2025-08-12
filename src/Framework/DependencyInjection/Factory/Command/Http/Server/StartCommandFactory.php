@@ -17,13 +17,14 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Server\ServerInterface;
 use Neu\Framework\Command\Http\Server\StartCommand;
+use Override;
 
 /**
  * @implements FactoryInterface<StartCommand>
  */
 final readonly class StartCommandFactory implements FactoryInterface
 {
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): StartCommand
     {
         return new StartCommand(

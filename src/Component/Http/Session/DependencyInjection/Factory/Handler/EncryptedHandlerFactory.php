@@ -17,6 +17,7 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Session\Handler\EncryptedHandler;
 use SensitiveParameter;
+use Override;
 
 /**
  * A factory to create an encrypted handler instance.
@@ -40,7 +41,7 @@ final readonly class EncryptedHandlerFactory implements FactoryInterface
         $this->secret = $secret;
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): EncryptedHandler
     {
         $secret = $this->secret ?? $container->getProject()->secret;

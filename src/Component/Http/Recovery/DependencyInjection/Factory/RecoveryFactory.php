@@ -17,6 +17,7 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Recovery\Recovery;
 use Psr\Log\LoggerInterface;
+use Override;
 
 /**
  * Factory for creating a {@see Recovery} instance.
@@ -52,7 +53,7 @@ final readonly class RecoveryFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): Recovery
     {
         $logger = $container->getTyped($this->logger, LoggerInterface::class);

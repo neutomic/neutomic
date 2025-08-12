@@ -21,6 +21,7 @@ use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Psl\Filesystem;
 use Psl\Type;
 use Psl\Vec;
+use Override;
 
 /**
  * A loader that loads documents from a directory.
@@ -49,7 +50,7 @@ final class DirectoryLoader implements ResolverAwareLoaderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function load(mixed $resource): DocumentInterface
     {
         try {
@@ -94,7 +95,7 @@ final class DirectoryLoader implements ResolverAwareLoaderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function supports(mixed $resource): bool
     {
         if (!Type\non_empty_string()->matches($resource)) {

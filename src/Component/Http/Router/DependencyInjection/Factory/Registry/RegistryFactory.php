@@ -16,13 +16,14 @@ namespace Neu\Component\Http\Router\DependencyInjection\Factory\Registry;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Router\Registry\Registry;
+use Override;
 
 /**
  * @implements FactoryInterface<Registry>
  */
 final readonly class RegistryFactory implements FactoryInterface
 {
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         return new Registry();

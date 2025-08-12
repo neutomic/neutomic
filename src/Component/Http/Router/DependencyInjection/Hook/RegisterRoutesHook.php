@@ -21,6 +21,7 @@ use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use ReflectionAttribute;
 use ReflectionObject;
+use Override;
 
 /**
  * Hook for registering routes in the registry.
@@ -47,7 +48,7 @@ final readonly class RegisterRoutesHook implements HookInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): void
     {
         $registry = $container->getTyped($this->registry, RegistryInterface::class);

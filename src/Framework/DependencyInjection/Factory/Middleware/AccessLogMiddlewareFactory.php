@@ -17,6 +17,7 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Framework\Middleware\AccessLogMiddleware;
 use Psr\Log\LoggerInterface;
+use Override;
 
 /**
  * Factory for creating a {@see AccessLogMiddleware} instance.
@@ -52,7 +53,7 @@ final readonly class AccessLogMiddlewareFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): AccessLogMiddleware
     {
         return new AccessLogMiddleware(

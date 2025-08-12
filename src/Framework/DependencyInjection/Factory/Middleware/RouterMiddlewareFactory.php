@@ -17,6 +17,7 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Router\Matcher\MatcherInterface;
 use Neu\Framework\Middleware\RouterMiddleware;
+use Override;
 
 /**
  * Factory for creating a {@see RouterMiddleware} instance.
@@ -48,7 +49,7 @@ final readonly class RouterMiddlewareFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): RouterMiddleware
     {
         return new RouterMiddleware(

@@ -24,6 +24,7 @@ use Neu\Component\DependencyInjection\ProjectMode;
 use Neu\Component\Http\Exception\ExceptionInterface;
 use Neu\Component\Http\Server\ServerInterface;
 use Revolt\EventLoop\UnsupportedFeatureException;
+use Override;
 
 #[Command(
     name: 'http:server:start',
@@ -47,7 +48,7 @@ final readonly class StartCommand implements CommandInterface
      *
      * @throws ExceptionInterface If an error occurs while starting or stopping the server.
      */
-    #[\Override]
+    #[Override]
     public function run(InputInterface $input, OutputInterface $output): ExitCode
     {
         $this->server->start();

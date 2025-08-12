@@ -16,6 +16,7 @@ namespace Neu\Component\Http\Message\DependencyInjection\Factory\Form;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Message\Form\MultipartParser;
+use Override;
 
 /**
  * Factory for the multipart form parser.
@@ -27,7 +28,7 @@ final readonly class MultipartParserFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): MultipartParser
     {
         return new MultipartParser();

@@ -21,6 +21,7 @@ use Neu\Component\Utility\AlternativeFinder;
 use Psl\Iter;
 use Psl\Str;
 use Psl\Vec;
+use Override;
 
 final class Registry implements RegistryInterface
 {
@@ -37,7 +38,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(Configuration $configuration, CommandInterface $command): void
     {
         $this->configurations[$configuration->name] = $configuration;
@@ -52,7 +53,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function incorporate(RegistryInterface $registry): void
     {
         foreach ($registry->getConfigurations() as $configuration) {
@@ -63,7 +64,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function has(string $name): bool
     {
         return Iter\contains_key($this->configurations, $name);
@@ -72,7 +73,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getConfiguration(string $name): Configuration
     {
         if (Iter\contains_key($this->configurations, $name)) {
@@ -85,7 +86,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getCommand(string $name): CommandInterface
     {
         if (Iter\contains_key($this->commands, $name)) {
@@ -98,7 +99,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getConfigurations(): array
     {
         $configurations = [];

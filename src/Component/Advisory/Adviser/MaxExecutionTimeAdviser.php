@@ -15,6 +15,7 @@ namespace Neu\Component\Advisory\Adviser;
 
 use Neu\Component\Advisory\Advice;
 use Psl\Str;
+use Override;
 
 use function ini_get;
 
@@ -28,7 +29,7 @@ final readonly class MaxExecutionTimeAdviser implements AdviserInterface
      *
      * @return Advice|null An instance of Advice if the max execution time is not set to unlimited, or null if it is set correctly.
      */
-    #[\Override]
+    #[Override]
     public function getAdvice(): null|Advice
     {
         $maxExecutionTime = (string) ini_get('max_execution_time');

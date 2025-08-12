@@ -18,6 +18,7 @@ use Countable;
 use Iterator;
 use IteratorAggregate;
 use Psl\Iter;
+use Override;
 
 /**
  * A bag can be used for managing sets of specialized data.
@@ -129,13 +130,13 @@ abstract class AbstractBag implements Countable, IteratorAggregate
      *
      * @return Iterator<Tk, Tv>
      */
-    #[\Override]
+    #[Override]
     public function getIterator(): Iterator
     {
         return new ArrayIterator($this->data);
     }
 
-    #[\Override]
+    #[Override]
     public function count(): int
     {
         return Iter\count($this->data);

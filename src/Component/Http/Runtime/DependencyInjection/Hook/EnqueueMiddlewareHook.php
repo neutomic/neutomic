@@ -19,6 +19,7 @@ use Neu\Component\DependencyInjection\HookInterface;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareInterface;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
 use Psl\Iter;
+use Override;
 
 /**
  * A hook that enqueues all middleware instances into the middleware queue.
@@ -48,7 +49,7 @@ final readonly class EnqueueMiddlewareHook implements HookInterface
     /**
      * @throws ExceptionInterface
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): void
     {
         $middlewareStack = $container->getTyped($this->queue, MiddlewareQueueInterface::class);

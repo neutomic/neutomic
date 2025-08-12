@@ -17,6 +17,7 @@ use Neu\Component\Console\Output\OutputInterface;
 use Neu\Component\Console\Output\Type;
 use Psl\Iter;
 use Psl\Str;
+use Override;
 
 /**
  * The `AbstractTable` class provides the core functionality for building and
@@ -53,7 +54,7 @@ abstract class AbstractTable implements TableInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function setHeaders(array $headers): self
     {
         $this->setColumnWidths($headers);
@@ -67,7 +68,7 @@ abstract class AbstractTable implements TableInterface
      *
      * @param list<list<string>> $rows
      */
-    #[\Override]
+    #[Override]
     public function setRows(array $rows): self
     {
         $this->rows = [];
@@ -83,7 +84,7 @@ abstract class AbstractTable implements TableInterface
      *
      * @param list<string> $row
      */
-    #[\Override]
+    #[Override]
     public function addRow(array $row): self
     {
         $this->setColumnWidths($row);

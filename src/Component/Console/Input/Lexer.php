@@ -19,6 +19,7 @@ use Psl\Iter;
 use Psl\Regex;
 use Psl\Str\Byte;
 use Psl\Vec;
+use Override;
 
 /**
  * The `Lexer` handles all parsing and pairing of the provided input.
@@ -97,7 +98,7 @@ final class Lexer implements Iterator
      *
      * @return Token
      */
-    #[\Override]
+    #[Override]
     public function current(): array
     {
         return $this->current;
@@ -114,7 +115,7 @@ final class Lexer implements Iterator
     /**
      * Retrieve the current position of the lexer.
      */
-    #[\Override]
+    #[Override]
     public function key(): int
     {
         return $this->position;
@@ -123,7 +124,7 @@ final class Lexer implements Iterator
     /**
      * Progress the lexer to its next item (if available).
      */
-    #[\Override]
+    #[Override]
     public function next(): void
     {
         if ($this->valid()) {
@@ -134,7 +135,7 @@ final class Lexer implements Iterator
     /**
      * Return whether the lexer has any more items to parse.
      */
-    #[\Override]
+    #[Override]
     public function valid(): bool
     {
         return ($this->position < $this->length);
@@ -236,7 +237,7 @@ final class Lexer implements Iterator
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function rewind(): void
     {
         $this->shift();

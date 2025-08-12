@@ -18,6 +18,7 @@ use Neu\Component\Broadcast\HubManager;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * Factory for creating a {@see HubManager} instance.
@@ -50,7 +51,7 @@ final readonly class HubManagerFactory implements FactoryInterface
         $this->services = $services;
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): HubManager
     {
         $locator = $container->getLocator(HubInterface::class, $this->services);

@@ -16,6 +16,7 @@ namespace Neu\Component\Database\Query\Expression;
 use Psl\Iter;
 use Psl\Str;
 use Psl\Vec;
+use Override;
 
 final readonly class CompositeExpression implements CompositeExpressionInterface
 {
@@ -60,7 +61,7 @@ final readonly class CompositeExpression implements CompositeExpressionInterface
         return new self(CompositionType::Disjunction, Vec\concat([$expression], $expressions));
     }
 
-    #[\Override]
+    #[Override]
     public function getType(): CompositionType
     {
         return $this->type;
@@ -69,7 +70,7 @@ final readonly class CompositeExpression implements CompositeExpressionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function with(string|CompositeExpressionInterface $expression, string|CompositeExpressionInterface ...$expressions): static
     {
         $parts = Vec\concat($this->expressions, [$expression], $expressions);
@@ -94,7 +95,7 @@ final readonly class CompositeExpression implements CompositeExpressionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function count(): int
     {
         return Iter\count($this->expressions);

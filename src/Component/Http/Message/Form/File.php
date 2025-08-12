@@ -16,6 +16,7 @@ namespace Neu\Component\Http\Message\Form;
 use Neu\Component\Http\Message\BodyInterface;
 use Neu\Component\Http\Message\Internal\HeaderStorage;
 use Neu\Component\Http\Message\Internal\MessageConvenienceMethodsTrait;
+use Override;
 
 final readonly class File implements FileInterface
 {
@@ -94,7 +95,7 @@ final readonly class File implements FileInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getName(): string
     {
         return $this->name;
@@ -103,7 +104,7 @@ final readonly class File implements FileInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getFilename(): string
     {
         return $this->filename;
@@ -112,7 +113,7 @@ final readonly class File implements FileInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getMimeType(): string
     {
         return $this->mimeType;
@@ -121,7 +122,7 @@ final readonly class File implements FileInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getExtension(): null|string
     {
         return $this->extension;
@@ -130,7 +131,7 @@ final readonly class File implements FileInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getBody(): null|BodyInterface
     {
         return $this->body;
@@ -139,7 +140,7 @@ final readonly class File implements FileInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function withBody(null|BodyInterface $body): static
     {
         return new self($this->name, $this->filename, $this->mimeType, $this->extension, $this->headerStorage, $body);
@@ -148,7 +149,7 @@ final readonly class File implements FileInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     protected function cloneWithHeaderStorage(HeaderStorage $headerStorage): static
     {
         return new self($this->name, $this->filename, $this->mimeType, $this->extension, $headerStorage, $this->body);

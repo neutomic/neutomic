@@ -21,6 +21,7 @@ use Neu\Component\Broadcast\Transport\PostgresTransport;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * @implements FactoryInterface<PostgresTransport>
@@ -93,7 +94,7 @@ final readonly class PostgresTransportFactory implements FactoryInterface
         $this->sslMode = $sslMode;
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): PostgresTransport
     {
         $config = new PostgresConfig(

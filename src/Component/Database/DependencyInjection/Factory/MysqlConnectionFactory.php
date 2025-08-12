@@ -20,6 +20,7 @@ use Error;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * Factory for creating a {@see MysqlConnection} instance.
@@ -127,7 +128,7 @@ final readonly class MysqlConnectionFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): MysqlConnection
     {
         $config = new Mysql\MysqlConfig(

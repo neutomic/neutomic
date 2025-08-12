@@ -16,6 +16,7 @@ namespace Neu\Component\Database;
 use Amp\Sql\SqlTransaction;
 use Amp\Sql\SqlTransactionError;
 use Neu\Component\Database\Exception\TransactionException;
+use Override;
 
 final readonly class Transaction extends Link implements TransactionInterface
 {
@@ -33,7 +34,7 @@ final readonly class Transaction extends Link implements TransactionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getIsolationLevel(): TransactionIsolationLevel
     {
         return match ($this->transaction->getIsolation()->getLabel()) {
@@ -48,7 +49,7 @@ final readonly class Transaction extends Link implements TransactionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isActive(): bool
     {
         return $this->transaction->isActive();
@@ -57,7 +58,7 @@ final readonly class Transaction extends Link implements TransactionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function commit(): void
     {
         try {
@@ -70,7 +71,7 @@ final readonly class Transaction extends Link implements TransactionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function rollback(): void
     {
         try {
@@ -83,7 +84,7 @@ final readonly class Transaction extends Link implements TransactionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getUnderlyingSqlTransaction(): SqlTransaction
     {
         return $this->transaction;

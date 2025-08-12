@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Message;
 
+use Override;
+
 final readonly class Cookie implements CookieInterface
 {
     public function __construct(
@@ -30,7 +32,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getValue(): string
     {
         return $this->value;
@@ -39,7 +41,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getExpires(): null|int
     {
         return $this->expires;
@@ -48,7 +50,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getMaxAge(): null|int
     {
         return $this->maxAge;
@@ -57,7 +59,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getPath(): null|string
     {
         return $this->path;
@@ -66,7 +68,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getDomain(): null|string
     {
         return $this->domain;
@@ -75,7 +77,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getSecure(): null|bool
     {
         return $this->secure;
@@ -84,7 +86,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getHttpOnly(): null|bool
     {
         return $this->httpOnly;
@@ -93,7 +95,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getSameSite(): null|CookieSameSite
     {
         return $this->sameSite;
@@ -102,7 +104,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function withValue(string $value): static
     {
         return new self(
@@ -120,7 +122,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function withExpires(null|int $expires): static
     {
         return new self(
@@ -138,7 +140,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function withMaxAge(null|int $maxAge): static
     {
         return new self(
@@ -156,7 +158,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function withPath(null|string $path): static
     {
         return new self(
@@ -174,7 +176,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function withDomain(null|string $domain): static
     {
         return new self(
@@ -192,7 +194,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function withSecure(null|bool $secure): static
     {
         return new self(
@@ -210,7 +212,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function withHttpOnly(null|bool $httpOnly): static
     {
         return new self(
@@ -228,7 +230,7 @@ final readonly class Cookie implements CookieInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function withSameSite(null|CookieSameSite $sameSite): static
     {
         return new self(

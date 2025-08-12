@@ -19,6 +19,7 @@ use Neu\Component\Cache\Driver\RedisDriver;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 use function Amp\Redis\createRedisClient;
 
@@ -51,7 +52,7 @@ final readonly class RedisDriverFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): RedisDriver
     {
         try {

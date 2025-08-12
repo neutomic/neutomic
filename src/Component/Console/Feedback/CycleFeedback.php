@@ -16,6 +16,7 @@ namespace Neu\Component\Console\Feedback;
 use Neu\Component\Console\Terminal;
 use Psl\Iter;
 use Psl\Str;
+use Override;
 
 /**
  * The {@see CycleFeedback} class displays feedback by cycling through a series of characters.
@@ -68,7 +69,7 @@ final class CycleFeedback extends AbstractFeedback
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     protected function display(bool $finish = false): void
     {
         $variables = $this->buildOutputVariables();
@@ -97,7 +98,7 @@ final class CycleFeedback extends AbstractFeedback
     /**
      * Set the maximum length of the available character sequence characters.
      */
-    #[\Override]
+    #[Override]
     protected function setMaxLength(): self
     {
         parent::setMaxLength();

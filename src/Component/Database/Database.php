@@ -31,6 +31,7 @@ use Neu\Component\Database\Exception\UnsupportedFeatureException;
 use Neu\Component\Database\Notification\ListenerInterface;
 use Neu\Component\Database\Notification\Postgres\PostgresListener;
 use Throwable;
+use Override;
 
 final readonly class Database extends Link implements DatabaseInterface
 {
@@ -68,7 +69,7 @@ final readonly class Database extends Link implements DatabaseInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getListener(string $channel): ListenerInterface
     {
         if ($this->connection instanceof PostgresConnection) {
@@ -99,7 +100,7 @@ final readonly class Database extends Link implements DatabaseInterface
      *
      * @return T
      */
-    #[\Override]
+    #[Override]
     public function transactional(Closure $operation, TransactionIsolationLevel $isolation = TransactionIsolationLevel::ReadUncommitted): mixed
     {
         $transaction = $this->createTransaction($isolation);
@@ -120,7 +121,7 @@ final readonly class Database extends Link implements DatabaseInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function createTransaction(TransactionIsolationLevel $isolation = TransactionIsolationLevel::ReadUncommitted): TransactionInterface
     {
         $this->connection->setTransactionIsolation(match ($isolation) {
@@ -138,7 +139,7 @@ final readonly class Database extends Link implements DatabaseInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getUnderlyingSqlConnection(): SqlConnection
     {
         return $this->connection;

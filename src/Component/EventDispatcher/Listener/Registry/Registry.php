@@ -16,6 +16,7 @@ namespace Neu\Component\EventDispatcher\Listener\Registry;
 use Neu\Component\EventDispatcher\Listener\ListenerInterface;
 use Psl\Iter;
 use Psl\Vec;
+use Override;
 
 use function is_subclass_of;
 
@@ -36,7 +37,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(string $event, ListenerInterface $listener, int $priority = 0): void
     {
         if (isset($this->listeners[$priority][$event]) && Iter\contains($this->listeners[$priority][$event], $listener)) {
@@ -56,7 +57,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function incorporate(RegistryInterface $registry): void
     {
         foreach ($registry->getRegisteredListeners() as $priority => $events) {
@@ -71,7 +72,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function has(string $name): bool
     {
         foreach ($this->listeners as $events) {
@@ -92,7 +93,7 @@ final class Registry implements RegistryInterface
      *
      * @return iterable<ListenerInterface<T>> A list of listeners registered for the event.
      */
-    #[\Override]
+    #[Override]
     public function getListeners(string $name): iterable
     {
         if (Iter\contains_key($this->optimized, $name)) {
@@ -125,7 +126,7 @@ final class Registry implements RegistryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getRegisteredListeners(): iterable
     {
         return $this->listeners;

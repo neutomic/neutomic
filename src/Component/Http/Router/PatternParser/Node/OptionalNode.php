@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Router\PatternParser\Node;
 
+use Override;
+
 /**
  * A node that represents an optional pattern.
  *
@@ -46,7 +48,7 @@ final readonly class OptionalNode implements Node
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function toRegularExpression(string $delimiter): string
     {
         return '(?:' . $this->pattern->toRegularExpression($delimiter) . ')?';
@@ -55,7 +57,7 @@ final readonly class OptionalNode implements Node
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function toString(): string
     {
         return '?' . $this->pattern->toString();
@@ -64,7 +66,7 @@ final readonly class OptionalNode implements Node
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __unserialize(array $data): void
     {
         /** @var State $data */
@@ -74,7 +76,7 @@ final readonly class OptionalNode implements Node
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __serialize(): array
     {
         return [

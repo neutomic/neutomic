@@ -16,6 +16,7 @@ namespace Neu\Component\Password\DependencyInjection\Factory;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Password\NativeHasher;
+use Override;
 
 /**
  * A factory for creating native password hashers.
@@ -56,7 +57,7 @@ final readonly class NativeHasherFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): NativeHasher
     {
 

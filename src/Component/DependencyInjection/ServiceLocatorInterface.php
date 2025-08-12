@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\DependencyInjection;
 
 use Psr\Container\ContainerInterface;
+use Override;
 
 /**
  * @template T of object
@@ -32,7 +33,7 @@ interface ServiceLocatorInterface extends ContainerInterface
      *
      * @psalm-assert-if-true non-empty-string $id
      */
-    #[\Override]
+    #[Override]
     public function has(string $id): bool;
 
     /**
@@ -45,6 +46,6 @@ interface ServiceLocatorInterface extends ContainerInterface
      *
      * @psalm-assert non-empty-string $id
      */
-    #[\Override]
+    #[Override]
     public function get(string $id): object;
 }

@@ -19,6 +19,7 @@ use Neu\Component\Http\Message\RequestBodyInterface;
 use Neu\Component\Http\Message\RequestInterface;
 use Revolt\EventLoop;
 use Throwable;
+use Override;
 
 /**
  * Parses form data from HTTP requests.
@@ -33,7 +34,7 @@ final readonly class Parser implements ParserInterface, StreamedParserInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function parse(RequestInterface $request, null|ParseOptions $options = null): FormInterface
     {
         $body = $request->getBody();
@@ -66,7 +67,7 @@ final readonly class Parser implements ParserInterface, StreamedParserInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function parseStreamed(RequestInterface $request, null|ParseOptions $options = null): StreamedFormInterface
     {
         $body = $request->getBody();

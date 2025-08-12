@@ -17,6 +17,7 @@ use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\Runtime\Handler\MiddlewareHandler;
 use Psl\DataStructure;
 use WeakMap;
+use Override;
 
 /**
  * A queue for managing and prioritizing middleware.
@@ -58,7 +59,7 @@ final class MiddlewareQueue implements MiddlewareQueueInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function enqueue(MiddlewareInterface $middleware, int $priority = 0): void
     {
         if ($middleware instanceof PrioritizedMiddlewareInterface) {
@@ -72,7 +73,7 @@ final class MiddlewareQueue implements MiddlewareQueueInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function wrap(HandlerInterface $handler): HandlerInterface
     {
         /** @var HandlerInterface */

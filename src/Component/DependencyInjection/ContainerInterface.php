@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\DependencyInjection;
 
 use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Override;
 
 interface ContainerInterface extends DisposableInterface, PsrContainerInterface
 {
@@ -32,7 +33,7 @@ interface ContainerInterface extends DisposableInterface, PsrContainerInterface
      *
      * @return bool
      */
-    #[\Override]
+    #[Override]
     public function has(string $id): bool;
 
     /**
@@ -43,7 +44,7 @@ interface ContainerInterface extends DisposableInterface, PsrContainerInterface
      * @throws Exception\ServiceNotFoundException No entry was found for **this** identifier.
      * @throws Exception\ExceptionInterface Error while retrieving the entry.
      */
-    #[\Override]
+    #[Override]
     public function get(string $id): object;
 
     /**

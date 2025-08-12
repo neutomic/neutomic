@@ -19,6 +19,7 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Psl\Str;
+use Override;
 
 /**
  * A factory for creating a {@see FilesystemDriver} instance.
@@ -56,7 +57,7 @@ final readonly class FilesystemDriverFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): FilesystemDriver
     {
         if (Str\contains($this->directory, "\0")) {

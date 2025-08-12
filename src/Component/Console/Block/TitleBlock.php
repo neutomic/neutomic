@@ -17,6 +17,7 @@ use Neu\Component\Console\Formatter\Formatter;
 use Neu\Component\Console\Output\OutputInterface;
 use Neu\Component\Console\Output\Verbosity;
 use Psl\Str;
+use Override;
 
 final readonly class TitleBlock implements BlockInterface
 {
@@ -30,7 +31,7 @@ final readonly class TitleBlock implements BlockInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function display(string $message, Verbosity $verbosity = Verbosity::Normal): self
     {
         $this->output->writeLine('', $verbosity);

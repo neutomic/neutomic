@@ -22,13 +22,14 @@ use Neu\Component\Http\Message\Form\Parser;
 use Neu\Component\Http\Message\Form\ParserInterface;
 use Neu\Component\Http\Message\Form\StreamedParserInterface;
 use Neu\Component\Http\Message\Form\UrlEncodedParser;
+use Override;
 
 final readonly class MessageExtension implements ExtensionInterface
 {
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $registry->addDefinition(Definition::ofType(MultipartParser::class, new Factory\Form\MultipartParserFactory()));

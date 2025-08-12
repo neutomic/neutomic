@@ -30,6 +30,7 @@ use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
 use Neu\Component\Http\Runtime\Runtime;
 use Neu\Component\Http\Runtime\RuntimeInterface;
 use Psl\Type;
+use Override;
 
 /**
  * A dependency injection extension for the HTTP runtime.
@@ -59,7 +60,7 @@ final readonly class RuntimeExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $defaultLogger = $configurations->getDocument('http')->getOfTypeOrDefault('logger', Type\non_empty_string(), null);

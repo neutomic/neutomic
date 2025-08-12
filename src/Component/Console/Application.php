@@ -33,6 +33,7 @@ use Neu\Component\EventDispatcher\EventDispatcherInterface;
 use Psl\Async;
 use Psl\Env;
 use Throwable;
+use Override;
 
 /**
  * The application class is the main entry point for the console application.
@@ -91,7 +92,7 @@ final class Application implements ApplicationInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getConfiguration(): Configuration
     {
         return $this->configuration;
@@ -100,7 +101,7 @@ final class Application implements ApplicationInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getRegistry(): RegistryInterface
     {
         return $this->registry;
@@ -109,7 +110,7 @@ final class Application implements ApplicationInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getRecovery(): RecoveryInterface
     {
         return $this->errorHandler;
@@ -118,7 +119,7 @@ final class Application implements ApplicationInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getEventDispatcher(): null|EventDispatcherInterface
     {
         return $this->dispatcher;
@@ -127,7 +128,7 @@ final class Application implements ApplicationInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function setEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
         $this->dispatcher = $eventDispatcher;
@@ -136,7 +137,7 @@ final class Application implements ApplicationInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function run(null|InputInterface $input = null, null|OutputInterface $output = null): int
     {
         Env\set_var('COLUMNS', (string) Terminal::getWidth());

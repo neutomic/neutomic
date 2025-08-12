@@ -15,6 +15,7 @@ namespace Neu\Component\DependencyInjection;
 
 use Neu\Component\DependencyInjection\Definition\DefinitionInterface;
 use Neu\Component\DependencyInjection\Exception\DisposedObjectException;
+use Override;
 
 use function count;
 
@@ -87,7 +88,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getProject(): Project
     {
         DisposedObjectException::guard($this);
@@ -98,7 +99,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function has(string $id): bool
     {
         DisposedObjectException::guard($this);
@@ -117,7 +118,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function get(string $id): object
     {
         DisposedObjectException::guard($this);
@@ -157,7 +158,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getTyped(string $id, string $type): object
     {
         DisposedObjectException::guard($this);
@@ -174,7 +175,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getInstancesOf(string $type): iterable
     {
         DisposedObjectException::guard($this);
@@ -189,7 +190,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getAttributed(string $attribute): iterable
     {
         DisposedObjectException::guard($this);
@@ -204,7 +205,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getLocator(string $type, array $services): ServiceLocatorInterface
     {
         DisposedObjectException::guard($this);
@@ -215,7 +216,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isDisposed(): bool
     {
         return $this->isDisposed;
@@ -224,7 +225,7 @@ final class Container implements ContainerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function dispose(): void
     {
         if ($this->isDisposed) {

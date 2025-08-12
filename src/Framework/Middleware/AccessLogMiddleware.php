@@ -21,6 +21,7 @@ use Neu\Component\Http\Runtime\Middleware\PrioritizedMiddlewareInterface;
 use Psl\Str;
 use Psl\DateTime;
 use Psr\Log\LoggerInterface;
+use Override;
 
 /**
  * Middleware that logs access to the server.
@@ -56,7 +57,7 @@ final readonly class AccessLogMiddleware implements PrioritizedMiddlewareInterfa
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
         $time = DateTime\Timestamp::monotonic();
@@ -86,7 +87,7 @@ final readonly class AccessLogMiddleware implements PrioritizedMiddlewareInterfa
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getPriority(): int
     {
         return $this->priority;

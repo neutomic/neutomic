@@ -17,6 +17,7 @@ use Amp;
 use Amp\Future;
 use Closure;
 use Psl\Async\Awaitable;
+use Override;
 
 /**
  * Provides an implementation for managing HTTP trailers asynchronously.
@@ -91,7 +92,7 @@ final readonly class Trailer implements TrailerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getField(): string
     {
         return $this->field;
@@ -100,7 +101,7 @@ final readonly class Trailer implements TrailerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getValue(): array
     {
         return $this->value->await();

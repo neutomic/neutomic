@@ -22,6 +22,7 @@ use Neu\Component\EventDispatcher\Listener\ListenerInterface;
 use Neu\Component\EventDispatcher\Listener\Registry\RegistryInterface;
 use ReflectionAttribute;
 use ReflectionObject;
+use Override;
 
 /**
  * Hook for registering event listeners.
@@ -46,7 +47,7 @@ final readonly class RegisterListenersHook implements HookInterface
     /**
      * @throws ExceptionInterface
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): void
     {
         $registry = $container->getTyped($this->registry, RegistryInterface::class);

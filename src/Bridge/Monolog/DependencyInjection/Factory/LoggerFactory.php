@@ -21,6 +21,7 @@ use Monolog\Processor\ProcessorInterface;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * Factory for creating a logger instance.
@@ -98,7 +99,7 @@ final readonly class LoggerFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         $logger = new Logger(name: $this->channel, timezone: $this->timezone);

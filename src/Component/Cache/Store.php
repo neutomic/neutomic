@@ -15,6 +15,7 @@ namespace Neu\Component\Cache;
 
 use Closure;
 use Psl\Async;
+use Override;
 
 /**
  * A cache store implementation that uses a driver to store and retrieve items.
@@ -75,7 +76,7 @@ final class Store implements StoreInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function get(string $key): mixed
     {
         /** @var (Closure(): mixed) $computer */
@@ -107,7 +108,7 @@ final class Store implements StoreInterface
      *
      * @return T
      */
-    #[\Override]
+    #[Override]
     public function compute(string $key, Closure $computer, null|int $ttl = null): mixed
     {
         /** @var T */
@@ -137,7 +138,7 @@ final class Store implements StoreInterface
      *
      * @return T
      */
-    #[\Override]
+    #[Override]
     public function update(string $key, Closure $computer, null|int $ttl = null): mixed
     {
         /** @var T */
@@ -147,7 +148,7 @@ final class Store implements StoreInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function delete(string $key): void
     {
         // wait for pending operations associated with the given key.
@@ -159,7 +160,7 @@ final class Store implements StoreInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function close(): void
     {
         $this->driver->close();

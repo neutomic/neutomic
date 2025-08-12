@@ -18,6 +18,7 @@ use Neu\Component\Http\Message\UriInterface;
 use Neu\Component\Http\Router\Generator\GeneratorInterface;
 use Neu\Component\Http\Router\Matcher\MatcherInterface;
 use Neu\Component\Http\Router\Matcher\Result;
+use Override;
 
 final readonly class Router implements RouterInterface
 {
@@ -33,7 +34,7 @@ final readonly class Router implements RouterInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function match(RequestInterface $request): Result
     {
         return $this->matcher->match($request);
@@ -42,7 +43,7 @@ final readonly class Router implements RouterInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function generate(string $name, array $parameters = []): UriInterface
     {
         return $this->generator->generate($name, $parameters);

@@ -23,6 +23,7 @@ use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Neu\Component\DependencyInjection\RegistryInterface;
 use Psl\Type;
+use Override;
 
 /**
  * @psalm-type Configuration = array{
@@ -38,7 +39,7 @@ final readonly class AdvisoryExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $configuration = $configurations

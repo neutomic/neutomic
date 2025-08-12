@@ -15,6 +15,7 @@ namespace Neu\Component\Console\Table;
 
 use Neu\Component\Console\Output\OutputInterface;
 use Psl\Str;
+use Override;
 
 /**
  * The `TabDelimitedTable` class builds and outputs a table with values tab-delimited
@@ -25,7 +26,7 @@ final class TabDelimitedTable extends AbstractTable
     /**
      * Display the table in the console.
      */
-    #[\Override]
+    #[Override]
     public function display(): void
     {
         $this->output->writeLine(Str\join($this->headers, OutputInterface::TAB));

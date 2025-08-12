@@ -18,6 +18,7 @@ use Neu\Component\DependencyInjection\Definition\DefinitionInterface;
 use Neu\Component\DependencyInjection\ProcessorInterface;
 use Neu\Component\EventDispatcher\EventDispatcherAwareInterface;
 use Neu\Component\EventDispatcher\EventDispatcherInterface;
+use Override;
 
 /**
  * Processor for injecting the event dispatcher into services implementing {@see EventDispatcherAwareInterface}.
@@ -42,7 +43,7 @@ final class EventDispatcherAwareProcessor implements ProcessorInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function process(ContainerInterface $container, DefinitionInterface $definition, object $service): object
     {
         if ($service instanceof EventDispatcherAwareInterface) {

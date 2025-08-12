@@ -16,6 +16,7 @@ namespace Neu\Component\Advisory\Adviser;
 use Amp\Http\Internal\HPackNghttp2;
 use FFI;
 use Neu\Component\Advisory\Advice;
+use Override;
 
 use function class_exists;
 use function extension_loaded;
@@ -30,7 +31,7 @@ final readonly class HPackNghttp2Adviser implements AdviserInterface
      *
      * @return Advice|null An instance of Advice if HPack is not supported, or null if it is supported.
      */
-    #[\Override]
+    #[Override]
     public function getAdvice(): null|Advice
     {
         if (!extension_loaded('ffi') || !class_exists(FFI::class)) {

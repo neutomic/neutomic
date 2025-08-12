@@ -19,6 +19,7 @@ use Twig\Cache\CacheInterface;
 use Twig\Cache\NullCache;
 use Twig\Environment;
 use Twig\Loader\LoaderInterface;
+use Override;
 
 /**
  * Factory for creating a {@see Environment} instance.
@@ -98,7 +99,7 @@ final readonly class EnvironmentFactory implements FactoryInterface
         $this->globals = $globals ?? [];
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         $options = [

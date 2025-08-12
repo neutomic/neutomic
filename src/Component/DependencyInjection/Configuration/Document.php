@@ -23,6 +23,7 @@ use Psl\Type;
 use Psl\Type\TypeInterface;
 use Psl\Vec;
 use Throwable;
+use Override;
 
 use function array_merge;
 use function array_merge_recursive;
@@ -53,7 +54,7 @@ final readonly class Document implements DocumentInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isStrict(): bool
     {
         return $this->strict;
@@ -62,7 +63,7 @@ final readonly class Document implements DocumentInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function has(string|int $index): bool
     {
         return Iter\contains_key($this->entries, $index);
@@ -71,7 +72,7 @@ final readonly class Document implements DocumentInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function get(string|int $index): mixed
     {
         if (!$this->has($index)) {
@@ -84,7 +85,7 @@ final readonly class Document implements DocumentInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getOfType(string|int $index, Type\TypeInterface $type): mixed
     {
         $value = $this->get($index);
@@ -110,7 +111,7 @@ final readonly class Document implements DocumentInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getOfTypeOrDefault(int|string $index, TypeInterface $type, mixed $default): mixed
     {
         if (!$this->has($index)) {
@@ -124,7 +125,7 @@ final readonly class Document implements DocumentInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isOfType(string|int $index, Type\TypeInterface $type): bool
     {
         if ($this->strict && (!$this->has($index) || !$type->matches($this->entries[$index]))) {
@@ -143,7 +144,7 @@ final readonly class Document implements DocumentInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getDocument(int|string $index, null|bool $strict = null): DocumentInterface
     {
         if (!$this->has($index)) {
@@ -158,7 +159,7 @@ final readonly class Document implements DocumentInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isDocument(int|string $index): bool
     {
         if (!$this->has($index)) {
@@ -171,7 +172,7 @@ final readonly class Document implements DocumentInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getIndices(): array
     {
         return Vec\keys($this->entries);
@@ -180,7 +181,7 @@ final readonly class Document implements DocumentInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getAll(): array
     {
         return $this->entries;
@@ -189,7 +190,7 @@ final readonly class Document implements DocumentInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function combine(DocumentInterface $document, CombineStrategy $strategy): static
     {
         return match ($strategy) {
@@ -203,7 +204,7 @@ final readonly class Document implements DocumentInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function replace(DocumentInterface $document, bool $recursive = true): static
     {
         if ($recursive) {
@@ -222,7 +223,7 @@ final readonly class Document implements DocumentInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function merge(DocumentInterface $document, bool $recursive = true): static
     {
         if ($recursive) {
@@ -241,7 +242,7 @@ final readonly class Document implements DocumentInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function count(): int
     {
         return Iter\count($this->entries);
@@ -250,7 +251,7 @@ final readonly class Document implements DocumentInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->entries);

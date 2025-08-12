@@ -15,6 +15,7 @@ namespace Neu\Component\Console\Output;
 
 use Amp\ByteStream;
 use Neu\Component\Console\Formatter\FormatterInterface;
+use Override;
 
 /**
  * An {@see OutputInterface} implementation based on {@see ByteStream\WritableStream}.
@@ -38,7 +39,7 @@ final class ByteStreamOutput extends AbstractOutput
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     protected function doWrite(string $content): void
     {
         $this->outputStream->write($content);
@@ -47,7 +48,7 @@ final class ByteStreamOutput extends AbstractOutput
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getStream(): mixed
     {
         if ($this->outputStream instanceof ByteStream\ResourceStream) {

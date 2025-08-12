@@ -31,6 +31,7 @@ use Neu\Framework\EngineInterface;
 use Revolt\EventLoop;
 use Psl\Env;
 use Psl\SecureRandom;
+use Override;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
@@ -42,7 +43,7 @@ final readonly class PubHandler implements HandlerInterface
     {
     }
 
-    #[\Override]
+    #[Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         $form = $this->parser->parse($request, ParseOptions::fromFieldCountLimit(4)->withFileCountLimit(0));
@@ -69,7 +70,7 @@ final readonly class SubHandler implements HandlerInterface
     {
     }
 
-    #[\Override]
+    #[Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         $topics = $request->getQueryParameter('topics');

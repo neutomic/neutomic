@@ -21,6 +21,7 @@ use Neu\Component\Http\Session\Exception\UnavailableItemException;
 use Neu\Component\Http\Session\SessionInterface;
 use Psl\Str;
 use SensitiveParameter;
+use Override;
 
 /**
  * A storage implementation that stores CSRF tokens in the session.
@@ -52,7 +53,7 @@ final readonly class SessionCsrfTokenStorage implements CsrfTokenStorageInterfac
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function hasToken(RequestInterface $request, string $identifier): bool
     {
         $session = $this->getSession($request);
@@ -63,7 +64,7 @@ final readonly class SessionCsrfTokenStorage implements CsrfTokenStorageInterfac
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getToken(RequestInterface $request, string $identifier): string
     {
         $session = $this->getSession($request);
@@ -83,7 +84,7 @@ final readonly class SessionCsrfTokenStorage implements CsrfTokenStorageInterfac
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function setToken(RequestInterface $request, string $identifier, #[SensitiveParameter] string $value): void
     {
         $session = $this->getSession($request);
@@ -93,7 +94,7 @@ final readonly class SessionCsrfTokenStorage implements CsrfTokenStorageInterfac
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function removeToken(RequestInterface $request, string $identifier): void
     {
         $session = $this->getSession($request);
@@ -103,7 +104,7 @@ final readonly class SessionCsrfTokenStorage implements CsrfTokenStorageInterfac
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function clear(RequestInterface $request): void
     {
         $session = $this->getSession($request);

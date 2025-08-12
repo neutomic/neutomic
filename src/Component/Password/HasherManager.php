@@ -16,6 +16,7 @@ namespace Neu\Component\Password;
 use Neu\Component\DependencyInjection\Exception\ExceptionInterface;
 use Neu\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Neu\Component\DependencyInjection\ServiceLocatorInterface;
+use Override;
 
 /**
  * A password hasher manager implementation.
@@ -51,7 +52,7 @@ final readonly class HasherManager implements HasherManagerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getDefaultHasher(): HasherInterface
     {
         return $this->getHasher($this->defaultStoreId);
@@ -60,7 +61,7 @@ final readonly class HasherManager implements HasherManagerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function hasHasher(string $identifier): bool
     {
         return $this->locator->has($identifier);
@@ -69,7 +70,7 @@ final readonly class HasherManager implements HasherManagerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getHasher(string $identifier): HasherInterface
     {
         try {
@@ -84,7 +85,7 @@ final readonly class HasherManager implements HasherManagerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getAvailableHashers(): array
     {
         $services = $this->locator->getAvailableServices();

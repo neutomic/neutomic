@@ -15,6 +15,7 @@ namespace Neu\Component\Console\Input;
 
 use Neu\Component\Console\Bag;
 use Neu\Component\Console\Input\Definition\DefinitionInterface;
+use Override;
 
 /**
  * @template T of DefinitionInterface
@@ -66,7 +67,7 @@ class AbstractBag extends Bag\AbstractBag
      *
      * @return null|T
      */
-    #[\Override]
+    #[Override]
     public function get(string|int $key, mixed $default = null): mixed
     {
         $value = parent::get($key, $default);

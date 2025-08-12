@@ -15,6 +15,7 @@ namespace Neu\Component\Console\Output;
 
 use Neu\Component\Console\Formatter\FormatterInterface;
 use Psl\IO;
+use Override;
 
 /**
  * An {@see OutputInterface} implementation based on {@see IO\WriteHandleInterface}.
@@ -38,7 +39,7 @@ final class HandleOutput extends AbstractOutput
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     protected function doWrite(string $content): void
     {
         $this->outputHandle->writeAll($content);
@@ -47,7 +48,7 @@ final class HandleOutput extends AbstractOutput
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getStream(): mixed
     {
         if ($this->outputHandle instanceof IO\StreamHandleInterface) {

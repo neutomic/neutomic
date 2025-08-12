@@ -17,6 +17,7 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Router\Matcher\Matcher;
 use Neu\Component\Http\Router\Registry\RegistryInterface;
+use Override;
 
 /**
  * Factory for creating a router matcher.
@@ -40,7 +41,7 @@ final readonly class MatcherFactory implements FactoryInterface
         $this->registry = $registry ?? RegistryInterface::class;
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): object
     {
         return new Matcher(

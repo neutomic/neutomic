@@ -19,6 +19,7 @@ use Neu\Component\Database\Query\InsertQueryInterface;
 use Neu\Component\Database\Query\Type;
 use Psl\Str;
 use Psl\Vec;
+use Override;
 
 final readonly class InsertQuery extends AbstractExecutableQuery implements InsertQueryInterface
 {
@@ -66,7 +67,7 @@ final readonly class InsertQuery extends AbstractExecutableQuery implements Inse
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function values(array $first, array ...$rest): static
     {
         $values = [$first];
@@ -80,7 +81,7 @@ final readonly class InsertQuery extends AbstractExecutableQuery implements Inse
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getType(): Type
     {
         return Type::Insert;

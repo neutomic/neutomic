@@ -16,6 +16,7 @@ namespace Neu\Bridge\Twig\DependencyInjection\Factory\Cache;
 use Neu\Bridge\Twig\Cache\FilesystemCache;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * @implements FactoryInterface<FilesystemCache>
@@ -44,7 +45,7 @@ final readonly class FilesystemCacheFactory implements FactoryInterface
         $this->options = $options ?? 0;
     }
 
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): FilesystemCache
     {
         return new FilesystemCache($this->cache, $this->options);

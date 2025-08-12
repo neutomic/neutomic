@@ -17,6 +17,7 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Session\Persistence\PersistenceInterface;
 use Neu\Framework\Middleware\SessionMiddleware;
+use Override;
 
 /**
  * Factory for creating a {@see SessionMiddleware} instance.
@@ -48,7 +49,7 @@ final readonly class SessionMiddlewareFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): SessionMiddleware
     {
         return new SessionMiddleware(

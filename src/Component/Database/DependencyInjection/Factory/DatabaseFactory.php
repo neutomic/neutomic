@@ -21,6 +21,7 @@ use Amp\Sql\SqlTransaction;
 use Neu\Component\Database\Database;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 
 /**
  * Factory for creating a {@see Database} instance.
@@ -47,7 +48,7 @@ final readonly class DatabaseFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): Database
     {
         /** @var SqlConnection<SqlConfig, SqlResult, SqlStatement<SqlResult>, SqlTransaction> $connection */

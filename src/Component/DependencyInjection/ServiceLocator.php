@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\DependencyInjection;
 
 use Psl\Vec;
+use Override;
 
 /**
  * @template T of object
@@ -56,7 +57,7 @@ final readonly class ServiceLocator implements ServiceLocatorInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getAvailableServices(): array
     {
         return Vec\keys($this->services);
@@ -65,7 +66,7 @@ final readonly class ServiceLocator implements ServiceLocatorInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function has(string $id): bool
     {
         return '' !== $id && isset($this->services[$id]);
@@ -74,7 +75,7 @@ final readonly class ServiceLocator implements ServiceLocatorInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function get(string $id): object
     {
         if ('' === $id || !isset($this->services[$id])) {

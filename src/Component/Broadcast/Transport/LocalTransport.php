@@ -16,6 +16,7 @@ namespace Neu\Component\Broadcast\Transport;
 use Amp\Sync;
 use Amp\Cluster\Cluster;
 use Amp\Pipeline\ConcurrentIterator;
+use Override;
 
 /**
  * A local transport mechanism that sends and receives messages based on the current execution context.
@@ -39,31 +40,31 @@ final readonly class LocalTransport implements TransportInterface
         }
     }
 
-    #[\Override]
+    #[Override]
     public function send(string $channel, mixed $message): void
     {
         $this->transport->send($channel, $message);
     }
 
-    #[\Override]
+    #[Override]
     public function isListening(string $channel): bool
     {
         return $this->transport->isListening($channel);
     }
 
-    #[\Override]
+    #[Override]
     public function listen(string $channel): ConcurrentIterator
     {
         return $this->transport->listen($channel);
     }
 
-    #[\Override]
+    #[Override]
     public function close(): void
     {
         $this->transport->close();
     }
 
-    #[\Override]
+    #[Override]
     public function isClosed(): bool
     {
         return $this->transport->isClosed();

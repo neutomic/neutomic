@@ -25,6 +25,7 @@ use Neu\Component\Password\HasherManager;
 use Neu\Component\Password\NativeHasher;
 use Neu\Component\Password\PlainHasher;
 use Psl\Type;
+use Override;
 
 /**
  * The password extension.
@@ -53,7 +54,7 @@ final readonly class PasswordExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $configuration = $configurations

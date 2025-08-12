@@ -30,6 +30,7 @@ use Neu\Component\DependencyInjection\RegistryInterface as DIRegistryInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Psl\Type;
+use Override;
 
 /**
  * @psalm-type FlagsConfiguration = array{
@@ -65,7 +66,7 @@ final readonly class ConsoleExtension implements ExtensionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function register(DIRegistryInterface $registry, DocumentInterface $configurations): void
     {
         /** @var Configuration $configuration */

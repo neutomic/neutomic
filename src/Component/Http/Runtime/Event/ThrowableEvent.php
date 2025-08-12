@@ -19,6 +19,7 @@ use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Context;
 use Psr\EventDispatcher\StoppableEventInterface;
 use Throwable;
+use Override;
 
 /**
  * Event triggered when a throwable occurs during the processing of an HTTP request.
@@ -101,7 +102,7 @@ final readonly class ThrowableEvent implements StoppableEventInterface
      *
      * @return bool True if a response has been set and the event propagation is stopped, otherwise false.
      */
-    #[\Override]
+    #[Override]
     public function isPropagationStopped(): bool
     {
         return $this->response !== null;

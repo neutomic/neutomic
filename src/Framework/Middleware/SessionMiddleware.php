@@ -19,6 +19,7 @@ use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\Runtime\Middleware\PrioritizedMiddlewareInterface;
 use Neu\Component\Http\Session\Persistence\PersistenceInterface;
+use Override;
 
 final readonly class SessionMiddleware implements PrioritizedMiddlewareInterface
 {
@@ -33,7 +34,7 @@ final readonly class SessionMiddleware implements PrioritizedMiddlewareInterface
         $this->priority = $priority;
     }
 
-    #[\Override]
+    #[Override]
     public function process(Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface
     {
         $request = $this->persistence->initialize($context, $request);
@@ -43,7 +44,7 @@ final readonly class SessionMiddleware implements PrioritizedMiddlewareInterface
         return $this->persistence->persist($context, $request, $response);
     }
 
-    #[\Override]
+    #[Override]
     public function getPriority(): int
     {
         return $this->priority;

@@ -19,6 +19,7 @@ use Neu\Component\Console\Terminal;
 use Psl\Iter;
 use Psl\Math;
 use Psl\Str;
+use Override;
 
 /**
  * The {@see ProgressBarFeedback} class displays feedback information with a progress bar.
@@ -40,7 +41,7 @@ final class ProgressBarFeedback extends AbstractFeedback
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function setCharacterSequence(array $characters): static
     {
         if (Iter\count($characters) !== 3) {
@@ -55,7 +56,7 @@ final class ProgressBarFeedback extends AbstractFeedback
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     protected function display(bool $finish = false): void
     {
         if (!$finish && $this->current === $this->total) {

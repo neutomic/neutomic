@@ -22,6 +22,7 @@ use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\HookInterface;
 use ReflectionAttribute;
 use ReflectionObject;
+use Override;
 
 /**
  * A hook for registering commands in the {@see RegistryInterface}.
@@ -48,7 +49,7 @@ final readonly class RegisterCommandsHook implements HookInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): void
     {
         $registry = $container->getTyped($this->registry, RegistryInterface::class);

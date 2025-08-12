@@ -25,6 +25,7 @@ use Neu\Component\DependencyInjection\Configuration\Loader\YamlFileLoader;
 use Neu\Component\DependencyInjection\Exception\NoSupportiveLoaderException;
 use Psl\Str;
 use Psl\Type;
+use Override;
 
 use function get_debug_type;
 
@@ -96,7 +97,7 @@ final class Resolver implements ResolverInterface
      *
      * @return LoaderInterface<ResourceType>
      */
-    #[\Override]
+    #[Override]
     public function resolve(mixed $resource): LoaderInterface
     {
         foreach ($this->loaders as $loader) {

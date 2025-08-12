@@ -25,6 +25,7 @@ use Neu\Component\Http\Runtime\Handler\Resolver\HandlerResolverInterface;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
 use Psl\Async;
 use Throwable;
+use Override;
 
 /**
  * The Runtime class implements the RuntimeInterface to manage the HTTP request lifecycle,
@@ -91,7 +92,7 @@ final class Runtime implements RuntimeInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getConcurrencyLimit(): int
     {
         return $this->semaphore->getConcurrencyLimit();
@@ -100,7 +101,7 @@ final class Runtime implements RuntimeInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getActiveRequestsCount(): int
     {
         return $this->semaphore->getIngoingOperations();
@@ -109,7 +110,7 @@ final class Runtime implements RuntimeInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getPendingRequestsCount(): int
     {
         return $this->semaphore->getPendingOperations();
@@ -118,7 +119,7 @@ final class Runtime implements RuntimeInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getTotalRequestsCount(): int
     {
         return $this->totalRequestsCount;
@@ -127,7 +128,7 @@ final class Runtime implements RuntimeInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         try {

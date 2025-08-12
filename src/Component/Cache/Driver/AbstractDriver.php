@@ -15,6 +15,7 @@ namespace Neu\Component\Cache\Driver;
 
 use Neu\Component\Cache\Exception\RuntimeException;
 use Revolt\EventLoop;
+use Override;
 
 /**
  * Abstract class representing a generic cache driver.
@@ -59,7 +60,7 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function close(): void
     {
         if (EventLoop::isEnabled($this->pruneWatcher)) {

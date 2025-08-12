@@ -16,6 +16,7 @@ namespace Neu\Component\Console\Input;
 use Amp\ByteStream;
 use Neu\Component\Console\Exception\NonInteractiveInputException;
 use Psl\Str;
+use Override;
 
 use const PHP_EOL;
 
@@ -52,7 +53,7 @@ final class ByteStreamInput extends AbstractInput
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getUserInput(null|int $length = null): string
     {
         if (!$this->isInteractive()) {
@@ -77,7 +78,7 @@ final class ByteStreamInput extends AbstractInput
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getStream(): mixed
     {
         if ($this->stream instanceof ByteStream\ResourceStream) {

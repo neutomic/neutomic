@@ -15,6 +15,7 @@ namespace Neu\Component\Http\Session;
 
 use Closure;
 use Neu\Component\Http\Session\Exception\UnavailableItemException;
+use Override;
 
 use function array_key_exists;
 
@@ -81,7 +82,7 @@ final class Session implements SessionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getId(): null|string
     {
         return $this->id;
@@ -101,7 +102,7 @@ final class Session implements SessionInterface
      *
      * @return T
      */
-    #[\Override]
+    #[Override]
     public function compute(string $key, Closure $computer): mixed
     {
         if (!array_key_exists($key, $this->data)) {
@@ -126,7 +127,7 @@ final class Session implements SessionInterface
      *
      * @return T
      */
-    #[\Override]
+    #[Override]
     public function update(string $key, Closure $updater): mixed
     {
         $previous = null;
@@ -146,7 +147,7 @@ final class Session implements SessionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function has(string $key): bool
     {
         return array_key_exists($key, $this->data);
@@ -155,7 +156,7 @@ final class Session implements SessionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function set(string $key, mixed $value): static
     {
         $this->data[$key] = $value;
@@ -166,7 +167,7 @@ final class Session implements SessionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function add(string $key, mixed $value): static
     {
         if (!array_key_exists($key, $this->data)) {
@@ -179,7 +180,7 @@ final class Session implements SessionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function get(string $key): mixed
     {
         if (!array_key_exists($key, $this->data)) {
@@ -192,7 +193,7 @@ final class Session implements SessionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function delete(string $key): static
     {
         unset($this->data[$key]);
@@ -203,7 +204,7 @@ final class Session implements SessionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function all(): array
     {
         return $this->data;
@@ -212,7 +213,7 @@ final class Session implements SessionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function clear(): static
     {
         $this->data = [];
@@ -223,7 +224,7 @@ final class Session implements SessionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function flush(): static
     {
         $this->data = [];
@@ -235,7 +236,7 @@ final class Session implements SessionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function hasChanges(): bool
     {
         return $this->data !== $this->originalData;
@@ -244,7 +245,7 @@ final class Session implements SessionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function isFlushed(): bool
     {
         return $this->flushed;
@@ -253,7 +254,7 @@ final class Session implements SessionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function expireAfter(int $duration): static
     {
         $this->set(static::SESSION_AGE_KEY, $duration);
@@ -265,7 +266,7 @@ final class Session implements SessionInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function age(): int
     {
         return $this->age;

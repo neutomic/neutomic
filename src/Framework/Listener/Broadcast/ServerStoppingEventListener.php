@@ -17,6 +17,7 @@ use Neu\Component\Broadcast\HubManagerInterface;
 use Neu\Component\EventDispatcher\Attribute\Listener;
 use Neu\Component\EventDispatcher\Listener\ListenerInterface;
 use Neu\Component\Http\Server\Event\ServerStoppingEvent;
+use Override;
 
 /**
  * A listener that closes all hubs when the server is stopping.
@@ -46,7 +47,7 @@ final readonly class ServerStoppingEventListener implements ListenerInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function process(object $event): object
     {
         if (null !== $this->hubManager) {

@@ -22,6 +22,7 @@ use Neu\Component\Console\Output\OutputInterface;
 use Neu\Component\Console\Output\Verbosity;
 use Psl\Str;
 use Throwable;
+use Override;
 
 use function array_filter;
 use function array_map;
@@ -36,7 +37,7 @@ final class Recovery implements RecoveryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function recover(InputInterface $input, OutputInterface $output, Throwable $throwable): int
     {
         if ($output instanceof ConsoleOutputInterface) {

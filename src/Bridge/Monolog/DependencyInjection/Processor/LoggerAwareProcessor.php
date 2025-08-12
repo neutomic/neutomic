@@ -18,6 +18,7 @@ use Neu\Component\DependencyInjection\Definition\DefinitionInterface;
 use Neu\Component\DependencyInjection\ProcessorInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
+use Override;
 
 /**
  * Processor to inject a logger into services that implement {@see LoggerAwareInterface}.
@@ -44,7 +45,7 @@ final class LoggerAwareProcessor implements ProcessorInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function process(ContainerInterface $container, DefinitionInterface $definition, object $service): object
     {
         if ($service instanceof LoggerAwareInterface) {

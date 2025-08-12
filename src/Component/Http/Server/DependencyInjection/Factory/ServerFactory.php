@@ -20,6 +20,7 @@ use Neu\Component\Http\Runtime\RuntimeInterface;
 use Neu\Component\Http\Server\Server;
 use Neu\Component\Http\Server\ServerInfrastructure;
 use Psr\Log\LoggerInterface;
+use Override;
 
 /**
  * Factory for creating a {@see Server} instance.
@@ -66,7 +67,7 @@ final readonly class ServerFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): Server
     {
         return new Server(

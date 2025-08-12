@@ -19,6 +19,7 @@ use Neu\Component\DependencyInjection\Exception\InvalidConfigurationException;
 use Psl\Filesystem;
 use Psl\Str;
 use Psl\Type;
+use Override;
 
 /**
  * @implements LoaderInterface<non-empty-string>
@@ -28,7 +29,7 @@ final class PhpFileLoader implements LoaderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function load(mixed $resource): DocumentInterface
     {
         /** @var mixed $data */
@@ -52,7 +53,7 @@ final class PhpFileLoader implements LoaderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function supports(mixed $resource): bool
     {
         if (!Type\non_empty_string()->matches($resource) || !Str\ends_with($resource, '.php')) {

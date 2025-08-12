@@ -22,6 +22,7 @@ use Psl\Encoding;
 use Psl\Filesystem;
 use Psl\Hash;
 use Psl\Str;
+use Override;
 
 use function time;
 
@@ -51,7 +52,7 @@ final class FilesystemDriver extends AbstractDriver
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function get(string $key): mixed
     {
         try {
@@ -69,7 +70,7 @@ final class FilesystemDriver extends AbstractDriver
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function set(string $key, mixed $value, null|int $ttl = null): void
     {
         try {
@@ -84,7 +85,7 @@ final class FilesystemDriver extends AbstractDriver
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function delete(string $key): void
     {
         try {
@@ -100,7 +101,7 @@ final class FilesystemDriver extends AbstractDriver
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function clear(): void
     {
         try {
@@ -115,7 +116,7 @@ final class FilesystemDriver extends AbstractDriver
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function prune(): void
     {
         try {

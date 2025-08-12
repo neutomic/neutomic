@@ -15,6 +15,7 @@ namespace Neu\Component\Database\Query\Expression;
 
 use Countable;
 use Stringable;
+use Override;
 
 interface CompositeExpressionInterface extends Countable, Stringable
 {
@@ -38,6 +39,6 @@ interface CompositeExpressionInterface extends Countable, Stringable
     /**
      * Retrieves the amount of expressions on composite expression.
      */
-    #[\Override]
+    #[Override]
     public function count(): int;
 }

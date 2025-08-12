@@ -31,6 +31,7 @@ use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\AutoloadSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\DirectoriesSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\SingleFileSourceLocator;
+use Override;
 
 use function array_walk_recursive;
 use function is_string;
@@ -113,7 +114,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function addConfigurationResource(mixed $resource): void
     {
         $this->resources[] = $resource;
@@ -122,7 +123,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function addConfigurationLoader(LoaderInterface $loader): void
     {
         $this->resolver->addLoader($loader);
@@ -131,7 +132,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function addPathForAutoDiscovery(string $path): void
     {
         $this->discoverablePaths[] = $path;
@@ -140,7 +141,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function hasAutoDiscovery(): bool
     {
         return $this->autoDiscovery;
@@ -149,7 +150,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function setAutoDiscovery(bool $autoDiscovery): void
     {
         $this->autoDiscovery = $autoDiscovery;
@@ -158,7 +159,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function addExtension(ExtensionInterface $extension): void
     {
         if (isset($this->extensions[$extension::class])) {
@@ -171,7 +172,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function addExtensions(array $extensions): void
     {
         foreach ($extensions as $extension) {
@@ -182,7 +183,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getRegistry(): RegistryInterface
     {
         return $this->registry;
@@ -191,7 +192,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function build(): ContainerInterface
     {
         $document = new Document([]);

@@ -16,6 +16,7 @@ namespace Neu\Framework\DependencyInjection\Factory\Middleware;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Framework\Middleware\XPoweredByMiddleware;
+use Override;
 
 /**
  * Factory for creating a {@see XPoweredByMiddleware} instance.
@@ -51,7 +52,7 @@ final readonly class XPoweredByMiddlewareFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): XPoweredByMiddleware
     {
         return new XPoweredByMiddleware($this->poweredBy, $this->exposePhpVersion);

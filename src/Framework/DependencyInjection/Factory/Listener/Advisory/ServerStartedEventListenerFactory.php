@@ -18,6 +18,7 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Framework\Listener\Advisory\ServerStartedEventListener;
 use Psr\Log\LoggerInterface;
+use Override;
 
 /**
  * Factory for creating a {@see ServerStartedEventListener} instance.
@@ -53,7 +54,7 @@ final readonly class ServerStartedEventListenerFactory implements FactoryInterfa
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): ServerStartedEventListener
     {
         return new ServerStartedEventListener(

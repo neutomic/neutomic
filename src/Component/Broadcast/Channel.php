@@ -22,6 +22,7 @@ use Neu\Component\Broadcast\Exception\ClosedTransportException;
 use Neu\Component\Broadcast\Exception\RuntimeException;
 use Neu\Component\Broadcast\Transport\TransportInterface;
 use Revolt\EventLoop;
+use Override;
 
 use function count;
 
@@ -111,7 +112,7 @@ final class Channel implements ChannelInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function broadcast(mixed $message): void
     {
         if ($this->iterator === null) {
@@ -130,7 +131,7 @@ final class Channel implements ChannelInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function subscribe(): Subscription
     {
         if ($this->iterator === null) {
@@ -155,7 +156,7 @@ final class Channel implements ChannelInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getSubscribersCount(): int
     {
         return count($this->queues);
@@ -164,7 +165,7 @@ final class Channel implements ChannelInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function close(): void
     {
         if ($this->iterator === null) {

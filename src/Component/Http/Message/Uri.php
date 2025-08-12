@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\Http\Message;
 
 use Neu\Component\Http\Exception\InvalidArgumentException;
+use Override;
 
 use function ltrim;
 use function parse_url;
@@ -199,7 +200,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getScheme(): null|string
     {
         return $this->scheme;
@@ -208,7 +209,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function withScheme(null|string $scheme): self
     {
         if (null !== $scheme) {
@@ -229,7 +230,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getAuthority(): null|string
     {
         if (null === $this->host) {
@@ -251,7 +252,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getUserInformation(): null|string
     {
         return $this->userInformation;
@@ -260,7 +261,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function withUserInformation(null|string $user, null|string $password = null): self
     {
         if (null === $user) {
@@ -283,7 +284,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getHost(): null|string
     {
         return $this->host;
@@ -292,7 +293,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function withHost(null|string $host): self
     {
         if (null !== $host) {
@@ -308,7 +309,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getPort(): null|int
     {
         return $this->port;
@@ -317,7 +318,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function withPort($port): self
     {
         if (null !== $port) {
@@ -333,7 +334,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getPath(): string
     {
         return $this->path;
@@ -342,7 +343,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function withPath(string $path): self
     {
         $path = self::filterPathPart($path);
@@ -357,7 +358,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getQuery(): null|string
     {
         return $this->query;
@@ -366,7 +367,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function withQuery(null|string $query): self
     {
         if (null !== $query) {
@@ -382,7 +383,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function getFragment(): null|string
     {
         return $this->fragment;
@@ -391,7 +392,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function withFragment(null|string $fragment): self
     {
         if (null !== $fragment) {
@@ -407,7 +408,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function toString(): string
     {
         $uri = '';

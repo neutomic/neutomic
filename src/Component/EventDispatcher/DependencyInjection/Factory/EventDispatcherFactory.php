@@ -17,6 +17,7 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\EventDispatcher\EventDispatcher;
 use Neu\Component\EventDispatcher\Listener\Registry\RegistryInterface;
+use Override;
 
 /**
  * A factory for creating a new instance of the {@see EventDispatcher}.
@@ -41,7 +42,7 @@ final readonly class EventDispatcherFactory implements FactoryInterface
     /**
      * @inheritDoc
      */
-    #[\Override]
+    #[Override]
     public function __invoke(ContainerInterface $container): EventDispatcher
     {
         return new EventDispatcher(
