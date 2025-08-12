@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Examples\Framework;
 
+use Amp;
 use Neu;
 use Neu\Component\Broadcast\HubInterface;
 use Neu\Component\DependencyInjection\ContainerBuilder;
@@ -28,10 +29,10 @@ use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\ServerSentEvent;
 use Neu\Framework\EngineInterface;
-use Revolt\EventLoop;
 use Psl\Env;
 use Psl\SecureRandom;
 use Override;
+use Throwable;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
@@ -88,17 +89,25 @@ final readonly class SubHandler implements HandlerInterface
             /** @var Neu\Component\Broadcast\Subscription<string> $subscription */
             $subscription = $this->hub->getChannel($topic)->subscribe();
 
-            EventLoop::queue(static function () use ($subscription, $stream) {
-                while ($message = $subscription->receive()) {
+            Amp\async(static function () use ($subscription, $stream) {
+                foreach ($subscription as $message) {
                     if ($stream->isClosed()) {
                         $subscription->cancel();
-
                         return;
                     }
 
-                    $stream->send(new ServerSentEvent\Event($message->getPayload(), $subscription->getChannel()));
+                    try {
+                        $stream->send(new ServerSentEvent\Event($message->getPayload(), $subscription->getChannel()));
+                    } catch (ServerSentEvent\Exception\ExceptionInterface) {
+                        $subscription->cancel();
+                        return;
+                    }
                 }
-
+            })->catch(static function (Throwable $throwable) use ($subscription, $stream) {
+                $stream->send(new ServerSentEvent\Event('Unexpected error while streaming channel "'.$subscription->getChannel().'"', 'error'));
+                throw $throwable; // Re-throw the exception to be handled by the error handler.
+            })->finally(static function () use ($stream, $subscription) {
+                $subscription->cancel();
                 $stream->close();
             });
         }
