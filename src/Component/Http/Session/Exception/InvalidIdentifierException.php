@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * This file is part of the Neutomic pfinal ackage.
+ * This file is part of the Neutomic package.
  *
  * (c) Saif Eddin Gmati <azjezz@protonmail.com>
  *
@@ -18,7 +18,7 @@ use Throwable;
 /**
  * This exception is thrown when a session identifier is invalid.
  */
-class InvalidIdentifierException extends InvalidArgumentException
+final class InvalidIdentifierException extends InvalidArgumentException
 {
     /**
      * Create a new {@see InvalidIdentifierException} for the given identifier.

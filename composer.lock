@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bf8512da5e57b4b6cfd1b23cbf973594",
+    "content-hash": "06193de0b82e09071d813e46b082c220",
     "packages": [
         {
             "name": "amphp/amp",
@@ -5035,16 +5035,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "11.5.30",
+            "version": "11.5.32",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "33fa3d10fed43f51bdd874965497a4925a123a53"
+                "reference": "101e132dcf9e74a1eb3a309b4f686114ae8f7f36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/33fa3d10fed43f51bdd874965497a4925a123a53",
-                "reference": "33fa3d10fed43f51bdd874965497a4925a123a53",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/101e132dcf9e74a1eb3a309b4f686114ae8f7f36",
+                "reference": "101e132dcf9e74a1eb3a309b4f686114ae8f7f36",
                 "shasum": ""
             },
             "require": {
@@ -5116,7 +5116,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.30"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/11.5.32"
             },
             "funding": [
                 {
@@ -5140,7 +5140,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-08-10T08:35:26+00:00"
+            "time": "2025-08-12T07:32:49+00:00"
         },
         {
             "name": "psr/http-client",
@@ -8564,7 +8564,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "~8.3.0 || ~8.4.0",
+        "php": "~8.4.0 || ~8.5.0",
         "ext-mbstring": "*",
         "ext-pcntl": "*"
     },

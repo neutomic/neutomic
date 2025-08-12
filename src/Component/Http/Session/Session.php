@@ -154,11 +154,9 @@ final class Session implements SessionInterface
 
     /**
      * @inheritDoc
-     *
-     * @psalm-param int<0, max> $value
      */
     #[\Override]
-    public function set(string $key, int $value): static
+    public function set(string $key, mixed $value): static
     {
         $this->data[$key] = $value;
 

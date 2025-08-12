@@ -137,8 +137,6 @@ trait AbstractionLayerConvenienceMethodsTrait
      * @throws Exception\ConnectionException If the connection to the database is lost.
      * @throws Exception\InvalidQueryException If the operation fails due to an invalid query (such as a syntax error).
      * @throws Exception\LogicException If $criteria, or $data are empty.
-     *
-     * @psalm-suppress InvalidArgument
      */
     public function update(string $table, array $data, array $criteria): QueryResultInterface
     {
@@ -209,8 +207,6 @@ trait AbstractionLayerConvenienceMethodsTrait
      * @throws Exception\RuntimeException If the operation fails due to unexpected condition.
      *
      * @return null|array<non-empty-string, mixed>
-     *
-     * @psalm-suppress InvalidArgument
      */
     public function fetchOneAssociative(string $table, array $fields = ['*'], array $criteria = [], array $order_by = []): null|array
     {
@@ -287,8 +283,6 @@ trait AbstractionLayerConvenienceMethodsTrait
      * @throws Exception\InvalidArgumentException If $fields is empty, $order_by contains invalid values, or $offset, or $limit are negative.
      *
      * @return list<array<non-empty-string, mixed>>
-     *
-     * @psalm-suppress InvalidArgument
      */
     public function fetchAllAssociative(string $table, array $fields = ['*'], array $criteria = [], null|int $offset = null, null|int $limit = null, array $order_by = []): array
     {

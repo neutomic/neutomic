@@ -1,4 +1,4 @@
-final <?php
+<?php
 
 declare(strict_types=1);
 
@@ -15,6 +15,6 @@ namespace Neu\Component\Http\Exception;
 
 use Neu\Component\Exception\OutOfBoundsException as RootOutOfBoundsException;
 
-class OutOfBoundsException extends RootOutOfBoundsException implements ExceptionInterface
+final class OutOfBoundsException extends RootOutOfBoundsException implements ExceptionInterface
 {
 }

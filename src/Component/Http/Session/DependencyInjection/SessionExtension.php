@@ -52,11 +52,11 @@ use Psl\Type;
  *         domain?: non-empty-string,
  *         secure?: bool,
  *         http-only?: bool,
- *         same-site?: CookieSameSite|string,
+ *         same-site?: CookieSameSite,
  *     },
  *     cache?: array{
  *         expires?: int,
- *         limiter?: CacheLimiter|string,
+ *         limiter?: CacheLimiter,
  *     },
  *     handler?: CacheHandlerConfiguration|EncryptedHandlerConfiguration,
  *     persistence?: array{
@@ -138,7 +138,7 @@ final readonly class SessionExtension implements ExtensionInterface
     }
 
     /**
-     * @psalm-return Type\TypeInterface<array{cookie?: array{name?: string, lifetime?: int, path?: string, domain?: string, secure?: bool, 'http-only'?: bool, 'same-site'?: CookieSameSite}, cache?: array{expires?: int, limiter?: CacheLimiter|\BackedEnum}, handler?: array{type: 'cache'|'encrypted', store?: string, secret?: string}, persistence?: array{handler?: string, 'cookie-configuration'?: string, 'cache-configuration'?: string}}>
+     * @psalm-return Type\TypeInterface<Configuration>
      */
     private function getConfigurationType(): Type\TypeInterface
     {
@@ -163,7 +163,7 @@ final readonly class SessionExtension implements ExtensionInterface
                             Type\literal_scalar('private-no-expire'),
                         ),
                         Type\backed_enum(CacheLimiter::class),
-                        CacheLimiter::from(...),
+                        static fn(string $value): CacheLimiter => CacheLimiter::from($value),
                     )
                 ),
             ])),
