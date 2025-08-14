@@ -27,9 +27,11 @@ use Roave\BetterReflection\Reflector\DefaultReflector;
 use Roave\BetterReflection\SourceLocator\Exception\InvalidDirectory;
 use Roave\BetterReflection\SourceLocator\Exception\InvalidFileInfo;
 use Roave\BetterReflection\SourceLocator\Exception\InvalidFileLocation;
+use Roave\BetterReflection\SourceLocator\SourceStubber\ReflectionSourceStubber;
 use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\AutoloadSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\DirectoriesSourceLocator;
+use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\SingleFileSourceLocator;
 use Override;
 
@@ -291,8 +293,16 @@ final class ContainerBuilder implements ContainerBuilderInterface
         }
 
         $astLocator = (new BetterReflection())->astLocator();
+
+        /**
+         * @psalm-suppress InternalClass
+         * @psalm-suppress InternalMethod
+         */
+        $sourceStubber = new ReflectionSourceStubber();
+
         $locators = [
             new AutoloadSourceLocator($astLocator),
+            new PhpInternalSourceLocator($astLocator, $sourceStubber),
         ];
         foreach ($this->discoverablePaths as $path) {
             try {

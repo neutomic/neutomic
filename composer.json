@@ -23,7 +23,7 @@
         "amphp/amp": "^3.0.1",
         "amphp/sql": "^2.0",
         "amphp/sql-common": "^2.0",
-        "roave/better-reflection": "^6.36",
+        "roave/better-reflection": "^6.59",
         "amphp/byte-stream": "^2.0",
         "monolog/monolog": "^3.6",
         "amphp/http-server": "^3.3",
