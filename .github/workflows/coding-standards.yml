@@ -1,16 +1,21 @@
-name: "coding standards"
+name: "format"
 
 on:
   pull_request: ~
   push: ~
 
 jobs:
-  coding-standards:
-    name: "coding standards"
+  format:
+    name: "format"
     runs-on: "ubuntu-latest"
     steps:
       - name: "checkout"
         uses: "actions/checkout@v6"
+
+      - name: "installing tools"
+        uses: "taiki-e/install-action@v2"
+        with:
+          tool: just,typos-cli
 
       - name: "installing PHP"
         uses: "shivammathur/setup-php@v2"
@@ -21,8 +26,13 @@ jobs:
           extensions: bcmath, mbstring, intl, sodium, json
 
       - name: "installing dependencies"
-        run: |
-          make install -j10 -O
+        run: just install
 
-      - name: "checking coding standards"
-        run: make coding-standard-check
+      - name: "checking formatting"
+        run: just fmt-check
+
+      - name: "checking linter"
+        run: just lint
+
+      - name: "checking typos"
+        run: just typos

@@ -21,7 +21,7 @@ use function ini_get;
 /**
  * Adviser that provides advice on PHP assertions configuration.
  */
-final readonly class AssertationAdviser implements AdviserInterface
+final readonly class AssertionAdviser implements AdviserInterface
 {
     /**
      * Retrieve an advice instance regarding assertions.

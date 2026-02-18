@@ -146,7 +146,7 @@ interface SessionInterface
      * would make the session expire in 5 minutes of inactivity.
      *
      * @param int<0, max> $duration The session expiration time in seconds, 0 indicates the cookie
-     *                              should be treated as a session cookie, and expire whe the window is closed.
+     *                              should be treated as a session cookie, and expire when the window is closed.
      */
     public function expireAfter(int $duration): static;
 

@@ -30,5 +30,5 @@ interface AdvisoryInterface
      *
      * @return list<Advice> The list of advice provided by the advisory system.
      */
-    public function getAdvices(): array;
+    public function getAdvises(): array;
 }

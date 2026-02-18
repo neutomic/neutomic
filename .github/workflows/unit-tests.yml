@@ -22,6 +22,11 @@ jobs:
       - name: "checkout"
         uses: "actions/checkout@v6"
 
+      - name: "installing tools"
+        uses: "taiki-e/install-action@v2"
+        with:
+          tool: just,typos-cli
+
       - name: "installing PHP"
         uses: "shivammathur/setup-php@v2"
         with:
@@ -40,8 +45,7 @@ jobs:
           restore-keys: "php-${{ matrix.php-version }}"
 
       - name: "installing dependencies"
-        run: |
-          make install -j10
+        run: just install
 
-      - name: "running unit tests"
-        run: make unit-tests
+      - name: "running tests"
+        run: just test

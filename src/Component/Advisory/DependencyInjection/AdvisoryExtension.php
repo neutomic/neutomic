@@ -48,7 +48,7 @@ final readonly class AdvisoryExtension implements ExtensionInterface
 
         $registry->getDefinition(Advisory::class)->addAlias(AdvisoryInterface::class);
 
-        $registry->addDefinition(Definition::ofType(Adviser\AssertationAdviser::class));
+        $registry->addDefinition(Definition::ofType(Adviser\AssertionAdviser::class));
         $registry->addDefinition(Definition::ofType(Adviser\BlackfireAdviser::class));
         $registry->addDefinition(Definition::ofType(Adviser\DatadogTraceAdviser::class));
         $registry->addDefinition(Definition::ofType(Adviser\EventLoopDriverAdviser::class));

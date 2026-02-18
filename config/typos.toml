@@ -1,0 +1,16 @@
+[files]
+extend-exclude = [".git/", "vendor"]
+ignore-hidden = false
+
+
+[default.extend-words]
+aso = "aso"
+aas = "aas"
+caf = "caf"
+fo = "fo"
+gam = "gam"
+styl = "styl"
+ser = "ser"
+opf = "opf"
+odf = "odf"
+iif = "iif"

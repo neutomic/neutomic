@@ -37,9 +37,9 @@ final readonly class AdviceCommand implements CommandInterface
     #[Override]
     public function run(InputInterface $input, OutputInterface $output): ExitCode
     {
-        $advices = $this->advisory->getAdvices();
+        $advises = $this->advisory->getAdvises();
 
-        foreach ($advices as $advice) {
+        foreach ($advises as $advice) {
             $this->display($output, $advice);
         }
 

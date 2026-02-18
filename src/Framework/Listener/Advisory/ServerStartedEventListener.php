@@ -50,9 +50,9 @@ final readonly class ServerStartedEventListener implements ListenerInterface
     public function process(object $event): object
     {
         if ($this->mode->isProduction()) {
-            $advices = $this->advisory->getAdvices();
+            $advises = $this->advisory->getAdvises();
 
-            foreach ($advices as $advice) {
+            foreach ($advises as $advice) {
                 $this->logger->warning('[advice][{category}] {message} - {solution}', [
                     'category' => $advice->category->value,
                     'message' => $advice->message,

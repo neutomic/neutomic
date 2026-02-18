@@ -19,7 +19,7 @@ use Override;
 final class Advisory implements AdvisoryInterface
 {
     /**
-     * The advisers that will provide advices.
+     * The advisers that will provide advises.
      *
      * @var list<AdviserInterface>
      */
@@ -28,7 +28,7 @@ final class Advisory implements AdvisoryInterface
     /**
      * Create a new {@see Advisory} instance.
      *
-     * @param list<AdviserInterface> $advisers The advisers that will provide advices.
+     * @param list<AdviserInterface> $advisers The advisers that will provide advises.
      */
     public function __construct(array $advisers = [])
     {
@@ -45,17 +45,17 @@ final class Advisory implements AdvisoryInterface
      * @inheritDoc
      */
     #[Override]
-    public function getAdvices(): array
+    public function getAdvises(): array
     {
-        $advices = [];
+        $advises = [];
         foreach ($this->advisers as $adviser) {
             $advice = $adviser->getAdvice();
 
             if ($advice !== null) {
-                $advices[] = $advice;
+                $advises[] = $advice;
             }
         }
 
-        return $advices;
+        return $advises;
     }
 }
