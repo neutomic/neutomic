@@ -62,7 +62,7 @@ enum Parser
      *
      * @return null|non-empty-string The boundary or null if not found.
      */
-    public static function getBoundary(RequestInterface $request, null|RequestBodyInterface $body): null|string
+    public static function getBoundary(RequestInterface $request, ?RequestBodyInterface $body): ?string
     {
         if (null === $body) {
             // We don't have a body to parse.
@@ -91,7 +91,7 @@ enum Parser
     /**
      * Parse the boundary from the given content type.
      */
-    public static function parseBoundary(string $contentType): null|string
+    public static function parseBoundary(string $contentType): ?string
     {
         if (!preg_match(self::BOUNDARY_REGEX, $contentType, $matches)) {
             return null;
@@ -99,7 +99,6 @@ enum Parser
 
         return $matches[2];
     }
-
 
     /**
      * Parse the entire form data into memory.
@@ -116,12 +115,12 @@ enum Parser
         $content = $body->getContents();
 
         // RFC 7578, RFC 2046 Section 5.1.1
-        if (strncmp($content, "--$boundary\r\n", strlen($boundary) + 4) !== 0) {
+        if (strncmp($content, "--{$boundary}\r\n", strlen($boundary) + 4) !== 0) {
             return [];
         }
 
-        $entries = explode("\r\n--$boundary\r\n", $content, $options->fieldCountLimit);
-        $entries[0] = substr($entries[0] ?? "", strlen($boundary) + 4);
+        $entries = explode("\r\n--{$boundary}\r\n", $content, $options->fieldCountLimit);
+        $entries[0] = substr($entries[0] ?? '', strlen($boundary) + 4);
         $entries[count($entries) - 1] = substr(end($entries), 0, -strlen($boundary) - 8);
 
         foreach ($entries as $entry) {
@@ -142,44 +141,67 @@ enum Parser
 
             $entry = substr($entry, $position + 4);
 
-            $count = preg_match(self::CONTENT_DISPOSITION_REGEX, $headerMap["content-disposition"][0] ?? "", $matches);
+            $count = preg_match(self::CONTENT_DISPOSITION_REGEX, $headerMap['content-disposition'][0] ?? '', $matches);
 
             if (!$count || !isset($matches[1])) {
-                throw new HttpException(StatusCode::BadRequest, message: 'Missing content-disposition header within multipart form');
+                throw new HttpException(
+                    StatusCode::BadRequest,
+                    message: 'Missing content-disposition header within multipart form',
+                );
             }
 
             /** @var non-empty-string $name */
             $name = $matches[1];
-            $contentType = $headerMap["content-type"][0] ?? "text/plain";
+            $contentType = $headerMap['content-type'][0] ?? 'text/plain';
 
             if (isset($matches[2])) {
                 if ($fileCount++ === $options->fileCountLimit) {
                     throw new HttpException(
                         statusCode: StatusCode::PayloadTooLarge,
-                        message: 'The number of files in the form data exceeds the limit of ' . ((string) $options->fileCountLimit) . '.',
+                        message: 'The number of files in the form data exceeds the limit of '
+                        . (string) $options->fileCountLimit
+                        . '.',
                     );
                 }
 
                 $filename = $matches[2];
                 $extension = Filesystem\get_extension($filename);
                 if (null === $extension && !$options->allowFilesWithoutExtensions) {
-                    throw new HttpException(StatusCode::BadRequest, message: 'All uploaded files must have an extension.');
+                    throw new HttpException(
+                        StatusCode::BadRequest,
+                        message: 'All uploaded files must have an extension.',
+                    );
                 }
 
-                if (null !== $options->allowedFileExtensions && !in_array($extension, $options->allowedFileExtensions, true)) {
-                    throw new HttpException(StatusCode::BadRequest, message: 'The uploaded file has an invalid extension.');
+                if (
+                    null !== $options->allowedFileExtensions
+                    && !in_array($extension, $options->allowedFileExtensions, true)
+                ) {
+                    throw new HttpException(
+                        StatusCode::BadRequest,
+                        message: 'The uploaded file has an invalid extension.',
+                    );
                 }
 
-                $fields[] = File::create($name, $filename, $contentType, $extension, $headerMap, Body::fromString($entry));
+                $fields[] = File::create(
+                    $name,
+                    $filename,
+                    $contentType,
+                    $extension,
+                    $headerMap,
+                    Body::fromString($entry),
+                );
             } else {
                 $fields[] = Field::create($name, $headerMap, Body::fromString($entry));
             }
         }
 
-        if (str_contains($entry, "--$boundary")) {
+        if (str_contains($entry, "--{$boundary}")) {
             throw new HttpException(
                 statusCode: StatusCode::PayloadTooLarge,
-                message: 'The number of fields in the form data exceeds the limit of ' . ((string) $options->fieldCountLimit) . '.',
+                message: 'The number of fields in the form data exceeds the limit of '
+                . (string) $options->fieldCountLimit
+                . '.',
             );
         }
 
@@ -191,18 +213,22 @@ enum Parser
      *
      * @throws HttpException
      */
-    public static function parseIncrementally(Queue $source, RequestBodyInterface $body, ParseOptions $options, string $boundary): void
-    {
+    public static function parseIncrementally(
+        Queue $source,
+        RequestBodyInterface $body,
+        ParseOptions $options,
+        string $boundary,
+    ): void {
         $fieldCount = 0;
         $fileCount = 0;
         $queue = null;
 
         try {
-            $buffer = "";
+            $buffer = '';
 
             // RFC 7578, RFC 2046 Section 5.1.1
-            $boundarySeparator = "--$boundary";
-            while (strlen($buffer) < strlen($boundarySeparator) + 4) {
+            $boundarySeparator = "--{$boundary}";
+            while (strlen($buffer) < (strlen($boundarySeparator) + 4)) {
                 $chunk = $body->getChunk();
 
                 if ($chunk === null) {
@@ -217,7 +243,7 @@ enum Parser
                 throw new HttpException(StatusCode::BadRequest, message: 'Invalid boundary');
             }
 
-            $boundarySeparator = "\r\n$boundarySeparator";
+            $boundarySeparator = "\r\n{$boundarySeparator}";
             while (substr_compare($buffer, "--\r\n", $offset)) {
                 $offset += 2;
 
@@ -235,14 +261,20 @@ enum Parser
                 if ($fieldCount++ === $options->fieldCountLimit) {
                     throw new HttpException(
                         statusCode: StatusCode::PayloadTooLarge,
-                        message: 'The number of fields in the form data exceeds the limit of ' . ((string) $options->fieldCountLimit) . '.',
+                        message: 'The number of fields in the form data exceeds the limit of '
+                        . (string) $options->fieldCountLimit
+                        . '.',
                     );
                 }
 
                 try {
                     $headers = Rfc7230::parseHeaderPairs(substr($buffer, $offset, $end + 2 - $offset));
                 } catch (InvalidHeaderException $e) {
-                    throw new HttpException(StatusCode::BadRequest, message: 'Invalid headers in body part', previous: $e);
+                    throw new HttpException(
+                        StatusCode::BadRequest,
+                        message: 'Invalid headers in body part',
+                        previous: $e,
+                    );
                 }
 
                 /** @var array<non-empty-string, non-empty-list<non-empty-string>> $headerMap */
@@ -251,14 +283,20 @@ enum Parser
                     $headerMap[strtolower($key)][] = $value;
                 }
 
-                $contentDisposition = $headerMap["content-disposition"][0] ?? null;
+                $contentDisposition = $headerMap['content-disposition'][0] ?? null;
                 if ($contentDisposition === null) {
-                    throw new HttpException(StatusCode::BadRequest, message: 'Missing content-disposition header within multipart form');
+                    throw new HttpException(
+                        StatusCode::BadRequest,
+                        message: 'Missing content-disposition header within multipart form',
+                    );
                 }
 
                 $count = preg_match(self::CONTENT_DISPOSITION_REGEX, $contentDisposition, $matches);
                 if (!$count || !isset($matches[1])) {
-                    throw new HttpException(StatusCode::BadRequest, message: 'Invalid content-disposition header within multipart form');
+                    throw new HttpException(
+                        StatusCode::BadRequest,
+                        message: 'Invalid content-disposition header within multipart form',
+                    );
                 }
 
                 $fieldName = $matches[1];
@@ -269,7 +307,9 @@ enum Parser
                     if ($fileCount++ === $options->fileCountLimit) {
                         throw new HttpException(
                             statusCode: StatusCode::PayloadTooLarge,
-                            message: 'The number of files in the form data exceeds the limit of ' . ((string) $options->fileCountLimit) . '.',
+                            message: 'The number of files in the form data exceeds the limit of '
+                            . (string) $options->fileCountLimit
+                            . '.',
                         );
                     }
 
@@ -281,7 +321,10 @@ enum Parser
                         );
                     }
 
-                    if (null !== $options->allowedFileExtensions && !in_array($extension, $options->allowedFileExtensions, true)) {
+                    if (
+                        null !== $options->allowedFileExtensions
+                        && !in_array($extension, $options->allowedFileExtensions, true)
+                    ) {
                         throw new HttpException(
                             statusCode: StatusCode::BadRequest,
                             message: 'The uploaded file has an invalid extension.',
@@ -291,17 +334,13 @@ enum Parser
                     $field = File::create(
                         $fieldName,
                         $filename,
-                        $headerMap["content-type"][0] ?? self::DEFAULT_CONTENT_TYPE,
+                        $headerMap['content-type'][0] ?? self::DEFAULT_CONTENT_TYPE,
                         $extension,
                         $headerMap,
-                        Body::fromIterable($queue->iterate())
+                        Body::fromIterable($queue->iterate()),
                     );
                 } else {
-                    $field = Field::create(
-                        $fieldName,
-                        $headerMap,
-                        Body::fromIterable($queue->iterate())
-                    );
+                    $field = Field::create($fieldName, $headerMap, Body::fromIterable($queue->iterate()));
                 }
 
                 $future = $source->pushAsync($field);

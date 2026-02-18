@@ -17,23 +17,20 @@ use Neu\Component\DependencyInjection\Configuration\Document;
 use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Exception\InvalidConfigurationException;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
+use Override;
 use Psl\File;
 use Psl\Filesystem;
 use Psl\Str;
 use Psl\Type;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
-use Override;
 
 /**
  * @implements LoaderInterface<non-empty-string>
  */
 final class YamlFileLoader implements LoaderInterface
 {
-    private const int YAML_PARSE_FLAGS =
-        Yaml::PARSE_EXCEPTION_ON_INVALID_TYPE |
-        Yaml::PARSE_CONSTANT
-    ;
+    private const int YAML_PARSE_FLAGS = Yaml::PARSE_EXCEPTION_ON_INVALID_TYPE | Yaml::PARSE_CONSTANT;
 
     /**
      * @inheritDoc
@@ -44,10 +41,7 @@ final class YamlFileLoader implements LoaderInterface
         try {
             $content = File\read($resource);
         } catch (File\Exception\ExceptionInterface $previous) {
-            throw new RuntimeException(
-                'failed to read yaml resource file "' . $resource . '".',
-                previous: $previous
-            );
+            throw new RuntimeException('failed to read yaml resource file "' . $resource . '".', previous: $previous);
         }
 
         try {
@@ -56,7 +50,7 @@ final class YamlFileLoader implements LoaderInterface
         } catch (ParseException $previous) {
             throw new InvalidConfigurationException(
                 'failed to decode yaml resource file "' . $resource . '".',
-                previous: $previous
+                previous: $previous,
             );
         }
 
@@ -65,7 +59,7 @@ final class YamlFileLoader implements LoaderInterface
         } catch (Type\Exception\CoercionException $previous) {
             throw new InvalidConfigurationException(
                 'failed to coerce yaml resource file "' . $resource . '".',
-                previous: $previous
+                previous: $previous,
             );
         }
 
@@ -78,7 +72,10 @@ final class YamlFileLoader implements LoaderInterface
     #[Override]
     public function supports(mixed $resource): bool
     {
-        if (!Type\non_empty_string()->matches($resource) || !(Str\ends_with($resource, '.yaml') || Str\ends_with($resource, '.yml'))) {
+        if (
+            !Type\non_empty_string()->matches($resource)
+            || !(Str\ends_with($resource, '.yaml') || Str\ends_with($resource, '.yml'))
+        ) {
             return false;
         }
 

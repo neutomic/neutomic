@@ -17,9 +17,9 @@ use Amp\Pipeline\Pipeline;
 use Amp\Pipeline\Queue;
 use Neu\Component\Http\Message\RequestBodyInterface;
 use Neu\Component\Http\Message\RequestInterface;
+use Override;
 use Revolt\EventLoop;
 use Throwable;
-use Override;
 
 /**
  * Parses form data from HTTP requests.
@@ -35,7 +35,7 @@ final readonly class Parser implements ParserInterface, StreamedParserInterface
      * @inheritDoc
      */
     #[Override]
-    public function parse(RequestInterface $request, null|ParseOptions $options = null): FormInterface
+    public function parse(RequestInterface $request, ?ParseOptions $options = null): FormInterface
     {
         $body = $request->getBody();
         $options ??= new ParseOptions();
@@ -58,9 +58,9 @@ final readonly class Parser implements ParserInterface, StreamedParserInterface
 
         // Parse the form data from the request body, using the appropriate parser.
         return new Form(
-            null === $boundary ?
-                Internal\UrlEncoded\Parser::parseInFull($body, $options) :
-                Internal\MultiPart\Parser::parseInFull($body, $options, $boundary)
+            null === $boundary
+                ? Internal\UrlEncoded\Parser::parseInFull($body, $options)
+                : Internal\MultiPart\Parser::parseInFull($body, $options, $boundary),
         );
     }
 
@@ -68,7 +68,7 @@ final readonly class Parser implements ParserInterface, StreamedParserInterface
      * @inheritDoc
      */
     #[Override]
-    public function parseStreamed(RequestInterface $request, null|ParseOptions $options = null): StreamedFormInterface
+    public function parseStreamed(RequestInterface $request, ?ParseOptions $options = null): StreamedFormInterface
     {
         $body = $request->getBody();
         $options ??= new ParseOptions();

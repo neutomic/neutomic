@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Neu\Component\Http\Exception;
 
 use Neu\Component\Http\Message\StatusCode;
-use Throwable;
 use Override;
+use Throwable;
 
 class HttpException extends RuntimeException implements HttpExceptionInterface
 {
@@ -37,8 +37,12 @@ class HttpException extends RuntimeException implements HttpExceptionInterface
      * @param StatusCode $statusCode The status code.
      * @param array<non-empty-string, non-empty-string|non-empty-list<non-empty-string>> $headers Response headers.
      */
-    public function __construct(StatusCode $statusCode, array $headers = [], string $message = '', null|Throwable $previous = null)
-    {
+    public function __construct(
+        StatusCode $statusCode,
+        array $headers = [],
+        string $message = '',
+        ?Throwable $previous = null,
+    ) {
         parent::__construct($message, $statusCode->value, $previous);
 
         $this->statusCode = $statusCode;

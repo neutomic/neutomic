@@ -18,8 +18,8 @@ use Neu\Component\Cache\Driver\FilesystemDriver;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
-use Psl\Str;
 use Override;
+use Psl\Str;
 
 /**
  * A factory for creating a {@see FilesystemDriver} instance.
@@ -48,7 +48,7 @@ final readonly class FilesystemDriverFactory implements FactoryInterface
      * @param non-empty-string $directory The directory to store the cache files.
      * @param positive-int $pruneInterval The interval in seconds to prune the cache.
      */
-    public function __construct(string $directory, null|int $pruneInterval = null)
+    public function __construct(string $directory, ?int $pruneInterval = null)
     {
         $this->directory = $directory;
         $this->pruneInterval = $pruneInterval ?? AbstractDriver::PRUNE_INTERVAL;

@@ -36,7 +36,11 @@ interface OutputInterface
     /**
      * Send output to the standard output stream with a new line character appended to the message.
      */
-    public function writeLine(string $message, Verbosity $verbosity = Verbosity::Normal, Type $type = Type::Normal): void;
+    public function writeLine(
+        string $message,
+        Verbosity $verbosity = Verbosity::Normal,
+        Type $type = Type::Normal,
+    ): void;
 
     /**
      * Get the output cursor.

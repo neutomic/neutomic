@@ -26,8 +26,8 @@ use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Neu\Component\DependencyInjection\RegistryInterface;
-use Psl\Type;
 use Override;
+use Psl\Type;
 
 /**
  * The extension for the CSRF component.
@@ -52,14 +52,21 @@ final readonly class CsrfExtension implements ExtensionInterface
     {
         $configuration = $configurations->getOfTypeOrDefault('csrf', $this->getConfigurationType(), []);
 
-        $registry->addDefinition(Definition::ofType(UrlSafeCsrfTokenGenerator::class, new UrlSafeCsrfTokenGeneratorFactory()));
-        $registry->addDefinition(Definition::ofType(SessionCsrfTokenStorage::class, new SessionCsrfTokenStorageFactory(
-            $configuration['storage']['prefix'] ?? null,
-        )));
-        $registry->addDefinition(Definition::ofType(CsrfTokenManager::class, new CsrfTokenManagerFactory(
-            $configuration['manager']['generator'] ?? null,
-            $configuration['manager']['storage'] ?? null,
-        )));
+        $registry->addDefinition(Definition::ofType(
+            UrlSafeCsrfTokenGenerator::class,
+            new UrlSafeCsrfTokenGeneratorFactory(),
+        ));
+        $registry->addDefinition(Definition::ofType(
+            SessionCsrfTokenStorage::class,
+            new SessionCsrfTokenStorageFactory($configuration['storage']['prefix'] ?? null),
+        ));
+        $registry->addDefinition(Definition::ofType(
+            CsrfTokenManager::class,
+            new CsrfTokenManagerFactory(
+                $configuration['manager']['generator'] ?? null,
+                $configuration['manager']['storage'] ?? null,
+            ),
+        ));
 
         $registry->getDefinition(UrlSafeCsrfTokenGenerator::class)->addAlias(CsrfTokenGeneratorInterface::class);
         $registry->getDefinition(SessionCsrfTokenStorage::class)->addAlias(CsrfTokenStorageInterface::class);

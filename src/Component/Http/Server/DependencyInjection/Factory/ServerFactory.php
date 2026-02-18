@@ -19,8 +19,8 @@ use Neu\Component\EventDispatcher\EventDispatcherInterface;
 use Neu\Component\Http\Runtime\RuntimeInterface;
 use Neu\Component\Http\Server\Server;
 use Neu\Component\Http\Server\ServerInfrastructure;
-use Psr\Log\LoggerInterface;
 use Override;
+use Psr\Log\LoggerInterface;
 
 /**
  * Factory for creating a {@see Server} instance.
@@ -57,7 +57,7 @@ final readonly class ServerFactory implements FactoryInterface
      * @param non-empty-string|null $eventDispatcher Optional event dispatcher service identifier.
      * @param non-empty-string|null $logger Optional logger service identifier.
      */
-    public function __construct(null|string $runtime = null, null|string $eventDispatcher = null, null|string $logger = null)
+    public function __construct(?string $runtime = null, ?string $eventDispatcher = null, ?string $logger = null)
     {
         $this->runtime = $runtime ?? RuntimeInterface::class;
         $this->eventDispatcher = $eventDispatcher ?? EventDispatcherInterface::class;

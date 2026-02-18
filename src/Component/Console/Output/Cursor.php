@@ -21,9 +21,9 @@ use Psl\Str;
  */
 final readonly class Cursor
 {
-    public function __construct(private OutputInterface $output)
-    {
-    }
+    public function __construct(
+        private OutputInterface $output,
+    ) {}
 
     /**
      * Erase.
@@ -129,7 +129,7 @@ final readonly class Cursor
      *
      * @param null|int<0, max> $n
      */
-    private function sequence(string $sequence, Verbosity $verbosity = Verbosity::Normal, null|int $n = null): void
+    private function sequence(string $sequence, Verbosity $verbosity = Verbosity::Normal, ?int $n = null): void
     {
         if ($n !== null) {
             $this->output->write(Str\format("\033[%d%s", $n, $sequence), $verbosity);

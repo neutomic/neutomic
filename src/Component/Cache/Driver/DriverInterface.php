@@ -47,7 +47,7 @@ interface DriverInterface
      * @throws InvalidValueException If the $value cannot be stored using this driver.
      * @throws RuntimeException If an error occurs while storing the value.
      */
-    public function set(string $key, mixed $value, null|int $ttl = null): void;
+    public function set(string $key, mixed $value, ?int $ttl = null): void;
 
     /**
      * Delete an item from the cache by its unique key.

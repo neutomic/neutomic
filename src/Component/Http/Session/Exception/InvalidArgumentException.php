@@ -15,6 +15,4 @@ namespace Neu\Component\Http\Session\Exception;
 
 use Neu\Component\Http\Exception\InvalidArgumentException as RootInvalidArgumentException;
 
-class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface
-{
-}
+class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface {}

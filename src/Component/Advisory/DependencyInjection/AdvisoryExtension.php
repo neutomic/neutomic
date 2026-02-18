@@ -22,8 +22,8 @@ use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Neu\Component\DependencyInjection\RegistryInterface;
-use Psl\Type;
 use Override;
+use Psl\Type;
 
 /**
  * @psalm-type Configuration = array{
@@ -42,9 +42,7 @@ final readonly class AdvisoryExtension implements ExtensionInterface
     #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $configuration = $configurations
-            ->getOfTypeOrDefault('advisory', $this->getConfigurationType(), [])
-        ;
+        $configuration = $configurations->getOfTypeOrDefault('advisory', $this->getConfigurationType(), []);
 
         $registry->addDefinition(Definition::ofType(Advisory::class, new AdvisoryFactory()));
 
@@ -63,9 +61,7 @@ final readonly class AdvisoryExtension implements ExtensionInterface
         $registry->addDefinition(Definition::ofType(Adviser\TidewaysAdviser::class));
         $registry->addDefinition(Definition::ofType(Adviser\XDebugAdviser::class));
         $registry->addDefinition(Definition::ofType(Adviser\ZlibExtensionAdviser::class));
-        $registry->addHook(new AddAdvisersHook(
-            advisory: $configuration['hooks']['add-advisers']['advisory'] ?? null,
-        ));
+        $registry->addHook(new AddAdvisersHook(advisory: $configuration['hooks']['add-advisers']['advisory'] ?? null));
     }
 
     /**

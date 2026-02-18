@@ -13,6 +13,4 @@ declare(strict_types=1);
 
 namespace Neu\Component\DependencyInjection\Exception;
 
-final class InvalidConfigurationException extends UnexpectedValueException
-{
-}
+final class InvalidConfigurationException extends UnexpectedValueException {}

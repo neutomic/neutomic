@@ -13,6 +13,4 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Server\Event;
 
-final readonly class ClusterStoppedEvent
-{
-}
+final readonly class ClusterStoppedEvent {}

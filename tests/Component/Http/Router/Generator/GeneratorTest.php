@@ -121,7 +121,9 @@ final class GeneratorTest extends TestCase
     public function testSuggestsMultipleAlternativeRoutes(): void
     {
         $this->expectException(OutOfBoundsException::class);
-        $this->expectExceptionMessage('Route "fox" was not found, did you mean one of the following: "foo", "fow", "for"?');
+        $this->expectExceptionMessage(
+            'Route "fox" was not found, did you mean one of the following: "foo", "fow", "for"?',
+        );
 
         $registry = new Registry();
 

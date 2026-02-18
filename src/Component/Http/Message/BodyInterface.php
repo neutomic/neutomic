@@ -17,8 +17,8 @@ use IteratorAggregate;
 use Neu\Component\Http\Exception\LogicException;
 use Neu\Component\Http\Exception\RuntimeException;
 use Neu\Component\Http\Message\Exception\TimeoutException;
-use Traversable;
 use Override;
+use Traversable;
 
 /**
  * Interface for HTTP message bodies supporting various modes of operation, such as chunked reading and buffering.
@@ -52,7 +52,7 @@ interface BodyInterface extends IteratorAggregate
      *
      * @return string|null Returns the chunk of data read, or null if at the end of the data source.
      */
-    public function getChunk(null|float $timeout = null): null|string;
+    public function getChunk(?float $timeout = null): ?string;
 
     /**
      * Reads the entire contents of the body into a buffer.
@@ -70,7 +70,7 @@ interface BodyInterface extends IteratorAggregate
      *
      * @return string The entire contents of the body.
      */
-    public function getContents(null|float $timeout = null): string;
+    public function getContents(?float $timeout = null): string;
 
     /**
      * Returns an iterator for the body content.

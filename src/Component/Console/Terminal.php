@@ -45,16 +45,16 @@ final class Terminal
     /**
      * @var null|int<0, max>
      */
-    private static null|int $height = null;
+    private static ?int $height = null;
 
     /**
      * @var null|int<0, max>
      */
-    private static null|int $width = null;
+    private static ?int $width = null;
 
-    private static null|bool $colorSupport = null;
+    private static ?bool $colorSupport = null;
 
-    private static null|bool $interactive = null;
+    private static ?bool $interactive = null;
 
     /**
      * Returns the default terminal input.
@@ -80,10 +80,7 @@ final class Terminal
             return new HandleOutput($standardOutputHandle);
         }
 
-        return new HandleConsoleOutput(
-            $standardOutputHandle,
-            $standardErrorOutputHandle
-        );
+        return new HandleConsoleOutput($standardOutputHandle, $standardErrorOutputHandle);
     }
 
     /**
@@ -202,19 +199,19 @@ final class Terminal
         }
 
         if (Env\get_var('TRAVIS') !== null) {
-            return  self::$colorSupport = true;
+            return self::$colorSupport = true;
         }
 
         if (Env\get_var('CIRCLECI') !== null) {
-            return  self::$colorSupport = true;
+            return self::$colorSupport = true;
         }
 
         if (Env\get_var('TERM') === 'xterm') {
-            return  self::$colorSupport = true;
+            return self::$colorSupport = true;
         }
 
         if (Env\get_var('TERM_PROGRAM') === 'Hyper') {
-            return  self::$colorSupport = true;
+            return self::$colorSupport = true;
         }
 
         if (OS\is_windows()) {
@@ -229,7 +226,11 @@ final class Terminal
 
         $stream = IO\output_handle()->getStream();
         if (null !== $stream) {
-            if (OS\is_windows() && function_exists('sapi_windows_vt100_support') && @sapi_windows_vt100_support($stream)) {
+            if (
+                OS\is_windows()
+                && function_exists('sapi_windows_vt100_support')
+                && @sapi_windows_vt100_support($stream)
+            ) {
                 return self::$colorSupport = true;
             }
 
@@ -283,11 +284,15 @@ final class Terminal
         $stream = IO\input_handle()->getStream();
 
         if (null !== $stream) {
-            if (OS\is_windows() && function_exists('sapi_windows_vt100_support') && @sapi_windows_vt100_support($stream)) {
+            if (
+                OS\is_windows()
+                && function_exists('sapi_windows_vt100_support')
+                && @sapi_windows_vt100_support($stream)
+            ) {
                 return self::$interactive = true;
             }
 
-            if (function_exists('posix_isatty') &&  @posix_isatty($stream)) {
+            if (function_exists('posix_isatty') && @posix_isatty($stream)) {
                 return self::$interactive = true;
             }
 

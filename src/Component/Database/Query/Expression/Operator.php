@@ -15,10 +15,10 @@ namespace Neu\Component\Database\Query\Expression;
 
 enum Operator: string
 {
-    case Equal  = '=';
+    case Equal = '=';
     case NotEqual = '<>';
-    case LowerThan  = '<';
+    case LowerThan = '<';
     case LowerThanOrEqual = '<=';
-    case GreaterThan  = '>';
+    case GreaterThan = '>';
     case GreaterThanOrEqual = '>=';
 }

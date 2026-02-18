@@ -63,7 +63,7 @@ interface StoreInterface
      *
      * @return T
      */
-    public function compute(string $key, Closure $computer, null|int $ttl = null): mixed;
+    public function compute(string $key, Closure $computer, ?int $ttl = null): mixed;
 
     /**
      * Update the value associated with the unique key.
@@ -91,7 +91,7 @@ interface StoreInterface
      *
      * @return T
      */
-    public function update(string $key, Closure $computer, null|int $ttl = null): mixed;
+    public function update(string $key, Closure $computer, ?int $ttl = null): mixed;
 
     /**
      * Delete an item from the cache by its unique key.

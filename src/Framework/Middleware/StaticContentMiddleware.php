@@ -24,14 +24,12 @@ use Neu\Component\Http\Runtime\Exception\FileNotFoundHttpException;
 use Neu\Component\Http\Runtime\Exception\FilesystemException;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\Runtime\Middleware\PrioritizedMiddlewareInterface;
+use Override;
 use Psl\Filesystem;
 use Psl\Iter;
 use Psl\Str;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Override;
-
-use const Psl\Filesystem;
 
 /**
  * Middleware to serve static content directly from the filesystem, based on the request URI.
@@ -68,8 +66,13 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
      *
      * @throws RuntimeException if any of the provided document root directories is not readable or does not exist.
      */
-    public function __construct(ContentDeliverer $deliverer, array $roots, array $extensions = [], LoggerInterface $logger = new NullLogger(), int $priority = self::PRIORITY)
-    {
+    public function __construct(
+        ContentDeliverer $deliverer,
+        array $roots,
+        array $extensions = [],
+        LoggerInterface $logger = new NullLogger(),
+        int $priority = self::PRIORITY,
+    ) {
         foreach ($roots as $prefix => $root) {
             unset($roots[$prefix]);
 
@@ -98,9 +101,9 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
         $path = '/' . Str\Byte\trim_left($path, '/');
 
         // If a suspicious path traversal attempt is detected:
-        if (Str\Byte\contains($path, "..")) {
+        if (Str\Byte\contains($path, '..')) {
             // Log the attempt:
-            $this->logger->warning("Suspicious path traversal attempt: {path}", [
+            $this->logger->warning('Suspicious path traversal attempt: {path}', [
                 'path' => $path,
             ]);
 
@@ -114,7 +117,8 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
         if (null === $extension) {
             assert($this->logger->debug('Skipped file "{path}" with no extension.', [
                 'path' => $path,
-            ]) || true);
+            ])
+            || true);
 
             // Pass the request to the next handler:
             return $next->handle($context, $request);
@@ -127,10 +131,13 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
         if ([] !== $this->extensions) {
             // Check if the extension is not in the list of configured extensions:
             if (!Iter\contains($this->extensions, $extension)) {
-                assert($this->logger->debug('Requested file "{path}" has an extension "{extension}" that is not allowed.', [
-                    'path' => $path,
-                    'extension' => $extension,
-                ]) || true);
+                assert(
+                    $this->logger->debug('Requested file "{path}" has an extension "{extension}" that is not allowed.', [
+                        'path' => $path,
+                        'extension' => $extension,
+                    ])
+                    || true,
+                );
 
                 // Pass the request
                 return $next->handle($context, $request);
@@ -141,11 +148,14 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
             // If the request path does not start with the prefix:
             if (!Str\Byte\starts_with($path, $prefix)) {
                 // Log the mismatch:
-                assert($this->logger->debug('Request path "{path}" does not start with the prefix "{prefix}" for root "{root}".', [
-                    'path' => $path,
-                    'prefix' => $prefix,
-                    'root' => $root,
-                ]) || true);
+                assert(
+                    $this->logger->debug('Request path "{path}" does not start with the prefix "{prefix}" for root "{root}".', [
+                        'path' => $path,
+                        'prefix' => $prefix,
+                        'root' => $root,
+                    ])
+                    || true,
+                );
 
                 // Continue to the next root:
                 continue;
@@ -162,7 +172,8 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
                 assert($this->logger->debug('Requested file "{path}" does not exist within root "{root}".', [
                     'path' => $path,
                     'root' => $root,
-                ]) || true);
+                ])
+                || true);
 
                 // Continue to the next root:
                 continue;

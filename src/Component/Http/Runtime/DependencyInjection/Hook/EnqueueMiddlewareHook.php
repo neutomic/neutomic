@@ -18,8 +18,8 @@ use Neu\Component\DependencyInjection\Exception\ExceptionInterface;
 use Neu\Component\DependencyInjection\HookInterface;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareInterface;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
-use Psl\Iter;
 use Override;
+use Psl\Iter;
 
 /**
  * A hook that enqueues all middleware instances into the middleware queue.
@@ -40,7 +40,7 @@ final readonly class EnqueueMiddlewareHook implements HookInterface
      * @param non-empty-string|null $queue
      * @param list<non-empty-string> $ignore
      */
-    public function __construct(null|string $queue = null, array $ignore = [])
+    public function __construct(?string $queue = null, array $ignore = [])
     {
         $this->queue = $queue ?? MiddlewareQueueInterface::class;
         $this->ignore = $ignore;

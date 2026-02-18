@@ -17,6 +17,4 @@ namespace Neu\Component\Console\Exception;
  * Exception thrown when an `InputDefinition` is requested that hasn't been
  * registered.
  */
-final class InvalidInputDefinitionException extends RuntimeException implements ExceptionInterface
-{
-}
+final class InvalidInputDefinitionException extends RuntimeException implements ExceptionInterface {}

@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Neu\Component\Broadcast\Transport;
 
-use Amp\Sync;
 use Amp\Cluster\Cluster;
 use Amp\Pipeline\ConcurrentIterator;
+use Amp\Sync;
 use Override;
 
 /**

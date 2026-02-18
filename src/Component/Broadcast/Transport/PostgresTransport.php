@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Neu\Component\Broadcast\Transport;
 
+use Amp;
 use Amp\Pipeline\ConcurrentIterator;
 use Amp\Pipeline\DisposedException;
 use Amp\Pipeline\Queue;
@@ -20,7 +21,6 @@ use Amp\Postgres\PostgresConnection;
 use Amp\Postgres\PostgresListener;
 use Amp\Serialization\NativeSerializer;
 use Amp\Serialization\Serializer;
-use Amp;
 use Neu\Component\Broadcast\Exception\AlreadyListeningException;
 use Neu\Component\Broadcast\Exception\ClosedTransportException;
 use Neu\Component\Broadcast\Exception\RuntimeException;
@@ -42,7 +42,7 @@ final class PostgresTransport implements TransportInterface
      * @param PostgresConnection $connection The Postgres connection to use.
      * @param Serializer|null $serializer The serializer to use.
      */
-    public function __construct(PostgresConnection $connection, null|Serializer $serializer = null)
+    public function __construct(PostgresConnection $connection, ?Serializer $serializer = null)
     {
         $this->connection = $connection;
         $this->serializer = $serializer ?? new NativeSerializer();
@@ -66,7 +66,7 @@ final class PostgresTransport implements TransportInterface
 
         try {
             $this->connection->notify($channel, $serialized);
-        } catch (Amp\Sql\SqlException | Amp\Sql\SqlQueryError $e) {
+        } catch (Amp\Sql\SqlException|Amp\Sql\SqlQueryError $e) {
             throw new RuntimeException('Failed to send message to channel "' . $channel . '".', previous: $e);
         }
     }
@@ -96,7 +96,7 @@ final class PostgresTransport implements TransportInterface
 
         try {
             $listener = $this->connection->listen($channel);
-        } catch (Amp\Sql\SqlException | Amp\Sql\SqlQueryError $e) {
+        } catch (Amp\Sql\SqlException|Amp\Sql\SqlQueryError $e) {
             throw new RuntimeException('Failed to listen to channel "' . $channel . '".', previous: $e);
         }
 

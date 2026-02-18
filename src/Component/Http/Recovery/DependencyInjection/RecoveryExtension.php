@@ -14,16 +14,16 @@ declare(strict_types=1);
 namespace Neu\Component\Http\Recovery\DependencyInjection;
 
 use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
-use Neu\Component\DependencyInjection\RegistryInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
+use Neu\Component\DependencyInjection\RegistryInterface;
 use Neu\Component\Http\Recovery\DependencyInjection\Factory\RecoveryFactory;
 use Neu\Component\Http\Recovery\Recovery;
 use Neu\Component\Http\Recovery\RecoveryInterface;
+use Override;
 use Psl\Type;
 use Psr\Log\LogLevel;
 use Throwable;
-use Override;
 
 /**
  * An extension for registering the recovery service.
@@ -43,13 +43,21 @@ final readonly class RecoveryExtension implements ExtensionInterface
     #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $defaultLogger = $configurations->getDocument('http')->getOfTypeOrDefault('logger', Type\non_empty_string(), null);
-        $configuration = $configurations->getDocument('http')->getOfTypeOrDefault('recovery', $this->getConfigurationType(), []);
+        $defaultLogger = $configurations->getDocument('http')->getOfTypeOrDefault(
+            'logger',
+            Type\non_empty_string(),
+            null,
+        );
+        $configuration = $configurations->getDocument('http')->getOfTypeOrDefault(
+            'recovery',
+            $this->getConfigurationType(),
+            [],
+        );
 
-        $registry->addDefinition(Definition::ofType(Recovery::class, new RecoveryFactory(
-            $configuration['logger'] ??  $defaultLogger ?? null,
-            $configuration['throwables'] ?? [],
-        )));
+        $registry->addDefinition(Definition::ofType(
+            Recovery::class,
+            new RecoveryFactory($configuration['logger'] ?? $defaultLogger ?? null, $configuration['throwables'] ?? []),
+        ));
 
         $registry->getDefinition(Recovery::class)->addAlias(RecoveryInterface::class);
     }
@@ -79,7 +87,7 @@ final readonly class RecoveryExtension implements ExtensionInterface
                         Type\non_empty_string(),
                         Type\non_empty_vec(Type\non_empty_string()),
                     )),
-                ])
+                ]),
             )),
         ]);
     }

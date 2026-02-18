@@ -16,9 +16,9 @@ namespace Neu\Component\Console\Block;
 use Neu\Component\Console\Output\OutputInterface;
 use Neu\Component\Console\Output\Verbosity;
 use Neu\Component\Console\Terminal;
+use Override;
 use Psl\Str;
 use Psl\Vec;
-use Override;
 
 /**
  * The {@see TextBlock} class is used to display a block of text in the output.
@@ -40,12 +40,9 @@ final readonly class TextBlock implements BlockInterface
     #[Override]
     public function display(string $message, Verbosity $verbosity = Verbosity::Normal): self
     {
-        $message = Str\wrap($message, (int)(((int)(Terminal::getWidth() / 3)) * 2), cut: true);
+        $message = Str\wrap($message, (int) ((int) (Terminal::getWidth() / 3) * 2), cut: true);
         $message = Str\join(
-            Vec\map(
-                Str\split($message, OutputInterface::END_OF_LINE),
-                static fn (string $chunk) => '   ' . $chunk
-            ),
+            Vec\map(Str\split($message, OutputInterface::END_OF_LINE), static fn(string $chunk) => '   ' . $chunk),
             OutputInterface::END_OF_LINE,
         );
 

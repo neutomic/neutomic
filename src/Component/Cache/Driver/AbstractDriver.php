@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Neu\Component\Cache\Driver;
 
 use Neu\Component\Cache\Exception\RuntimeException;
-use Revolt\EventLoop;
 use Override;
+use Revolt\EventLoop;
 
 /**
  * Abstract class representing a generic cache driver.

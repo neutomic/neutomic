@@ -19,11 +19,11 @@ use Neu\Component\Console\Formatter\Style\ForegroundColor;
 use Neu\Component\Console\Formatter\Style\Style;
 use Neu\Component\Console\Formatter\Style\StyleInterface;
 use Neu\Component\Console\Terminal;
+use Override;
 use Psl\Iter;
 use Psl\Regex;
 use Psl\Str;
 use Psl\Str\Byte;
-use Override;
 
 /**
  * @psalm-suppress MissingThrowsDocblock
@@ -50,7 +50,7 @@ abstract class AbstractFormatter implements WrappingFormatterInterface
     /**
      * @param array<string, StyleInterface> $styles
      */
-    public function __construct(null|bool $decorated = null, array $styles = [])
+    public function __construct(?bool $decorated = null, array $styles = [])
     {
         if (null === $decorated) {
             $decorated = Terminal::hasColorSupport();

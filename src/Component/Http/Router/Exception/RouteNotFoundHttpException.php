@@ -21,7 +21,7 @@ use Throwable;
 
 final class RouteNotFoundHttpException extends HttpException
 {
-    public function __construct(string $message = '', null|Throwable $previous = null)
+    public function __construct(string $message = '', ?Throwable $previous = null)
     {
         parent::__construct(StatusCode::NotFound, [], $message, $previous);
     }

@@ -56,8 +56,12 @@ final readonly class JsonFormatterFactory implements FactoryInterface
      * @param null|bool $ignoreEmptyContextAndExtra Whether to ignore empty context and extra data.
      * @param null|bool $includeStacktraces Whether to include stack traces in the log entries.
      */
-    public function __construct(null|int $batchMode = null, null|bool $appendNewline = null, null|bool $ignoreEmptyContextAndExtra = null, null|bool $includeStacktraces = null)
-    {
+    public function __construct(
+        ?int $batchMode = null,
+        ?bool $appendNewline = null,
+        ?bool $ignoreEmptyContextAndExtra = null,
+        ?bool $includeStacktraces = null,
+    ) {
         $this->batchMode = $batchMode ?? JsonFormatter::BATCH_MODE_JSON;
         $this->appendNewline = $appendNewline ?? true;
         $this->ignoreEmptyContextAndExtra = $ignoreEmptyContextAndExtra ?? false;

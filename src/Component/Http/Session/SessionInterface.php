@@ -23,7 +23,7 @@ interface SessionInterface
      *
      * @return non-empty-string
      */
-    public function getId(): null|string;
+    public function getId(): ?string;
 
     /**
      * Compute a value, store it in the session, and return it.

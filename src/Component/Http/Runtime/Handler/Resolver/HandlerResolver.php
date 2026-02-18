@@ -31,9 +31,9 @@ use function get_debug_type;
  */
 final readonly class HandlerResolver implements HandlerResolverInterface
 {
-    private null|HandlerInterface $fallback;
+    private ?HandlerInterface $fallback;
 
-    public function __construct(null|HandlerInterface $fallback = null)
+    public function __construct(?HandlerInterface $fallback = null)
     {
         $this->fallback = $fallback;
     }
@@ -59,7 +59,9 @@ final readonly class HandlerResolver implements HandlerResolverInterface
             }
 
             throw new HandlerNotFoundHttpException(
-                message: 'Unable to resolve handler for path "' . $request->getUri()->getPath() . '". Did you forget to configure a handler to the route?',
+                message: 'Unable to resolve handler for path "'
+                . $request->getUri()->getPath()
+                . '". Did you forget to configure a handler to the route?',
             );
         }
 
@@ -69,7 +71,11 @@ final readonly class HandlerResolver implements HandlerResolverInterface
         }
 
         throw new LogicException(
-            message: 'Invalid handler provided. Expected an instance of "' . HandlerInterface::class . '", got "' . get_debug_type($handler) . '".',
+            message: 'Invalid handler provided. Expected an instance of "'
+            . HandlerInterface::class
+            . '", got "'
+            . get_debug_type($handler)
+            . '".',
         );
     }
 }

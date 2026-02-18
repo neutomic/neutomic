@@ -40,7 +40,7 @@ final readonly class SessionMiddlewareFactory implements FactoryInterface
      * @param non-empty-string|null $persistence Session persistence service identifier.
      * @param int|null $priority Middleware priority.
      */
-    public function __construct(null|string $persistence = null, null|int $priority = null)
+    public function __construct(?string $persistence = null, ?int $priority = null)
     {
         $this->persistence = $persistence ?? PersistenceInterface::class;
         $this->priority = $priority ?? SessionMiddleware::PRIORITY;

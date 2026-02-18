@@ -36,34 +36,34 @@ final readonly class PostgresTransportFactory implements FactoryInterface
     /**
      * The port of the Postgres server.
      */
-    private null|int $port;
+    private ?int $port;
 
     /**
      * The username for the Postgres connection.
      */
-    private null|string $user;
+    private ?string $user;
 
     /**
      * The password for the Postgres connection.
      */
-    private null|string $password;
+    private ?string $password;
 
     /**
      * The database name for the Postgres connection.
      */
-    private null|string $database;
+    private ?string $database;
 
     /**
      * The application name for the Postgres connection.
      */
-    private null|string $applicationName;
+    private ?string $applicationName;
 
     /**
      * The SSL mode for the Postgres connection.
      *
      * @var value-of<PostgresConfig::SSL_MODES>|null
      */
-    private null|string $sslMode;
+    private ?string $sslMode;
 
     /**
      * Create a new Postgres connection factory.
@@ -78,12 +78,12 @@ final readonly class PostgresTransportFactory implements FactoryInterface
      */
     public function __construct(
         string $host,
-        null|int $port = null,
-        null|string $user = null,
-        null|string $password = null,
-        null|string $database = null,
-        null|string $applicationName = null,
-        null|string $sslMode = null,
+        ?int $port = null,
+        ?string $user = null,
+        #[\SensitiveParameter] ?string $password = null,
+        ?string $database = null,
+        ?string $applicationName = null,
+        ?string $sslMode = null,
     ) {
         $this->host = $host;
         $this->port = $port;
@@ -109,7 +109,7 @@ final readonly class PostgresTransportFactory implements FactoryInterface
 
         try {
             $connection = Postgres\connect($config);
-        } catch (SqlException | Error $e) {
+        } catch (SqlException|Error $e) {
             throw new InvalidArgumentException('Failed to connect to the database: ' . $e->getMessage(), 0, $e);
         }
 

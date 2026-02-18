@@ -38,8 +38,11 @@ trait TableFactoryTrait
      * @param list<string> $headers
      * @param list<list<string>> $rows
      */
-    protected function createTabDelimitedTable(OutputInterface $output, array $headers, array $rows = []): TabDelimitedTable
-    {
+    protected function createTabDelimitedTable(
+        OutputInterface $output,
+        array $headers,
+        array $rows = [],
+    ): TabDelimitedTable {
         $table = new TabDelimitedTable($output);
         $table->setHeaders($headers);
         $table->setRows($rows);

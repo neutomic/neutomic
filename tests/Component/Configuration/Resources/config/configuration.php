@@ -14,7 +14,7 @@ declare(strict_types=1);
 return [
     'foo' => [
         'bar' => true,
-        'baz' => false
+        'baz' => false,
     ],
-    'format' => ['php']
+    'format' => ['php'],
 ];

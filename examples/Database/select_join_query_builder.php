@@ -53,17 +53,20 @@ $database
         ['name' => ':name6'],
         ['name' => ':name7'],
     )
-    ->execute(['name1' => 'Jasmine', 'name2' => 'Anna', 'name3' => 'James', 'name4' => 'David', 'name5' => 'Mark', 'name6' => 'Salma', 'name7' => 'Ali']);
+    ->execute([
+        'name1' => 'Jasmine',
+        'name2' => 'Anna',
+        'name3' => 'James',
+        'name4' => 'David',
+        'name5' => 'Mark',
+        'name6' => 'Salma',
+        'name7' => 'Ali',
+    ]);
 
 $database
     ->createQueryBuilder()
     ->insert('vendors')
-    ->values(
-        ['name' => ':name1'],
-        ['name' => ':name2'],
-        ['name' => ':name3'],
-        ['name' => ':name4'],
-    )
+    ->values(['name' => ':name1'], ['name' => ':name2'], ['name' => ':name3'], ['name' => ':name4'])
     ->execute(['name1' => 'Foo', 'name2' => 'Bar', 'name3' => 'Baz', 'name4' => 'Qux']);
 
 $database
@@ -78,32 +81,57 @@ $database
         ['customer_id' => ':customer6', 'vendor_id' => ':vendor6', 'item' => ':item6', 'status' => ':status6'],
     )
     ->execute([
-        'customer1' => 1, 'vendor1' => 1, 'item1' => 'T-Shirt - grey - XXL',   'status1' => 1,
-        'customer2' => 2, 'vendor2' => 2, 'item2' => 'T-Shirt - grey - M',     'status2' => 1,
-        'customer3' => 3, 'vendor3' => 1, 'item3' => 'T-Shirt - blue - S',     'status3' => 0,
-        'customer4' => 4, 'vendor4' => 3, 'item4' => 'T-Shirt - green - L',    'status4' => 0,
-        'customer5' => 4, 'vendor5' => 3, 'item5' => 'T-Shirt - red - L',      'status5' => 0,
-        'customer6' => 5, 'vendor6' => 2, 'item6' => 'T-Shirt - red - XL',     'status6' => 0,
-    ])
-;
+        'customer1' => 1,
+        'vendor1' => 1,
+        'item1' => 'T-Shirt - grey - XXL',
+        'status1' => 1,
+        'customer2' => 2,
+        'vendor2' => 2,
+        'item2' => 'T-Shirt - grey - M',
+        'status2' => 1,
+        'customer3' => 3,
+        'vendor3' => 1,
+        'item3' => 'T-Shirt - blue - S',
+        'status3' => 0,
+        'customer4' => 4,
+        'vendor4' => 3,
+        'item4' => 'T-Shirt - green - L',
+        'status4' => 0,
+        'customer5' => 4,
+        'vendor5' => 3,
+        'item5' => 'T-Shirt - red - L',
+        'status5' => 0,
+        'customer6' => 5,
+        'vendor6' => 2,
+        'item6' => 'T-Shirt - red - XL',
+        'status6' => 0,
+    ]);
 
 $query = $database
     ->createQueryBuilder()
     ->select('o.id as id', 'o.item as item', 'c.name as customer')
     ->from('orders', 'o')
     ->innerJoin('o', 'customers', 'c', condition: 'o.customer_id = c.id')
-    ->where(
-        $database->createExpressionBuilder()->equal('o.status', ':status')
-    );
+    ->where($database->createExpressionBuilder()->equal('o.status', ':status'));
 
-$pending_orders =  $query->execute(['status' => 0])->getRows();
+$pending_orders = $query->execute(['status' => 0])->getRows();
 foreach ($pending_orders as $order) {
-    IO\write_line('Customer "%s" is waiting for their order of "%s" ( order #%d )', $order['customer'], $order['item'], $order['id']);
+    IO\write_line(
+        'Customer "%s" is waiting for their order of "%s" ( order #%d )',
+        $order['customer'],
+        $order['item'],
+        $order['id'],
+    );
 }
 
-$completed_orders =  $query->execute(['status' => 1])->getRows();
+$completed_orders = $query->execute(['status' => 1])->getRows();
 foreach ($completed_orders as $order) {
-    IO\write_line('Customer "%s" has received their order of "%s" ( order #%d )', $order['customer'], $order['item'], $order['id']);
+    IO\write_line(
+        'Customer "%s" has received their order of "%s" ( order #%d )',
+        $order['customer'],
+        $order['item'],
+        $order['id'],
+    );
 }
 
 $query = $database
@@ -111,16 +139,14 @@ $query = $database
     ->select('c.name as name', 'o.id as order')
     ->from('customers', 'c')
     ->leftJoin('c', 'orders', 'o', condition: 'c.id = o.customer_id')
-    ->where(
-        $database->createExpressionBuilder()->equal('o.status', ':status')
-    );
+    ->where($database->createExpressionBuilder()->equal('o.status', ':status'));
 
-$customers_with_pending_orders =  $query->execute(['status' => 0])->getRows();
+$customers_with_pending_orders = $query->execute(['status' => 0])->getRows();
 foreach ($customers_with_pending_orders as $customer) {
     IO\write_line('customer "%s" has a pending order #%d', $customer['name'], $customer['order']);
 }
 
-$customers_with_completed_orders =  $query->execute(['status' => 1])->getRows();
+$customers_with_completed_orders = $query->execute(['status' => 1])->getRows();
 foreach ($customers_with_completed_orders as $customer) {
     IO\write_line('customer "%s" has a completed order #%d', $customer['name'], $customer['order']);
 }
@@ -130,16 +156,14 @@ $query = $database
     ->select('o.id as order', 'v.name as vendor')
     ->from('orders', 'o')
     ->rightJoin('o', 'vendors', 'v', condition: 'o.vendor_id = v.id')
-    ->where(
-        $database->createExpressionBuilder()->equal('o.status', ':status')
-    );
+    ->where($database->createExpressionBuilder()->equal('o.status', ':status'));
 
-$pending_orders =  $query->execute(['status' => 0])->getRows();
+$pending_orders = $query->execute(['status' => 0])->getRows();
 foreach ($pending_orders as $order) {
     IO\write_line('waiting for vendor "%s" to ship order #%d', $order['vendor'], $order['order']);
 }
 
-$completed_orders =  $query->execute(['status' => 1])->getRows();
+$completed_orders = $query->execute(['status' => 1])->getRows();
 foreach ($completed_orders as $order) {
     IO\write_line('vendor "%s" has shipped order #%d', $order['vendor'], $order['order']);
 }

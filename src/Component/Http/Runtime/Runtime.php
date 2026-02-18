@@ -23,9 +23,9 @@ use Neu\Component\Http\Runtime\Event\ResponseEvent;
 use Neu\Component\Http\Runtime\Event\ThrowableEvent;
 use Neu\Component\Http\Runtime\Handler\Resolver\HandlerResolverInterface;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
+use Override;
 use Psl\Async;
 use Throwable;
-use Override;
 
 /**
  * The Runtime class implements the RuntimeInterface to manage the HTTP request lifecycle,
@@ -80,8 +80,13 @@ final class Runtime implements RuntimeInterface
      * @param MiddlewareQueueInterface $queue The middleware queue to process requests.
      * @param int<1, max> $concurrencyLimit The maximum number of concurrent requests the runtime can handle.
      */
-    public function __construct(EventDispatcherInterface $dispatcher, HandlerResolverInterface $resolver, MiddlewareQueueInterface $queue, RecoveryInterface $recovery, int $concurrencyLimit = self::DEFAULT_CONCURRENCY_LIMIT)
-    {
+    public function __construct(
+        EventDispatcherInterface $dispatcher,
+        HandlerResolverInterface $resolver,
+        MiddlewareQueueInterface $queue,
+        RecoveryInterface $recovery,
+        int $concurrencyLimit = self::DEFAULT_CONCURRENCY_LIMIT,
+    ) {
         $this->dispatcher = $dispatcher;
         $this->queue = $queue;
         $this->resolver = $resolver;
@@ -170,7 +175,7 @@ final class Runtime implements RuntimeInterface
         try {
             $event = $this->dispatcher->dispatch(new RequestEvent($context, $request));
             $request = $event->request;
-            $handler  = $event->handler;
+            $handler = $event->handler;
             $response = $event->response;
             if (null === $response) {
                 $handler ??= $this->resolver;
@@ -196,8 +201,11 @@ final class Runtime implements RuntimeInterface
      *
      * @return ResponseInterface The potentially modified HTTP response.
      */
-    private function handleResponse(Context $context, RequestInterface $request, ResponseInterface $response): ResponseInterface
-    {
+    private function handleResponse(
+        Context $context,
+        RequestInterface $request,
+        ResponseInterface $response,
+    ): ResponseInterface {
         $event = $this->dispatcher->dispatch(new ResponseEvent($context, $request, $response));
 
         return $event->response;
@@ -220,8 +228,11 @@ final class Runtime implements RuntimeInterface
      *
      * @return ResponseInterface The response derived from handling the error.
      */
-    private function handleThrowable(Context $context, RequestInterface $request, Throwable $throwable): ResponseInterface
-    {
+    private function handleThrowable(
+        Context $context,
+        RequestInterface $request,
+        Throwable $throwable,
+    ): ResponseInterface {
         $event = $this->dispatcher->dispatch(new ThrowableEvent($context, $request, $throwable));
         $throwable = $event->throwable;
         $response = $event->response;

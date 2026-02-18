@@ -15,11 +15,11 @@ namespace Neu\Bridge\Twig\DependencyInjection\Factory;
 
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
+use Override;
 use Twig\Cache\CacheInterface;
 use Twig\Cache\NullCache;
 use Twig\Environment;
 use Twig\Loader\LoaderInterface;
-use Override;
 
 /**
  * Factory for creating a {@see Environment} instance.
@@ -35,42 +35,42 @@ final readonly class EnvironmentFactory implements FactoryInterface
      *
      * @var null|bool
      */
-    private null|bool $debug;
+    private ?bool $debug;
 
     /**
      * The charset to use.
      *
      * @var null|string
      */
-    private null|string $charset;
+    private ?string $charset;
 
     /**
      * Whether to enable auto-reload.
      *
      * @var null|bool
      */
-    private null|bool $autoReload;
+    private ?bool $autoReload;
 
     /**
      * Whether to enable strict variables.
      *
      * @var null|bool
      */
-    private null|bool $strictVariables;
+    private ?bool $strictVariables;
 
     /**
      * The auto-escape strategy to use.
      *
      * @var null|string
      */
-    private null|string $autoEscape;
+    private ?string $autoEscape;
 
     /**
      * The optimizations strategy to use.
      *
      * @var null|int
      */
-    private null|int $optimizations;
+    private ?int $optimizations;
 
     /**
      * The global variables to pass to the template.
@@ -88,8 +88,15 @@ final readonly class EnvironmentFactory implements FactoryInterface
      * @param null|int $optimizations
      * @param array<string, mixed> $globals
      */
-    public function __construct(null|bool $debug = null, null|string $charset = null, null|bool $autoReload = null, null|bool $strictVariables = null, null|string $autoEscape = null, null|int $optimizations = null, null|array $globals = null)
-    {
+    public function __construct(
+        ?bool $debug = null,
+        ?string $charset = null,
+        ?bool $autoReload = null,
+        ?bool $strictVariables = null,
+        ?string $autoEscape = null,
+        ?int $optimizations = null,
+        ?array $globals = null,
+    ) {
         $this->debug = $debug;
         $this->charset = $charset;
         $this->autoReload = $autoReload;

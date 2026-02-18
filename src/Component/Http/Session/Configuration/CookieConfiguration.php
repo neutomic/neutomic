@@ -41,42 +41,42 @@ final readonly class CookieConfiguration
      *
      * @var int|null
      */
-    public null|int $lifetime;
+    public ?int $lifetime;
 
     /**
      * The path on the server in which the cookie will be available.
      *
      * @var string|null
      */
-    public null|string $path;
+    public ?string $path;
 
     /**
      * The domain that the cookie is available to.
      *
      * @var string|null
      */
-    public null|string $domain;
+    public ?string $domain;
 
     /**
      * Indicates whether the cookie should only be transmitted over secure HTTPS connections.
      *
      * @var bool|null
      */
-    public null|bool $secure;
+    public ?bool $secure;
 
     /**
      * Indicates whether the cookie should be accessible only through the HTTP protocol.
      *
      * @var bool|null
      */
-    public null|bool $httpOnly;
+    public ?bool $httpOnly;
 
     /**
      * The SameSite attribute of the cookie.
      *
      * @var CookieSameSite|null
      */
-    public null|CookieSameSite $sameSite;
+    public ?CookieSameSite $sameSite;
 
     /**
      * Creates a new instance of the {@see CookieConfiguration} class.
@@ -89,13 +89,20 @@ final readonly class CookieConfiguration
      * @param bool|null $httpOnly Indicates whether the cookie should be accessible only through the HTTP protocol.
      * @param CookieSameSite|null $sameSite The SameSite attribute of the cookie.
      */
-    public function __construct(string $name = self::DEFAULT_NAME, null|int $lifetime = null, null|string $path = null, null|string $domain = null, null|bool $secure = null, null|bool $httpOnly = null, null|CookieSameSite $sameSite = null)
-    {
-        $this->name     = $name;
+    public function __construct(
+        string $name = self::DEFAULT_NAME,
+        ?int $lifetime = null,
+        ?string $path = null,
+        ?string $domain = null,
+        ?bool $secure = null,
+        ?bool $httpOnly = null,
+        ?CookieSameSite $sameSite = null,
+    ) {
+        $this->name = $name;
         $this->lifetime = $lifetime;
-        $this->path     = $path;
-        $this->domain   = $domain;
-        $this->secure   = $secure;
+        $this->path = $path;
+        $this->domain = $domain;
+        $this->secure = $secure;
         $this->httpOnly = $httpOnly;
         $this->sameSite = $sameSite;
     }
@@ -107,7 +114,7 @@ final readonly class CookieConfiguration
      *
      * @return positive-int|null The expiration time in seconds or null if the cookie is session-based.
      */
-    public function getExpires(SessionInterface $session): null|int
+    public function getExpires(SessionInterface $session): ?int
     {
         $duration = $this->lifetime;
         if ($session->has(Session::SESSION_AGE_KEY)) {

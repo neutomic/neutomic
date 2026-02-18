@@ -23,10 +23,14 @@ use Throwable;
 final readonly class ThrowableEvent extends Event
 {
     public Throwable $throwable;
-    public null|int $exitCode;
+    public ?int $exitCode;
 
-    public function __construct(InputInterface $input, OutputInterface $output, Throwable $throwable, null|int $exitCode = null)
-    {
+    public function __construct(
+        InputInterface $input,
+        OutputInterface $output,
+        Throwable $throwable,
+        ?int $exitCode = null,
+    ) {
         parent::__construct($input, $output);
 
         $this->throwable = $throwable;

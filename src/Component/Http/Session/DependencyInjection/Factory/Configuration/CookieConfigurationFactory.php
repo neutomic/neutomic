@@ -30,12 +30,12 @@ final readonly class CookieConfigurationFactory implements FactoryInterface
      * @var non-empty-string
      */
     private string $name;
-    private null|int $lifetime;
-    private null|string $path;
-    private null|string $domain;
-    private null|bool $secure;
-    private null|bool $httpOnly;
-    private null|CookieSameSite $sameSite;
+    private ?int $lifetime;
+    private ?string $path;
+    private ?string $domain;
+    private ?bool $secure;
+    private ?bool $httpOnly;
+    private ?CookieSameSite $sameSite;
 
     /**
      * @param non-empty-string|null $name
@@ -46,8 +46,15 @@ final readonly class CookieConfigurationFactory implements FactoryInterface
      * @param bool|null $httpOnly
      * @param CookieSameSite|string|null $sameSite
      */
-    public function __construct(null|string $name = null, null|int $lifetime = null, null|string $path = null, null|string $domain = null, null|bool $secure = null, null|bool $httpOnly = null, null|string|CookieSameSite $sameSite = null)
-    {
+    public function __construct(
+        ?string $name = null,
+        ?int $lifetime = null,
+        ?string $path = null,
+        ?string $domain = null,
+        ?bool $secure = null,
+        ?bool $httpOnly = null,
+        null|string|CookieSameSite $sameSite = null,
+    ) {
         if (null !== $sameSite && !$sameSite instanceof CookieSameSite) {
             $sameSite = CookieSameSite::from($sameSite);
         }
@@ -60,7 +67,6 @@ final readonly class CookieConfigurationFactory implements FactoryInterface
         $this->httpOnly = $httpOnly;
         $this->sameSite = $sameSite;
     }
-
 
     #[Override]
     public function __invoke(ContainerInterface $container): CookieConfiguration

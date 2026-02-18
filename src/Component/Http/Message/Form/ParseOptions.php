@@ -43,14 +43,14 @@ final readonly class ParseOptions
      *
      * A `null` value indicates that the default server limit should be used, which can be overridden for specific scenarios.
      */
-    public null|int $bodySizeLimit;
+    public ?int $bodySizeLimit;
 
     /**
      * The allowed file extensions for uploaded files.
      *
      * A `null` value indicates that all file extensions are allowed.
      */
-    public null|array $allowedFileExtensions;
+    public ?array $allowedFileExtensions;
 
     /**
      * The maximum number of files that a form can contain. This limit helps in managing resource allocation
@@ -74,10 +74,10 @@ final readonly class ParseOptions
      */
     public function __construct(
         int $fieldCountLimit = self::DEFAULT_FIELD_COUNT_LIMIT,
-        null|int $bodySizeLimit = null,
-        null|array $allowedFileExtensions = null,
+        ?int $bodySizeLimit = null,
+        ?array $allowedFileExtensions = null,
         int $fileCountLimit = self::DEFAULT_FILE_COUNT_LIMIT,
-        bool $allowFilesWithoutExtensions = true
+        bool $allowFilesWithoutExtensions = true,
     ) {
         $this->fieldCountLimit = $fieldCountLimit;
         $this->bodySizeLimit = $bodySizeLimit;
@@ -117,7 +117,7 @@ final readonly class ParseOptions
      *
      * @return self Returns a new instance of {@see ParseOptions} with the specified body size limit.
      */
-    public static function fromBodySizeLimit(null|int $bodySizeLimit): self
+    public static function fromBodySizeLimit(?int $bodySizeLimit): self
     {
         return new self(self::DEFAULT_FIELD_COUNT_LIMIT, $bodySizeLimit);
     }
@@ -131,7 +131,13 @@ final readonly class ParseOptions
      */
     public function withFieldCountLimit(int $fieldCountLimit): self
     {
-        return new self($fieldCountLimit, $this->bodySizeLimit, $this->allowedFileExtensions, $this->fileCountLimit, $this->allowFilesWithoutExtensions);
+        return new self(
+            $fieldCountLimit,
+            $this->bodySizeLimit,
+            $this->allowedFileExtensions,
+            $this->fileCountLimit,
+            $this->allowFilesWithoutExtensions,
+        );
     }
 
     /**
@@ -141,9 +147,15 @@ final readonly class ParseOptions
      *
      * @return self Returns a new instance of ParseOptions with the updated body size limit.
      */
-    public function withBodySizeLimit(null|int $bodySizeLimit): self
+    public function withBodySizeLimit(?int $bodySizeLimit): self
     {
-        return new self($this->fieldCountLimit, $bodySizeLimit, $this->allowedFileExtensions, $this->fileCountLimit, $this->allowFilesWithoutExtensions);
+        return new self(
+            $this->fieldCountLimit,
+            $bodySizeLimit,
+            $this->allowedFileExtensions,
+            $this->fileCountLimit,
+            $this->allowFilesWithoutExtensions,
+        );
     }
 
     /**
@@ -153,9 +165,15 @@ final readonly class ParseOptions
      *
      * @return self Returns a new instance of ParseOptions with the updated allowed file extensions.
      */
-    public function withAllowedFileExtensions(null|array $allowedFileExtensions): self
+    public function withAllowedFileExtensions(?array $allowedFileExtensions): self
     {
-        return new self($this->fieldCountLimit, $this->bodySizeLimit, $allowedFileExtensions, $this->fileCountLimit, $this->allowFilesWithoutExtensions);
+        return new self(
+            $this->fieldCountLimit,
+            $this->bodySizeLimit,
+            $allowedFileExtensions,
+            $this->fileCountLimit,
+            $this->allowFilesWithoutExtensions,
+        );
     }
 
     /**
@@ -167,7 +185,13 @@ final readonly class ParseOptions
      */
     public function withFileCountLimit(int $fileCountLimit): self
     {
-        return new self($this->fieldCountLimit, $this->bodySizeLimit, $this->allowedFileExtensions, $fileCountLimit, $this->allowFilesWithoutExtensions);
+        return new self(
+            $this->fieldCountLimit,
+            $this->bodySizeLimit,
+            $this->allowedFileExtensions,
+            $fileCountLimit,
+            $this->allowFilesWithoutExtensions,
+        );
     }
 
     /**
@@ -179,6 +203,12 @@ final readonly class ParseOptions
      */
     public function withAllowFilesWithoutExtensions(bool $allowFilesWithoutExtensions): self
     {
-        return new self($this->fieldCountLimit, $this->bodySizeLimit, $this->allowedFileExtensions, $this->fileCountLimit, $allowFilesWithoutExtensions);
+        return new self(
+            $this->fieldCountLimit,
+            $this->bodySizeLimit,
+            $this->allowedFileExtensions,
+            $this->fileCountLimit,
+            $allowFilesWithoutExtensions,
+        );
     }
 }

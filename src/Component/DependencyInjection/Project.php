@@ -76,8 +76,7 @@ final readonly class Project
     private function __construct(
         ProjectMode $mode,
         bool $debug,
-        #[SensitiveParameter]
-        string $secret,
+        #[SensitiveParameter] string $secret,
         string $name,
         string $directory,
         string $entrypoint,
@@ -139,7 +138,9 @@ final readonly class Project
         /** @psalm-suppress MissingThrowsDocblock */
         $secret = Env\get_var('PROJECT_SECRET');
         if (null === $secret) {
-            throw new RuntimeException('The project secret is not set. Please set the "PROJECT_SECRET" environment variable.');
+            throw new RuntimeException(
+                'The project secret is not set. Please set the "PROJECT_SECRET" environment variable.',
+            );
         }
 
         if (Str\length($secret, encoding: Str\Encoding::Ascii8bit) !== 32) {
@@ -163,7 +164,7 @@ final readonly class Project
      *
      * @return ProjectMode The project mode.
      */
-    public static function getModeFromEnvironment(null|ProjectMode $default = null): ProjectMode
+    public static function getModeFromEnvironment(?ProjectMode $default = null): ProjectMode
     {
         /** @psalm-suppress MissingThrowsDocblock */
         $value = Env\get_var(self::MODE_ENVIRONMENT_VARIABLE);
@@ -187,7 +188,7 @@ final readonly class Project
      *
      * @return bool The debug mode.
      */
-    public static function getDebugFromEnvironment(null|bool $default = null): bool
+    public static function getDebugFromEnvironment(?bool $default = null): bool
     {
         /** @psalm-suppress MissingThrowsDocblock */
         $value = Env\get_var(self::DEBUG_ENVIRONMENT_VARIABLE);
@@ -316,10 +317,12 @@ final readonly class Project
         $normalizedPath = Str\Byte\trim_left($path, '/');
         $result = $this->directory . '/' . $normalizedPath;
         foreach ($map as $prefix => $directory) {
-            if (Str\Byte\starts_with($normalizedPath, $prefix)) {
-                $result = $directory . '/' . Str\Byte\trim_left(Str\Byte\strip_prefix($normalizedPath, $prefix), '/');
-                break;
+            if (!Str\Byte\starts_with($normalizedPath, $prefix)) {
+                continue;
             }
+
+            $result = $directory . '/' . Str\Byte\trim_left(Str\Byte\strip_prefix($normalizedPath, $prefix), '/');
+            break;
         }
 
         /** @var non-empty-string */

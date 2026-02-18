@@ -139,7 +139,12 @@ interface AbstractionLayerInterface extends LinkInterface
      *
      * @return null|array<non-empty-string, mixed>
      */
-    public function fetchOneAssociative(string $table, array $fields = ['*'], array $criteria = [], array $order_by = []): null|array;
+    public function fetchOneAssociative(
+        string $table,
+        array $fields = ['*'],
+        array $criteria = [],
+        array $order_by = [],
+    ): ?array;
 
     /**
      * Fetch one row from the given table, where columns are index using numeric values.
@@ -167,7 +172,12 @@ interface AbstractionLayerInterface extends LinkInterface
      *
      * @return null|list<mixed>
      */
-    public function fetchOneNumeric(string $table, array $fields = ['*'], array $criteria = [], array $order_by = []): null|array;
+    public function fetchOneNumeric(
+        string $table,
+        array $fields = ['*'],
+        array $criteria = [],
+        array $order_by = [],
+    ): ?array;
 
     /**
      * Fetch one, or more row from the given table, where columns are index using their names.
@@ -196,7 +206,14 @@ interface AbstractionLayerInterface extends LinkInterface
      *
      * @return list<array<non-empty-string, mixed>>
      */
-    public function fetchAllAssociative(string $table, array $fields = ['*'], array $criteria = [], null|int $offset = null, null|int $limit = null, array $order_by = []): array;
+    public function fetchAllAssociative(
+        string $table,
+        array $fields = ['*'],
+        array $criteria = [],
+        ?int $offset = null,
+        ?int $limit = null,
+        array $order_by = [],
+    ): array;
 
     /**
      * Fetch one, or more row from the given table, where columns are index using numeric values.
@@ -225,5 +242,12 @@ interface AbstractionLayerInterface extends LinkInterface
      *
      * @return list<list<mixed>>
      */
-    public function fetchAllNumeric(string $table, array $fields = ['*'], array $criteria = [], null|int $offset = null, null|int $limit = null, array $orderBy = []): array;
+    public function fetchAllNumeric(
+        string $table,
+        array $fields = ['*'],
+        array $criteria = [],
+        ?int $offset = null,
+        ?int $limit = null,
+        array $orderBy = [],
+    ): array;
 }

@@ -21,6 +21,4 @@ use Throwable;
  * All exceptions thrown by the Neutomic components should implement this
  * interface.
  */
-interface ExceptionInterface extends Throwable
-{
-}
+interface ExceptionInterface extends Throwable {}

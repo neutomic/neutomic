@@ -22,10 +22,10 @@ use Neu\Component\Http\Exception\RuntimeException;
 use Neu\Component\Http\Server\Event\ClusterRestartedEvent;
 use Neu\Component\Http\Server\Event\ClusterStartedEvent;
 use Neu\Component\Http\Server\Event\ClusterStoppedEvent;
+use Override;
 use Psr\Log\LoggerInterface;
 use Revolt\EventLoop;
 use Throwable;
-use Override;
 
 use function Amp\Cluster\countCpuCores;
 
@@ -56,7 +56,7 @@ final class Cluster implements ClusterInterface
      *
      * @var null|ClusterWatcher<mixed, mixed>
      */
-    private null|ClusterWatcher $watcher = null;
+    private ?ClusterWatcher $watcher = null;
 
     /**
      * The Number of worker processes to be managed by the cluster.
@@ -70,8 +70,12 @@ final class Cluster implements ClusterInterface
      * @param LoggerInterface $logger Logger instance for logging cluster activities.
      * @param int|null $workerCount Optional number of workers to start. If null, the number of CPU cores will be used.
      */
-    public function __construct(string $entrypoint, EventDispatcherInterface $dispatcher, LoggerInterface $logger, null|int $workerCount = null)
-    {
+    public function __construct(
+        string $entrypoint,
+        EventDispatcherInterface $dispatcher,
+        LoggerInterface $logger,
+        ?int $workerCount = null,
+    ) {
         $this->entrypoint = $entrypoint;
         $this->dispatcher = $dispatcher;
         $this->logger = $logger;
@@ -82,7 +86,7 @@ final class Cluster implements ClusterInterface
      * @inheritDoc
      */
     #[Override]
-    public function start(null|int $workers = null): void
+    public function start(?int $workers = null): void
     {
         if (null !== $this->watcher) {
             return;
@@ -94,7 +98,7 @@ final class Cluster implements ClusterInterface
 
         $this->watcher = $watcher = new ClusterWatcher([$this->entrypoint], $this->logger);
 
-        $workers = $workers ?? $this->workerCount;
+        $workers ??= $this->workerCount;
 
         $this->logger->notice('Starting cluster with {workers} workers...', ['workers' => $workers]);
 
@@ -109,11 +113,12 @@ final class Cluster implements ClusterInterface
                     assert($this->logger->debug('Broadcasting a message received from worker "{worker}".', [
                         'worker' => $message->getWorker()->getId(),
                         'data' => $message->getData(),
-                    ]) || true);
+                    ])
+                    || true);
 
                     $watcher->broadcast($message->getData());
                 }
-            } catch (ClusterException | ContextException) {
+            } catch (ClusterException|ContextException) {
                 // Cluster has been closed.
 
                 return;

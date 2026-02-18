@@ -23,10 +23,10 @@ use Neu\Component\Http\Router\PatternParser\Node\Node;
 use Neu\Component\Http\Router\PatternParser\Node\OptionalNode;
 use Neu\Component\Http\Router\PatternParser\Node\ParameterNode;
 use Neu\Component\Http\Router\Registry\RegistryInterface;
+use Override;
 use Psl\Iter;
 use Psl\Regex;
 use Psl\Str;
-use Override;
 
 use function rawurlencode;
 
@@ -78,15 +78,23 @@ final readonly class Generator implements GeneratorInterface
                 $regex = $node->getRegexp();
                 $parameter = $node->getName();
                 if (!Iter\contains_key($parameters, $parameter)) {
-                    throw new InvalidArgumentException(
-                        message: 'Missing required parameter "' . $parameter . '" for route "' . $name . '".',
-                    );
+                    throw new InvalidArgumentException(message: 'Missing required parameter "'
+                    . $parameter
+                    . '" for route "'
+                    . $name
+                    . '".');
                 }
 
                 $value = (string) $parameters[$parameter];
                 if ($regex !== null && !Regex\matches($value, '/' . $regex . '/')) {
                     throw new UnexpectedValueException(
-                        message: 'Parameter "' . $parameter . '" for route "' . $name . '" does not match the expected pattern "' . $regex . '".',
+                        message: 'Parameter "'
+                        . $parameter
+                        . '" for route "'
+                        . $name
+                        . '" does not match the expected pattern "'
+                        . $regex
+                        . '".',
                     );
                 }
 
@@ -107,9 +115,7 @@ final readonly class Generator implements GeneratorInterface
                 continue;
             }
 
-            throw new RuntimeException(
-                message: 'Unsupported node type "' . $node::class . '".',
-            );
+            throw new RuntimeException(message: 'Unsupported node type "' . $node::class . '".');
         }
 
         return $segments;

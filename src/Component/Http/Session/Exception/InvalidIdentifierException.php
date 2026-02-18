@@ -28,11 +28,8 @@ final class InvalidIdentifierException extends InvalidArgumentException
      *
      * @return self The InvalidIdentifierException instance.
      */
-    public static function for(string $identifier, null|Throwable $previous = null): self
+    public static function for(string $identifier, ?Throwable $previous = null): self
     {
-        return new self(
-            message: 'The session identifier "' . $identifier . '" is invalid.',
-            previous: $previous,
-        );
+        return new self(message: 'The session identifier "' . $identifier . '" is invalid.', previous: $previous);
     }
 }

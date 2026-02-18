@@ -23,9 +23,9 @@ use Neu\Component\DependencyInjection\Configuration\Loader\PhpFileLoader;
 use Neu\Component\DependencyInjection\Configuration\Loader\ResolverAwareLoaderInterface;
 use Neu\Component\DependencyInjection\Configuration\Loader\YamlFileLoader;
 use Neu\Component\DependencyInjection\Exception\NoSupportiveLoaderException;
+use Override;
 use Psl\Str;
 use Psl\Type;
-use Override;
 
 use function get_debug_type;
 
@@ -101,14 +101,16 @@ final class Resolver implements ResolverInterface
     public function resolve(mixed $resource): LoaderInterface
     {
         foreach ($this->loaders as $loader) {
-            if ($loader->supports($resource)) {
-                if ($loader instanceof ResolverAwareLoaderInterface) {
-                    $loader->setResolver($this);
-                }
-
-                /** @var LoaderInterface<ResourceType> */
-                return $loader;
+            if (!$loader->supports($resource)) {
+                continue;
             }
+
+            if ($loader instanceof ResolverAwareLoaderInterface) {
+                $loader->setResolver($this);
+            }
+
+            /** @var LoaderInterface<ResourceType> */
+            return $loader;
         }
 
         throw new NoSupportiveLoaderException(sprintf(

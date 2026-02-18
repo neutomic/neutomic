@@ -31,7 +31,7 @@ final class MethodNotAllowedHttpException extends HttpException
     /**
      * @param non-empty-list<Method> $allowed
      */
-    public function __construct(array $allowed, string $message = '', null|Throwable $previous = null)
+    public function __construct(array $allowed, string $message = '', ?Throwable $previous = null)
     {
         $headers = [
             'Allow' => Vec\map(
@@ -41,7 +41,7 @@ final class MethodNotAllowedHttpException extends HttpException
                  *
                  * @return non-empty-string
                  */
-                static fn (Method $method): string => $method->value,
+                static fn(Method $method): string => $method->value,
             ),
         ];
 
@@ -55,13 +55,18 @@ final class MethodNotAllowedHttpException extends HttpException
      *
      * @param non-empty-list<Method> $allowed
      */
-    public static function create(Method $method, UriInterface $uri, array $allowed, null|Throwable $previous = null): self
+    public static function create(Method $method, UriInterface $uri, array $allowed, ?Throwable $previous = null): self
     {
-        $allowedString = Str\join(Vec\map($allowed, static fn (Method $method): string => $method->value), '", "');
+        $allowedString = Str\join(Vec\map($allowed, static fn(Method $method): string => $method->value), '", "');
 
         return new self(
             $allowed,
-            'Method "' . $method->value . '" is not allowed for "' . $uri->getPath() . '", allowed methods: ' . $allowedString,
+            'Method "'
+            . $method->value
+            . '" is not allowed for "'
+            . $uri->getPath()
+            . '", allowed methods: '
+            . $allowedString,
             $previous,
         );
     }

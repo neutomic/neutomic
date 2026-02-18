@@ -30,52 +30,52 @@ final readonly class ConfigurationFactory implements FactoryInterface
      *
      * @var non-empty-string
      */
-    private null|string $name;
+    private ?string $name;
 
     /**
      * The version of the application.
      */
-    private null|string $version;
+    private ?string $version;
 
     /**
      * A decorator banner to "brand" the application.
      */
-    private null|string $banner;
+    private ?string $banner;
 
     /**
      * Whether the application should enable the help flag.
      */
-    private null|bool $helpFlag;
+    private ?bool $helpFlag;
 
     /**
      * Whether the application should enable the quiet mode flag.
      */
-    private null|bool $quietFlag;
+    private ?bool $quietFlag;
 
     /**
      * Whether the application should enable the verbose mode flag.
      */
-    private null|bool $verboseFlag;
+    private ?bool $verboseFlag;
 
     /**
      * Whether the application should enable the version flag.
      */
-    private null|bool $versionFlag;
+    private ?bool $versionFlag;
 
     /**
      * Whether the application should enable the ansi flag.
      */
-    private null|bool $ansiFlag;
+    private ?bool $ansiFlag;
 
     /**
      * Whether the application should enable the no-ansi flag.
      */
-    private null|bool $noAnsiFlag;
+    private ?bool $noAnsiFlag;
 
     /**
      * Whether the application should enable the no-interaction flag.
      */
-    private null|bool $noInteractionFlag;
+    private ?bool $noInteractionFlag;
 
     /**
      * Creates a new {@see ConfigurationFactory} instance.
@@ -92,16 +92,16 @@ final readonly class ConfigurationFactory implements FactoryInterface
      * @param ?bool $noInteractionFlag Whether the application should enable the no-interaction flag.
      */
     public function __construct(
-        null|string $name = null,
-        null|string $version = null,
-        null|string $banner = null,
-        null|bool $helpFlag = null,
-        null|bool $quietFlag = null,
-        null|bool $verboseFlag = null,
-        null|bool $versionFlag = null,
-        null|bool $ansiFlag = null,
-        null|bool $noAnsiFlag = null,
-        null|bool $noInteractionFlag = null,
+        ?string $name = null,
+        ?string $version = null,
+        ?string $banner = null,
+        ?bool $helpFlag = null,
+        ?bool $quietFlag = null,
+        ?bool $verboseFlag = null,
+        ?bool $versionFlag = null,
+        ?bool $ansiFlag = null,
+        ?bool $noAnsiFlag = null,
+        ?bool $noInteractionFlag = null,
     ) {
         $this->name = $name;
         $this->version = $version;

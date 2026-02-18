@@ -16,8 +16,8 @@ namespace Neu\Component\Http\Server\DependencyInjection\Factory;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Server\ServerInfrastructure;
-use Psr\Log\LoggerInterface;
 use Override;
+use Psr\Log\LoggerInterface;
 
 /**
  * A factory for creating a {@see ServerInfrastructure} instance.
@@ -103,15 +103,15 @@ final readonly class ServerInfrastructureFactory implements FactoryInterface
      * @param non-empty-string|null $logger
      */
     public function __construct(
-        null|array $serverSocketConfigurations = null,
-        null|int $connectionLimit = null,
-        null|int $connectionLimitPerIP = null,
-        null|int $streamTimeout = null,
-        null|int $connectionTimeout = null,
-        null|int $headerSizeLimit = null,
-        null|int $bodySizeLimit = null,
-        null|int $tlsHandshakeTimeout = null,
-        null|string $logger = null,
+        ?array $serverSocketConfigurations = null,
+        ?int $connectionLimit = null,
+        ?int $connectionLimitPerIP = null,
+        ?int $streamTimeout = null,
+        ?int $connectionTimeout = null,
+        ?int $headerSizeLimit = null,
+        ?int $bodySizeLimit = null,
+        ?int $tlsHandshakeTimeout = null,
+        ?string $logger = null,
     ) {
         $this->serverSocketConfigurations = $serverSocketConfigurations ?? [];
         $this->connectionLimit = $connectionLimit ?? ServerInfrastructure::DEFAULT_CONNECTION_LIMIT;

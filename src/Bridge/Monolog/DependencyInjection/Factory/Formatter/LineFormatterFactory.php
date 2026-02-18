@@ -61,8 +61,13 @@ final readonly class LineFormatterFactory implements FactoryInterface
      * @param ?bool $ignoreEmptyContextAndExtra Whether to ignore empty context and extra data.
      * @param ?bool $includeStacktraces Whether to include stack traces in the log entries.
      */
-    public function __construct(null|string $format = null, null|string $dateFormat = null, null|bool $allowInlineLineBreaks = null, null|bool $ignoreEmptyContextAndExtra = null, null|bool $includeStacktraces = null)
-    {
+    public function __construct(
+        ?string $format = null,
+        ?string $dateFormat = null,
+        ?bool $allowInlineLineBreaks = null,
+        ?bool $ignoreEmptyContextAndExtra = null,
+        ?bool $includeStacktraces = null,
+    ) {
         $this->format = $format ?? LineFormatter::SIMPLE_FORMAT;
         $this->dateFormat = $dateFormat ?? NormalizerFormatter::SIMPLE_DATE;
         $this->allowInlineLineBreaks = $allowInlineLineBreaks ?? false;

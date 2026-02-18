@@ -18,11 +18,11 @@ use Neu\Component\Http\Router\PatternParser\Node\Node;
 use Neu\Component\Http\Router\PatternParser\Node\ParameterNode;
 use Neu\Component\Http\Router\Route;
 use Psl\Dict;
-use Psl\Vec;
-use Psl\Str;
-use Psl\Math;
-use Psl\Str\Byte;
 use Psl\Iter;
+use Psl\Math;
+use Psl\Str;
+use Psl\Str\Byte;
+use Psl\Vec;
 
 /**
  * Class representing a map of route prefixes for efficient route matching.
@@ -95,9 +95,9 @@ final readonly class PrefixMap
              *
              * @return array{0: list<Node>, 1: Route}
              */
-            static fn (Route $route): array => [
+            static fn(Route $route): array => [
                 $route->getParsedPattern()->getChildren(),
-                $route
+                $route,
             ],
         );
 
@@ -147,10 +147,9 @@ final readonly class PrefixMap
             }
 
             $regexps[] = [
-                Str\join(Vec\map(
-                    Vec\concat([$node], $nodes),
-                    static fn (Node $n): string => $n->toRegularExpression('#'),
-                ), ''),
+                Str\join(Vec\map(Vec\concat([$node], $nodes), static fn(Node $n): string => $n->toRegularExpression(
+                    '#',
+                )), ''),
                 [],
                 $route,
             ];
@@ -162,7 +161,7 @@ final readonly class PrefixMap
             /**
              * @param array{0: non-empty-string, 1: list<Node>, 2: Route} $entry
              */
-            static fn (array $entry): string => $entry[0]
+            static fn(array $entry): string => $entry[0],
         );
 
         [$prefix_length, $grouped] = self::groupByCommonPrefix(Vec\keys($by_first));
@@ -178,7 +177,7 @@ final readonly class PrefixMap
                     /**
                      * @return list<array{0: list<Node>, 1: Route}>
                      */
-                    static fn (string $key) => Vec\map(
+                    static fn(string $key) => Vec\map(
                         $by_first[$key],
                         /**
                          * @param array{0: non-empty-string, 1: list<Node>, 2: Route} $row
@@ -217,28 +216,26 @@ final readonly class PrefixMap
             /**
              * @param array{0: string, 1: list<Node>, 2: Route} $entry
              */
-            static fn (array $entry): string => $entry[0]
+            static fn(array $entry): string => $entry[0],
         );
         $regexps = [];
         foreach ($by_first as $first => $group_entries) {
             if (Iter\count($group_entries) === 1) {
                 [, $nodes, $route] = $group_entries[0];
-                $rest = Str\join(Vec\map($nodes, static fn (Node $n): string => $n->toRegularExpression('#')), '');
+                $rest = Str\join(Vec\map($nodes, static fn(Node $n): string => $n->toRegularExpression('#')), '');
                 $regexps[$first . $rest] = PrefixMapOrRoute::fromRoute($route);
                 continue;
             }
 
-            $regexps[$first] = PrefixMapOrRoute::fromMap(
-                self::fromRoutesImpl(Vec\map(
-                    $group_entries,
-                    /**
-                     * @param array{0: string, 1: list<Node>, 2: Route} $e
-                     *
-                     * @return array{0: list<Node>, 1: Route}
-                     */
-                    static fn (array $e): array => [$e[1], $e[2]],
-                )),
-            );
+            $regexps[$first] = PrefixMapOrRoute::fromMap(self::fromRoutesImpl(Vec\map(
+                $group_entries,
+                /**
+                 * @param array{0: string, 1: list<Node>, 2: Route} $e
+                 *
+                 * @return array{0: list<Node>, 1: Route}
+                 */
+                static fn(array $e): array => [$e[1], $e[2]],
+            )));
         }
 
         return new self($literals, $prefixes, $regexps, $prefix_length);
@@ -265,18 +262,18 @@ final readonly class PrefixMap
         $lengths = Vec\map($keys, Byte\length(...));
         $minimum = Math\min($lengths);
 
-        return [$minimum, Dict\group_by(
-            $keys,
-            /**
-             * @param non-empty-string $key
-             *
-             * @return non-empty-string
-             */
-            static function (string $key) use ($minimum): string {
-                /** @var non-empty-string */
-                return Byte\slice($key, 0, $minimum);
-            },
-        )];
+        return [
+            $minimum,
+            Dict\group_by(
+                $keys,
+                /**
+                 * @param non-empty-string $key
+                 *
+                 * @return non-empty-string
+                 */
+                static fn(string $key) => Byte\slice($key, 0, $minimum),
+            ),
+        ];
     }
 
     /**

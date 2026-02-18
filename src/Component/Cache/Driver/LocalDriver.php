@@ -35,7 +35,7 @@ final class LocalDriver extends AbstractDriver
      *
      * @var null|positive-int
      */
-    private readonly null|int $size;
+    private readonly ?int $size;
 
     /**
      * @var array<non-empty-string, mixed>
@@ -53,7 +53,7 @@ final class LocalDriver extends AbstractDriver
      * @param positive-int $pruneInterval The interval, in seconds, at which to run {@see DriverInterface::prune()}.
      * @param null|positive-int $size The maximum number of items that can be held in cache at one time.
      */
-    public function __construct(int $pruneInterval = self::PRUNE_INTERVAL, null|int $size = null)
+    public function __construct(int $pruneInterval = self::PRUNE_INTERVAL, ?int $size = null)
     {
         parent::__construct($pruneInterval);
 
@@ -85,14 +85,14 @@ final class LocalDriver extends AbstractDriver
      * @inheritDoc
      */
     #[Override]
-    public function set(string $key, mixed $value, null|int $ttl = null): void
+    public function set(string $key, mixed $value, ?int $ttl = null): void
     {
         $this->cache[$key] = $value;
         if ($ttl !== null) {
             $this->cacheExpiration[$key] = time() + $ttl;
         }
 
-        if (null !== $this->size && count($this->cache) === $this->size && $item = array_key_first($this->cache)) {
+        if (null !== $this->size && count($this->cache) === $this->size && ($item = array_key_first($this->cache))) {
             $this->delete($item);
         }
     }
@@ -123,9 +123,11 @@ final class LocalDriver extends AbstractDriver
     public function prune(): void
     {
         foreach ($this->cacheExpiration as $key => $time) {
-            if (time() >= $time) {
-                $this->delete($key);
+            if (time() < $time) {
+                continue;
             }
+
+            $this->delete($key);
         }
     }
 

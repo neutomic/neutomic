@@ -18,10 +18,10 @@ use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\Runtime\Middleware\PrioritizedMiddlewareInterface;
-use Psl\Str;
-use Psl\DateTime;
-use Psr\Log\LoggerInterface;
 use Override;
+use Psl\DateTime;
+use Psl\Str;
+use Psr\Log\LoggerInterface;
 
 /**
  * Middleware that logs access to the server.

@@ -24,15 +24,15 @@ use Neu\Component\Http\Session\Configuration\CacheLimiter;
 use Neu\Component\Http\Session\Configuration\CookieConfiguration;
 use Neu\Component\Http\Session\DependencyInjection\Factory\Configuration\CacheConfigurationFactory;
 use Neu\Component\Http\Session\DependencyInjection\Factory\Configuration\CookieConfigurationFactory;
+use Neu\Component\Http\Session\DependencyInjection\Factory\Handler\CacheHandlerFactory;
 use Neu\Component\Http\Session\DependencyInjection\Factory\Handler\EncryptedHandlerFactory;
 use Neu\Component\Http\Session\DependencyInjection\Factory\Persistence\PersistenceFactory;
-use Neu\Component\Http\Session\DependencyInjection\Factory\Handler\CacheHandlerFactory;
 use Neu\Component\Http\Session\Handler\CacheHandler;
 use Neu\Component\Http\Session\Handler\EncryptedHandler;
-use Neu\Component\Http\Session\Persistence\PersistenceInterface;
 use Neu\Component\Http\Session\Handler\HandlerInterface;
-use Psl\Type;
+use Neu\Component\Http\Session\Persistence\PersistenceInterface;
 use Override;
+use Psl\Type;
 
 /**
  * A container extension for the session component.
@@ -75,22 +75,32 @@ final readonly class SessionExtension implements ExtensionInterface
     #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $configuration = $configurations->getDocument('http')->getOfTypeOrDefault('session', $this->getConfigurationType(), []);
+        $configuration = $configurations->getDocument('http')->getOfTypeOrDefault(
+            'session',
+            $this->getConfigurationType(),
+            [],
+        );
 
-        $registry->addDefinition(Definition::ofType(CacheConfiguration::class, new CacheConfigurationFactory(
-            $configuration['cache']['expires'] ?? null,
-            $configuration['cache']['limiter'] ?? null,
-        )));
+        $registry->addDefinition(Definition::ofType(
+            CacheConfiguration::class,
+            new CacheConfigurationFactory(
+                $configuration['cache']['expires'] ?? null,
+                $configuration['cache']['limiter'] ?? null,
+            ),
+        ));
 
-        $registry->addDefinition(Definition::ofType(CookieConfiguration::class, new CookieConfigurationFactory(
-            $configuration['cookie']['name'] ?? null,
-            $configuration['cookie']['lifetime'] ?? null,
-            $configuration['cookie']['path'] ?? null,
-            $configuration['cookie']['domain'] ?? null,
-            $configuration['cookie']['secure'] ?? null,
-            $configuration['cookie']['http-only'] ?? null,
-            $configuration['cookie']['same-site'] ?? null,
-        )));
+        $registry->addDefinition(Definition::ofType(
+            CookieConfiguration::class,
+            new CookieConfigurationFactory(
+                $configuration['cookie']['name'] ?? null,
+                $configuration['cookie']['lifetime'] ?? null,
+                $configuration['cookie']['path'] ?? null,
+                $configuration['cookie']['domain'] ?? null,
+                $configuration['cookie']['secure'] ?? null,
+                $configuration['cookie']['http-only'] ?? null,
+                $configuration['cookie']['same-site'] ?? null,
+            ),
+        ));
 
         $handler = $configuration['handler'] ?? ['type' => 'encrypted', 'secret' => null];
         if ('cache' === $handler['type']) {
@@ -101,11 +111,14 @@ final readonly class SessionExtension implements ExtensionInterface
             $this->registerEncryptedHandler($registry, $handler);
         }
 
-        $registry->addDefinition(Definition::ofType(PersistenceInterface::class, new PersistenceFactory(
-            $configuration['persistence']['handler'] ?? null,
-            $configuration['persistence']['cookie-configuration'] ?? null,
-            $configuration['persistence']['cache-configuration'] ?? null,
-        )));
+        $registry->addDefinition(Definition::ofType(
+            PersistenceInterface::class,
+            new PersistenceFactory(
+                $configuration['persistence']['handler'] ?? null,
+                $configuration['persistence']['cookie-configuration'] ?? null,
+                $configuration['persistence']['cache-configuration'] ?? null,
+            ),
+        ));
     }
 
     /**
@@ -117,9 +130,10 @@ final readonly class SessionExtension implements ExtensionInterface
      */
     private function registerCacheHandler(RegistryInterface $registry, array $configuration): void
     {
-        $registry->addDefinition(Definition::ofType(CacheHandler::class, new CacheHandlerFactory(
-            $configuration['store'] ?? null,
-        )));
+        $registry->addDefinition(Definition::ofType(
+            CacheHandler::class,
+            new CacheHandlerFactory($configuration['store'] ?? null),
+        ));
         $registry->getDefinition(CacheHandler::class)->addAlias(HandlerInterface::class);
     }
 
@@ -132,9 +146,10 @@ final readonly class SessionExtension implements ExtensionInterface
      */
     private function registerEncryptedHandler(RegistryInterface $registry, array $configuration): void
     {
-        $registry->addDefinition(Definition::ofType(EncryptedHandler::class, new EncryptedHandlerFactory(
-            $configuration['secret'] ?? null,
-        )));
+        $registry->addDefinition(Definition::ofType(
+            EncryptedHandler::class,
+            new EncryptedHandlerFactory($configuration['secret'] ?? null),
+        ));
         $registry->getDefinition(EncryptedHandler::class)->addAlias(HandlerInterface::class);
     }
 
@@ -155,18 +170,16 @@ final readonly class SessionExtension implements ExtensionInterface
             ])),
             'cache' => Type\optional(Type\shape([
                 'expires' => Type\optional(Type\int()),
-                'limiter' => Type\optional(
-                    Type\converted(
-                        Type\union(
-                            Type\literal_scalar('nocache'),
-                            Type\literal_scalar('public'),
-                            Type\literal_scalar('private'),
-                            Type\literal_scalar('private-no-expire'),
-                        ),
-                        Type\backed_enum(CacheLimiter::class),
-                        static fn (string $value): CacheLimiter => CacheLimiter::from($value),
-                    )
-                ),
+                'limiter' => Type\optional(Type\converted(
+                    Type\union(
+                        Type\literal_scalar('nocache'),
+                        Type\literal_scalar('public'),
+                        Type\literal_scalar('private'),
+                        Type\literal_scalar('private-no-expire'),
+                    ),
+                    Type\backed_enum(CacheLimiter::class),
+                    CacheLimiter::from(...),
+                )),
             ])),
             'handler' => Type\optional(Type\union(
                 Type\shape([

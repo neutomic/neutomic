@@ -60,7 +60,7 @@ final readonly class Request implements RequestInterface
     /**
      * The session of the request.
      */
-    private null|SessionInterface $session;
+    private ?SessionInterface $session;
 
     /**
      * The attributes of the request.
@@ -72,7 +72,7 @@ final readonly class Request implements RequestInterface
     /**
      * The request body.
      */
-    protected null|RequestBodyInterface $body;
+    protected ?RequestBodyInterface $body;
 
     /**
      * Creates a new request instance.
@@ -85,15 +85,15 @@ final readonly class Request implements RequestInterface
     private function __construct(
         ProtocolVersion $protocolVersion,
         Method $method,
-        null|string $requestTarget,
+        ?string $requestTarget,
         UriInterface $uri,
         HeaderStorage $headerStorage,
         CookieStorage $cookies,
         array $queryParameters = [],
-        null|SessionInterface $session = null,
+        ?SessionInterface $session = null,
         array $attributes = [],
-        null|RequestBodyInterface $body = null,
-        array $trailers = []
+        ?RequestBodyInterface $body = null,
+        array $trailers = [],
     ) {
         if ($requestTarget === null) {
             $requestTarget = $uri->getPath();
@@ -134,8 +134,12 @@ final readonly class Request implements RequestInterface
      *
      * @throws InvalidArgumentException If $uri is not a valid URI.
      */
-    public static function create(Method $method, UriInterface|string $uri, array $headers = [], array $cookies = []): static
-    {
+    public static function create(
+        Method $method,
+        UriInterface|string $uri,
+        array $headers = [],
+        array $cookies = [],
+    ): static {
         if (!$uri instanceof UriInterface) {
             $uri = Uri::fromUrl($uri);
         }
@@ -166,7 +170,7 @@ final readonly class Request implements RequestInterface
             $this->queryParameters,
             $this->session,
             $this->attributes,
-            $this->body
+            $this->body,
         );
     }
 
@@ -174,7 +178,7 @@ final readonly class Request implements RequestInterface
      * @inheritDoc
      */
     #[Override]
-    public function getBody(): null|RequestBodyInterface
+    public function getBody(): ?RequestBodyInterface
     {
         return $this->body;
     }
@@ -183,7 +187,7 @@ final readonly class Request implements RequestInterface
      * @inheritDoc
      */
     #[Override]
-    public function withBody(null|BodyInterface $body): static
+    public function withBody(?BodyInterface $body): static
     {
         if (null !== $body && !$body instanceof RequestBodyInterface) {
             /** @psalm-suppress MissingThrowsDocblock */
@@ -200,7 +204,7 @@ final readonly class Request implements RequestInterface
             $this->queryParameters,
             $this->session,
             $this->attributes,
-            $body
+            $body,
         );
     }
 
@@ -233,7 +237,7 @@ final readonly class Request implements RequestInterface
             $this->queryParameters,
             $this->session,
             $this->attributes,
-            $this->body
+            $this->body,
         );
     }
 
@@ -266,7 +270,7 @@ final readonly class Request implements RequestInterface
             $this->queryParameters,
             $this->session,
             $this->attributes,
-            $this->body
+            $this->body,
         );
     }
 
@@ -299,7 +303,7 @@ final readonly class Request implements RequestInterface
             $this->queryParameters,
             $this->session,
             $this->attributes,
-            $this->body
+            $this->body,
         );
 
         if ($preserveHost && $this->hasHeader('Host')) {
@@ -313,7 +317,7 @@ final readonly class Request implements RequestInterface
 
         $port = $uri->getPort();
         if ($port !== null) {
-            $host .= ':' . ((string) $port);
+            $host .= ':' . (string) $port;
         }
 
         /** @psalm-suppress MissingThrowsDocblock - header is valid at this point */
@@ -342,7 +346,7 @@ final readonly class Request implements RequestInterface
      * @inheritDoc
      */
     #[Override]
-    public function getCookie(string $name): null|array
+    public function getCookie(string $name): ?array
     {
         return $this->cookies->getCookie($name);
     }
@@ -365,7 +369,7 @@ final readonly class Request implements RequestInterface
             $this->queryParameters,
             $this->session,
             $this->attributes,
-            $this->body
+            $this->body,
         );
     }
 
@@ -387,7 +391,7 @@ final readonly class Request implements RequestInterface
             $this->queryParameters,
             $this->session,
             $this->attributes,
-            $this->body
+            $this->body,
         );
     }
 
@@ -409,7 +413,7 @@ final readonly class Request implements RequestInterface
             $this->queryParameters,
             $this->session,
             $this->attributes,
-            $this->body
+            $this->body,
         );
     }
 
@@ -431,7 +435,7 @@ final readonly class Request implements RequestInterface
             $this->queryParameters,
             $this->session,
             $this->attributes,
-            $this->body
+            $this->body,
         );
     }
 
@@ -457,7 +461,7 @@ final readonly class Request implements RequestInterface
      * @inheritDoc
      */
     #[Override]
-    public function getQueryParameter(string $name): null|array
+    public function getQueryParameter(string $name): ?array
     {
         return $this->queryParameters[$name] ?? null;
     }
@@ -483,7 +487,7 @@ final readonly class Request implements RequestInterface
             $query_parameters,
             $this->session,
             $this->attributes,
-            $this->body
+            $this->body,
         );
     }
 
@@ -566,7 +570,7 @@ final readonly class Request implements RequestInterface
             $this->queryParameters,
             $this->session,
             $attributes,
-            $this->body
+            $this->body,
         );
     }
 
@@ -586,7 +590,7 @@ final readonly class Request implements RequestInterface
             $this->queryParameters,
             $this->session,
             array_merge($this->attributes, $attributes),
-            $this->body
+            $this->body,
         );
     }
 
@@ -610,7 +614,7 @@ final readonly class Request implements RequestInterface
             $this->queryParameters,
             $this->session,
             $attributes,
-            $this->body
+            $this->body,
         );
     }
 
@@ -633,7 +637,7 @@ final readonly class Request implements RequestInterface
             $this->queryParameters,
             $this->session,
             $attributes,
-            $this->body
+            $this->body,
         );
     }
 
@@ -663,7 +667,7 @@ final readonly class Request implements RequestInterface
      * @inheritDoc
      */
     #[Override]
-    public function withSession(null|SessionInterface $session): static
+    public function withSession(?SessionInterface $session): static
     {
         return new self(
             $this->protocolVersion,
@@ -675,7 +679,7 @@ final readonly class Request implements RequestInterface
             $this->queryParameters,
             $session,
             $this->attributes,
-            $this->body
+            $this->body,
         );
     }
 
@@ -692,7 +696,7 @@ final readonly class Request implements RequestInterface
             $this->queryParameters,
             $this->session,
             $this->attributes,
-            $this->body
+            $this->body,
         );
     }
 
@@ -710,7 +714,7 @@ final readonly class Request implements RequestInterface
             $this->session,
             $this->attributes,
             $this->body,
-            $trailers
+            $trailers,
         );
     }
 }

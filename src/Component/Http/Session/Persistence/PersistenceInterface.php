@@ -39,5 +39,9 @@ interface PersistenceInterface
      *
      * @throws RuntimeException If an error occurs while persisting the session data.
      */
-    public function persist(Context $context, RequestInterface $request, ResponseInterface $response): ResponseInterface;
+    public function persist(
+        Context $context,
+        RequestInterface $request,
+        ResponseInterface $response,
+    ): ResponseInterface;
 }

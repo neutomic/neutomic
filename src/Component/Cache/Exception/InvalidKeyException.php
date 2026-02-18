@@ -20,6 +20,10 @@ final class InvalidKeyException extends InvalidArgumentException
      */
     public static function forLongKey(string $key, int $maximumLength): self
     {
-        return new self('Cache key is too long: ' . $key . ' (maximum length: ' . ((string) $maximumLength) . ' characters).');
+        return new self('Cache key is too long: '
+        . $key
+        . ' (maximum length: '
+        . (string) $maximumLength
+        . ' characters).');
     }
 }

@@ -17,9 +17,9 @@ use Neu\Component\Database\AbstractionLayerInterface;
 use Neu\Component\Database\Exception\LogicException;
 use Neu\Component\Database\Query\InsertQueryInterface;
 use Neu\Component\Database\Query\Type;
+use Override;
 use Psl\Str;
 use Psl\Vec;
-use Override;
 
 final readonly class InsertQuery extends AbstractExecutableQuery implements InsertQueryInterface
 {
@@ -31,7 +31,7 @@ final readonly class InsertQuery extends AbstractExecutableQuery implements Inse
     public function __construct(
         AbstractionLayerInterface $dbal,
         private string $table,
-        private null|string $alias = null,
+        private ?string $alias = null,
         private array $values = [],
     ) {
         parent::__construct($dbal);
@@ -51,17 +51,29 @@ final readonly class InsertQuery extends AbstractExecutableQuery implements Inse
             if ($columns === null) {
                 $columns = $row_columns;
             } elseif ($columns !== $row_columns) {
-                throw new LogicException(Str\format('All values must have consistent column names, value #%d is inconsistent.', $i));
+                throw new LogicException(Str\format(
+                    'All values must have consistent column names, value #%d is inconsistent.',
+                    $i,
+                ));
             }
 
             $sets[] = '(' . Str\join(Vec\values($row), ', ') . ')';
         }
 
         if ($columns === null) {
-            throw new LogicException('InsertQueryInterface::values() must be called at least once before attempting to execute the insert query.');
+            throw new LogicException(
+                'InsertQueryInterface::values() must be called at least once before attempting to execute the insert query.',
+            );
         }
 
-        return 'INSERT INTO ' . $this->getTableSQL($this->table, $this->alias) . ' (' . Str\join($columns, ', ') . ') VALUES ' . Str\join($sets, ', ');
+        return (
+            'INSERT INTO '
+            . $this->getTableSQL($this->table, $this->alias)
+            . ' ('
+            . Str\join($columns, ', ')
+            . ') VALUES '
+            . Str\join($sets, ', ')
+        );
     }
 
     /**

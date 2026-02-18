@@ -15,8 +15,8 @@ namespace Neu\Component\Console\Input;
 
 use Amp\ByteStream;
 use Neu\Component\Console\Exception\NonInteractiveInputException;
-use Psl\Str;
 use Override;
+use Psl\Str;
 
 use const PHP_EOL;
 
@@ -54,7 +54,7 @@ final class ByteStreamInput extends AbstractInput
      * @inheritDoc
      */
     #[Override]
-    public function getUserInput(null|int $length = null): string
+    public function getUserInput(?int $length = null): string
     {
         if (!$this->isInteractive()) {
             throw new NonInteractiveInputException('The current terminal session is non interactive.');

@@ -20,9 +20,9 @@ use Neu\Component\DependencyInjection\HookInterface;
 use Neu\Component\EventDispatcher\Attribute\Listener;
 use Neu\Component\EventDispatcher\Listener\ListenerInterface;
 use Neu\Component\EventDispatcher\Listener\Registry\RegistryInterface;
+use Override;
 use ReflectionAttribute;
 use ReflectionObject;
-use Override;
 
 /**
  * Hook for registering event listeners.
@@ -39,7 +39,7 @@ final readonly class RegisterListenersHook implements HookInterface
      *
      * @param non-empty-string|null $registry The registry service identifier, defaults to {@see RegistryInterface::class}.
      */
-    public function __construct(null|string $registry = null)
+    public function __construct(?string $registry = null)
     {
         $this->registry = $registry ?? RegistryInterface::class;
     }
@@ -54,7 +54,11 @@ final readonly class RegisterListenersHook implements HookInterface
 
         foreach ($container->getAttributed(Listener::class) as $listener) {
             if (!$listener instanceof ListenerInterface) {
-                throw new RuntimeException('The event listener "' . $listener::class . '" must implement "' . ListenerInterface::class . '".');
+                throw new RuntimeException('The event listener "'
+                . $listener::class
+                . '" must implement "'
+                . ListenerInterface::class
+                . '".');
             }
 
             foreach ($this->readAttribute($listener) as $attribute) {

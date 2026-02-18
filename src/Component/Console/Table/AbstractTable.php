@@ -15,9 +15,9 @@ namespace Neu\Component\Console\Table;
 
 use Neu\Component\Console\Output\OutputInterface;
 use Neu\Component\Console\Output\Type;
+use Override;
 use Psl\Iter;
 use Psl\Str;
-use Override;
 
 /**
  * The `AbstractTable` class provides the core functionality for building and
@@ -48,8 +48,7 @@ abstract class AbstractTable implements TableInterface
 
     public function __construct(
         protected readonly OutputInterface $output,
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritDoc

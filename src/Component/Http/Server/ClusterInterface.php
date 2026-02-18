@@ -26,7 +26,7 @@ interface ClusterInterface
      * @param int|null $workers The number of workers to start. If null, the implementation should
      *                          determine the number of workers, which may be pre-configured or based on other criteria.
      */
-    public function start(null|int $workers = null): void;
+    public function start(?int $workers = null): void;
 
     /**
      * Restart the cluster of worker processes.

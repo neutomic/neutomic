@@ -30,10 +30,7 @@ final class ApplicationTest extends TestCase
     {
         $registry = new Registry();
 
-        $registry->register(
-            new CommandConfiguration('hello-world', 'Hello World Command'),
-            new HelloWorldCommand(),
-        );
+        $registry->register(new CommandConfiguration('hello-world', 'Hello World Command'), new HelloWorldCommand());
 
         $application = new Application(
             Configuration::create('hello-world', '1.0.0', 'Hello World Application'),
@@ -50,6 +47,6 @@ final class ApplicationTest extends TestCase
 
         $outputHandle->seek(0);
 
-        static::assertSame("Hello World!" . OutputInterface::END_OF_LINE, $outputHandle->read());
+        static::assertSame('Hello World!' . OutputInterface::END_OF_LINE, $outputHandle->read());
     }
 }

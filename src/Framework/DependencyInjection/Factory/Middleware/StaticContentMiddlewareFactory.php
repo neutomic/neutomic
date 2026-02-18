@@ -17,8 +17,8 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Runtime\ContentDelivery\ContentDeliverer;
 use Neu\Framework\Middleware\StaticContentMiddleware;
-use Psr\Log\LoggerInterface;
 use Override;
+use Psr\Log\LoggerInterface;
 
 /**
  * Factory for creating a {@see StaticContentMiddleware} instance.
@@ -61,8 +61,13 @@ final readonly class StaticContentMiddlewareFactory implements FactoryInterface
      * @param non-empty-string|null $logger Logger service identifier.
      * @param int|null $priority Middleware priority.
      */
-    public function __construct(null|string $deliverer = null, null|array $roots = null, null|array $extensions = null, null|string $logger = null, null|int $priority = null)
-    {
+    public function __construct(
+        ?string $deliverer = null,
+        ?array $roots = null,
+        ?array $extensions = null,
+        ?string $logger = null,
+        ?int $priority = null,
+    ) {
         $this->deliverer = $deliverer ?? ContentDeliverer::class;
         $this->roots = $roots ?? [];
         $this->extensions = $extensions ?? [];

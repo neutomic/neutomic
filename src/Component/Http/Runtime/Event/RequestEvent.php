@@ -18,8 +18,8 @@ use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\Runtime\RuntimeInterface;
-use Psr\EventDispatcher\StoppableEventInterface;
 use Override;
+use Psr\EventDispatcher\StoppableEventInterface;
 
 /**
  * Represents an event that is triggered when a request is received by the {@see RuntimeInterface}.
@@ -44,12 +44,12 @@ final readonly class RequestEvent implements StoppableEventInterface
      * The response to be sent if the event is stopped, this is initially null
      * and can be set to stop the event's propagation.
      */
-    public ResponseInterface|null $response;
+    public ?ResponseInterface $response;
 
     /**
      * The handler that will be used to process the request, if any.
      */
-    public HandlerInterface|null $handler;
+    public ?HandlerInterface $handler;
 
     /**
      * Initializes a new instance of the RequestEvent class.
@@ -58,8 +58,12 @@ final readonly class RequestEvent implements StoppableEventInterface
      * @param ResponseInterface|null $response Optional initial response to send back.
      * @param HandlerInterface|null $handler Optional handler to process the request.
      */
-    public function __construct(Context $context, RequestInterface $request, null|ResponseInterface $response = null, null|HandlerInterface $handler = null)
-    {
+    public function __construct(
+        Context $context,
+        RequestInterface $request,
+        ?ResponseInterface $response = null,
+        ?HandlerInterface $handler = null,
+    ) {
         $this->context = $context;
         $this->request = $request;
         $this->response = $response;

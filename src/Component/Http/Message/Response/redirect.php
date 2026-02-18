@@ -28,14 +28,15 @@ use Neu\Component\Http\Message\UriInterface;
  *
  * @psalm-suppress MissingThrowsDocblock
  */
-function redirect(UriInterface|string $location, StatusCode $statusCode = StatusCode::PermanentRedirect): ResponseInterface
-{
+function redirect(
+    UriInterface|string $location,
+    StatusCode $statusCode = StatusCode::PermanentRedirect,
+): ResponseInterface {
     if ($location instanceof UriInterface) {
         $location = $location->toString();
     }
 
     $location = $location === '' ? '/' : $location;
 
-    return Response::fromStatusCode($statusCode)
-        ->withHeader('Location', $location);
+    return Response::fromStatusCode($statusCode)->withHeader('Location', $location);
 }

@@ -18,9 +18,9 @@ use Neu\Component\Csrf\Generator\UrlSafeCsrfTokenGenerator;
 use Neu\Component\Csrf\Storage\CsrfTokenStorageInterface;
 use Neu\Component\Csrf\Storage\SessionCsrfTokenStorage;
 use Neu\Component\Http\Message\RequestInterface;
+use Override;
 use Psl\Hash;
 use SensitiveParameter;
-use Override;
 
 /**
  * A generic CSRF token manager.
@@ -43,8 +43,10 @@ final readonly class CsrfTokenManager implements CsrfTokenManagerInterface
      * @param null|CsrfTokenGeneratorInterface $generator An optional CSRF token generator, defaults to {@see UrlSafeCsrfTokenGenerator}.
      * @param null|CsrfTokenStorageInterface $storage An optional CSRF token storage, defaults to {@see SessionCsrfTokenStorage}.
      */
-    public function __construct(null|CsrfTokenGeneratorInterface $generator = null, null|CsrfTokenStorageInterface $storage = null)
-    {
+    public function __construct(
+        ?CsrfTokenGeneratorInterface $generator = null,
+        ?CsrfTokenStorageInterface $storage = null,
+    ) {
         $this->generator = $generator ?? new UrlSafeCsrfTokenGenerator();
         $this->storage = $storage ?? new SessionCsrfTokenStorage();
     }
@@ -101,8 +103,11 @@ final readonly class CsrfTokenManager implements CsrfTokenManagerInterface
      * @inheritDoc
      */
     #[Override]
-    public function validateToken(RequestInterface $request, string $identifier, #[SensitiveParameter] string $value): bool
-    {
+    public function validateToken(
+        RequestInterface $request,
+        string $identifier,
+        #[SensitiveParameter] string $value,
+    ): bool {
         if (!$this->storage->hasToken($request, $identifier)) {
             return false;
         }

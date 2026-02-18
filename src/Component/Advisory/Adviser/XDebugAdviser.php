@@ -29,7 +29,7 @@ final readonly class XDebugAdviser implements AdviserInterface
      * @return Advice|null An instance of Advice if Xdebug is enabled, or null if it is disabled.
      */
     #[Override]
-    public function getAdvice(): null|Advice
+    public function getAdvice(): ?Advice
     {
         if (!extension_loaded('xdebug')) {
             return null;
@@ -38,7 +38,7 @@ final readonly class XDebugAdviser implements AdviserInterface
         return Advice::forPerformance(
             'Disable Xdebug',
             'Xdebug should be disabled in production environments to improve PHP performance.',
-            'Disable the "xdebug" extension in the PHP configuration file.'
+            'Disable the "xdebug" extension in the PHP configuration file.',
         );
     }
 }

@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Neu\Component\Console\Feedback;
 
 use Neu\Component\Console\Terminal;
+use Override;
 use Psl\Iter;
 use Psl\Str;
-use Override;
 
 /**
  * The {@see CycleFeedback} class displays feedback by cycling through a series of characters.
@@ -50,8 +50,7 @@ final class CycleFeedback extends AbstractFeedback
      *
      * @var null|non-empty-string
      */
-    private null|string $finishCharacter = null;
-
+    private ?string $finishCharacter = null;
 
     /**
      * Set the character to display when the feedback is finished.
@@ -86,7 +85,7 @@ final class CycleFeedback extends AbstractFeedback
         $variables = [
             'prefix' => $prefix,
             'suffix' => $suffix,
-            'feedback' => ($finish && null !== $this->finishCharacter) ? $this->finishCharacter : $feedback,
+            'feedback' => $finish && null !== $this->finishCharacter ? $this->finishCharacter : $feedback,
         ];
 
         $width = Terminal::getWidth();

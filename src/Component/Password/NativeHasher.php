@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Neu\Component\Password;
 
-use SensitiveParameter;
-use Psl\Encoding\Base64;
-use Psl\Str\Byte;
-use Psl\Password;
-use Psl\Hash;
-use ValueError;
 use Override;
+use Psl\Encoding\Base64;
+use Psl\Hash;
+use Psl\Password;
+use Psl\Str\Byte;
+use SensitiveParameter;
+use ValueError;
 
 use const PASSWORD_ARGON2_DEFAULT_MEMORY_COST;
 use const PASSWORD_ARGON2_DEFAULT_THREADS;
@@ -88,7 +88,7 @@ final readonly class NativeHasher implements HasherInterface
      * @inheritDoc
      */
     #[Override]
-    final public function hashPassword(#[SensitiveParameter] string $plainPassword): string
+    public function hashPassword(#[SensitiveParameter] string $plainPassword): string
     {
         if (Byte\length($plainPassword) > self::MAX_PASSWORD_LENGTH || Byte\contains($plainPassword, "\0")) {
             throw new Exception\InvalidArgumentException('The password is too long.');
@@ -100,7 +100,7 @@ final readonly class NativeHasher implements HasherInterface
                 Password\Algorithm::from($this->algorithm),
                 $this->options,
             );
-        } catch (ValueError | Hash\Exception\ExceptionInterface $e) {
+        } catch (ValueError|Hash\Exception\ExceptionInterface $e) {
             throw new Exception\RuntimeException('Failed to hash the password.', 0, $e);
         }
     }
@@ -109,13 +109,12 @@ final readonly class NativeHasher implements HasherInterface
      * @inheritDoc
      */
     #[Override]
-    final public function verifyPassword(string $hashedPassword, #[SensitiveParameter] string $plainPassword): bool
-    {
+    public function verifyPassword(
+        #[\SensitiveParameter] string $hashedPassword,
+        #[SensitiveParameter] string $plainPassword,
+    ): bool {
         try {
-            return Password\verify(
-                Base64\encode(Hash\hash($plainPassword, Hash\Algorithm::Sha384)),
-                $hashedPassword,
-            );
+            return Password\verify(Base64\encode(Hash\hash($plainPassword, Hash\Algorithm::Sha384)), $hashedPassword);
         } catch (Hash\Exception\ExceptionInterface) {
             return false;
         }
@@ -125,12 +124,8 @@ final readonly class NativeHasher implements HasherInterface
      * @inheritDoc
      */
     #[Override]
-    final public function passwordNeedsRehash(string $hashedPassword): bool
+    public function passwordNeedsRehash(#[\SensitiveParameter] string $hashedPassword): bool
     {
-        return Password\needs_rehash(
-            $hashedPassword,
-            Password\Algorithm::from($this->algorithm),
-            $this->options,
-        );
+        return Password\needs_rehash($hashedPassword, Password\Algorithm::from($this->algorithm), $this->options);
     }
 }

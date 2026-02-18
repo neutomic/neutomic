@@ -19,6 +19,7 @@ use Neu\Component\DependencyInjection\Exception\ExceptionInterface;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\DependencyInjection\ProcessorInterface;
+use Override;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionIntersectionType;
@@ -26,7 +27,6 @@ use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionType;
 use ReflectionUnionType;
-use Override;
 
 use function interface_exists;
 
@@ -58,7 +58,7 @@ final class Definition implements DefinitionInterface
      *
      * @var null|FactoryInterface<T>
      */
-    private null|FactoryInterface $factory = null;
+    private ?FactoryInterface $factory = null;
 
     /**
      * Processors to apply to the service.
@@ -79,7 +79,7 @@ final class Definition implements DefinitionInterface
      *
      * @var null|T
      */
-    private null|object $instance = null;
+    private ?object $instance = null;
 
     /**
      * Determine if the service is currently being resolved.
@@ -107,7 +107,7 @@ final class Definition implements DefinitionInterface
      *
      * @return static<S>
      */
-    public static function create(string $id, string $type, null|FactoryInterface $factory = null): self
+    public static function create(string $id, string $type, ?FactoryInterface $factory = null): self
     {
         $definition = new self($id, $type);
         $definition->setFactory($factory);
@@ -125,7 +125,7 @@ final class Definition implements DefinitionInterface
      *
      * @return static<S>
      */
-    public static function ofType(string $type, null|FactoryInterface $factory = null): static
+    public static function ofType(string $type, ?FactoryInterface $factory = null): static
     {
         return self::create($type, $type, $factory);
     }
@@ -170,7 +170,7 @@ final class Definition implements DefinitionInterface
      * @inheritDoc
      */
     #[Override]
-    public function getFactory(): null|FactoryInterface
+    public function getFactory(): ?FactoryInterface
     {
         return $this->factory;
     }
@@ -179,7 +179,7 @@ final class Definition implements DefinitionInterface
      * @inheritDoc
      */
     #[Override]
-    public function setFactory(null|FactoryInterface $factory): static
+    public function setFactory(?FactoryInterface $factory): static
     {
         $this->factory = $factory;
 
@@ -294,7 +294,9 @@ final class Definition implements DefinitionInterface
         }
 
         if ($this->resolving) {
-            throw new RuntimeException('Failed to resolve service "' . $this->id . '" because it is being resolved, possibly due to a circular dependency.');
+            throw new RuntimeException('Failed to resolve service "'
+            . $this->id
+            . '" because it is being resolved, possibly due to a circular dependency.');
         }
 
         $this->resolving = true;
@@ -361,7 +363,13 @@ final class Definition implements DefinitionInterface
         }
 
         if ($instantiable && !$reflection->isInstantiable()) {
-            throw new RuntimeException('Failed to resolve service "' . $this->id . '" because the class "' . $this->type . '" is not instantiable.');
+            throw new RuntimeException(
+                'Failed to resolve service "'
+                . $this->id
+                . '" because the class "'
+                . $this->type
+                . '" is not instantiable.',
+            );
         }
 
         return $reflection;
@@ -372,11 +380,14 @@ final class Definition implements DefinitionInterface
      *
      * @throws ExceptionInterface If the argument could not be resolved.
      */
-    private function resolveConstructorArgument(ContainerInterface $container, ReflectionParameter $parameter, null|ReflectionType $type): mixed
-    {
+    private function resolveConstructorArgument(
+        ContainerInterface $container,
+        ReflectionParameter $parameter,
+        ?ReflectionType $type,
+    ): mixed {
         if ($type === null) {
             throw new RuntimeException(
-                'Failed to resolve parameter "' . $parameter->getName() . '" because it does not have a type.'
+                'Failed to resolve parameter "' . $parameter->getName() . '" because it does not have a type.',
             );
         }
 
@@ -388,23 +399,29 @@ final class Definition implements DefinitionInterface
             }
 
             throw new RuntimeException(
-                message: 'Failed to resolve constructor argument "' . $parameter->getName() . '" for service "' . $this->id . '"',
-                previous: $e
+                message: 'Failed to resolve constructor argument "'
+                . $parameter->getName()
+                . '" for service "'
+                . $this->id
+                . '"',
+                previous: $e,
             );
         }
     }
-
 
     /**
      * Resolve a parameter for a constructor.
      *
      * @throws ExceptionInterface If the parameter could not be resolved.
      */
-    private function resolveParameter(ContainerInterface $container, ReflectionParameter $parameter, ReflectionType $type): mixed
-    {
+    private function resolveParameter(
+        ContainerInterface $container,
+        ReflectionParameter $parameter,
+        ReflectionType $type,
+    ): mixed {
         if ($type instanceof ReflectionIntersectionType) {
             throw new RuntimeException(
-                'Failed to resolve parameter "' . $parameter->getName() . '" because it is an intersection type.'
+                'Failed to resolve parameter "' . $parameter->getName() . '" because it is an intersection type.',
             );
         }
 
@@ -419,15 +436,19 @@ final class Definition implements DefinitionInterface
             }
 
             throw new RuntimeException(
-                message: 'Failed to resolve parameter "' . $parameter->getName() . '" because none of the union types could be resolved.',
-                previous: $lastException
+                message: 'Failed to resolve parameter "'
+                . $parameter->getName()
+                . '" because none of the union types could be resolved.',
+                previous: $lastException,
             );
         }
 
         if ($type instanceof ReflectionNamedType) {
             if (!$container->has($type->getName())) {
                 throw new RuntimeException(
-                    'Failed to resolve parameter "' . $parameter->getName() . '" because it is not a service in the container.'
+                    'Failed to resolve parameter "'
+                    . $parameter->getName()
+                    . '" because it is not a service in the container.',
                 );
             }
 
@@ -435,7 +456,7 @@ final class Definition implements DefinitionInterface
         }
 
         throw new RuntimeException(
-            'Failed to resolve parameter "' . $parameter->getName() . '" because it is not a named type.'
+            'Failed to resolve parameter "' . $parameter->getName() . '" because it is not a named type.',
         );
     }
 }

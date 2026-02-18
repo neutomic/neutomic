@@ -48,7 +48,7 @@ interface InputInterface
      *
      * @return null|non-empty-string The active command name or null if none.
      */
-    public function getActiveCommand(): null|string;
+    public function getActiveCommand(): ?string;
 
     /**
      * Retrieve an {@see Argument} by its key or alias.
@@ -93,7 +93,7 @@ interface InputInterface
      *
      * @throws NonInteractiveInputException
      */
-    public function getUserInput(null|int $length = null): string;
+    public function getUserInput(?int $length = null): string;
 
     /**
      * Parse input for all {@see Flag}, {@see Option}, and {@see Argument} candidates.

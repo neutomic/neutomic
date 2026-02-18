@@ -18,10 +18,10 @@ use Neu\Component\Console\Command\Configuration;
 use Neu\Component\Console\Exception\CommandNotFoundException;
 use Neu\Component\Console\Output\OutputInterface;
 use Neu\Component\Utility\AlternativeFinder;
+use Override;
 use Psl\Iter;
 use Psl\Str;
 use Psl\Vec;
-use Override;
 
 final class Registry implements RegistryInterface
 {
@@ -136,10 +136,7 @@ final class Registry implements RegistryInterface
         $message = Str\format('Command "%s" is not defined.', $name);
         $alternatives = AlternativeFinder::findAlternatives($name, $allNames);
         // remove hidden commands
-        $alternatives = Vec\filter(
-            $alternatives,
-            static fn (string $name): bool => !$configurations[$name]->hidden,
-        );
+        $alternatives = Vec\filter($alternatives, static fn(string $name): bool => !$configurations[$name]->hidden);
         if (!Iter\is_empty($alternatives)) {
             if (1 === Iter\count($alternatives)) {
                 $message .= Str\format(

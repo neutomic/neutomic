@@ -98,16 +98,12 @@ final readonly class Configuration
         bool $enabled = true,
     ) {
         if (!Regex\matches($name, self::NAME_PATTERN)) {
-            throw new InvalidArgumentException(
-                Str\format('Command name "%s" is invalid.', $name),
-            );
+            throw new InvalidArgumentException(Str\format('Command name "%s" is invalid.', $name));
         }
 
         foreach ($aliases as $alias) {
             if (!Regex\matches($alias, self::NAME_PATTERN)) {
-                throw new InvalidArgumentException(
-                    Str\format('Command alias "%s" is invalid.', $alias),
-                );
+                throw new InvalidArgumentException(Str\format('Command alias "%s" is invalid.', $alias));
             }
         }
 
@@ -131,10 +127,7 @@ final readonly class Configuration
      */
     public static function create(string $name, string $description): self
     {
-        return new self(
-            $name,
-            $description,
-        );
+        return new self($name, $description);
     }
 
     /**

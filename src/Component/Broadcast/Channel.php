@@ -21,8 +21,8 @@ use Neu\Component\Broadcast\Exception\ClosedChannelException;
 use Neu\Component\Broadcast\Exception\ClosedTransportException;
 use Neu\Component\Broadcast\Exception\RuntimeException;
 use Neu\Component\Broadcast\Transport\TransportInterface;
-use Revolt\EventLoop;
 use Override;
+use Revolt\EventLoop;
 
 use function count;
 
@@ -57,7 +57,7 @@ final class Channel implements ChannelInterface
      *
      * @var null|ConcurrentIterator
      */
-    private null|ConcurrentIterator $iterator;
+    private ?ConcurrentIterator $iterator;
 
     /**
      * The queues to which messages are broadcasted.

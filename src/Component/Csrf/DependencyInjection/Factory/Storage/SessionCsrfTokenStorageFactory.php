@@ -37,7 +37,7 @@ final readonly class SessionCsrfTokenStorageFactory implements FactoryInterface
      *
      * @param non-empty-string|null $prefix The prefix to use for the session keys.
      */
-    public function __construct(null|string $prefix = null)
+    public function __construct(?string $prefix = null)
     {
         $this->prefix = $prefix ?? SessionCsrfTokenStorage::DEFAULT_PREFIX;
     }

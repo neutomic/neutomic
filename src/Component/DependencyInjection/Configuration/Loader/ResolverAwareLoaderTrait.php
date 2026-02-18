@@ -24,7 +24,7 @@ trait ResolverAwareLoaderTrait
     /**
      * The resolver instance.
      */
-    private null|ResolverInterface $resolver = null;
+    private ?ResolverInterface $resolver = null;
 
     /**
      * @inheritDoc
@@ -41,7 +41,11 @@ trait ResolverAwareLoaderTrait
     {
         if (null === $this->resolver) {
             throw new RuntimeException(
-                'Resolver has not been set on the "' . static::class . '" loader, make sure to call "' . static::class . '::setResolver()" before attempting to load resources.',
+                'Resolver has not been set on the "'
+                . static::class
+                . '" loader, make sure to call "'
+                . static::class
+                . '::setResolver()" before attempting to load resources.',
             );
         }
 

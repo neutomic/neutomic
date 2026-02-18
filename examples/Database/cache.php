@@ -25,35 +25,25 @@ $cache = new Store($driver);
 // delete the user cache
 $cache->delete('user');
 
-$user = $cache->compute('user', static function (): string {
-    return 'foo';
-});
+$user = $cache->compute('user', static fn(): string => 'foo');
 
 assert($user === 'foo');
 
-$user = $cache->compute('user', static function (): string {
-    return 'bar';
-});
+$user = $cache->compute('user', static fn(): string => 'bar');
 
 assert($user === 'foo');
 
-$user = $cache->update('user', static function (): string {
-    return 'bar';
-});
+$user = $cache->update('user', static fn(): string => 'bar');
 
 assert($user === 'bar');
 
-$user = $cache->compute('user', static function (): string {
-    return 'baz';
-});
+$user = $cache->compute('user', static fn(): string => 'baz');
 
 assert($user === 'bar');
 
 $cache->delete('user');
 
-$user = $cache->compute('user', static function (): string {
-    return 'baz';
-});
+$user = $cache->compute('user', static fn(): string => 'baz');
 
 assert($user === 'baz');
 

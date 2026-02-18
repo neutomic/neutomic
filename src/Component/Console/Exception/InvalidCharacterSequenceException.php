@@ -19,6 +19,4 @@ use Neu\Component\Console\Feedback\FeedbackInterface;
  * Exception thrown when an invalid character sequence is used in a {@see FeedbackInterface}
  * class.
  */
-final class InvalidCharacterSequenceException extends RuntimeException implements ExceptionInterface
-{
-}
+final class InvalidCharacterSequenceException extends RuntimeException implements ExceptionInterface {}

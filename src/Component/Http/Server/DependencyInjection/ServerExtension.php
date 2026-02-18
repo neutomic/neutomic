@@ -28,8 +28,8 @@ use Neu\Component\Http\Server\DependencyInjection\Factory\ServerInfrastructureFa
 use Neu\Component\Http\Server\Server;
 use Neu\Component\Http\Server\ServerInfrastructure;
 use Neu\Component\Http\Server\ServerInterface;
-use Psl\Type;
 use Override;
+use Psl\Type;
 
 /**
  * A dependency injection extension for the HTTP server component.
@@ -62,34 +62,54 @@ final readonly class ServerExtension implements ExtensionInterface
     #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $defaultLogger = $configurations->getDocument('http')->getOfTypeOrDefault('logger', Type\non_empty_string(), null);
-        $configuration = $configurations->getDocument('http')->getOfTypeOrDefault('server', $this->getConfigurationType(), []);
+        $defaultLogger = $configurations->getDocument('http')->getOfTypeOrDefault(
+            'logger',
+            Type\non_empty_string(),
+            null,
+        );
+        $configuration = $configurations->getDocument('http')->getOfTypeOrDefault(
+            'server',
+            $this->getConfigurationType(),
+            [],
+        );
 
-        $registry->addDefinition(Definition::ofType(ServerInfrastructure::class, new ServerInfrastructureFactory(
-            serverSocketConfigurations: $configuration['sockets'] ?? null,
-            connectionLimit: $configuration['connection-limit'] ?? null,
-            connectionLimitPerIP: $configuration['connection-limit-per-ip'] ?? null,
-            streamTimeout: $configuration['stream-timeout'] ?? null,
-            connectionTimeout: $configuration['connection-timeout'] ?? null,
-            headerSizeLimit: $configuration['header-size-limit'] ?? null,
-            bodySizeLimit: $configuration['body-size-limit'] ?? null,
-            tlsHandshakeTimeout: $configuration['tls-handshake-timeout'] ?? null,
-            logger: $configuration['logger'] ?? $defaultLogger ?? null,
-        )));
-        $registry->addDefinition(Definition::ofType(Server::class, new ServerFactory(
-            runtime: $configuration['runtime'] ?? null,
-            eventDispatcher: $configuration['event-dispatcher'] ?? null,
-            logger: $configuration['logger'] ?? $defaultLogger ?? null,
-        )));
-        $registry->addDefinition(Definition::ofType(ClusterWorker::class, new ClusterWorkerFactory(
-            dispatcher: $configuration['event-dispatcher'] ?? null,
-            logger: $configuration['cluster']['logger'] ?? $defaultLogger ?? null,
-        )));
-        $registry->addDefinition(Definition::ofType(Cluster::class, new ClusterFactory(
-            logger: $configuration['cluster']['logger'] ?? $defaultLogger ?? null,
-            eventDispatcher: $configuration['event-dispatcher'] ?? null,
-            workers: $configuration['cluster']['workers'] ?? null,
-        )));
+        $registry->addDefinition(Definition::ofType(
+            ServerInfrastructure::class,
+            new ServerInfrastructureFactory(
+                serverSocketConfigurations: $configuration['sockets'] ?? null,
+                connectionLimit: $configuration['connection-limit'] ?? null,
+                connectionLimitPerIP: $configuration['connection-limit-per-ip'] ?? null,
+                streamTimeout: $configuration['stream-timeout'] ?? null,
+                connectionTimeout: $configuration['connection-timeout'] ?? null,
+                headerSizeLimit: $configuration['header-size-limit'] ?? null,
+                bodySizeLimit: $configuration['body-size-limit'] ?? null,
+                tlsHandshakeTimeout: $configuration['tls-handshake-timeout'] ?? null,
+                logger: $configuration['logger'] ?? $defaultLogger ?? null,
+            ),
+        ));
+        $registry->addDefinition(Definition::ofType(
+            Server::class,
+            new ServerFactory(
+                runtime: $configuration['runtime'] ?? null,
+                eventDispatcher: $configuration['event-dispatcher'] ?? null,
+                logger: $configuration['logger'] ?? $defaultLogger ?? null,
+            ),
+        ));
+        $registry->addDefinition(Definition::ofType(
+            ClusterWorker::class,
+            new ClusterWorkerFactory(
+                dispatcher: $configuration['event-dispatcher'] ?? null,
+                logger: $configuration['cluster']['logger'] ?? $defaultLogger ?? null,
+            ),
+        ));
+        $registry->addDefinition(Definition::ofType(
+            Cluster::class,
+            new ClusterFactory(
+                logger: $configuration['cluster']['logger'] ?? $defaultLogger ?? null,
+                eventDispatcher: $configuration['event-dispatcher'] ?? null,
+                workers: $configuration['cluster']['workers'] ?? null,
+            ),
+        ));
 
         $registry->getDefinition(Server::class)->addAlias(ServerInterface::class);
         $registry->getDefinition(Cluster::class)->addAlias(ClusterInterface::class);
@@ -144,14 +164,11 @@ final readonly class ServerExtension implements ExtensionInterface
                             'key' => Type\non_empty_string(),
                             'passphrase' => Type\optional(Type\non_empty_string()),
                         ])),
-                        'certificates' => Type\optional(Type\dict(
-                            Type\string(),
-                            Type\shape([
-                                'file' => Type\non_empty_string(),
-                                'key' => Type\non_empty_string(),
-                                'passphrase' => Type\optional(Type\non_empty_string()),
-                            ])
-                        )),
+                        'certificates' => Type\optional(Type\dict(Type\string(), Type\shape([
+                            'file' => Type\non_empty_string(),
+                            'key' => Type\non_empty_string(),
+                            'passphrase' => Type\optional(Type\non_empty_string()),
+                        ]))),
                     ])),
                 ])),
             ]))),

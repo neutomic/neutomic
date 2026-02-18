@@ -98,7 +98,8 @@ final readonly class ContentDeliverer
             // Return null to indicate that the request should be passed to the next handler:
             assert($this->logger->debug('Requested file "{file}" does not exist.', [
                 'file' => $file,
-            ]) || true);
+            ])
+            || true);
 
             throw FileNotFoundHttpException::create($file);
         }
@@ -108,7 +109,8 @@ final readonly class ContentDeliverer
             // Return null to indicate that the request should be passed to the next handler:
             assert($this->logger->debug('Requested file "{file}" is a directory.', [
                 'file' => $file,
-            ]) || true);
+            ])
+            || true);
 
             throw FileNotFoundHttpException::isDirectory($file);
         }
@@ -148,7 +150,9 @@ final readonly class ContentDeliverer
         }
 
         $response = Response::fromStatusCode(StatusCode::OK)->withHeader('etag', [
-            '"' . Hash\hash($file . '-' . ((string) $stats['size']) . '-' . ((string) $stats['mtime']), Hash\Algorithm::Md5) . '"',
+            '"'
+                . Hash\hash($file . '-' . (string) $stats['size'] . '-' . (string) $stats['mtime'], Hash\Algorithm::Md5)
+                . '"',
         ]);
 
         $response = $this->addLastModifiedHeader($response, $stats['mtime']);
@@ -181,14 +185,13 @@ final readonly class ContentDeliverer
                 $ranges = [];
             } else {
                 return $response
-                    ->withHeader('content-range', 'bytes */' . ((string) $stats['size']))
-                    ->withStatus(StatusCode::RangeNotSatisfiable)
-                ;
+                    ->withHeader('content-range', 'bytes */' . (string) $stats['size'])
+                    ->withStatus(StatusCode::RangeNotSatisfiable);
             }
         }
 
         // Sum the total size of requested byte ranges
-        $rangesSumSize = Iter\reduce($ranges, static fn (int $carry, array $range): int => $carry + $range['length'], 0);
+        $rangesSumSize = Iter\reduce($ranges, static fn(int $carry, array $range): int => $carry + $range['length'], 0);
         // Check if the requested ranges exceed the file size
         if ($rangesSumSize > $stats['size']) {
             // If the sum of the ranges is greater than the file size, reset ranges to avoid processing
@@ -214,8 +217,7 @@ final readonly class ContentDeliverer
             $response = $response
                 ->withStatus(StatusCode::PartialContent)
                 ->withHeader('content-length', (string) $range['length'])
-                ->withHeader('content-range', $this->getContentRangeHeaderValue($range, $stats['size']))
-            ;
+                ->withHeader('content-range', $this->getContentRangeHeaderValue($range, $stats['size']));
 
             $callback =
                 /**
@@ -223,12 +225,14 @@ final readonly class ContentDeliverer
                  */
                 function () use ($range, $stream): iterable {
                     yield from $this->streamRangeFromFile($stream, $range);
-                }
-            ;
+                };
         } elseif ($rangesCount > 1) {
             $response = $response
                 ->withStatus(StatusCode::PartialContent)
-                ->withHeader('content-length', (string) $this->calculateMultipartSize($ranges, $contentType, $stats['size']))
+                ->withHeader(
+                    'content-length',
+                    (string) $this->calculateMultipartSize($ranges, $contentType, $stats['size']),
+                )
                 ->withHeader('content-type', 'multipart/byteranges; boundary=' . $this->boundary);
 
             $callback =
@@ -241,7 +245,7 @@ final readonly class ContentDeliverer
                         if (null !== $lastRange) {
                             yield "\r\n--" . $this->boundary . "\r\n";
                         } else {
-                            yield "--" . $this->boundary . "\r\n";
+                            yield '--' . $this->boundary . "\r\n";
                         }
 
                         foreach ($this->getRangeHeaders($range, $contentType, $stats['size']) as $header => $value) {
@@ -256,8 +260,7 @@ final readonly class ContentDeliverer
                     }
 
                     yield "\r\n--" . $this->boundary . "--\r\n";
-                }
-            ;
+                };
         } else {
             $response = $response->withHeader('content-length', (string) $stats['size']);
 
@@ -266,11 +269,10 @@ final readonly class ContentDeliverer
                  * @return iterable<string>
                  */
                 static function () use ($stream): iterable {
-                    while (null !== $chunk = $stream->read(length: self::READ_CHUNK_SIZE)) {
+                    while (null !== ($chunk = $stream->read(length: self::READ_CHUNK_SIZE))) {
                         yield $chunk;
                     }
-                }
-            ;
+                };
         }
 
         $response = $response->withHeader('accept-ranges', 'bytes');
@@ -287,8 +289,11 @@ final readonly class ContentDeliverer
      *
      * @return array{response: ResponseInterface, range: ?string}
      */
-    private function checkPreconditions(RequestInterface $request, ResponseInterface $response, int $modificationTime): array
-    {
+    private function checkPreconditions(
+        RequestInterface $request,
+        ResponseInterface $response,
+        int $modificationTime,
+    ): array {
         $check = $this->checkIfMatch($request, $response);
         if (null === $check) {
             $check = $this->isUnmodifiedSince($request, $modificationTime);
@@ -358,7 +363,7 @@ final readonly class ContentDeliverer
      *
      * @return null|list<Range>
      */
-    private function parseRange(string $headerValue, int $size): null|array
+    private function parseRange(string $headerValue, int $size): ?array
     {
         if ('' === $headerValue) {
             return [];
@@ -461,7 +466,14 @@ final readonly class ContentDeliverer
      */
     private function getContentRangeHeaderValue(array $range, int $size): string
     {
-        return 'bytes ' . ((string) $range['start']) . '-' . ((string) ($range['start'] + $range['length'] - 1)) . '/' . ((string) $size);
+        return (
+            'bytes '
+            . (string) $range['start']
+            . '-'
+            . (string) ($range['start'] + $range['length'] - 1)
+            . '/'
+            . (string) $size
+        );
     }
 
     /**
@@ -486,7 +498,7 @@ final readonly class ContentDeliverer
      * @return null|bool True if the file was not modified since the specified date, false if it was modified,
      *                   and null if the header is not present or the date is invalid.
      */
-    private function isUnmodifiedSince(RequestInterface $request, int $modificationTime): null|bool
+    private function isUnmodifiedSince(RequestInterface $request, int $modificationTime): ?bool
     {
         $ifUnmodifiedSince = $request->getHeaderLine('if-unmodified-since');
         if (null === $ifUnmodifiedSince || $modificationTime <= 0) {
@@ -507,7 +519,7 @@ final readonly class ContentDeliverer
      * @return null|bool True if the file was modified since the specified date, false if it was not modified,
      *                   and null if the request method is not GET or HEAD, the header is not present, or the date is invalid.
      */
-    private function isModifiedSince(RequestInterface $request, int $modificationTime): null|bool
+    private function isModifiedSince(RequestInterface $request, int $modificationTime): ?bool
     {
         $method = $request->getMethod();
         if ($method !== Method::Get && $method !== Method::Head) {
@@ -552,8 +564,7 @@ final readonly class ContentDeliverer
         $response = $response
             ->withoutHeader('content-type')
             ->withoutHeader('content-length')
-            ->withoutHeader('content-encoding')
-        ;
+            ->withoutHeader('content-encoding');
 
         if ($response->hasHeader('etag')) {
             $response = $response->withoutHeader('last-modified');
@@ -567,7 +578,7 @@ final readonly class ContentDeliverer
      *
      * @return null|bool True if the ETag matches, false if it does not, and null if the header is not present or invalid.
      */
-    private function checkIfMatch(RequestInterface $request, ResponseInterface $response): null|bool
+    private function checkIfMatch(RequestInterface $request, ResponseInterface $response): ?bool
     {
         $ifMatches = $request->getHeaderLine('if-match');
         if (null === $ifMatches) {
@@ -611,7 +622,7 @@ final readonly class ContentDeliverer
      *
      * @return null|bool True if the ETag or Last-Modified matches, false if it does not, and null if the header is not present or invalid.
      */
-    private function checkIfRange(RequestInterface $request, ResponseInterface $response, int $modificationTime): null|bool
+    private function checkIfRange(RequestInterface $request, ResponseInterface $response, int $modificationTime): ?bool
     {
         $method = $request->getMethod();
         if ($method !== Method::Get && $method !== Method::Head) {
@@ -647,7 +658,7 @@ final readonly class ContentDeliverer
      *
      * @return null|bool True if the ETag does not match, false if it does, and null if the header is not present or invalid.
      */
-    private function checkIfNoneMatch(RequestInterface $request, ResponseInterface $response): null|bool
+    private function checkIfNoneMatch(RequestInterface $request, ResponseInterface $response): ?bool
     {
         $ifNoneMatch = $request->getHeaderLine('if-none-match');
         if (null === $ifNoneMatch) {
@@ -710,7 +721,7 @@ final readonly class ContentDeliverer
             }
 
             $ord = Str\Byte\ord($char);
-            if ($ord === 0x21 || ($ord >= 0x23 && $ord <= 0x7E) || $ord >= 0x80) {
+            if ($ord === 0x21 || $ord >= 0x23 && $ord <= 0x7E || $ord >= 0x80) {
                 // Character values allowed in ETags.
                 continue;
             }

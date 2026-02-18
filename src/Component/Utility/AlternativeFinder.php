@@ -50,9 +50,9 @@ enum AlternativeFinder
                     continue;
                 }
 
-                $lev = (float)Str\levenshtein($subname, $parts[$i]);
+                $lev = (float) Str\levenshtein($subname, $parts[$i]);
                 /** @psalm-suppress RedundantCondition */
-                if ($lev <= Str\length($subname) / 3 || ('' !== $subname && Str\contains($parts[$i], $subname))) {
+                if ($lev <= (Str\length($subname) / 3) || '' !== $subname && Str\contains($parts[$i], $subname)) {
                     $alternatives[$collectionName] = $exists ? $alternatives[$collectionName] + $lev : $lev;
                 } elseif ($exists) {
                     $alternatives[$collectionName] += self::THRESHOLD;
@@ -61,14 +61,15 @@ enum AlternativeFinder
         }
 
         foreach ($collection as $item) {
-            $lev = (float)Str\levenshtein($name, $item);
-            if ($lev <= Str\length($name) / 3 || Str\contains($item, $name)) {
+            $lev = (float) Str\levenshtein($name, $item);
+            if ($lev <= (Str\length($name) / 3) || Str\contains($item, $name)) {
                 $alternatives[$item] = Iter\contains_key($alternatives, $item) ? $alternatives[$item] - $lev : $lev;
             }
         }
 
-        return Vec\keys(Dict\sort(
-            Dict\filter($alternatives, static fn (float|int $lev): bool => $lev < (2. * self::THRESHOLD)),
-        ));
+        return Vec\keys(Dict\sort(Dict\filter(
+            $alternatives,
+            static fn(float|int $lev): bool => $lev < (2. * self::THRESHOLD),
+        )));
     }
 }

@@ -24,8 +24,12 @@ trait FeedbackFactoryTrait
      * @param string $message The message presented with the feedback
      * @param int $interval The interval (in milliseconds) between updates of the indicator.
      */
-    public function createProgressBarFeedback(OutputInterface $output, int $total, string $message = '', int $interval = 100): ProgressBarFeedback
-    {
+    public function createProgressBarFeedback(
+        OutputInterface $output,
+        int $total,
+        string $message = '',
+        int $interval = 100,
+    ): ProgressBarFeedback {
         $progress = new ProgressBarFeedback($output, $total, $message, $interval);
 
         /** @psalm-suppress MissingThrowsDocblock */
@@ -41,8 +45,12 @@ trait FeedbackFactoryTrait
      * @param string $message The message presented with the feedback
      * @param int $interval The interval (in milliseconds) between updates of the indicator.
      */
-    public function createCycleFeedback(OutputInterface $output, int $total, string $message = '', int $interval = 100): CycleFeedback
-    {
+    public function createCycleFeedback(
+        OutputInterface $output,
+        int $total,
+        string $message = '',
+        int $interval = 100,
+    ): CycleFeedback {
         return new CycleFeedback($output, $total, $message, $interval);
     }
 }

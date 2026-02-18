@@ -107,7 +107,7 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromString("--" . self::BOUNDARY . "--\r\n"));
+        $request = $request->withBody(RequestBody::fromString('--' . self::BOUNDARY . "--\r\n"));
 
         $form = $parser->parse($request);
 
@@ -119,7 +119,7 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromString("--" . self::BOUNDARY . "--\r\n"));
+        $request = $request->withBody(RequestBody::fromString('--' . self::BOUNDARY . "--\r\n"));
 
         $form = $parser->parseStreamed($request);
         $fields = [];
@@ -136,12 +136,18 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"a\"\r\n\r\n\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"b\"\r\n\r\n" .
-            "bravo\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"a\"\r\n\r\n\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"b\"\r\n\r\n"
+            . "bravo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $form = $parser->parse($request);
@@ -157,12 +163,18 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"a\"\r\n\r\n\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"b\"\r\n\r\n" .
-            "bravo\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"a\"\r\n\r\n\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"b\"\r\n\r\n"
+            . "bravo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $form = $parser->parseStreamed($request);
@@ -171,10 +183,13 @@ final class MultipartParserTest extends TestCase
             $fields[$field->getName()] = $field->getBody()?->getContents();
         }
 
-        static::assertSame([
-            'a' => '',
-            'b' => 'bravo'
-        ], $fields);
+        static::assertSame(
+            [
+                'a' => '',
+                'b' => 'bravo',
+            ],
+            $fields,
+        );
     }
 
     #[DataProvider('getParser')]
@@ -183,13 +198,19 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"na%20me\"\r\n\r\n" .
-            "value%20with%20spaces\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"name2\"\r\n\r\n" .
-            "val%40ue2\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"na%20me\"\r\n\r\n"
+            . "value%20with%20spaces\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"name2\"\r\n\r\n"
+            . "val%40ue2\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $form = $parser->parse($request);
@@ -205,13 +226,19 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"na%20me\"\r\n\r\n" .
-            "value%20with%20spaces\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"name2\"\r\n\r\n" .
-            "val%40ue2\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"na%20me\"\r\n\r\n"
+            . "value%20with%20spaces\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"name2\"\r\n\r\n"
+            . "val%40ue2\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $form = $parser->parseStreamed($request);
@@ -220,10 +247,13 @@ final class MultipartParserTest extends TestCase
             $fields[$field->getName()] = $field->getBody()?->getContents();
         }
 
-        static::assertSame([
-            'na%20me' => 'value%20with%20spaces',
-            'name2' => 'val%40ue2'
-        ], $fields);
+        static::assertSame(
+            [
+                'na%20me' => 'value%20with%20spaces',
+                'name2' => 'val%40ue2',
+            ],
+            $fields,
+        );
     }
 
     #[DataProvider('getParser')]
@@ -231,18 +261,22 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            yield "Content-Disposition: form-data; name=\"a\"\r\n\r\n";
-            yield "alpha\r\n";
-            yield "--" . self::BOUNDARY . "\r\n";
-            yield "Content-Disposition: form-data; name=\"b\"\r\n\r\n";
-            yield "bravo\r\n";
-            yield "--" . self::BOUNDARY . "\r\n";
-            yield "Content-Disposition: form-data; name=\"c\"\r\n\r\n";
-            yield "charlie\r\n";
-            yield "--" . self::BOUNDARY . "--\r\n";
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    yield "Content-Disposition: form-data; name=\"a\"\r\n\r\n";
+                    yield "alpha\r\n";
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    yield "Content-Disposition: form-data; name=\"b\"\r\n\r\n";
+                    yield "bravo\r\n";
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    yield "Content-Disposition: form-data; name=\"c\"\r\n\r\n";
+                    yield "charlie\r\n";
+                    yield '--' . self::BOUNDARY . "--\r\n";
+                })(),
+            ),
+        );
 
         $form = $parser->parse($request);
 
@@ -257,18 +291,22 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            yield "Content-Disposition: form-data; name=\"a\"\r\n\r\n";
-            yield "alpha\r\n";
-            yield "--" . self::BOUNDARY . "\r\n";
-            yield "Content-Disposition: form-data; name=\"b\"\r\n\r\n";
-            yield "bravo\r\n";
-            yield "--" . self::BOUNDARY . "\r\n";
-            yield "Content-Disposition: form-data; name=\"c\"\r\n\r\n";
-            yield "charlie\r\n";
-            yield "--" . self::BOUNDARY . "--\r\n";
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    yield "Content-Disposition: form-data; name=\"a\"\r\n\r\n";
+                    yield "alpha\r\n";
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    yield "Content-Disposition: form-data; name=\"b\"\r\n\r\n";
+                    yield "bravo\r\n";
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    yield "Content-Disposition: form-data; name=\"c\"\r\n\r\n";
+                    yield "charlie\r\n";
+                    yield '--' . self::BOUNDARY . "--\r\n";
+                })(),
+            ),
+        );
 
         $form = $parser->parseStreamed($request);
         $fields = [];
@@ -276,11 +314,14 @@ final class MultipartParserTest extends TestCase
             $fields[$field->getName()] = $field->getBody()?->getContents();
         }
 
-        static::assertSame([
-            'a' => 'alpha',
-            'b' => 'bravo',
-            'c' => 'charlie'
-        ], $fields);
+        static::assertSame(
+            [
+                'a' => 'alpha',
+                'b' => 'bravo',
+                'c' => 'charlie',
+            ],
+            $fields,
+        );
     }
 
     #[DataProvider('getParser')]
@@ -289,13 +330,19 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"a\"\r\n\r\n" .
-            "alpha\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "X-Header: value\r\n\r\n" .
-            "bravo\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"a\"\r\n\r\n"
+            . "alpha\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "X-Header: value\r\n\r\n"
+            . "bravo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $this->expectException(HttpException::class);
@@ -310,13 +357,19 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"a\"\r\n\r\n" .
-            "alpha\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "X-Header: value\r\n\r\n" .
-            "bravo\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"a\"\r\n\r\n"
+            . "alpha\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "X-Header: value\r\n\r\n"
+            . "bravo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $this->expectException(HttpException::class);
@@ -335,10 +388,14 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"a\"\r\n\r\n" .
-            "alpha\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"a\"\r\n\r\n"
+            . "alpha\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $form = $parser->parse($request);
@@ -353,10 +410,14 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"a\"\r\n\r\n" .
-            "alpha\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"a\"\r\n\r\n"
+            . "alpha\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $form = $parser->parseStreamed($request);
@@ -365,9 +426,12 @@ final class MultipartParserTest extends TestCase
             $fields[$field->getName()] = $field->getBody()?->getContents();
         }
 
-        static::assertSame([
-            'a' => 'alpha'
-        ], $fields);
+        static::assertSame(
+            [
+                'a' => 'alpha',
+            ],
+            $fields,
+        );
     }
 
     #[DataProvider('getParser')]
@@ -376,11 +440,15 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"file\"; filename=\"file.txt\"\r\n" .
-            "Content-Type: text/plain\r\n\r\n" .
-            "Hello, World!\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"file\"; filename=\"file.txt\"\r\n"
+            . "Content-Type: text/plain\r\n\r\n"
+            . "Hello, World!\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $form = $parser->parse($request);
@@ -404,11 +472,15 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"file\"; filename=\"file.txt\"\r\n" .
-            "Content-Type: text/plain\r\n\r\n" .
-            "Hello, World!\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"file\"; filename=\"file.txt\"\r\n"
+            . "Content-Type: text/plain\r\n\r\n"
+            . "Hello, World!\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $form = $parser->parseStreamed($request);
@@ -429,12 +501,16 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"file\"; filename=\"file.txt\"\r\n" .
-            "Content-Type: text/plain\r\n" .
-            "X-Header: value\r\n\r\n" .
-            "Hello, World!\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"file\"; filename=\"file.txt\"\r\n"
+            . "Content-Type: text/plain\r\n"
+            . "X-Header: value\r\n\r\n"
+            . "Hello, World!\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $form = $parser->parse($request);
@@ -457,12 +533,16 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"file\"; filename=\"file.txt\"\r\n" .
-            "Content-Type: text/plain\r\n" .
-            "X-Header: value\r\n\r\n" .
-            "Hello, World!\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"file\"; filename=\"file.txt\"\r\n"
+            . "Content-Type: text/plain\r\n"
+            . "X-Header: value\r\n\r\n"
+            . "Hello, World!\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $form = $parser->parseStreamed($request);
@@ -478,7 +558,10 @@ final class MultipartParserTest extends TestCase
             static::assertSame('Hello, World!', $field->getBody()?->getContents());
             static::assertSame(['value'], $field->getHeader('X-Header'));
             static::assertSame(['text/plain'], $field->getHeader('Content-Type'));
-            static::assertSame(['form-data; name="file"; filename="file.txt"'], $field->getHeader('Content-Disposition'));
+            static::assertSame(
+                ['form-data; name="file"; filename="file.txt"'],
+                $field->getHeader('Content-Disposition'),
+            );
         }
 
         static::assertSame(1, $fieldCount);
@@ -490,22 +573,34 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"a\"\r\n\r\n" .
-            "alpha\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"b\"\r\n\r\n" .
-            "bravo\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"c\"\r\n\r\n" .
-            "charlie\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"d\"\r\n\r\n" .
-            "delta\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"e\"\r\n\r\n" .
-            "echo\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"a\"\r\n\r\n"
+            . "alpha\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"b\"\r\n\r\n"
+            . "bravo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"c\"\r\n\r\n"
+            . "charlie\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"d\"\r\n\r\n"
+            . "delta\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"e\"\r\n\r\n"
+            . "echo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $this->expectException(HttpException::class);
@@ -520,22 +615,34 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"a\"\r\n\r\n" .
-            "alpha\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"b\"\r\n\r\n" .
-            "bravo\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"c\"\r\n\r\n" .
-            "charlie\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"d\"\r\n\r\n" .
-            "delta\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"e\"\r\n\r\n" .
-            "echo\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"a\"\r\n\r\n"
+            . "alpha\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"b\"\r\n\r\n"
+            . "bravo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"c\"\r\n\r\n"
+            . "charlie\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"d\"\r\n\r\n"
+            . "delta\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"e\"\r\n\r\n"
+            . "echo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $this->expectException(HttpException::class);
@@ -554,22 +661,34 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"a\"\r\n\r\n" .
-            "alpha\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"b\"\r\n\r\n" .
-            "bravo\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"c\"\r\n\r\n" .
-            "charlie\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"d\"\r\n\r\n" .
-            "delta\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"e\"\r\n\r\n" .
-            "echo\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"a\"\r\n\r\n"
+            . "alpha\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"b\"\r\n\r\n"
+            . "bravo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"c\"\r\n\r\n"
+            . "charlie\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"d\"\r\n\r\n"
+            . "delta\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"e\"\r\n\r\n"
+            . "echo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $this->expectException(HttpException::class);
@@ -584,22 +703,34 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"a\"\r\n\r\n" .
-            "alpha\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"b\"\r\n\r\n" .
-            "bravo\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"c\"\r\n\r\n" .
-            "charlie\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"d\"\r\n\r\n" .
-            "delta\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"e\"\r\n\r\n" .
-            "echo\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"a\"\r\n\r\n"
+            . "alpha\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"b\"\r\n\r\n"
+            . "bravo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"c\"\r\n\r\n"
+            . "charlie\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"d\"\r\n\r\n"
+            . "delta\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"e\"\r\n\r\n"
+            . "echo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $this->expectException(HttpException::class);
@@ -618,22 +749,34 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"a\"\r\n\r\n" .
-            "alpha\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"b\"\r\n\r\n" .
-            "bravo\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"c\"\r\n\r\n" .
-            "charlie\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"d\"\r\n\r\n" .
-            "delta\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"e\"\r\n\r\n" .
-            "echo\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"a\"\r\n\r\n"
+            . "alpha\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"b\"\r\n\r\n"
+            . "bravo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"c\"\r\n\r\n"
+            . "charlie\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"d\"\r\n\r\n"
+            . "delta\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"e\"\r\n\r\n"
+            . "echo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $form = $parser->parse($request, ParseOptions::fromFieldCountLimit(10));
@@ -647,22 +790,34 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"a\"\r\n\r\n" .
-            "alpha\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"b\"\r\n\r\n" .
-            "bravo\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"c\"\r\n\r\n" .
-            "charlie\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"d\"\r\n\r\n" .
-            "delta\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"e\"\r\n\r\n" .
-            "echo\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"a\"\r\n\r\n"
+            . "alpha\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"b\"\r\n\r\n"
+            . "bravo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"c\"\r\n\r\n"
+            . "charlie\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"d\"\r\n\r\n"
+            . "delta\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"e\"\r\n\r\n"
+            . "echo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $fields = $parser->parseStreamed($request, ParseOptions::fromFieldCountLimit(10));
@@ -681,22 +836,34 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"a\"\r\n\r\n" .
-            "alpha\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"b\"\r\n\r\n" .
-            "bravo\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"c\"\r\n\r\n" .
-            "charlie\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"d\"\r\n\r\n" .
-            "delta\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"e\"\r\n\r\n" .
-            "echo\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"a\"\r\n\r\n"
+            . "alpha\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"b\"\r\n\r\n"
+            . "bravo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"c\"\r\n\r\n"
+            . "charlie\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"d\"\r\n\r\n"
+            . "delta\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"e\"\r\n\r\n"
+            . "echo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $form = $parser->parse($request, ParseOptions::fromFieldCountLimit(5));
@@ -710,22 +877,34 @@ final class MultipartParserTest extends TestCase
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
         $request = $request->withBody(RequestBody::fromString(
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"a\"\r\n\r\n" .
-            "alpha\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"b\"\r\n\r\n" .
-            "bravo\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"c\"\r\n\r\n" .
-            "charlie\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"d\"\r\n\r\n" .
-            "delta\r\n" .
-            "--" . self::BOUNDARY . "\r\n" .
-            "Content-Disposition: form-data; name=\"e\"\r\n\r\n" .
-            "echo\r\n" .
-            "--" . self::BOUNDARY . "--\r\n"
+            '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"a\"\r\n\r\n"
+            . "alpha\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"b\"\r\n\r\n"
+            . "bravo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"c\"\r\n\r\n"
+            . "charlie\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"d\"\r\n\r\n"
+            . "delta\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "\r\n"
+            . "Content-Disposition: form-data; name=\"e\"\r\n\r\n"
+            . "echo\r\n"
+            . '--'
+            . self::BOUNDARY
+            . "--\r\n",
         ));
 
         $fields = $parser->parseStreamed($request, ParseOptions::fromFieldCountLimit(5));
@@ -743,15 +922,19 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            for ($i = 0; $i < 4; $i++) {
-                yield "Content-Disposition: form-data; name=\"file{$i}\"; filename=\"file{$i}.txt\"\r\n";
-                yield "Content-Type: text/plain\r\n\r\n";
-                yield "Hello, World!\r\n";
-                yield "--" . self::BOUNDARY . ($i === 3 ? "--\r\n" : "\r\n");
-            }
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    for ($i = 0; $i < 4; $i++) {
+                        yield "Content-Disposition: form-data; name=\"file{$i}\"; filename=\"file{$i}.txt\"\r\n";
+                        yield "Content-Type: text/plain\r\n\r\n";
+                        yield "Hello, World!\r\n";
+                        yield '--' . self::BOUNDARY . ($i === 3 ? "--\r\n" : "\r\n");
+                    }
+                })(),
+            ),
+        );
 
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('The number of files in the form data exceeds the limit of 3.');
@@ -764,15 +947,19 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            for ($i = 0; $i < 4; $i++) {
-                yield "Content-Disposition: form-data; name=\"file{$i}\"; filename=\"file{$i}.txt\"\r\n";
-                yield "Content-Type: text/plain\r\n\r\n";
-                yield "Hello, World!\r\n";
-                yield "--" . self::BOUNDARY . ($i === 3 ? "--\r\n" : "\r\n");
-            }
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    for ($i = 0; $i < 4; $i++) {
+                        yield "Content-Disposition: form-data; name=\"file{$i}\"; filename=\"file{$i}.txt\"\r\n";
+                        yield "Content-Type: text/plain\r\n\r\n";
+                        yield "Hello, World!\r\n";
+                        yield '--' . self::BOUNDARY . ($i === 3 ? "--\r\n" : "\r\n");
+                    }
+                })(),
+            ),
+        );
 
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('The number of files in the form data exceeds the limit of 3.');
@@ -789,15 +976,19 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            for ($i = 0; $i < 4; $i++) {
-                yield "Content-Disposition: form-data; name=\"file{$i}\"; filename=\"file{$i}.txt\"\r\n";
-                yield "Content-Type: text/plain\r\n\r\n";
-                yield "Hello, World!\r\n";
-                yield "--" . self::BOUNDARY . ($i === 3 ? "--\r\n" : "\r\n");
-            }
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    for ($i = 0; $i < 4; $i++) {
+                        yield "Content-Disposition: form-data; name=\"file{$i}\"; filename=\"file{$i}.txt\"\r\n";
+                        yield "Content-Type: text/plain\r\n\r\n";
+                        yield "Hello, World!\r\n";
+                        yield '--' . self::BOUNDARY . ($i === 3 ? "--\r\n" : "\r\n");
+                    }
+                })(),
+            ),
+        );
 
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('The number of files in the form data exceeds the limit of 0.');
@@ -810,15 +1001,19 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            for ($i = 0; $i < 4; $i++) {
-                yield "Content-Disposition: form-data; name=\"file{$i}\"; filename=\"file{$i}.txt\"\r\n";
-                yield "Content-Type: text/plain\r\n\r\n";
-                yield "Hello, World!\r\n";
-                yield "--" . self::BOUNDARY . ($i === 3 ? "--\r\n" : "\r\n");
-            }
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    for ($i = 0; $i < 4; $i++) {
+                        yield "Content-Disposition: form-data; name=\"file{$i}\"; filename=\"file{$i}.txt\"\r\n";
+                        yield "Content-Type: text/plain\r\n\r\n";
+                        yield "Hello, World!\r\n";
+                        yield '--' . self::BOUNDARY . ($i === 3 ? "--\r\n" : "\r\n");
+                    }
+                })(),
+            ),
+        );
 
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('The number of files in the form data exceeds the limit of 0.');
@@ -835,15 +1030,19 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            for ($i = 0; $i < 4; $i++) {
-                yield "Content-Disposition: form-data; name=\"file{$i}\"; filename=\"file{$i}.txt\"\r\n";
-                yield "Content-Type: text/plain\r\n\r\n";
-                yield "Hello, World!\r\n";
-                yield "--" . self::BOUNDARY . ($i === 3 ? "--\r\n" : "\r\n");
-            }
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    for ($i = 0; $i < 4; $i++) {
+                        yield "Content-Disposition: form-data; name=\"file{$i}\"; filename=\"file{$i}.txt\"\r\n";
+                        yield "Content-Type: text/plain\r\n\r\n";
+                        yield "Hello, World!\r\n";
+                        yield '--' . self::BOUNDARY . ($i === 3 ? "--\r\n" : "\r\n");
+                    }
+                })(),
+            ),
+        );
 
         $form = $parser->parse($request, ParseOptions::create()->withFileCountLimit(10));
 
@@ -855,15 +1054,19 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            for ($i = 0; $i < 4; $i++) {
-                yield "Content-Disposition: form-data; name=\"file{$i}\"; filename=\"file{$i}.txt\"\r\n";
-                yield "Content-Type: text/plain\r\n\r\n";
-                yield "Hello, World!\r\n";
-                yield "--" . self::BOUNDARY . ($i === 3 ? "--\r\n" : "\r\n");
-            }
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    for ($i = 0; $i < 4; $i++) {
+                        yield "Content-Disposition: form-data; name=\"file{$i}\"; filename=\"file{$i}.txt\"\r\n";
+                        yield "Content-Type: text/plain\r\n\r\n";
+                        yield "Hello, World!\r\n";
+                        yield '--' . self::BOUNDARY . ($i === 3 ? "--\r\n" : "\r\n");
+                    }
+                })(),
+            ),
+        );
 
         $fields = $parser->parseStreamed($request, ParseOptions::create()->withFileCountLimit(10));
         $fieldCount = 0;
@@ -880,15 +1083,19 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            for ($i = 0; $i < 4; $i++) {
-                yield "Content-Disposition: form-data; name=\"file{$i}\"; filename=\"file{$i}.txt\"\r\n";
-                yield "Content-Type: text/plain\r\n\r\n";
-                yield "Hello, World!\r\n";
-                yield "--" . self::BOUNDARY . ($i === 3 ? "--\r\n" : "\r\n");
-            }
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    for ($i = 0; $i < 4; $i++) {
+                        yield "Content-Disposition: form-data; name=\"file{$i}\"; filename=\"file{$i}.txt\"\r\n";
+                        yield "Content-Type: text/plain\r\n\r\n";
+                        yield "Hello, World!\r\n";
+                        yield '--' . self::BOUNDARY . ($i === 3 ? "--\r\n" : "\r\n");
+                    }
+                })(),
+            ),
+        );
 
         $form = $parser->parse($request, ParseOptions::create()->withFileCountLimit(4));
 
@@ -900,15 +1107,19 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            for ($i = 0; $i < 4; $i++) {
-                yield "Content-Disposition: form-data; name=\"file{$i}\"; filename=\"file{$i}.txt\"\r\n";
-                yield "Content-Type: text/plain\r\n\r\n";
-                yield "Hello, World!\r\n";
-                yield "--" . self::BOUNDARY . ($i === 3 ? "--\r\n" : "\r\n");
-            }
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    for ($i = 0; $i < 4; $i++) {
+                        yield "Content-Disposition: form-data; name=\"file{$i}\"; filename=\"file{$i}.txt\"\r\n";
+                        yield "Content-Type: text/plain\r\n\r\n";
+                        yield "Hello, World!\r\n";
+                        yield '--' . self::BOUNDARY . ($i === 3 ? "--\r\n" : "\r\n");
+                    }
+                })(),
+            ),
+        );
 
         $fields = $parser->parseStreamed($request, ParseOptions::create()->withFileCountLimit(4));
         $fieldCount = 0;
@@ -925,13 +1136,17 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            yield "Content-Disposition: form-data; name=\"file\"; filename=\"file\"\r\n";
-            yield "Content-Type: text/plain\r\n\r\n";
-            yield "Hello, World!\r\n";
-            yield "--" . self::BOUNDARY . "--\r\n";
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    yield "Content-Disposition: form-data; name=\"file\"; filename=\"file\"\r\n";
+                    yield "Content-Type: text/plain\r\n\r\n";
+                    yield "Hello, World!\r\n";
+                    yield '--' . self::BOUNDARY . "--\r\n";
+                })(),
+            ),
+        );
 
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('All uploaded files must have an extension.');
@@ -944,13 +1159,17 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            yield "Content-Disposition: form-data; name=\"file\"; filename=\"file\"\r\n";
-            yield "Content-Type: text/plain\r\n\r\n";
-            yield "Hello, World!\r\n";
-            yield "--" . self::BOUNDARY . "--\r\n";
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    yield "Content-Disposition: form-data; name=\"file\"; filename=\"file\"\r\n";
+                    yield "Content-Type: text/plain\r\n\r\n";
+                    yield "Hello, World!\r\n";
+                    yield '--' . self::BOUNDARY . "--\r\n";
+                })(),
+            ),
+        );
 
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('All uploaded files must have an extension.');
@@ -967,13 +1186,17 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            yield "Content-Disposition: form-data; name=\"file\"; filename=\"file\"\r\n";
-            yield "Content-Type: text/plain\r\n\r\n";
-            yield "Hello, World!\r\n";
-            yield "--" . self::BOUNDARY . "--\r\n";
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    yield "Content-Disposition: form-data; name=\"file\"; filename=\"file\"\r\n";
+                    yield "Content-Type: text/plain\r\n\r\n";
+                    yield "Hello, World!\r\n";
+                    yield '--' . self::BOUNDARY . "--\r\n";
+                })(),
+            ),
+        );
 
         $form = $parser->parse($request, ParseOptions::create()->withAllowFilesWithoutExtensions(true));
 
@@ -985,13 +1208,17 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            yield "Content-Disposition: form-data; name=\"file\"; filename=\"file\"\r\n";
-            yield "Content-Type: text/plain\r\n\r\n";
-            yield "Hello, World!\r\n";
-            yield "--" . self::BOUNDARY . "--\r\n";
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    yield "Content-Disposition: form-data; name=\"file\"; filename=\"file\"\r\n";
+                    yield "Content-Type: text/plain\r\n\r\n";
+                    yield "Hello, World!\r\n";
+                    yield '--' . self::BOUNDARY . "--\r\n";
+                })(),
+            ),
+        );
 
         $form = $parser->parseStreamed($request, ParseOptions::create()->withAllowFilesWithoutExtensions(true));
         $fieldCount = 0;
@@ -1008,13 +1235,17 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            yield "Content-Disposition: form-data; name=\"file\"; filename=\"file.txt\"\r\n";
-            yield "Content-Type: text/plain\r\n\r\n";
-            yield "Hello, World!\r\n";
-            yield "--" . self::BOUNDARY . "--\r\n";
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    yield "Content-Disposition: form-data; name=\"file\"; filename=\"file.txt\"\r\n";
+                    yield "Content-Type: text/plain\r\n\r\n";
+                    yield "Hello, World!\r\n";
+                    yield '--' . self::BOUNDARY . "--\r\n";
+                })(),
+            ),
+        );
 
         $form = $parser->parse($request, ParseOptions::create()->withAllowedFileExtensions(['txt']));
 
@@ -1026,13 +1257,17 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            yield "Content-Disposition: form-data; name=\"file\"; filename=\"file.txt\"\r\n";
-            yield "Content-Type: text/plain\r\n\r\n";
-            yield "Hello, World!\r\n";
-            yield "--" . self::BOUNDARY . "--\r\n";
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    yield "Content-Disposition: form-data; name=\"file\"; filename=\"file.txt\"\r\n";
+                    yield "Content-Type: text/plain\r\n\r\n";
+                    yield "Hello, World!\r\n";
+                    yield '--' . self::BOUNDARY . "--\r\n";
+                })(),
+            ),
+        );
 
         $form = $parser->parseStreamed($request, ParseOptions::create()->withAllowedFileExtensions(['txt']));
         $fieldCount = 0;
@@ -1049,13 +1284,17 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            yield "Content-Disposition: form-data; name=\"file\"; filename=\"file.jpg\"\r\n";
-            yield "Content-Type: image/jpeg\r\n\r\n";
-            yield "Hello, World!\r\n";
-            yield "--" . self::BOUNDARY . "--\r\n";
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    yield "Content-Disposition: form-data; name=\"file\"; filename=\"file.jpg\"\r\n";
+                    yield "Content-Type: image/jpeg\r\n\r\n";
+                    yield "Hello, World!\r\n";
+                    yield '--' . self::BOUNDARY . "--\r\n";
+                })(),
+            ),
+        );
 
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('The uploaded file has an invalid extension.');
@@ -1068,13 +1307,17 @@ final class MultipartParserTest extends TestCase
     {
         $request = Request::create(Method::Post, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'multipart/form-data; boundary=' . self::BOUNDARY);
-        $request = $request->withBody(RequestBody::fromIterable((static function (): iterable {
-            yield "--" . self::BOUNDARY . "\r\n";
-            yield "Content-Disposition: form-data; name=\"file\"; filename=\"file.jpg\"\r\n";
-            yield "Content-Type: image/jpeg\r\n\r\n";
-            yield "Hello, World!\r\n";
-            yield "--" . self::BOUNDARY . "--\r\n";
-        })()));
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function (): iterable {
+                    yield '--' . self::BOUNDARY . "\r\n";
+                    yield "Content-Disposition: form-data; name=\"file\"; filename=\"file.jpg\"\r\n";
+                    yield "Content-Type: image/jpeg\r\n\r\n";
+                    yield "Hello, World!\r\n";
+                    yield '--' . self::BOUNDARY . "--\r\n";
+                })(),
+            ),
+        );
 
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('The uploaded file has an invalid extension.');

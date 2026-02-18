@@ -21,10 +21,10 @@ use Neu\Component\Database\Query\Expression\CompositeExpressionInterface;
 use Neu\Component\Database\Query\Expression\CompositionType;
 use Neu\Component\Database\Query\SelectQueryInterface;
 use Neu\Component\Database\Query\Type;
+use Override;
 use Psl\Iter;
 use Psl\Str;
 use Psl\Vec;
-use Override;
 
 final readonly class SelectQuery extends AbstractWhereQuery implements SelectQueryInterface
 {
@@ -68,7 +68,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @var null|int<0, max>
      */
-    private null|int $limit;
+    private ?int $limit;
 
     /**
      * @param non-empty-list<string> $select
@@ -91,7 +91,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
         null|string|CompositeExpressionInterface $having = null,
         array $orderBy = [],
         int $offset = 0,
-        null|int $limit = null,
+        ?int $limit = null,
         null|string|CompositeExpressionInterface $where = null,
     ) {
         parent::__construct($dbal, $where);
@@ -141,7 +141,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
      * @inheritDoc
      */
     #[Override]
-    public function from(string $table, null|string $alias = null): static
+    public function from(string $table, ?string $alias = null): static
     {
         $from = $this->from;
         $from[] = [$table, $alias];
@@ -165,7 +165,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
      * @inheritDoc
      */
     #[Override]
-    public function innerJoin(string $from, string $join, string $alias, null|string $condition = null): static
+    public function innerJoin(string $from, string $join, string $alias, ?string $condition = null): static
     {
         $joins = $this->joins;
         $joins[$from][] = [JoinType::Inner, $join, $alias, $condition];
@@ -189,7 +189,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
      * @inheritDoc
      */
     #[Override]
-    public function leftJoin(string $from, string $join, string $alias, null|string $condition = null): static
+    public function leftJoin(string $from, string $join, string $alias, ?string $condition = null): static
     {
         $joins = $this->joins;
         $joins[$from][] = [JoinType::Left, $join, $alias, $condition];
@@ -213,7 +213,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
      * @inheritDoc
      */
     #[Override]
-    public function rightJoin(string $from, string $join, string $alias, null|string $condition = null): static
+    public function rightJoin(string $from, string $join, string $alias, ?string $condition = null): static
     {
         $joins = $this->joins;
         $joins[$from][] = [JoinType::Right, $join, $alias, $condition];
@@ -287,7 +287,10 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     {
         $previous_restriction = $this->having;
         if (null !== $previous_restriction) {
-            if ($previous_restriction instanceof CompositeExpressionInterface && $previous_restriction->getType() === CompositionType::Conjunction) {
+            if (
+                $previous_restriction instanceof CompositeExpressionInterface
+                && $previous_restriction->getType() === CompositionType::Conjunction
+            ) {
                 $restriction = $previous_restriction->with((string) $restriction);
             } else {
                 $restriction = CompositeExpression::and($previous_restriction, $restriction);
@@ -326,7 +329,10 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     {
         $previous_restriction = $this->having;
         if (null !== $previous_restriction) {
-            if ($previous_restriction instanceof CompositeExpressionInterface && $previous_restriction->getType() === CompositionType::Disjunction) {
+            if (
+                $previous_restriction instanceof CompositeExpressionInterface
+                && $previous_restriction->getType() === CompositionType::Disjunction
+            ) {
                 $restriction = $previous_restriction->with((string) $restriction);
             } else {
                 $restriction = CompositeExpression::or($previous_restriction, $restriction);
@@ -449,13 +455,17 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
      */
     public function __toString(): string
     {
-        return 'SELECT ' . ($this->distinct ? 'DISTINCT ' : '') . Str\join($this->select, ', ')
+        return (
+            'SELECT '
+            . ($this->distinct ? 'DISTINCT ' : '')
+            . Str\join($this->select, ', ')
             . $this->getFromSQL()
             . $this->getWhereSQL()
             . $this->getGroupBySQL()
             . $this->getHavingSQL()
             . $this->getOrderBySQL()
-            . $this->getLimitSQL();
+            . $this->getLimitSQL()
+        );
     }
 
     /**
@@ -463,7 +473,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
      */
     private function getFromSQL(): string
     {
-        return $this->from ? (' FROM ' . $this->getFromClausesSQL()) : '';
+        return $this->from ? ' FROM ' . $this->getFromClausesSQL() : '';
     }
 
     /**
@@ -560,7 +570,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
             return '';
         }
 
-        return ' HAVING ' . ((string)$this->having);
+        return ' HAVING ' . (string) $this->having;
     }
 
     private function getOrderBySQL(): string
@@ -569,10 +579,11 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
             return '';
         }
 
-        return ' ORDER BY ' . Str\join(
+        return ' ORDER BY '
+        . Str\join(
             Vec\map_with_key(
                 $this->orderBy,
-                static fn (string $sort, OrderDirection $direction): string => $sort . ' ' . $direction->value,
+                static fn(string $sort, OrderDirection $direction): string => $sort . ' ' . $direction->value,
             ),
             ', ',
         );
@@ -596,7 +607,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
      * @inheritDoc
      */
     #[Override]
-    public function fetchOneNumeric(array $parameters = []): null|array
+    public function fetchOneNumeric(array $parameters = []): ?array
     {
         $row = $this->fetchOneAssociative();
         if (null === $row) {
@@ -610,7 +621,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
      * @inheritDoc
      */
     #[Override]
-    public function fetchOneAssociative(array $parameters = []): null|array
+    public function fetchOneAssociative(array $parameters = []): ?array
     {
         $result = $this->execute($parameters);
         $rows = $result->getRows();

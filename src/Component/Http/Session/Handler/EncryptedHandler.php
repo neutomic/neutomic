@@ -18,12 +18,12 @@ use Neu\Component\Http\Session\Exception\InvalidIdentifierException;
 use Neu\Component\Http\Session\Exception\RuntimeException;
 use Neu\Component\Http\Session\Session;
 use Neu\Component\Http\Session\SessionInterface;
-use SensitiveParameter;
-use Psl\SecureRandom;
-use Psl\Json;
-use Psl\Encoding;
-use Psl\Str;
 use Override;
+use Psl\Encoding;
+use Psl\Json;
+use Psl\SecureRandom;
+use Psl\Str;
+use SensitiveParameter;
 
 use function hash_equals;
 use function pack;
@@ -73,7 +73,11 @@ final readonly class EncryptedHandler implements HandlerInterface
     {
         // Decode the message from a URL-safe base64 format
         try {
-            $ciphertext = Encoding\Base64\decode($identifier, variant: Encoding\Base64\Variant::UrlSafe, explicit_padding: false);
+            $ciphertext = Encoding\Base64\decode(
+                $identifier,
+                variant: Encoding\Base64\Variant::UrlSafe,
+                explicit_padding: false,
+            );
         } catch (Encoding\Exception\ExceptionInterface $e) {
             throw InvalidIdentifierException::for($identifier, previous: $e);
         }
@@ -143,7 +147,7 @@ final readonly class EncryptedHandler implements HandlerInterface
      * @inheritDoc
      */
     #[Override]
-    public function save(SessionInterface $session, null|int $ttl = null): string
+    public function save(SessionInterface $session, ?int $ttl = null): string
     {
         try {
             // Convert the session data to a JSON string
@@ -170,7 +174,11 @@ final readonly class EncryptedHandler implements HandlerInterface
         sodium_memzero($encryptionKey);
 
         // Calculate an authentication tag:
-        $auth = sodium_crypto_generichash($salt . $nonce . $encrypted, $authenticationKey, SODIUM_CRYPTO_GENERICHASH_BYTES_MAX);
+        $auth = sodium_crypto_generichash(
+            $salt . $nonce . $encrypted,
+            $authenticationKey,
+            SODIUM_CRYPTO_GENERICHASH_BYTES_MAX,
+        );
 
         // wipe authentication key from memory
         sodium_memzero($authenticationKey);
@@ -203,10 +211,20 @@ final readonly class EncryptedHandler implements HandlerInterface
      *
      * @return array{0: non-empty-string, 1: non-empty-string} The encryption and authentication keys.
      */
-    private function split(#[SensitiveParameter] string $key, #[SensitiveParameter]  string $salt): array
+    private function split(#[SensitiveParameter] string $key, #[SensitiveParameter] string $salt): array
     {
-        $encryptionKey = $this->blake2b($key, for_encryption: true, info: 'neutomic:session:storage:encryption', salt: $salt);
-        $authenticationKey = $this->blake2b($key, for_encryption: false, info: 'neutomic:session:storage:authentication', salt: $salt);
+        $encryptionKey = $this->blake2b(
+            $key,
+            for_encryption: true,
+            info: 'neutomic:session:storage:encryption',
+            salt: $salt,
+        );
+        $authenticationKey = $this->blake2b(
+            $key,
+            for_encryption: false,
+            info: 'neutomic:session:storage:authentication',
+            salt: $salt,
+        );
 
         return [$encryptionKey, $authenticationKey];
     }
@@ -243,7 +261,7 @@ final readonly class EncryptedHandler implements HandlerInterface
             SODIUM_CRYPTO_GENERICHASH_BYTES,
             // 24:
             SODIUM_CRYPTO_STREAM_NONCEBYTES,
-            encoding: Str\Encoding::Ascii8bit
+            encoding: Str\Encoding::Ascii8bit,
         );
 
         // This is the crypto_stream_xor()ed ciphertext
@@ -252,17 +270,21 @@ final readonly class EncryptedHandler implements HandlerInterface
             // 56:
             SODIUM_CRYPTO_GENERICHASH_BYTES + SODIUM_CRYPTO_STREAM_NONCEBYTES,
             // $length - 120
-            $length -
-            (
+            $length
+            - (
                 SODIUM_CRYPTO_GENERICHASH_BYTES + // 32
                 SODIUM_CRYPTO_STREAM_NONCEBYTES + // 56
                 SODIUM_CRYPTO_GENERICHASH_BYTES_MAX // 120
             ),
-            encoding: Str\Encoding::Ascii8bit
+            encoding: Str\Encoding::Ascii8bit,
         );
 
         // $auth is the last 32 bytes
-        $auth = Str\slice($ciphertext, $length - SODIUM_CRYPTO_GENERICHASH_BYTES_MAX, encoding: Str\Encoding::Ascii8bit);
+        $auth = Str\slice(
+            $ciphertext,
+            $length - SODIUM_CRYPTO_GENERICHASH_BYTES_MAX,
+            encoding: Str\Encoding::Ascii8bit,
+        );
 
         // We don't need this anymore.
         sodium_memzero($ciphertext);
@@ -280,8 +302,11 @@ final readonly class EncryptedHandler implements HandlerInterface
      *
      * @return bool True if the MAC is valid, false otherwise.
      */
-    private function verify(#[SensitiveParameter] string $message, #[SensitiveParameter]  string $key, #[SensitiveParameter]  string $mac): bool
-    {
+    private function verify(
+        #[SensitiveParameter] string $message,
+        #[SensitiveParameter] string $key,
+        #[SensitiveParameter] string $mac,
+    ): bool {
         // Calculate the MAC
         $calculated = sodium_crypto_generichash($message, $key, SODIUM_CRYPTO_GENERICHASH_BYTES_MAX);
 
@@ -306,8 +331,12 @@ final readonly class EncryptedHandler implements HandlerInterface
      *
      * @return non-empty-string The output keying material.
      */
-    private function blake2b(#[SensitiveParameter] string $ikm, bool $for_encryption, #[SensitiveParameter] string $info, #[SensitiveParameter] string $salt): string
-    {
+    private function blake2b(
+        #[SensitiveParameter] string $ikm,
+        bool $for_encryption,
+        #[SensitiveParameter] string $info,
+        #[SensitiveParameter] string $salt,
+    ): string {
         if ($for_encryption) {
             $length = SODIUM_CRYPTO_SECRETBOX_KEYBYTES;
         } else {
@@ -330,7 +359,11 @@ final readonly class EncryptedHandler implements HandlerInterface
         $last_block = '';
         for ($block_index = 1; Str\length($t, encoding: Str\Encoding::Ascii8bit) < $length; ++$block_index) {
             // T(i) = HMAC-Hash(PRK, T(i-1) | info | 0x??)
-            $last_block = sodium_crypto_generichash($last_block . $info . pack('C', $block_index), $prk, SODIUM_CRYPTO_GENERICHASH_BYTES);
+            $last_block = sodium_crypto_generichash(
+                $last_block . $info . pack('C', $block_index),
+                $prk,
+                SODIUM_CRYPTO_GENERICHASH_BYTES,
+            );
 
             // T = T(1) | T(2) | T(3) | ... | T(N)
             $t .= $last_block;

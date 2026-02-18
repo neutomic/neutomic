@@ -19,9 +19,9 @@ use Neu\Component\DependencyInjection\HookInterface;
 use Neu\Component\Http\Router\Registry\RegistryInterface;
 use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
+use Override;
 use ReflectionAttribute;
 use ReflectionObject;
-use Override;
 
 /**
  * Hook for registering routes in the registry.
@@ -40,7 +40,7 @@ final readonly class RegisterRoutesHook implements HookInterface
      *
      * @param non-empty-string|null $registry The registry service identifier.
      */
-    public function __construct(null|string $registry = null)
+    public function __construct(?string $registry = null)
     {
         $this->registry = $registry ?? RegistryInterface::class;
     }
@@ -55,7 +55,11 @@ final readonly class RegisterRoutesHook implements HookInterface
 
         foreach ($container->getAttributed(Route::class) as $handler) {
             if (!$handler instanceof HandlerInterface) {
-                throw new RuntimeException('The route handler "' . $handler::class . '" must implement "' . HandlerInterface::class . '".');
+                throw new RuntimeException('The route handler "'
+                . $handler::class
+                . '" must implement "'
+                . HandlerInterface::class
+                . '".');
             }
 
             foreach ($this->readRoute($handler) as $route) {

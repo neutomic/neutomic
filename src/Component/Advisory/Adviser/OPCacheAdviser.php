@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Neu\Component\Advisory\Adviser;
 
 use Neu\Component\Advisory\Advice;
+use Override;
 use Psl\OS;
 use Psl\Runtime;
 use Psl\Str;
-use Override;
 
 use function extension_loaded;
 use function ini_get;
@@ -38,13 +38,13 @@ final readonly class OPCacheAdviser implements AdviserInterface
      * @return Advice|null An instance of Advice if OPCache configuration is not optimal, or null if it is set correctly.
      */
     #[Override]
-    public function getAdvice(): null|Advice
+    public function getAdvice(): ?Advice
     {
         if (!$this->isOpcacheInstalled()) {
             return Advice::forPerformance(
                 'Install ext-opcache',
                 'The ext-opcache extension is not installed. Installing it can significantly improve PHP performance by caching precompiled script bytecode in shared memory.',
-                'Install the ext-opcache extension and ensure it is enabled in your PHP configuration.'
+                'Install the ext-opcache extension and ensure it is enabled in your PHP configuration.',
             );
         }
 
@@ -52,7 +52,7 @@ final readonly class OPCacheAdviser implements AdviserInterface
             return Advice::forPerformance(
                 'Enable OPCache',
                 'OPCache should be enabled in production environments to improve PHP performance.',
-                'Enable OPCache in the PHP configuration file by setting the `opcache.enable` directive to `1`.'
+                'Enable OPCache in the PHP configuration file by setting the `opcache.enable` directive to `1`.',
             );
         }
 
@@ -60,7 +60,7 @@ final readonly class OPCacheAdviser implements AdviserInterface
             return Advice::forPerformance(
                 'Enable OPCache for CLI',
                 'OPCache should be enabled for CLI in production environments to improve PHP performance.',
-                'Enable OPCache for CLI in the PHP configuration file by setting the `opcache.enable_cli` directive to `1`.'
+                'Enable OPCache for CLI in the PHP configuration file by setting the `opcache.enable_cli` directive to `1`.',
             );
         }
 
@@ -68,7 +68,7 @@ final readonly class OPCacheAdviser implements AdviserInterface
             return Advice::forPerformance(
                 'Increase OPCache Memory Consumption',
                 'The current OPCache memory consumption setting is too low, which can lead to performance issues.',
-                'Increase the opcache.memory_consumption setting in your php.ini configuration file to at least 128MB.'
+                'Increase the opcache.memory_consumption setting in your php.ini configuration file to at least 128MB.',
             );
         }
 
@@ -76,7 +76,7 @@ final readonly class OPCacheAdviser implements AdviserInterface
             return Advice::forPerformance(
                 'Increase OPCache Max Accelerated Files',
                 'The current opcache.max_accelerated_files setting is too low. This can limit the number of PHP files that can be cached, affecting performance.',
-                'Increase the opcache.max_accelerated_files setting in your php.ini configuration file to at least 6,000.'
+                'Increase the opcache.max_accelerated_files setting in your php.ini configuration file to at least 6,000.',
             );
         }
 
@@ -84,7 +84,7 @@ final readonly class OPCacheAdviser implements AdviserInterface
             return Advice::forPerformance(
                 'Increase OPCache Interned Strings Buffer',
                 'The current opcache.interned_strings_buffer setting is too low, which can affect performance.',
-                'Increase the opcache.interned_strings_buffer setting in your php.ini configuration file to at least 16MB.'
+                'Increase the opcache.interned_strings_buffer setting in your php.ini configuration file to at least 16MB.',
             );
         }
 
@@ -92,7 +92,7 @@ final readonly class OPCacheAdviser implements AdviserInterface
             return Advice::forPerformance(
                 'OPCache JIT Not Supported',
                 'OPCache JIT is not supported on Apple Silicon when PHP is built with ZTS enabled.',
-                'Use a non-Zend Thread Safety (ZTS) build of PHP to enable OPCache JIT on Apple Silicon.'
+                'Use a non-Zend Thread Safety (ZTS) build of PHP to enable OPCache JIT on Apple Silicon.',
             );
         }
 
@@ -100,7 +100,7 @@ final readonly class OPCacheAdviser implements AdviserInterface
             return Advice::forPerformance(
                 'Enable OPCache JIT',
                 'The current opcache.jit setting is disabled. Enabling JIT can improve performance significantly.',
-                'Enable and configure JIT in your php.ini configuration file. Recommended settings: opcache.jit=1255 and opcache.jit_buffer_size=256M or higher.'
+                'Enable and configure JIT in your php.ini configuration file. Recommended settings: opcache.jit=1255 and opcache.jit_buffer_size=256M or higher.',
             );
         }
 
@@ -108,7 +108,7 @@ final readonly class OPCacheAdviser implements AdviserInterface
             return Advice::forPerformance(
                 'Increase OPCache JIT Buffer Size',
                 'The current opcache.jit_buffer_size setting is too low, which can affect performance.',
-                'Increase the opcache.jit_buffer_size setting in your php.ini configuration file to at least 256MB.'
+                'Increase the opcache.jit_buffer_size setting in your php.ini configuration file to at least 256MB.',
             );
         }
 
@@ -157,7 +157,6 @@ final readonly class OPCacheAdviser implements AdviserInterface
 
         return $opcacheMemory !== null && $opcacheMemory >= self::OPCACHE_MEMORY_THRESHOLD;
     }
-
 
     /**
      * Check if OPCache max accelerated files is sufficient.

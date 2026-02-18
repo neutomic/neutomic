@@ -21,6 +21,4 @@ use Neu\Component\Console\Input\Definition\Argument;
  *
  * @extends AbstractBag<Argument>
  */
-final class ArgumentBag extends AbstractBag
-{
-}
+final class ArgumentBag extends AbstractBag {}

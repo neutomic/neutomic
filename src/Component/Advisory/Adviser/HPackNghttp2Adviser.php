@@ -32,7 +32,7 @@ final readonly class HPackNghttp2Adviser implements AdviserInterface
      * @return Advice|null An instance of Advice if HPack is not supported, or null if it is supported.
      */
     #[Override]
-    public function getAdvice(): null|Advice
+    public function getAdvice(): ?Advice
     {
         if (!extension_loaded('ffi') || !class_exists(FFI::class)) {
             return Advice::forPerformance(
@@ -50,7 +50,7 @@ final readonly class HPackNghttp2Adviser implements AdviserInterface
             return Advice::forPerformance(
                 'Install and Configure nghttp2 for HPack Support',
                 'HPack support via the nghttp2 library is currently not enabled. Enabling it can greatly improve HTTP/2 performance by providing efficient header compression.',
-                'Install the nghttp2 library on your system and ensure it is properly configured. Refer to the nghttp2 installation guide for detailed instructions.'
+                'Install the nghttp2 library on your system and ensure it is properly configured. Refer to the nghttp2 installation guide for detailed instructions.',
             );
         }
 

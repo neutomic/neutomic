@@ -39,5 +39,5 @@ interface FileInterface extends FieldInterface
      *
      * @return null|string The extension of the file, or `null` if the extension is unknown.
      */
-    public function getExtension(): null|string;
+    public function getExtension(): ?string;
 }

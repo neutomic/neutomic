@@ -31,8 +31,8 @@ use Neu\Component\Database\Exception\TransactionException;
 use Neu\Component\Database\Exception\UnsupportedFeatureException;
 use Neu\Component\Database\Notification\NotifierInterface;
 use Neu\Component\Database\Notification\Postgres\PostgresNotifier;
-use Throwable;
 use Override;
+use Throwable;
 
 use function array_map;
 use function explode;
@@ -140,10 +140,7 @@ abstract readonly class Link implements LinkInterface
     #[Override]
     public function createTransaction(): TransactionInterface
     {
-        return new Transaction(
-            $this->platform,
-            $this->link->beginTransaction()
-        );
+        return new Transaction($this->platform, $this->link->beginTransaction());
     }
 
     /**

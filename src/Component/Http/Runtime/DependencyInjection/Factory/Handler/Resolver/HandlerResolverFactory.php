@@ -29,12 +29,12 @@ final readonly class HandlerResolverFactory implements FactoryInterface
     /**
      * @var non-empty-string|null
      */
-    private null|string $fallback;
+    private ?string $fallback;
 
     /**
      * @param non-empty-string|null $fallback Fallback handler service identifier.
      */
-    public function __construct(null|string $fallback = null)
+    public function __construct(?string $fallback = null)
     {
         $this->fallback = $fallback;
     }

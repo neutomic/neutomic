@@ -46,7 +46,7 @@ enum Parser
      *
      * @psalm-assert-if-true RequestBodyInterface $body
      */
-    public static function isSupported(RequestInterface $request, null|RequestBodyInterface $body): bool
+    public static function isSupported(RequestInterface $request, ?RequestBodyInterface $body): bool
     {
         if (null === $body) {
             // We don't have a body to parse.
@@ -103,7 +103,9 @@ enum Parser
                 if (count($fields) === $options->fieldCountLimit) {
                     throw new HttpException(
                         statusCode: StatusCode::PayloadTooLarge,
-                        message: 'The number of fields in the form data exceeds the limit of ' . ((string) $options->fieldCountLimit) . '.',
+                        message: 'The number of fields in the form data exceeds the limit of '
+                        . (string) $options->fieldCountLimit
+                        . '.',
                     );
                 }
 
@@ -127,7 +129,9 @@ enum Parser
                     if (count($fields) === $options->fieldCountLimit) {
                         throw new HttpException(
                             statusCode: StatusCode::PayloadTooLarge,
-                            message: 'The number of fields in the form data exceeds the limit of ' . ((string) $options->fieldCountLimit) . '.',
+                            message: 'The number of fields in the form data exceeds the limit of '
+                            . (string) $options->fieldCountLimit
+                            . '.',
                         );
                     }
 
@@ -186,13 +190,19 @@ enum Parser
                     if ($fieldCount++ === $options->fieldCountLimit) {
                         throw new HttpException(
                             statusCode: StatusCode::PayloadTooLarge,
-                            message: 'The number of fields in the form data exceeds the limit of ' . ((string) $options->fieldCountLimit) . '.',
+                            message: 'The number of fields in the form data exceeds the limit of '
+                            . (string) $options->fieldCountLimit
+                            . '.',
                         );
                     }
 
                     /** @var Queue<string> $queue */
                     $queue = new Queue();
-                    $future = $source->pushAsync(Field::create(urldecode($field), [], Body::fromIterable($queue->iterate())));
+                    $future = $source->pushAsync(Field::create(
+                        urldecode($field),
+                        [],
+                        Body::fromIterable($queue->iterate()),
+                    ));
                     while ($tokens->valid()) {
                         $token = $tokens->current();
                         $tokens->next();
@@ -218,7 +228,9 @@ enum Parser
                         if ($fieldCount++ === $options->fieldCountLimit) {
                             throw new HttpException(
                                 StatusCode::PayloadTooLarge,
-                                message: 'The number of fields in the form data exceeds the limit of ' . ((string) $options->fieldCountLimit) . '.',
+                                message: 'The number of fields in the form data exceeds the limit of '
+                                . (string) $options->fieldCountLimit
+                                . '.',
                             );
                         }
 

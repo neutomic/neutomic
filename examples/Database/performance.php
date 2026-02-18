@@ -19,6 +19,7 @@ use Psl\IO;
 use Psl\Ref;
 
 const BATCH_SIZE = 100;
+
 const BATCH_COUNT = 5;
 
 /** @var DatabasePoolInterface $connection */
@@ -35,9 +36,7 @@ $updates = new Ref(0);
 $deletes = new Ref(0);
 
 for ($y = 0; $y < BATCH_COUNT; $y++) {
-    $name = static function (int $i, string $suffix = '') use ($y): string {
-        return $y . 'user' . $i . $suffix;
-    };
+    $name = static fn(int $i, string $suffix = '') => $y . 'user' . $i . $suffix;
 
     $promises[] = Async\run(static function () use ($connection, $inserts, $selects, $updates, $deletes, $y, $name) {
         IO\write_line('[INSERT][%d] started', $y);
@@ -45,7 +44,7 @@ for ($y = 0; $y < BATCH_COUNT; $y++) {
         for ($i = 0; $i < BATCH_SIZE; $i++) {
             $promises[] = Async\run(static function () use ($connection, $name, $inserts, $y, $i) {
                 $connection->insert('users', [
-                    'name' => $name($i)
+                    'name' => $name($i),
                 ]);
 
                 IO\write_line('[INSERT][%d] user %d', $y, $i);
@@ -61,12 +60,7 @@ for ($y = 0; $y < BATCH_COUNT; $y++) {
         $promises = [];
         for ($i = 0; $i < BATCH_SIZE; $i++) {
             $promises[] = Async\run(static function () use ($connection, $name, $selects, $y, $i) {
-                $connection
-                    ->createQueryBuilder()
-                    ->select('*')
-                    ->from('users')
-                    ->where('user = ?')
-                    ->execute([$name($i)]);
+                $connection->createQueryBuilder()->select('*')->from('users')->where('user = ?')->execute([$name($i)]);
 
                 IO\write_line('[SELECT][%d] user %d', $y, $i);
 
@@ -107,7 +101,7 @@ for ($y = 0; $y < BATCH_COUNT; $y++) {
                     ->delete('users')
                     ->where('name = ?')
                     ->execute([
-                        $name($i, '_updated')
+                        $name($i, '_updated'),
                     ]);
 
                 IO\write_line('[DELETE][%d] user %d', $y, $i);
@@ -119,6 +113,5 @@ for ($y = 0; $y < BATCH_COUNT; $y++) {
         IO\write_line('[DELETE][%d] finished', $y);
     });
 }
-
 
 Async\all($promises);

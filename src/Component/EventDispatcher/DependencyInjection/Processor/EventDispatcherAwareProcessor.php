@@ -35,7 +35,7 @@ final class EventDispatcherAwareProcessor implements ProcessorInterface
      *
      * @param non-empty-string|null $eventDispatcher The event dispatcher service identifier, defaults to {@see EventDispatcherInterface::class}.
      */
-    public function __construct(null|string $eventDispatcher = null)
+    public function __construct(?string $eventDispatcher = null)
     {
         $this->eventDispatcher = $eventDispatcher ?? EventDispatcherInterface::class;
     }
@@ -47,10 +47,7 @@ final class EventDispatcherAwareProcessor implements ProcessorInterface
     public function process(ContainerInterface $container, DefinitionInterface $definition, object $service): object
     {
         if ($service instanceof EventDispatcherAwareInterface) {
-            $service->setEventDispatcher($container->getTyped(
-                $this->eventDispatcher,
-                EventDispatcherInterface::class,
-            ));
+            $service->setEventDispatcher($container->getTyped($this->eventDispatcher, EventDispatcherInterface::class));
         }
 
         return $service;

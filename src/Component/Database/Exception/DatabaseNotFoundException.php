@@ -30,7 +30,7 @@ final class DatabaseNotFoundException extends RuntimeException
      *
      * @param non-empty-string $name
      */
-    public static function forDatabase(string $name, null|Throwable $previous = null): self
+    public static function forDatabase(string $name, ?Throwable $previous = null): self
     {
         return new self('Database "' . $name . '" was not found.', previous: $previous);
     }

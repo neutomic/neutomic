@@ -28,21 +28,21 @@ final readonly class Event
      *
      * @var non-empty-string|null
      */
-    public null|string $type;
+    public ?string $type;
 
     /**
      * The ID of the event.
      *
      * @var non-empty-string|null
      */
-    public null|string $id;
+    public ?string $id;
 
     /**
      * The reconnection time in milliseconds.
      *
      * @var positive-int|null
      */
-    public null|int $retry;
+    public ?int $retry;
 
     /**
      * Creates a new instance of {@see Event}.
@@ -52,7 +52,7 @@ final readonly class Event
      * @param non-empty-string|null $id The ID of the event.
      * @param positive-int|null $retry The reconnection time in milliseconds.
      */
-    public function __construct(string $data = '', null|string $type = null, null|string $id = null, null|int $retry = null)
+    public function __construct(string $data = '', ?string $type = null, ?string $id = null, ?int $retry = null)
     {
         $this->data = $data;
         $this->type = $type;
@@ -79,7 +79,7 @@ final readonly class Event
      *
      * @return self A new instance with the specified event type.
      */
-    public function withType(null|string $type): self
+    public function withType(?string $type): self
     {
         return new self($this->data, $type, $this->id, $this->retry);
     }
@@ -91,7 +91,7 @@ final readonly class Event
      *
      * @return self A new instance with the specified ID.
      */
-    public function withId(null|string $id): self
+    public function withId(?string $id): self
     {
         return new self($this->data, $this->type, $id, $this->retry);
     }
@@ -103,7 +103,7 @@ final readonly class Event
      *
      * @return self A new instance with the specified retry time.
      */
-    public function withRetry(null|int $retry): self
+    public function withRetry(?int $retry): self
     {
         return new self($this->data, $this->type, $this->id, $retry);
     }
@@ -115,10 +115,10 @@ final readonly class Event
      */
     public function toString(): string
     {
-        $type = $this->type !== null ? "event: $this->type\n" : '';
-        $data = "data: $this->data\n";
-        $id = $this->id !== null ? "id: $this->id\n" : '';
-        $retry = $this->retry !== null ? "retry: $this->retry\n" : '';
+        $type = $this->type !== null ? "event: {$this->type}\n" : '';
+        $data = "data: {$this->data}\n";
+        $id = $this->id !== null ? "id: {$this->id}\n" : '';
+        $retry = $this->retry !== null ? "retry: {$this->retry}\n" : '';
 
         return "$type$data$id$retry\n";
     }

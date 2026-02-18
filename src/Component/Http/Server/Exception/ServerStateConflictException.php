@@ -15,6 +15,4 @@ namespace Neu\Component\Http\Server\Exception;
 
 use Neu\Component\Http\Exception\RuntimeException;
 
-final class ServerStateConflictException extends RuntimeException
-{
-}
+final class ServerStateConflictException extends RuntimeException {}

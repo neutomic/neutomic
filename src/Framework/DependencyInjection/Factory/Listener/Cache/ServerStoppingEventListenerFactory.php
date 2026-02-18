@@ -38,7 +38,7 @@ final readonly class ServerStoppingEventListenerFactory implements FactoryInterf
      *
      * @param null|non-empty-string $storeManager The store manager service identifier.
      */
-    public function __construct(null|string $storeManager = null)
+    public function __construct(?string $storeManager = null)
     {
         $this->storeManager = $storeManager ?? StoreManagerInterface::class;
     }

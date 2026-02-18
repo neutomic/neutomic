@@ -15,10 +15,10 @@ namespace Neu\Component\Console\Feedback;
 
 use Neu\Component\Console\Exception\InvalidCharacterSequenceException;
 use Neu\Component\Console\Output\OutputInterface;
+use Override;
 use Psl\Math;
 use Psl\Str;
 use Psl\Vec;
-use Override;
 
 use function microtime;
 use function time;
@@ -61,7 +61,7 @@ abstract class AbstractFeedback implements FeedbackInterface
     /**
      * @var null|array{0: int<0, max>, 1: int<0, max>}
      */
-    protected null|array $position = null;
+    protected ?array $position = null;
 
     /**
      * The current cycle out of the given total.
@@ -152,14 +152,14 @@ abstract class AbstractFeedback implements FeedbackInterface
         $now = microtime(true) * 1000;
 
         if ($this->timer < 0) {
-            $this->timer = (int)$now;
-            $this->start = (int)($this->timer / 1000);
+            $this->timer = (int) $now;
+            $this->start = (int) ($this->timer / 1000);
 
             return true;
         }
 
         if (($now - $this->timer) > $this->interval) {
-            $this->timer = (int)$now;
+            $this->timer = (int) $now;
 
             return true;
         }
@@ -236,7 +236,7 @@ abstract class AbstractFeedback implements FeedbackInterface
      * @inheritDoc
      */
     #[Override]
-    public function setPosition(null|array $position): void
+    public function setPosition(?array $position): void
     {
         $this->position = $position;
     }
@@ -305,15 +305,9 @@ abstract class AbstractFeedback implements FeedbackInterface
     protected function buildOutputVariables(): array
     {
         $message = $this->message;
-        $percent = Str\pad_right(
-            (string)Math\floor($this->getPercentageComplete() * 100),
-            3,
-        );
-        $estimated = $this->formatTime((int)$this->estimateTimeRemaining());
-        $elapsed = Str\pad_right(
-            $this->formatTime($this->getElapsedTime()),
-            Str\length($estimated),
-        );
+        $percent = Str\pad_right((string) Math\floor($this->getPercentageComplete() * 100), 3);
+        $estimated = $this->formatTime((int) $this->estimateTimeRemaining());
+        $elapsed = Str\pad_right($this->formatTime($this->getElapsedTime()), Str\length($estimated));
 
         return [
             'message' => $message,
@@ -333,7 +327,7 @@ abstract class AbstractFeedback implements FeedbackInterface
             return 1.0;
         }
 
-        return (float)($this->current / $this->total);
+        return (float) ($this->current / $this->total);
     }
 
     /**
@@ -341,9 +335,7 @@ abstract class AbstractFeedback implements FeedbackInterface
      */
     protected function formatTime(int $time): string
     {
-        return ((string)Math\floor($time / 60)) .
-            ':' .
-            Str\pad_left(((string)($time % 60)), 2, '0');
+        return (string) Math\floor($time / 60) . ':' . Str\pad_left((string) ($time % 60), 2, '0');
     }
 
     /**
@@ -378,8 +370,8 @@ abstract class AbstractFeedback implements FeedbackInterface
 
         if ($span > 1) {
             $this->iteration++;
-            $this->tick = (int)$now;
-            $this->speed = (($this->current / $this->iteration) / $span);
+            $this->tick = (int) $now;
+            $this->speed = ($this->current / $this->iteration) / $span;
         }
 
         return $this->speed;
@@ -394,7 +386,7 @@ abstract class AbstractFeedback implements FeedbackInterface
             return 0;
         }
 
-        return (time() - $this->start);
+        return time() - $this->start;
     }
 
     /**
@@ -408,7 +400,7 @@ abstract class AbstractFeedback implements FeedbackInterface
     /**
      * @param array<string, string> $variables
      */
-    protected function insert(string $format, array  $variables): string
+    protected function insert(string $format, array $variables): string
     {
         foreach ($variables as $key => $value) {
             $format = Str\replace($format, Str\format('{:%s}', $key), $value);

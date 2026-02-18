@@ -21,7 +21,10 @@ interface BuilderInterface
      * @param non-empty-string|CompositeExpressionInterface $expression
      * @param non-empty-string|CompositeExpressionInterface ...$expressions
      */
-    public function and(string|CompositeExpressionInterface $expression, string|CompositeExpressionInterface ...$expressions): CompositeExpressionInterface;
+    public function and(
+        string|CompositeExpressionInterface $expression,
+        string|CompositeExpressionInterface ...$expressions,
+    ): CompositeExpressionInterface;
 
     /**
      * Creates a disjunction of the given expressions.
@@ -29,7 +32,10 @@ interface BuilderInterface
      * @param non-empty-string|CompositeExpressionInterface $expression
      * @param non-empty-string|CompositeExpressionInterface ...$expressions
      */
-    public function or(string|CompositeExpressionInterface $expression, string|CompositeExpressionInterface ...$expressions): CompositeExpressionInterface;
+    public function or(
+        string|CompositeExpressionInterface $expression,
+        string|CompositeExpressionInterface ...$expressions,
+    ): CompositeExpressionInterface;
 
     /**
      * Creates a comparison expression.
@@ -128,7 +134,7 @@ interface BuilderInterface
      *
      * @return non-empty-string
      */
-    public function like(string $expression, string $pattern, null|string $escapeCharacters = null): string;
+    public function like(string $expression, string $pattern, ?string $escapeCharacters = null): string;
 
     /**
      * Creates a NOT LIKE() comparison expression with the given arguments.
@@ -139,7 +145,7 @@ interface BuilderInterface
      *
      * @return non-empty-string
      */
-    public function notLike(string $expression, string $pattern, null|string $escapeCharacters = null): string;
+    public function notLike(string $expression, string $pattern, ?string $escapeCharacters = null): string;
 
     /**
      * Creates an IN () comparison expression with the given arguments.

@@ -16,8 +16,8 @@ namespace Neu\Framework\DependencyInjection\Factory\Middleware;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Framework\Middleware\AccessLogMiddleware;
-use Psr\Log\LoggerInterface;
 use Override;
+use Psr\Log\LoggerInterface;
 
 /**
  * Factory for creating a {@see AccessLogMiddleware} instance.
@@ -44,7 +44,7 @@ final readonly class AccessLogMiddlewareFactory implements FactoryInterface
      * @param non-empty-string|null $logger Logger service identifier.
      * @param int|null $priority Middleware priority.
      */
-    public function __construct(null|string $logger = null, null|int $priority = null)
+    public function __construct(?string $logger = null, ?int $priority = null)
     {
         $this->logger = $logger ?? LoggerInterface::class;
         $this->priority = $priority ?? AccessLogMiddleware::PRIORITY;
@@ -56,9 +56,6 @@ final readonly class AccessLogMiddlewareFactory implements FactoryInterface
     #[Override]
     public function __invoke(ContainerInterface $container): AccessLogMiddleware
     {
-        return new AccessLogMiddleware(
-            $container->getTyped($this->logger, LoggerInterface::class),
-            $this->priority,
-        );
+        return new AccessLogMiddleware($container->getTyped($this->logger, LoggerInterface::class), $this->priority);
     }
 }

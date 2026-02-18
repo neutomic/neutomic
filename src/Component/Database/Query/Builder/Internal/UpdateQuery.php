@@ -18,8 +18,8 @@ use Neu\Component\Database\Exception\LogicException;
 use Neu\Component\Database\Query\Expression\CompositeExpressionInterface;
 use Neu\Component\Database\Query\Type;
 use Neu\Component\Database\Query\UpdateQueryInterface;
-use Psl\Str;
 use Override;
+use Psl\Str;
 
 /**
  * @internal
@@ -34,7 +34,7 @@ final readonly class UpdateQuery extends AbstractWhereQuery implements UpdateQue
     /**
      * @var null|non-empty-string
      */
-    private null|string $alias;
+    private ?string $alias;
 
     /**
      * @var list<non-empty-string>
@@ -47,8 +47,13 @@ final readonly class UpdateQuery extends AbstractWhereQuery implements UpdateQue
      * @param list<non-empty-string> $sets
      * @param null|CompositeExpressionInterface|non-empty-string $where
      */
-    public function __construct(AbstractionLayerInterface $dbal, string $table, null|string $alias = null, array $sets = [], null|string|CompositeExpressionInterface $where = null)
-    {
+    public function __construct(
+        AbstractionLayerInterface $dbal,
+        string $table,
+        ?string $alias = null,
+        array $sets = [],
+        null|string|CompositeExpressionInterface $where = null,
+    ) {
         parent::__construct($dbal, $where);
 
         $this->table = $table;
@@ -92,9 +97,17 @@ final readonly class UpdateQuery extends AbstractWhereQuery implements UpdateQue
     public function __toString(): string
     {
         if ($this->sets === []) {
-            throw new LogicException('UpdateQueryInterface::set() must be called at least once before attempting to execute the query.');
+            throw new LogicException(
+                'UpdateQueryInterface::set() must be called at least once before attempting to execute the query.',
+            );
         }
 
-        return 'UPDATE ' . $this->getTableSQL($this->table, $this->alias) . ' SET ' . Str\join($this->sets, ', ') . $this->getWhereSQL();
+        return (
+            'UPDATE '
+            . $this->getTableSQL($this->table, $this->alias)
+            . ' SET '
+            . Str\join($this->sets, ', ')
+            . $this->getWhereSQL()
+        );
     }
 }

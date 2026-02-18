@@ -17,8 +17,8 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Session\Configuration\CacheConfiguration;
 use Neu\Component\Http\Session\Configuration\CookieConfiguration;
-use Neu\Component\Http\Session\Persistence\Persistence;
 use Neu\Component\Http\Session\Handler\HandlerInterface;
+use Neu\Component\Http\Session\Persistence\Persistence;
 use Override;
 
 /**
@@ -48,8 +48,11 @@ final readonly class PersistenceFactory implements FactoryInterface
      * @param non-empty-string|null $cookieConfiguration
      * @param non-empty-string|null $cacheConfiguration
      */
-    public function __construct(null|string $handler = null, null|string $cookieConfiguration = null, null|string $cacheConfiguration = null)
-    {
+    public function __construct(
+        ?string $handler = null,
+        ?string $cookieConfiguration = null,
+        ?string $cacheConfiguration = null,
+    ) {
         $this->handler = $handler ?? HandlerInterface::class;
         $this->cookieConfiguration = $cookieConfiguration ?? CookieConfiguration::class;
         $this->cacheConfiguration = $cacheConfiguration ?? CacheConfiguration::class;

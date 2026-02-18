@@ -27,7 +27,7 @@ final class StyleStack
 
     private StyleInterface $defaultStyle;
 
-    public function __construct(null|StyleInterface $defaultStyle = null)
+    public function __construct(?StyleInterface $defaultStyle = null)
     {
         $this->defaultStyle = $defaultStyle ?? new Style();
     }
@@ -52,14 +52,11 @@ final class StyleStack
      *
      * @throws InvalidArgumentException When style tags incorrectly nested
      */
-    public function pop(null|StyleInterface $style = null): StyleInterface
+    public function pop(?StyleInterface $style = null): StyleInterface
     {
         if ($style === null) {
             $lastStyle = $this->getCurrent();
-            $this->styles = Vec\values(Dict\take(
-                $this->styles,
-                Iter\count($this->styles) - 1,
-            ));
+            $this->styles = Vec\values(Dict\take($this->styles, Iter\count($this->styles) - 1));
 
             return $lastStyle;
         }
@@ -76,16 +73,16 @@ final class StyleStack
 
         $styles = Vec\reverse($styles);
         foreach ($styles as [$index, $stackedStyle]) {
-            if ($style->apply('') === $stackedStyle->apply('')) {
-                $this->styles = Vec\values(Dict\slice($this->styles, 0, $index));
-
-                return $stackedStyle;
+            if ($style->apply('') !== $stackedStyle->apply('')) {
+                continue;
             }
+
+            $this->styles = Vec\values(Dict\slice($this->styles, 0, $index));
+
+            return $stackedStyle;
         }
 
-        throw new InvalidArgumentException(
-            'Incorrectly nested style tag found.',
-        );
+        throw new InvalidArgumentException('Incorrectly nested style tag found.');
     }
 
     public function getCurrent(): StyleInterface

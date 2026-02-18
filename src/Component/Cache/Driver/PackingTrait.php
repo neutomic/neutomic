@@ -33,7 +33,7 @@ trait PackingTrait
     /**
      * The maximum value for a 32-bit unsigned integer.
      */
-    protected const int MAXIMUM_VALUE = 0xFFFFFFFF;
+    protected const int MAXIMUM_VALUE = 0xFFFF_FFFF;
 
     /**
      * The maximum length of a key.
@@ -58,7 +58,8 @@ trait PackingTrait
     /**
      * The number of bytes used to store the header.
      */
-    protected const int HEADER_BYTES_LENGTH = self::EXPIRATION_BYTE_LENGTH + self::KEY_LENGTH_BYTE_LENGTH + self::CONTENT_LENGTH_BYTE_LENGTH;
+    protected const int HEADER_BYTES_LENGTH =
+        self::EXPIRATION_BYTE_LENGTH + self::KEY_LENGTH_BYTE_LENGTH + self::CONTENT_LENGTH_BYTE_LENGTH;
 
     /**
      * Packs a value for the cache.
@@ -72,7 +73,7 @@ trait PackingTrait
      *
      * @return string The packed value.
      */
-    protected function pack(string $key, mixed $value, null|int $ttl = null): string
+    protected function pack(string $key, mixed $value, ?int $ttl = null): string
     {
         $serialized = $this->serialize($key, $value);
         if ($ttl !== null) {
@@ -116,7 +117,7 @@ trait PackingTrait
         }
 
         // Check if expiration is set to 'never expire' or if the current time is less than expiration
-        if ($data['expires'] === 0xFFFFFFFF || $data['expires'] > time()) {
+        if ($data['expires'] === 0xFFFF_FFFF || $data['expires'] > time()) {
             // Skip the key and read the content
             $content = substr($data['data'], $data['key_length']);
 

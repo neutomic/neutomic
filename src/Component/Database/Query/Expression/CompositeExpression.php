@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Neu\Component\Database\Query\Expression;
 
+use Override;
 use Psl\Iter;
 use Psl\Str;
 use Psl\Vec;
-use Override;
 
 final readonly class CompositeExpression implements CompositeExpressionInterface
 {
@@ -47,8 +47,10 @@ final readonly class CompositeExpression implements CompositeExpressionInterface
      * @param non-empty-string|CompositeExpressionInterface $expression
      * @param non-empty-string|CompositeExpressionInterface ...$expressions
      */
-    public static function and(string|CompositeExpressionInterface $expression, string|CompositeExpressionInterface ...$expressions): static
-    {
+    public static function and(
+        string|CompositeExpressionInterface $expression,
+        string|CompositeExpressionInterface ...$expressions,
+    ): static {
         return new self(CompositionType::Conjunction, Vec\concat([$expression], $expressions));
     }
 
@@ -56,8 +58,10 @@ final readonly class CompositeExpression implements CompositeExpressionInterface
      * @param non-empty-string|CompositeExpressionInterface $expression
      * @param non-empty-string|CompositeExpressionInterface ...$expressions
      */
-    public static function or(string|CompositeExpressionInterface $expression, string|CompositeExpressionInterface ...$expressions): static
-    {
+    public static function or(
+        string|CompositeExpressionInterface $expression,
+        string|CompositeExpressionInterface ...$expressions,
+    ): static {
         return new self(CompositionType::Disjunction, Vec\concat([$expression], $expressions));
     }
 
@@ -71,8 +75,10 @@ final readonly class CompositeExpression implements CompositeExpressionInterface
      * @inheritDoc
      */
     #[Override]
-    public function with(string|CompositeExpressionInterface $expression, string|CompositeExpressionInterface ...$expressions): static
-    {
+    public function with(
+        string|CompositeExpressionInterface $expression,
+        string|CompositeExpressionInterface ...$expressions,
+    ): static {
         $parts = Vec\concat($this->expressions, [$expression], $expressions);
 
         return new self($this->type, $parts);
@@ -87,7 +93,10 @@ final readonly class CompositeExpression implements CompositeExpressionInterface
             return (string) $this->expressions[0];
         }
 
-        $expressions = Vec\map($this->expressions, static fn (string|CompositeExpressionInterface $expression): string => (string) $expression);
+        $expressions = Vec\map(
+            $this->expressions,
+            static fn(string|CompositeExpressionInterface $expression): string => (string) $expression,
+        );
 
         return '(' . Str\join($expressions, ') ' . $this->type->value . ' (') . ')';
     }

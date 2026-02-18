@@ -17,9 +17,9 @@ use Amp\Pipeline\Pipeline;
 use Amp\Pipeline\Queue;
 use Neu\Component\Http\Message\RequestBodyInterface;
 use Neu\Component\Http\Message\RequestInterface;
+use Override;
 use Revolt\EventLoop;
 use Throwable;
-use Override;
 
 /**
  * Parses multipart form data from HTTP requests.
@@ -30,7 +30,7 @@ final readonly class MultipartParser implements ParserInterface, StreamedParserI
      * @inheritDoc
      */
     #[Override]
-    public function parse(RequestInterface $request, null|ParseOptions $options = null): FormInterface
+    public function parse(RequestInterface $request, ?ParseOptions $options = null): FormInterface
     {
         $body = $request->getBody();
         $options ??= new ParseOptions();
@@ -44,16 +44,14 @@ final readonly class MultipartParser implements ParserInterface, StreamedParserI
             $body->upgradeSizeLimit($options->bodySizeLimit);
         }
 
-        return new Form(
-            Internal\MultiPart\Parser::parseInFull($body, $options, $boundary)
-        );
+        return new Form(Internal\MultiPart\Parser::parseInFull($body, $options, $boundary));
     }
 
     /**
      * @inheritDoc
      */
     #[Override]
-    public function parseStreamed(RequestInterface $request, null|ParseOptions $options = null): StreamedFormInterface
+    public function parseStreamed(RequestInterface $request, ?ParseOptions $options = null): StreamedFormInterface
     {
         $body = $request->getBody();
         $options ??= new ParseOptions();

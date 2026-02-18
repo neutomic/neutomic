@@ -48,7 +48,7 @@ final readonly class NativeHasherFactory implements FactoryInterface
      * @param null|HashingAlgorithm $algorithm The hashing algorithm.
      * @param null|HashingOptions $options The hashing algorithm options.
      */
-    public function __construct(null|string $algorithm = null, null|array $options = null)
+    public function __construct(?string $algorithm = null, ?array $options = null)
     {
         $this->algorithm = $algorithm ?? NativeHasher::DEFAULT_ALGORITHM;
         $this->options = $options ?? NativeHasher::DEFAULT_OPTIONS;
@@ -60,7 +60,6 @@ final readonly class NativeHasherFactory implements FactoryInterface
     #[Override]
     public function __invoke(ContainerInterface $container): NativeHasher
     {
-
         return new NativeHasher($this->algorithm, $this->options);
     }
 }

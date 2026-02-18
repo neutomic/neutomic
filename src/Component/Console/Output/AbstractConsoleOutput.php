@@ -31,15 +31,16 @@ abstract class AbstractConsoleOutput implements ConsoleOutputInterface
     /**
      * Construct a new {@see AbstractConsoleOutput} object.
      */
-    public function __construct(OutputInterface $standardOutput, OutputInterface $standardErrorOutput, null|bool $decorated = null)
-    {
+    public function __construct(
+        OutputInterface $standardOutput,
+        OutputInterface $standardErrorOutput,
+        ?bool $decorated = null,
+    ) {
         $this->standardOutput = $standardOutput;
         $this->standardErrorOutput = $standardErrorOutput;
 
         if (null === $decorated) {
-            $this->setDecorated(
-                $this->standardOutput->isDecorated() && $this->standardErrorOutput->isDecorated()
-            );
+            $this->setDecorated($this->standardOutput->isDecorated() && $this->standardErrorOutput->isDecorated());
         }
     }
 
@@ -65,8 +66,11 @@ abstract class AbstractConsoleOutput implements ConsoleOutputInterface
      * @inheritDoc
      */
     #[Override]
-    public function writeLine(string $message, Verbosity $verbosity = Verbosity::Normal, Type $type = Type::Normal): void
-    {
+    public function writeLine(
+        string $message,
+        Verbosity $verbosity = Verbosity::Normal,
+        Type $type = Type::Normal,
+    ): void {
         $this->standardOutput->writeLine($message, $verbosity, $type);
     }
 

@@ -32,14 +32,14 @@ final readonly class ServerStoppingEventListener implements ListenerInterface
     /**
      * The hub manager used to close all hubs, or null if not set.
      */
-    private null|HubManagerInterface $hubManager;
+    private ?HubManagerInterface $hubManager;
 
     /**
      * Create a new {@see ServerStoppingEventListener} instance.
      *
      * @param null|HubManagerInterface $hubManager The hub manager used to close all hubs, or null if not set.
      */
-    public function __construct(null|HubManagerInterface $hubManager)
+    public function __construct(?HubManagerInterface $hubManager)
     {
         $this->hubManager = $hubManager;
     }

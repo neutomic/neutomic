@@ -20,7 +20,7 @@ use Throwable;
 
 final class HandlerNotFoundHttpException extends HttpException
 {
-    public function __construct(string $message = '', null|Throwable $previous = null)
+    public function __construct(string $message = '', ?Throwable $previous = null)
     {
         parent::__construct(StatusCode::NotFound, [], $message, $previous);
     }
@@ -28,7 +28,9 @@ final class HandlerNotFoundHttpException extends HttpException
     public static function forRequest(RequestInterface $request): self
     {
         return new self(
-            'Unable to resolve handler for path "' . $request->getUri()->getPath() . '", did you forget to configure a handler to the route?',
+            'Unable to resolve handler for path "'
+            . $request->getUri()->getPath()
+            . '", did you forget to configure a handler to the route?',
         );
     }
 }

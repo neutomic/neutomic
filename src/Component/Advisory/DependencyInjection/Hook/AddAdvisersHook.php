@@ -37,7 +37,7 @@ final readonly class AddAdvisersHook implements HookInterface
      *
      * @param non-empty-string|null $advisory The advisory service identifier.
      */
-    public function __construct(null|string $advisory = null)
+    public function __construct(?string $advisory = null)
     {
         $this->advisory = $advisory ?? AdvisoryInterface::class;
     }

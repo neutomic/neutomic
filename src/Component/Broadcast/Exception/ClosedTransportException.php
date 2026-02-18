@@ -22,9 +22,12 @@ final class ClosedTransportException extends LogicException implements Exception
      *
      * @param non-empty-string $channel The channel that the message was attempted to be sent to.
      */
-    public static function whileAttemptingToSend(string $channel, null|Throwable $previous = null): self
+    public static function whileAttemptingToSend(string $channel, ?Throwable $previous = null): self
     {
-        return new self('Failed to send message to channel "' . $channel . '" because the transport is closed.', previous: $previous);
+        return new self(
+            'Failed to send message to channel "' . $channel . '" because the transport is closed.',
+            previous: $previous,
+        );
     }
 
     /**
@@ -32,8 +35,11 @@ final class ClosedTransportException extends LogicException implements Exception
      *
      * @param non-empty-string $channel The channel that the message was attempted to be listened to.
      */
-    public static function whileAttemptingToListen(string $channel, null|Throwable $previous = null): self
+    public static function whileAttemptingToListen(string $channel, ?Throwable $previous = null): self
     {
-        return new self('Failed to listen to channel "' . $channel . '" because the transport is closed.', previous: $previous);
+        return new self(
+            'Failed to listen to channel "' . $channel . '" because the transport is closed.',
+            previous: $previous,
+        );
     }
 }

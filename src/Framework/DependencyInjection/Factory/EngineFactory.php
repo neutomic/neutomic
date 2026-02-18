@@ -16,15 +16,15 @@ namespace Neu\Framework\DependencyInjection\Factory;
 use Neu\Component\Console\ApplicationInterface;
 use Neu\Component\Console\Command\Registry\RegistryInterface as ConsoleRegistryInterface;
 use Neu\Component\DependencyInjection\ContainerInterface;
+use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\EventDispatcher\Listener\Registry\RegistryInterface as EventRegistryInterface;
 use Neu\Component\Http\Router\Registry\RegistryInterface as RouterRegistryInterface;
-use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Router\RouteCollector;
+use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
 use Neu\Component\Http\Server\ClusterInterface;
 use Neu\Component\Http\Server\ClusterWorkerInterface;
 use Neu\Component\Http\Server\ServerInterface;
 use Neu\Framework\Engine;
-use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
 use Override;
 
 /**
@@ -111,15 +111,15 @@ final readonly class EngineFactory implements FactoryInterface
      * @param null|non-empty-string $consoleRegistry The command registry service id.
      */
     public function __construct(
-        null|string $application = null,
-        null|string $server = null,
-        null|string $cluster = null,
-        null|string $clusterWorker = null,
-        null|string $routerRegistry = null,
-        null|string $routeCollector = null,
-        null|string $middlewareQueue = null,
-        null|string $eventDispatcherRegistry = null,
-        null|string $consoleRegistry = null,
+        ?string $application = null,
+        ?string $server = null,
+        ?string $cluster = null,
+        ?string $clusterWorker = null,
+        ?string $routerRegistry = null,
+        ?string $routeCollector = null,
+        ?string $middlewareQueue = null,
+        ?string $eventDispatcherRegistry = null,
+        ?string $consoleRegistry = null,
     ) {
         $this->application = $application ?? ApplicationInterface::class;
         $this->server = $server ?? ServerInterface::class;

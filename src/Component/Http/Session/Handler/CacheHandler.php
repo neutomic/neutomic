@@ -19,9 +19,9 @@ use Neu\Component\Cache\StoreInterface;
 use Neu\Component\Http\Session\Exception\RuntimeException;
 use Neu\Component\Http\Session\Session;
 use Neu\Component\Http\Session\SessionInterface;
-use Psl\SecureRandom\Exception\ExceptionInterface as SecureRandomException;
-use Psl\SecureRandom;
 use Override;
+use Psl\SecureRandom;
+use Psl\SecureRandom\Exception\ExceptionInterface as SecureRandomException;
 
 /**
  * A {@see HandlerInterface} implementation that stores the session data in a cache store.
@@ -50,7 +50,7 @@ final readonly class CacheHandler implements HandlerInterface
      * @inheritDoc
      */
     #[Override]
-    public function save(SessionInterface $session, null|int $ttl = null): string
+    public function save(SessionInterface $session, ?int $ttl = null): string
     {
         try {
             $id = $session->getId();
@@ -58,8 +58,8 @@ final readonly class CacheHandler implements HandlerInterface
                 $id = $this->generateIdentifier();
             }
 
-            $this->store->update($id, static fn (): array => $session->all(), $ttl);
-        } catch (CacheException | SecureRandomException $e) {
+            $this->store->update($id, $session->all(...), $ttl);
+        } catch (CacheException|SecureRandomException $e) {
             throw new RuntimeException('An error occurred while writing the session.', previous: $e);
         }
 
@@ -74,7 +74,7 @@ final readonly class CacheHandler implements HandlerInterface
     {
         try {
             /** @var array<non-empty-string, mixed> $data */
-            $data = $this->store->compute($identifier, static fn (): array => []);
+            $data = $this->store->compute($identifier, static fn(): array => []);
         } catch (CacheException $e) {
             throw new RuntimeException('An error occurred while reading the session.', previous: $e);
         }

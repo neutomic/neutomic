@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Neu\Component\DependencyInjection;
 
 use Neu\Component\DependencyInjection\Definition\DefinitionInterface;
-use Psl\Iter;
 use Override;
+use Psl\Iter;
 
 final class Registry implements RegistryInterface
 {

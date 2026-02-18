@@ -23,12 +23,12 @@ use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Neu\Component\DependencyInjection\RegistryInterface;
+use Override;
 use Psl\Class;
 use Psl\Type;
 use Twig\Cache\CacheInterface;
 use Twig\Environment;
 use Twig\Loader\LoaderInterface;
-use Override;
 
 /**
  * @psalm-type Configuration = array{
@@ -54,35 +54,40 @@ final readonly class TwigExtension implements ExtensionInterface
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         if (!Class\exists(Environment::class)) {
-            throw new RuntimeException('"' . self::class . '" extension requires the "twig/twig" package to be installed, please run "composer require twig/twig:^4.0".');
+            throw new RuntimeException('"'
+            . self::class
+            . '" extension requires the "twig/twig" package to be installed, please run "composer require twig/twig:^4.0".');
         }
 
         $configuration = $configurations->getOfTypeOrDefault('twig', $this->getConfigurationType(), []);
 
         $cache = $configuration['cache'] ?? null;
         if (null !== $cache) {
-            $registry->addDefinition(Definition::ofType(FilesystemCache::class, new FilesystemCacheFactory(
-                cache: $cache,
-                options: $configuration['cache-options'] ?? null,
-            )));
+            $registry->addDefinition(Definition::ofType(
+                FilesystemCache::class,
+                new FilesystemCacheFactory(cache: $cache, options: $configuration['cache-options'] ?? null),
+            ));
 
             $registry->getDefinition(FilesystemCache::class)->addAlias(CacheInterface::class);
         }
 
-        $registry->addDefinition(Definition::ofType(FilesystemLoader::class, new FilesystemLoaderFactory(
-            $configuration['paths'] ?? null,
-            $configuration['root'] ?? null,
-        )));
+        $registry->addDefinition(Definition::ofType(
+            FilesystemLoader::class,
+            new FilesystemLoaderFactory($configuration['paths'] ?? null, $configuration['root'] ?? null),
+        ));
 
-        $registry->addDefinition(Definition::ofType(Environment::class, new EnvironmentFactory(
-            $configuration['debug'] ?? null,
-            $configuration['charset'] ?? null,
-            $configuration['auto-reload'] ?? null,
-            $configuration['strict-variables'] ?? null,
-            $configuration['auto-escape'] ?? null,
-            $configuration['optimizations'] ?? null,
-            $configuration['globals'] ?? null,
-        )));
+        $registry->addDefinition(Definition::ofType(
+            Environment::class,
+            new EnvironmentFactory(
+                $configuration['debug'] ?? null,
+                $configuration['charset'] ?? null,
+                $configuration['auto-reload'] ?? null,
+                $configuration['strict-variables'] ?? null,
+                $configuration['auto-escape'] ?? null,
+                $configuration['optimizations'] ?? null,
+                $configuration['globals'] ?? null,
+            ),
+        ));
 
         $registry->getDefinition(FilesystemLoader::class)->addAlias(LoaderInterface::class);
     }
@@ -107,15 +112,12 @@ final readonly class TwigExtension implements ExtensionInterface
                 Type\literal_scalar('name'),
             )),
             'optimizations' => Type\optional(Type\int()),
-            'paths' => Type\optional(Type\dict(
+            'paths' => Type\optional(Type\dict(Type\non_empty_string(), Type\union(
+                Type\null(),
                 Type\non_empty_string(),
-                Type\union(Type\null(), Type\non_empty_string()),
-            )),
+            ))),
             'root' => Type\optional(Type\non_empty_string()),
-            'globals' => Type\optional(Type\dict(
-                Type\non_empty_string(),
-                Type\mixed(),
-            )),
+            'globals' => Type\optional(Type\dict(Type\non_empty_string(), Type\mixed())),
         ]);
     }
 }

@@ -24,13 +24,13 @@ use Neu\Component\Http\Message\StatusCode;
 use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
-use Neu\Framework\EngineInterface;
-use Psl\DateTime\Duration;
-use Psl\SecureRandom;
-use Psl\Env;
 use Neu\Component\Http\ServerSentEvent;
-use Psl\Async;
+use Neu\Framework\EngineInterface;
 use Override;
+use Psl\Async;
+use Psl\DateTime\Duration;
+use Psl\Env;
+use Psl\SecureRandom;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
@@ -58,10 +58,7 @@ final readonly class ServerSentEventsHandler implements HandlerInterface
                     break;
                 }
 
-                $stream->send(new ServerSentEvent\Event(
-                    type: 'message',
-                    data: 'Hello, World!',
-                ));
+                $stream->send(new ServerSentEvent\Event(type: 'message', data: 'Hello, World!'));
 
                 Async\sleep(Duration::seconds(1));
             }
@@ -133,21 +130,21 @@ final readonly class ServerSentEventsHandler implements HandlerInterface
             'middleware' => [
                 'static-content' => [
                     'roots' => [
-                        '/' => __DIR__ . '/public'
-                    ]
+                        '/' => __DIR__ . '/public',
+                    ],
                 ],
                 'session' => false,
                 'compression' => false,
-            ]
+            ],
         ],
         'http' => [
             'server' => [
                 'sockets' => [[
                     'host' => '127.0.0.1',
                     'port' => 1337,
-                ]]
+                ]],
             ],
-        ]
+        ],
     ]);
 
     /* |----------------------------------------| */

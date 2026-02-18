@@ -28,10 +28,10 @@ use Neu\Framework\Engine;
 use Neu\Framework\EngineInterface;
 use Neu\Framework\Listener;
 use Neu\Framework\Middleware;
+use Override;
 use Psl\Type;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Override;
 
 /**
  * The framework extension.
@@ -169,7 +169,8 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
             ));
         }
 
-        $advisoryServerStartedEventListenerConfiguration = $configuration['listeners']['advisory']['server-started'] ?? [];
+        $advisoryServerStartedEventListenerConfiguration = $configuration['listeners']['advisory']['server-started']
+        ?? [];
         if (false !== $advisoryServerStartedEventListenerConfiguration) {
             $registry->addDefinition(Definition::ofType(
                 Listener\Advisory\ServerStartedEventListener::class,
@@ -180,7 +181,8 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
             ));
         }
 
-        $broadcastServerStoppingEventListenerConfiguration = $configuration['listeners']['broadcast']['server-stopping'] ?? [];
+        $broadcastServerStoppingEventListenerConfiguration = $configuration['listeners']['broadcast']['server-stopping']
+        ?? [];
         if (false !== $broadcastServerStoppingEventListenerConfiguration) {
             $registry->addDefinition(Definition::ofType(
                 Listener\Broadcast\ServerStoppingEventListener::class,
@@ -200,7 +202,8 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
             ));
         }
 
-        $databaseServerStoppingEventListenerConfiguration = $configuration['listeners']['database']['server-stopping'] ?? [];
+        $databaseServerStoppingEventListenerConfiguration = $configuration['listeners']['database']['server-stopping']
+        ?? [];
         if (false !== $databaseServerStoppingEventListenerConfiguration) {
             $registry->addDefinition(Definition::ofType(
                 Listener\Database\ServerStoppingEventListener::class,
@@ -260,8 +263,10 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
                 Middleware\CompressionMiddleware::class,
                 new Factory\Middleware\CompressionMiddlewareFactory(
                     logger: $compressionMiddlewareConfiguration['logger'] ?? null,
-                    minimumCompressibleContentLength: $compressionMiddlewareConfiguration['minimum-compressible-content-length'] ?? null,
-                    compressibleContentTypesRegex: $compressionMiddlewareConfiguration['compressible-content-types-regex'] ?? null,
+                    minimumCompressibleContentLength: $compressionMiddlewareConfiguration['minimum-compressible-content-length']
+                    ?? null,
+                    compressibleContentTypesRegex: $compressionMiddlewareConfiguration['compressible-content-types-regex']
+                    ?? null,
                     level: $compressionMiddlewareConfiguration['level'] ?? null,
                     memory: $compressionMiddlewareConfiguration['memory'] ?? null,
                     window: $compressionMiddlewareConfiguration['window'] ?? null,
@@ -292,17 +297,20 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
             $registry->addDefinition($definition);
         }
 
-        $definition = Definition::ofType(Engine::class, new Factory\EngineFactory(
-            application: $configuration['engine']['application'] ?? null,
-            server: $configuration['engine']['server'] ?? null,
-            cluster: $configuration['engine']['cluster'] ?? null,
-            clusterWorker: $configuration['engine']['cluster-worker'] ?? null,
-            routerRegistry: $configuration['engine']['router-registry'] ?? null,
-            routeCollector: $configuration['engine']['route-collector'] ?? null,
-            middlewareQueue: $configuration['engine']['middleware-queue'] ?? null,
-            eventDispatcherRegistry: $configuration['engine']['event-dispatcher-registry'] ?? null,
-            consoleRegistry: $configuration['engine']['console-registry'] ?? null,
-        ));
+        $definition = Definition::ofType(
+            Engine::class,
+            new Factory\EngineFactory(
+                application: $configuration['engine']['application'] ?? null,
+                server: $configuration['engine']['server'] ?? null,
+                cluster: $configuration['engine']['cluster'] ?? null,
+                clusterWorker: $configuration['engine']['cluster-worker'] ?? null,
+                routerRegistry: $configuration['engine']['router-registry'] ?? null,
+                routeCollector: $configuration['engine']['route-collector'] ?? null,
+                middlewareQueue: $configuration['engine']['middleware-queue'] ?? null,
+                eventDispatcherRegistry: $configuration['engine']['event-dispatcher-registry'] ?? null,
+                consoleRegistry: $configuration['engine']['console-registry'] ?? null,
+            ),
+        );
 
         $definition->addAlias(EngineInterface::class);
 
@@ -333,110 +341,146 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
         return Type\shape([
             'commands' => Type\optional(Type\shape([
                 'advisory' => Type\optional(Type\shape([
-                    'advice' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
-                        'advisory' => Type\optional(Type\non_empty_string()),
-                    ]))),
+                    'advice' => Type\optional(Type\union(
+                        Type\literal_scalar(false),
+                        Type\shape([
+                            'advisory' => Type\optional(Type\non_empty_string()),
+                        ]),
+                    )),
                 ])),
                 'http' => Type\optional(Type\shape([
                     'server' => Type\optional(Type\shape([
                         'start' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([]))),
-                        'cluster' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
-                            'watch' => Type\optional(Type\shape([
-                                'interval' => Type\optional(Type\float()),
-                                'directories' => Type\optional(Type\vec(Type\non_empty_string())),
-                                'extensions' => Type\optional(Type\vec(Type\non_empty_string())),
-                            ])),
-                        ]))),
+                        'cluster' => Type\optional(Type\union(
+                            Type\literal_scalar(false),
+                            Type\shape([
+                                'watch' => Type\optional(Type\shape([
+                                    'interval' => Type\optional(Type\float()),
+                                    'directories' => Type\optional(Type\vec(Type\non_empty_string())),
+                                    'extensions' => Type\optional(Type\vec(Type\non_empty_string())),
+                                ])),
+                            ]),
+                        )),
                     ])),
                 ])),
             ])),
             'listeners' => Type\optional(Type\shape([
                 'advisory' => Type\optional(Type\shape([
-                    'server-started' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
-                        'advisory' => Type\optional(Type\non_empty_string()),
-                        'logger' => Type\optional(Type\non_empty_string()),
-                    ]))),
+                    'server-started' => Type\optional(Type\union(
+                        Type\literal_scalar(false),
+                        Type\shape([
+                            'advisory' => Type\optional(Type\non_empty_string()),
+                            'logger' => Type\optional(Type\non_empty_string()),
+                        ]),
+                    )),
                 ])),
                 'broadcast' => Type\optional(Type\shape([
-                    'server-stopping' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
-                        'hub-manager' => Type\optional(Type\non_empty_string()),
-                    ]))),
+                    'server-stopping' => Type\optional(Type\union(
+                        Type\literal_scalar(false),
+                        Type\shape([
+                            'hub-manager' => Type\optional(Type\non_empty_string()),
+                        ]),
+                    )),
                 ])),
                 'cache' => Type\optional(Type\shape([
-                    'server-stopping' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
-                        'store-manager' => Type\optional(Type\non_empty_string()),
-                    ]))),
+                    'server-stopping' => Type\optional(Type\union(
+                        Type\literal_scalar(false),
+                        Type\shape([
+                            'store-manager' => Type\optional(Type\non_empty_string()),
+                        ]),
+                    )),
                 ])),
                 'database' => Type\optional(Type\shape([
-                    'server-stopping' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
-                        'database-manager' => Type\optional(Type\non_empty_string()),
-                    ]))),
+                    'server-stopping' => Type\optional(Type\union(
+                        Type\literal_scalar(false),
+                        Type\shape([
+                            'database-manager' => Type\optional(Type\non_empty_string()),
+                        ]),
+                    )),
                 ])),
             ])),
             'middleware' => Type\optional(Type\shape([
-                'x-powered-by' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
-                    'powered-by' => Type\optional(Type\non_empty_string()),
-                    'expose-php-version' => Type\optional(Type\bool()),
-                ]))),
-                'access-log' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
-                    'logger' => Type\optional(Type\non_empty_string()),
-                    'priority' => Type\optional(Type\int()),
-                ]))),
-                'router' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
-                    'matcher' => Type\optional(Type\non_empty_string()),
-                    'priority' => Type\optional(Type\int()),
-                ]))),
-                'session' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
-                    'persistence' => Type\optional(Type\non_empty_string()),
-                    'priority' => Type\optional(Type\int()),
-                ]))),
-                'compression' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
-                    'logger' => Type\optional(Type\non_empty_string()),
-                    'minimum-compressible-content-length' => Type\optional(Type\positive_int()),
-                    'compressible-content-types-regex' => Type\optional(Type\non_empty_string()),
-                    'level' => Type\optional(Type\union(
-                        Type\literal_scalar(-1),
-                        Type\literal_scalar(0),
-                        Type\literal_scalar(1),
-                        Type\literal_scalar(2),
-                        Type\literal_scalar(3),
-                        Type\literal_scalar(4),
-                        Type\literal_scalar(5),
-                        Type\literal_scalar(6),
-                        Type\literal_scalar(7),
-                        Type\literal_scalar(8),
-                        Type\literal_scalar(9),
-                    )),
-                    'memory' => Type\optional(Type\union(
-                        Type\literal_scalar(1),
-                        Type\literal_scalar(2),
-                        Type\literal_scalar(3),
-                        Type\literal_scalar(4),
-                        Type\literal_scalar(5),
-                        Type\literal_scalar(6),
-                        Type\literal_scalar(7),
-                        Type\literal_scalar(8),
-                        Type\literal_scalar(9),
-                    )),
-                    'window' => Type\optional(Type\union(
-                        Type\literal_scalar(8),
-                        Type\literal_scalar(9),
-                        Type\literal_scalar(10),
-                        Type\literal_scalar(11),
-                        Type\literal_scalar(12),
-                        Type\literal_scalar(13),
-                        Type\literal_scalar(14),
-                        Type\literal_scalar(15),
-                    )),
-                    'priority' => Type\optional(Type\int()),
-                ]))),
-                'static-content' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([
-                    'deliverer' => Type\optional(Type\non_empty_string()),
-                    'roots' => Type\optional(Type\dict(Type\non_empty_string(), Type\non_empty_string())),
-                    'extensions' => Type\optional(Type\vec(Type\non_empty_string())),
-                    'logger' => Type\optional(Type\non_empty_string()),
-                    'priority' => Type\optional(Type\int()),
-                ]))),
+                'x-powered-by' => Type\optional(Type\union(
+                    Type\literal_scalar(false),
+                    Type\shape([
+                        'powered-by' => Type\optional(Type\non_empty_string()),
+                        'expose-php-version' => Type\optional(Type\bool()),
+                    ]),
+                )),
+                'access-log' => Type\optional(Type\union(
+                    Type\literal_scalar(false),
+                    Type\shape([
+                        'logger' => Type\optional(Type\non_empty_string()),
+                        'priority' => Type\optional(Type\int()),
+                    ]),
+                )),
+                'router' => Type\optional(Type\union(
+                    Type\literal_scalar(false),
+                    Type\shape([
+                        'matcher' => Type\optional(Type\non_empty_string()),
+                        'priority' => Type\optional(Type\int()),
+                    ]),
+                )),
+                'session' => Type\optional(Type\union(
+                    Type\literal_scalar(false),
+                    Type\shape([
+                        'persistence' => Type\optional(Type\non_empty_string()),
+                        'priority' => Type\optional(Type\int()),
+                    ]),
+                )),
+                'compression' => Type\optional(Type\union(
+                    Type\literal_scalar(false),
+                    Type\shape([
+                        'logger' => Type\optional(Type\non_empty_string()),
+                        'minimum-compressible-content-length' => Type\optional(Type\positive_int()),
+                        'compressible-content-types-regex' => Type\optional(Type\non_empty_string()),
+                        'level' => Type\optional(Type\union(
+                            Type\literal_scalar(-1),
+                            Type\literal_scalar(0),
+                            Type\literal_scalar(1),
+                            Type\literal_scalar(2),
+                            Type\literal_scalar(3),
+                            Type\literal_scalar(4),
+                            Type\literal_scalar(5),
+                            Type\literal_scalar(6),
+                            Type\literal_scalar(7),
+                            Type\literal_scalar(8),
+                            Type\literal_scalar(9),
+                        )),
+                        'memory' => Type\optional(Type\union(
+                            Type\literal_scalar(1),
+                            Type\literal_scalar(2),
+                            Type\literal_scalar(3),
+                            Type\literal_scalar(4),
+                            Type\literal_scalar(5),
+                            Type\literal_scalar(6),
+                            Type\literal_scalar(7),
+                            Type\literal_scalar(8),
+                            Type\literal_scalar(9),
+                        )),
+                        'window' => Type\optional(Type\union(
+                            Type\literal_scalar(8),
+                            Type\literal_scalar(9),
+                            Type\literal_scalar(10),
+                            Type\literal_scalar(11),
+                            Type\literal_scalar(12),
+                            Type\literal_scalar(13),
+                            Type\literal_scalar(14),
+                            Type\literal_scalar(15),
+                        )),
+                        'priority' => Type\optional(Type\int()),
+                    ]),
+                )),
+                'static-content' => Type\optional(Type\union(
+                    Type\literal_scalar(false),
+                    Type\shape([
+                        'deliverer' => Type\optional(Type\non_empty_string()),
+                        'roots' => Type\optional(Type\dict(Type\non_empty_string(), Type\non_empty_string())),
+                        'extensions' => Type\optional(Type\vec(Type\non_empty_string())),
+                        'logger' => Type\optional(Type\non_empty_string()),
+                        'priority' => Type\optional(Type\int()),
+                    ]),
+                )),
             ])),
             'engine' => Type\optional(Type\shape([
                 'application' => Type\optional(Type\non_empty_string()),

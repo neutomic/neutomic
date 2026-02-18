@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\DependencyInjection;
 
-use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Override;
+use Psr\Container\ContainerInterface as PsrContainerInterface;
 
 interface ContainerInterface extends DisposableInterface, PsrContainerInterface
 {

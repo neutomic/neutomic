@@ -15,6 +15,4 @@ namespace Neu\Component\Http\Exception;
 
 use LogicException as RootLogicException;
 
-final class LogicException extends RootLogicException implements ExceptionInterface
-{
-}
+final class LogicException extends RootLogicException implements ExceptionInterface {}

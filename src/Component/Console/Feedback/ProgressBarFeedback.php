@@ -16,10 +16,10 @@ namespace Neu\Component\Console\Feedback;
 use Neu\Component\Console\Exception\InvalidCharacterSequenceException;
 use Neu\Component\Console\Output\Type;
 use Neu\Component\Console\Terminal;
+use Override;
 use Psl\Iter;
 use Psl\Math;
 use Psl\Str;
-use Override;
 
 /**
  * The {@see ProgressBarFeedback} class displays feedback information with a progress bar.
@@ -45,9 +45,7 @@ final class ProgressBarFeedback extends AbstractFeedback
     public function setCharacterSequence(array $characters): static
     {
         if (Iter\count($characters) !== 3) {
-            throw new InvalidCharacterSequenceException(
-                'Display bar must only contain 3 values',
-            );
+            throw new InvalidCharacterSequenceException('Display bar must only contain 3 values');
         }
 
         return parent::setCharacterSequence($characters);
@@ -71,14 +69,10 @@ final class ProgressBarFeedback extends AbstractFeedback
 
         // Need to make prefix and suffix before the bar, so we know how long to render it.
         $prefix = $this->insert($this->prefix, $variables);
-        $prefixLength = Str\length(
-            $this->output->format($prefix, Type::Plain),
-        );
+        $prefixLength = Str\length($this->output->format($prefix, Type::Plain));
 
         $suffix = $this->insert($this->suffix, $variables);
-        $suffixLength = Str\length(
-            $this->output->format($suffix, Type::Plain),
-        );
+        $suffixLength = Str\length($this->output->format($suffix, Type::Plain));
 
         if (!$this->output->isDecorated()) {
             return;
@@ -91,14 +85,15 @@ final class ProgressBarFeedback extends AbstractFeedback
         }
 
         /** @var int<0, max> $completed */
-        $completed = (int)Math\floor($completed * $size);
+        $completed = (int) Math\floor($completed * $size);
         $rest = $size - ($completed + Str\Grapheme\length($this->characterSequence[1]));
 
         // Str\slice is needed to trim off the bar cap at 100%
         $bar = Str\slice(
-            Str\repeat($this->characterSequence[0], $completed) . $this->characterSequence[1] . Str\repeat($this->characterSequence[2], $rest < 0 ? 0 : $rest),
+            Str\repeat($this->characterSequence[0], $completed) . $this->characterSequence[1]
+                . Str\repeat($this->characterSequence[2], $rest < 0 ? 0 : $rest),
             0,
-            $size
+            $size,
         );
 
         $variables = [

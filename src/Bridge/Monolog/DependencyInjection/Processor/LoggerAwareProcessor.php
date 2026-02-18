@@ -16,9 +16,9 @@ namespace Neu\Bridge\Monolog\DependencyInjection\Processor;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Definition\DefinitionInterface;
 use Neu\Component\DependencyInjection\ProcessorInterface;
+use Override;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Override;
 
 /**
  * Processor to inject a logger into services that implement {@see LoggerAwareInterface}.
@@ -37,7 +37,7 @@ final class LoggerAwareProcessor implements ProcessorInterface
      *
      * @param non-empty-string|null $logger The logger service identifier, defaults to {@see LoggerInterface::class}.
      */
-    public function __construct(null|string $logger = null)
+    public function __construct(?string $logger = null)
     {
         $this->logger = $logger ?? LoggerInterface::class;
     }

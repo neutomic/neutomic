@@ -16,8 +16,8 @@ namespace Neu\Component\Http\Message;
 use Amp;
 use Amp\Future;
 use Closure;
-use Psl\Async\Awaitable;
 use Override;
+use Psl\Async\Awaitable;
 
 /**
  * Provides an implementation for managing HTTP trailers asynchronously.

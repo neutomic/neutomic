@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\EventDispatcher;
 
-use Psr\EventDispatcher;
 use Override;
+use Psr\EventDispatcher;
 
 /**
  * All implementations of this interface *MUST* be atomic per event.

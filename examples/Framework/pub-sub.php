@@ -29,9 +29,9 @@ use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\ServerSentEvent;
 use Neu\Framework\EngineInterface;
+use Override;
 use Psl\Env;
 use Psl\SecureRandom;
-use Override;
 use Throwable;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -40,9 +40,10 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 #[Route(name: 'pub', pattern: '/pub', methods: [Method::Post])]
 final readonly class PubHandler implements HandlerInterface
 {
-    public function __construct(private ParserInterface $parser, private HubInterface $hub)
-    {
-    }
+    public function __construct(
+        private ParserInterface $parser,
+        private HubInterface $hub,
+    ) {}
 
     #[Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface
@@ -67,9 +68,9 @@ final readonly class PubHandler implements HandlerInterface
 #[Route(name: 'sub', pattern: '/sub', methods: [Method::Get])]
 final readonly class SubHandler implements HandlerInterface
 {
-    public function __construct(private HubInterface $hub)
-    {
-    }
+    public function __construct(
+        private HubInterface $hub,
+    ) {}
 
     #[Override]
     public function handle(Context $context, RequestInterface $request): ResponseInterface
@@ -104,7 +105,12 @@ final readonly class SubHandler implements HandlerInterface
                     }
                 }
             })->catch(static function (Throwable $throwable) use ($subscription, $stream) {
-                $stream->send(new ServerSentEvent\Event('Unexpected error while streaming channel "'.$subscription->getChannel().'"', 'error'));
+                $stream->send(
+                    new ServerSentEvent\Event(
+                        'Unexpected error while streaming channel "' . $subscription->getChannel() . '"',
+                        'error',
+                    ),
+                );
                 throw $throwable; // Re-throw the exception to be handled by the error handler.
             })->finally(static function () use ($stream, $subscription) {
                 $subscription->cancel();
@@ -179,16 +185,16 @@ final readonly class SubHandler implements HandlerInterface
                 'static-content' => false,
                 'session' => false,
                 'compression' => false,
-            ]
+            ],
         ],
         'http' => [
             'server' => [
                 'sockets' => [[
                     'host' => '127.0.0.1',
                     'port' => 1337,
-                ]]
+                ]],
             ],
-        ]
+        ],
     ]);
 
     /* |----------------------------------------| */

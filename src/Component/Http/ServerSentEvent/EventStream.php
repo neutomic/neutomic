@@ -65,7 +65,7 @@ final readonly class EventStream implements IteratorAggregate
     {
         $stream = new self($bufferSize);
 
-        $context->getClient()->onClose(static fn () => $stream->close());
+        $context->getClient()->onClose($stream->close(...));
 
         return $stream;
     }
@@ -89,7 +89,10 @@ final readonly class EventStream implements IteratorAggregate
         } catch (DisposedException $e) {
             $this->close();
 
-            throw new Exception\StreamIteratorDisposedException('The event stream iterator has been disposed.', previous: $e);
+            throw new Exception\StreamIteratorDisposedException(
+                'The event stream iterator has been disposed.',
+                previous: $e,
+            );
         }
     }
 
@@ -121,12 +124,14 @@ final readonly class EventStream implements IteratorAggregate
             ->withHeader('Content-Type', 'text/event-stream')
             ->withHeader('Cache-Control', 'no-cache')
             ->withHeader('Connection', 'keep-alive')
-            ->withBody(Body::fromIterable(
-                Pipeline::fromIterable($this->getIterator())
-                    ->sequential()
-                    ->map(static fn (Event $event): string => $event->toString())
-                    ->getIterator()
-            ));
+            ->withBody(
+                Body::fromIterable(
+                    Pipeline::fromIterable($this->getIterator())
+                        ->sequential()
+                        ->map(static fn(Event $event): string => $event->toString())
+                        ->getIterator(),
+                ),
+            );
     }
 
     /**

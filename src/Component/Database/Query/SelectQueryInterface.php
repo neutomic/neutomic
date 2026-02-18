@@ -46,7 +46,7 @@ interface SelectQueryInterface extends QueryInterface, WhereQueryInterface
      * @param non-empty-string $table
      * @param null|non-empty-string $alias
      */
-    public function from(string $table, null|string $alias = null): static;
+    public function from(string $table, ?string $alias = null): static;
 
     /**
      * Creates and adds a join to the query.
@@ -65,7 +65,7 @@ interface SelectQueryInterface extends QueryInterface, WhereQueryInterface
      * @param non-empty-string $alias The alias of the join table.
      * @param ?non-empty-string $condition The condition for the join.
      */
-    public function innerJoin(string $from, string $join, string $alias, null|string $condition = null): static;
+    public function innerJoin(string $from, string $join, string $alias, ?string $condition = null): static;
 
     /**
      * Creates and adds a left join to the query.
@@ -84,7 +84,7 @@ interface SelectQueryInterface extends QueryInterface, WhereQueryInterface
      * @param non-empty-string $alias The alias of the join table.
      * @param ?non-empty-string $condition The condition for the join.
      */
-    public function leftJoin(string $from, string $join, string $alias, null|string $condition = null): static;
+    public function leftJoin(string $from, string $join, string $alias, ?string $condition = null): static;
 
     /**
      * Creates and adds a right join to the query.
@@ -103,7 +103,7 @@ interface SelectQueryInterface extends QueryInterface, WhereQueryInterface
      * @param non-empty-string $alias The alias of the join table.
      * @param ?non-empty-string $condition The condition for the join.
      */
-    public function rightJoin(string $from, string $join, string $alias, null|string $condition = null): static;
+    public function rightJoin(string $from, string $join, string $alias, ?string $condition = null): static;
 
     /**
      * Specifies a grouping over the results of the query.
@@ -216,7 +216,7 @@ interface SelectQueryInterface extends QueryInterface, WhereQueryInterface
      *
      * @return null|array<non-empty-string, mixed>
      */
-    public function fetchOneAssociative(array $parameters = []): null|array;
+    public function fetchOneAssociative(array $parameters = []): ?array;
 
     /**
      * Fetch one row, where columns are index using numeric values.
@@ -231,7 +231,7 @@ interface SelectQueryInterface extends QueryInterface, WhereQueryInterface
      *
      * @return null|list<mixed>
      */
-    public function fetchOneNumeric(array $parameters = []): null|array;
+    public function fetchOneNumeric(array $parameters = []): ?array;
 
     /**
      * Fetch one, or more rows, where columns are index using their names.

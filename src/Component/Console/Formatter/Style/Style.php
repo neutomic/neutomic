@@ -13,34 +13,37 @@ declare(strict_types=1);
 
 namespace Neu\Component\Console\Formatter\Style;
 
+use Override;
 use Psl\Env;
 use Psl\Iter;
 use Psl\Str;
-use Override;
 
 final class Style implements StyleInterface
 {
     /**
      * @var null|array{open: ForegroundColor, close: string}
      */
-    private null|array $foreground = null;
+    private ?array $foreground = null;
     /**
      * @var null|array{open: BackgroundColor, close: string}
      */
-    private null|array $background = null;
+    private ?array $background = null;
 
     /**
      * @var list<array{open: Effect, close: string}>
      */
     private array $effects = [];
-    private null|string $href = null;
-    private null|bool $handlesHrefGracefully = null;
+    private ?string $href = null;
+    private ?bool $handlesHrefGracefully = null;
 
     /**
      * @param list<Effect> $effects
      */
-    public function __construct(null|BackgroundColor $background = null, null|ForegroundColor $foreground = null, array $effects = [])
-    {
+    public function __construct(
+        ?BackgroundColor $background = null,
+        ?ForegroundColor $foreground = null,
+        array $effects = [],
+    ) {
         $this->setForeground($foreground);
         $this->setBackground($background);
         foreach ($effects as $effect) {
@@ -52,7 +55,7 @@ final class Style implements StyleInterface
      * @inheritDoc
      */
     #[Override]
-    public function setForeground(null|ForegroundColor $color = null): self
+    public function setForeground(?ForegroundColor $color = null): self
     {
         if ($color === null) {
             $this->foreground = null;
@@ -68,7 +71,7 @@ final class Style implements StyleInterface
      * @inheritDoc
      */
     #[Override]
-    public function setBackground(null|BackgroundColor $color = null): self
+    public function setBackground(?BackgroundColor $color = null): self
     {
         if ($color === null) {
             $this->background = null;
@@ -91,7 +94,7 @@ final class Style implements StyleInterface
             Effect::Underline => '24',
             Effect::Blink => '25',
             Effect::Reverse => '27',
-            Effect::Conceal => '28'
+            Effect::Conceal => '28',
         };
 
         $this->effects[] = ['open' => $effect, 'close' => $closing];
@@ -119,7 +122,8 @@ final class Style implements StyleInterface
         $openCodes = [];
         $closeCodes = [];
         if ($this->handlesHrefGracefully === null) {
-            $this->handlesHrefGracefully = 'JetBrains-JediTerm' !== Env\get_var('TERMINAL_EMULATOR') && null === Env\get_var('KONSOLE_VERSION');
+            $this->handlesHrefGracefully =
+                'JetBrains-JediTerm' !== Env\get_var('TERMINAL_EMULATOR') && null === Env\get_var('KONSOLE_VERSION');
         }
 
         if ($this->foreground !== null) {
@@ -140,22 +144,13 @@ final class Style implements StyleInterface
         }
 
         if ($this->href !== null && $this->handlesHrefGracefully) {
-            $text = Str\format(
-                "\033]8;;%s\033\\%s\033]8;;\033\\",
-                $this->href,
-                $text,
-            );
+            $text = Str\format("\033]8;;%s\033\\%s\033]8;;\033\\", $this->href, $text);
         }
 
         if (Iter\is_empty($openCodes)) {
             return $text;
         }
 
-        return Str\format(
-            "\033[%sm%s\033[%sm",
-            Str\join($openCodes, ';'),
-            $text,
-            Str\join($closeCodes, ';'),
-        );
+        return Str\format("\033[%sm%s\033[%sm", Str\join($openCodes, ';'), $text, Str\join($closeCodes, ';'));
     }
 }

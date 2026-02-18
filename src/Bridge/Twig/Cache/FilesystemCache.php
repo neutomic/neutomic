@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Neu\Bridge\Twig\Cache;
 
 use Amp\File;
-use Twig\Cache\FilesystemCache as TwigFilesystemCache;
 use Override;
+use Twig\Cache\FilesystemCache as TwigFilesystemCache;
 
 use function dirname;
 use function function_exists;
@@ -37,8 +37,10 @@ final class FilesystemCache extends TwigFilesystemCache
     {
         parent::__construct($directory, $options);
 
-        $this->shouldForceBytecodeInvalidation = self::FORCE_BYTECODE_INVALIDATION === ($options & self::FORCE_BYTECODE_INVALIDATION);
-        $this->canInvalidate = function_exists('opcache_invalidate') && filter_var(ini_get('opcache.enable'), FILTER_VALIDATE_BOOLEAN);
+        $this->shouldForceBytecodeInvalidation =
+            self::FORCE_BYTECODE_INVALIDATION === ($options & self::FORCE_BYTECODE_INVALIDATION);
+        $this->canInvalidate =
+            function_exists('opcache_invalidate') && filter_var(ini_get('opcache.enable'), FILTER_VALIDATE_BOOLEAN);
     }
 
     /**
@@ -61,7 +63,7 @@ final class FilesystemCache extends TwigFilesystemCache
         }
 
         File\write($key, $content);
-        File\changePermissions($key, 0666 & ~umask());
+        File\changePermissions($key, 0o666 & ~umask());
 
         if ($this->shouldForceBytecodeInvalidation && $this->canInvalidate) {
             @opcache_invalidate($key, true);

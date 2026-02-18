@@ -21,12 +21,12 @@ use Neu\Component\Http\Session\Configuration\CacheConfiguration;
 use Neu\Component\Http\Session\Configuration\CacheLimiter;
 use Neu\Component\Http\Session\Configuration\CookieConfiguration;
 use Neu\Component\Http\Session\Exception\InvalidIdentifierException;
-use Neu\Component\Http\Session\Session;
 use Neu\Component\Http\Session\Handler\HandlerInterface;
-use Psl\Str;
-use Psl\Env;
-use Psl\DateTime;
+use Neu\Component\Http\Session\Session;
 use Override;
+use Psl\DateTime;
+use Psl\Env;
+use Psl\Str;
 
 use function Amp\File\getModificationTime;
 
@@ -40,12 +40,12 @@ final class Persistence implements PersistenceInterface
     /**
      * The path translated.
      */
-    private static null|string $pathTranslated = null;
+    private static ?string $pathTranslated = null;
 
     /**
      * The last modified date.
      */
-    private static null|string $lastModified = null;
+    private static ?string $lastModified = null;
 
     /**
      * The session handler.
@@ -142,9 +142,10 @@ final class Persistence implements PersistenceInterface
         $identifier = $this->handler->save($session, $expires);
 
         // Return response with updated cookie
-        return $this->withCacheHeaders(
-            $response->withCookie($this->cookie->name, $this->createCookie($identifier, $expires))
-        );
+        return $this->withCacheHeaders($response->withCookie(
+            $this->cookie->name,
+            $this->createCookie($identifier, $expires),
+        ));
     }
 
     /**
@@ -155,10 +156,10 @@ final class Persistence implements PersistenceInterface
      *
      * @return Cookie The session cookie.
      */
-    private function createCookie(string $identifier, null|int $expires): Cookie
+    private function createCookie(string $identifier, ?int $expires): Cookie
     {
-        return (new Cookie(value: $identifier))
-            ->withExpires(($expires !== null && $expires > 0) ? $expires : null)
+        return new Cookie(value: $identifier)
+            ->withExpires($expires !== null && $expires > 0 ? $expires : null)
             ->withDomain($this->cookie->domain)
             ->withPath($this->cookie->path)
             ->withHttpOnly($this->cookie->httpOnly)
@@ -173,7 +174,7 @@ final class Persistence implements PersistenceInterface
      */
     private function createExpiredCookie(): Cookie
     {
-        return (new Cookie(value: ''))
+        return new Cookie(value: '')
             ->withExpires(0)
             ->withDomain($this->cookie->domain)
             ->withPath($this->cookie->path)
@@ -214,10 +215,10 @@ final class Persistence implements PersistenceInterface
     private function responseAlreadyHasCacheHeaders(ResponseInterface $response): bool
     {
         return (
-            $response->hasHeader('Expires') ||
-            $response->hasHeader('Last-Modified') ||
-            $response->hasHeader('Cache-Control') ||
-            $response->hasHeader('Pragma')
+            $response->hasHeader('Expires')
+            || $response->hasHeader('Last-Modified')
+            || $response->hasHeader('Cache-Control')
+            || $response->hasHeader('Pragma')
         );
     }
 
@@ -235,9 +236,9 @@ final class Persistence implements PersistenceInterface
             ],
             CacheLimiter::Public => $this->withLastModifiedAndMaxAge([
                 'Expires' => [
-                    DateTime\Timestamp::now()
-                        ->plus(DateTime\Duration::minutes($this->cache->expires))
-                        ->format('EEE, dd MMM yyyy HH:mm:ss \'GMT\''),
+                    DateTime\Timestamp::now()->plus(DateTime\Duration::minutes($this->cache->expires))->format(
+                        'EEE, dd MMM yyyy HH:mm:ss \'GMT\'',
+                    ),
                 ],
                 'Cache-Control' => ['public'],
             ]),
@@ -270,9 +271,9 @@ final class Persistence implements PersistenceInterface
         }
 
         if (null === static::$lastModified) {
-            static::$lastModified = DateTime\Timestamp::fromParts(
-                seconds: getModificationTime(static::$pathTranslated),
-            )->format('EEE, dd MMM yyyy HH:mm:ss \'GMT\'');
+            static::$lastModified = DateTime\Timestamp::fromParts(seconds: getModificationTime(static::$pathTranslated))->format(
+                'EEE, dd MMM yyyy HH:mm:ss \'GMT\'',
+            );
         }
 
         $headers['Last-Modified'][] = static::$lastModified;

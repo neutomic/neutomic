@@ -46,7 +46,7 @@ interface UriInterface extends Stringable
      *
      * @return null|non-empty-string
      */
-    public function getScheme(): null|string;
+    public function getScheme(): ?string;
 
     /**
      * Return an instance with the specified scheme.
@@ -60,7 +60,7 @@ interface UriInterface extends Stringable
      *
      * @throws InvalidArgumentException for invalid or unsupported schemes.
      */
-    public function withScheme(null|string $scheme): self;
+    public function withScheme(?string $scheme): self;
 
     /**
      * Retrieve the authority component of the URI.
@@ -80,7 +80,7 @@ interface UriInterface extends Stringable
      *
      * @return null|non-empty-string The URI authority, in "[user-info@]host[:port]" format.
      */
-    public function getAuthority(): null|string;
+    public function getAuthority(): ?string;
 
     /**
      * Retrieve the user information component of the URI.
@@ -95,7 +95,7 @@ interface UriInterface extends Stringable
      *
      * @return null|non-empty-string The URI user information, in "username[:password]" format.
      */
-    public function getUserInformation(): null|string;
+    public function getUserInformation(): ?string;
 
     /**
      * Return an instance with the specified user information.
@@ -110,7 +110,7 @@ interface UriInterface extends Stringable
      *
      * @throws InvalidArgumentException for invalid user or password.
      */
-    public function withUserInformation(null|string $user, null|string $password = null): self;
+    public function withUserInformation(?string $user, #[\SensitiveParameter] ?string $password = null): self;
 
     /**
      * Retrieve the host component of the URI.
@@ -123,7 +123,7 @@ interface UriInterface extends Stringable
      *
      * @return null|non-empty-string The URI host.
      */
-    public function getHost(): null|string;
+    public function getHost(): ?string;
 
     /**
      * Return an instance with the specified host.
@@ -134,7 +134,7 @@ interface UriInterface extends Stringable
      *
      * @throws InvalidArgumentException for invalid hostnames.
      */
-    public function withHost(null|string $host): self;
+    public function withHost(?string $host): self;
 
     /**
      * Retrieve the port component of the URI.
@@ -147,7 +147,7 @@ interface UriInterface extends Stringable
      *
      * @return null|int<0, 65535> The URI port.
      */
-    public function getPort(): null|int;
+    public function getPort(): ?int;
 
     /**
      * Return an instance with the specified port.
@@ -159,7 +159,7 @@ interface UriInterface extends Stringable
      *
      * @throws InvalidArgumentException for invalid ports.
      */
-    public function withPort(null|int $port): self;
+    public function withPort(?int $port): self;
 
     /**
      * Retrieve the path component of the URI.
@@ -225,7 +225,7 @@ interface UriInterface extends Stringable
      *
      * @return null|string The URI query string.
      */
-    public function getQuery(): null|string;
+    public function getQuery(): ?string;
 
     /**
      * Return an instance with the specified query string.
@@ -240,7 +240,7 @@ interface UriInterface extends Stringable
      *
      * @throws InvalidArgumentException for invalid query strings.
      */
-    public function withQuery(null|string $query): self;
+    public function withQuery(?string $query): self;
 
     /**
      * Retrieve the fragment component of the URI.
@@ -258,7 +258,7 @@ interface UriInterface extends Stringable
      *
      * @return null|string The URI fragment.
      */
-    public function getFragment(): null|string;
+    public function getFragment(): ?string;
 
     /**
      * Return an instance with the specified URI fragment.
@@ -273,7 +273,7 @@ interface UriInterface extends Stringable
      *
      * @throws InvalidArgumentException for invalid fragment value.
      */
-    public function withFragment(null|string $fragment): self;
+    public function withFragment(?string $fragment): self;
 
     /**
      * Return the string representation as a URI reference.

@@ -15,9 +15,9 @@ namespace Neu\Component\Http\Runtime\Middleware;
 
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\Runtime\Handler\MiddlewareHandler;
+use Override;
 use Psl\DataStructure;
 use WeakMap;
-use Override;
 
 /**
  * A queue for managing and prioritizing middleware.

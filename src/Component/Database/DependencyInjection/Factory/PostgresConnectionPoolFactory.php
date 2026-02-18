@@ -35,55 +35,55 @@ final readonly class PostgresConnectionPoolFactory implements FactoryInterface
     /**
      * The port of the Postgres server.
      */
-    private null|int $port;
+    private ?int $port;
 
     /**
      * The username for the Postgres connection.
      */
-    private null|string $user;
+    private ?string $user;
 
     /**
      * The password for the Postgres connection.
      */
-    private null|string $password;
+    private ?string $password;
 
     /**
      * The database name for the Postgres connection.
      */
-    private null|string $database;
+    private ?string $database;
 
     /**
      * The application name for the Postgres connection.
      */
-    private null|string $applicationName;
+    private ?string $applicationName;
 
     /**
      * The SSL mode for the Postgres connection.
      *
      * @var value-of<PostgresConfig::SSL_MODES>|null
      */
-    private null|string $sslMode;
+    private ?string $sslMode;
 
     /**
      * The maximum number of connections in the pool.
      *
      * @var positive-int|null
      */
-    private null|int $maxConnections;
+    private ?int $maxConnections;
 
     /**
      * The idle timeout for connections in the pool, in seconds.
      *
      * @var positive-int|null
      */
-    private null|int $idleTimeout;
+    private ?int $idleTimeout;
 
     /**
      * Whether to reset connections before returning them to the pool.
      *
      * @var bool|null
      */
-    private null|bool $resetConnections;
+    private ?bool $resetConnections;
 
     /**
      * Create a new Postgres connection pool factory.
@@ -101,15 +101,15 @@ final readonly class PostgresConnectionPoolFactory implements FactoryInterface
      */
     public function __construct(
         string $host,
-        null|int $port = null,
-        null|string $user = null,
-        null|string $password = null,
-        null|string $database = null,
-        null|string $applicationName = null,
-        null|string $sslMode = null,
-        null|int $maxConnections = null,
-        null|int $idleTimeout = null,
-        null|bool $resetConnections = null,
+        ?int $port = null,
+        ?string $user = null,
+        #[\SensitiveParameter] ?string $password = null,
+        ?string $database = null,
+        ?string $applicationName = null,
+        ?string $sslMode = null,
+        ?int $maxConnections = null,
+        ?int $idleTimeout = null,
+        ?bool $resetConnections = null,
     ) {
         $this->host = $host;
         $this->port = $port;
@@ -154,11 +154,6 @@ final readonly class PostgresConnectionPoolFactory implements FactoryInterface
             $resetConnections = true;
         }
 
-        return new Postgres\PostgresConnectionPool(
-            $config,
-            $maxConnections,
-            $idleTimeout,
-            $resetConnections,
-        );
+        return new Postgres\PostgresConnectionPool($config, $maxConnections, $idleTimeout, $resetConnections);
     }
 }

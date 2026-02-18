@@ -34,66 +34,66 @@ final readonly class MysqlConnectionPoolFactory implements FactoryInterface
     /**
      * The port of the MySQL server.
      */
-    private null|int $port;
+    private ?int $port;
 
     /**
      * The username for the MySQL connection.
      */
-    private null|string $user;
+    private ?string $user;
 
     /**
      * The password for the MySQL connection.
      */
-    private null|string $password;
+    private ?string $password;
 
     /**
      * The database name for the MySQL connection.
      */
-    private null|string $database;
+    private ?string $database;
 
     /**
      * The character set for the MySQL connection.
      */
-    private null|string $charset;
+    private ?string $charset;
 
     /**
      * The collation for the MySQL connection.
      */
-    private null|string $collate;
+    private ?string $collate;
 
     /**
      * The SQL mode for the MySQL connection.
      */
-    private null|string $sqlMode;
+    private ?string $sqlMode;
 
     /**
      * Whether to use compression for the connection.
      */
-    private null|bool $useCompression;
+    private ?bool $useCompression;
 
     /**
      * The private key to use for sha256_password authentication method.
      */
-    private null|string $key;
+    private ?string $key;
 
     /**
      * Whether to use local infile for the connection.
      */
-    private null|bool $useLocalInfile;
+    private ?bool $useLocalInfile;
 
     /**
      * The maximum number of connections in the pool.
      *
      * @var positive-int|null
      */
-    private null|int $maxConnections;
+    private ?int $maxConnections;
 
     /**
      * The idle timeout for connections in the pool, in seconds.
      *
      * @var positive-int|null
      */
-    private null|int $idleTimeout;
+    private ?int $idleTimeout;
 
     /**
      * Create a new MySQL connection factory.
@@ -114,18 +114,18 @@ final readonly class MysqlConnectionPoolFactory implements FactoryInterface
      */
     public function __construct(
         string $host,
-        null|int $port = null,
-        null|string $user = null,
-        null|string $password = null,
-        null|string $database = null,
-        null|string $charset = null,
-        null|string $collate = null,
-        null|string $sqlMode = null,
-        null|bool $useCompression = null,
-        null|string $key = null,
-        null|bool $useLocalInfile = null,
-        null|int $maxConnections = null,
-        null|int $idleTimeout = null,
+        ?int $port = null,
+        ?string $user = null,
+        #[\SensitiveParameter] ?string $password = null,
+        ?string $database = null,
+        ?string $charset = null,
+        ?string $collate = null,
+        ?string $sqlMode = null,
+        ?bool $useCompression = null,
+        ?string $key = null,
+        ?bool $useLocalInfile = null,
+        ?int $maxConnections = null,
+        ?int $idleTimeout = null,
     ) {
         $this->host = $host;
         $this->port = $port;
@@ -173,10 +173,6 @@ final readonly class MysqlConnectionPoolFactory implements FactoryInterface
             $idleTimeout = SqlCommonConnectionPool::DEFAULT_IDLE_TIMEOUT;
         }
 
-        return new Mysql\MysqlConnectionPool(
-            $config,
-            $maxConnections,
-            $idleTimeout,
-        );
+        return new Mysql\MysqlConnectionPool($config, $maxConnections, $idleTimeout);
     }
 }

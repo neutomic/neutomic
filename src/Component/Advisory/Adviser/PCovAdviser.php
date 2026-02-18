@@ -29,7 +29,7 @@ final readonly class PCovAdviser implements AdviserInterface
      * @return Advice|null An instance of Advice if PCov is enabled, or null if it is disabled.
      */
     #[Override]
-    public function getAdvice(): null|Advice
+    public function getAdvice(): ?Advice
     {
         if (!extension_loaded('pcov')) {
             return null;
@@ -38,7 +38,7 @@ final readonly class PCovAdviser implements AdviserInterface
         return Advice::forPerformance(
             'Disable PCov',
             'PCov should be disabled in production environments to improve PHP performance.',
-            'Disable the "pcov" extension in the PHP configuration file.'
+            'Disable the "pcov" extension in the PHP configuration file.',
         );
     }
 }

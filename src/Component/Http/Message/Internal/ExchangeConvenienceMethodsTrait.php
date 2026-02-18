@@ -66,7 +66,7 @@ trait ExchangeConvenienceMethodsTrait
     /**
      * @inheritDoc
      */
-    public function getTrailer(string $field): null|TrailerInterface
+    public function getTrailer(string $field): ?TrailerInterface
     {
         return $this->trailers[$field] ?? null;
     }

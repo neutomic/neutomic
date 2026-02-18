@@ -22,7 +22,7 @@ final class HubNotFoundException extends RuntimeException
      *
      * @param non-empty-string $identifier
      */
-    public static function forHub(string $identifier, null|Throwable $previous = null): self
+    public static function forHub(string $identifier, ?Throwable $previous = null): self
     {
         return new self('Hub "' . $identifier . '" was not found.', previous: $previous);
     }

@@ -19,9 +19,9 @@ use Neu\Component\Http\Exception\LogicException;
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Session\Exception\UnavailableItemException;
 use Neu\Component\Http\Session\SessionInterface;
+use Override;
 use Psl\Str;
 use SensitiveParameter;
-use Override;
 
 /**
  * A storage implementation that stores CSRF tokens in the session.
@@ -110,9 +110,11 @@ final readonly class SessionCsrfTokenStorage implements CsrfTokenStorageInterfac
         $session = $this->getSession($request);
         /** @var non-empty-string $key */
         foreach ($session->all() as $key => $_) {
-            if (Str\starts_with($key, $this->prefix . ':')) {
-                $session->delete($key);
+            if (!Str\starts_with($key, $this->prefix . ':')) {
+                continue;
             }
+
+            $session->delete($key);
         }
     }
 

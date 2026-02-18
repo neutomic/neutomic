@@ -53,8 +53,7 @@ final readonly class RouterMiddleware implements PrioritizedMiddlewareInterface
         $request = $request
             ->withAttribute(Result::class, $result)
             ->withAttribute(Route::class, $result->route)
-            ->withAttribute(HandlerInterface::class, $result->handler)
-        ;
+            ->withAttribute(HandlerInterface::class, $result->handler);
 
         return $next->handle($context, $request);
     }

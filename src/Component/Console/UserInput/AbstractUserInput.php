@@ -40,14 +40,14 @@ abstract class AbstractUserInput implements UserInputInterface
      *
      * @var null|non-empty-string
      */
-    protected null|string $default = null;
+    protected ?string $default = null;
 
     /**
      * Display position.
      *
      * @var null|array{0: int<0, max>, 1: int<0, max>}
      */
-    protected null|array $position = null;
+    protected ?array $position = null;
 
     /**
      * Construct a new `UserInput` object.
@@ -56,19 +56,18 @@ abstract class AbstractUserInput implements UserInputInterface
         /**
          * The `InputInterface` object used for retrieving user input.
          */
-        protected InputInterface   $input,
+        protected InputInterface $input,
         /**
          * The `OutputInterface` object used for sending output.
          */
         protected OutputInterface $output,
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritDoc
      */
     #[Override]
-    public function setPosition(null|array $position): void
+    public function setPosition(?array $position): void
     {
         $this->position = $position;
     }
@@ -92,12 +91,10 @@ abstract class AbstractUserInput implements UserInputInterface
      *
      * @throws InvalidArgumentException If the default value is not one of the accepted values.
      */
-    public function setDefault(null|string $default): self
+    public function setDefault(?string $default): self
     {
         if (null !== $default && !isset($this->acceptedValues[$default])) {
-            throw new InvalidArgumentException(
-                'Default value must be one of the accepted values.'
-            );
+            throw new InvalidArgumentException('Default value must be one of the accepted values.');
         }
 
         $this->default = $default;

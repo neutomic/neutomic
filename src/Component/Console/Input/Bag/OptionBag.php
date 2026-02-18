@@ -21,6 +21,4 @@ use Neu\Component\Console\Input\Definition\Option;
  *
  * @extends AbstractBag<Option>
  */
-final class OptionBag extends AbstractBag
-{
-}
+final class OptionBag extends AbstractBag {}

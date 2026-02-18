@@ -36,7 +36,7 @@ final readonly class MatcherFactory implements FactoryInterface
      *
      * @param non-empty-string|null $registry The registry service identifier.
      */
-    public function __construct(null|string $registry = null)
+    public function __construct(?string $registry = null)
     {
         $this->registry = $registry ?? RegistryInterface::class;
     }
@@ -44,8 +44,6 @@ final readonly class MatcherFactory implements FactoryInterface
     #[Override]
     public function __invoke(ContainerInterface $container): object
     {
-        return new Matcher(
-            $container->getTyped($this->registry, RegistryInterface::class),
-        );
+        return new Matcher($container->getTyped($this->registry, RegistryInterface::class));
     }
 }

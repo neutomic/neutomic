@@ -29,33 +29,39 @@ final readonly class TableCommand implements CommandInterface
     {
         $headers = ['Name', 'Email', 'Password', 'Role'];
         $rows = [
-            ['John Doe', 'john.doe@example.com', 'password', '<fg=red>Admin</>'],
-            ['Jane Doe', 'jane.doe@example.com', 'password', 'User'],
+            ['John Doe',   'john.doe@example.com',   'password', '<fg=red>Admin</>'],
+            ['Jane Doe',   'jane.doe@example.com',   'password', 'User'],
             ['Joe Bloggs', 'joe.bloggs@example.com', 'password', 'User'],
         ];
 
         $this->createAsciiTable($output, $headers, $rows)->display();
         $this->createAsciiTable($output, [], $rows)->display();
-        $this->createAsciiTable($output, $headers, $rows)->setBorderCharacters(AsciiTable::DOUBLE_CHARACTERS)->display();
+        $this
+            ->createAsciiTable($output, $headers, $rows)
+            ->setBorderCharacters(AsciiTable::DOUBLE_CHARACTERS)
+            ->display();
         $this->createAsciiTable($output, $headers, $rows)->setBorderCharacters(AsciiTable::HEAVY_CHARACTERS)->display();
 
-        $this->createAsciiTable($output, $headers, $rows)->setBorderCharacters([
-            'top_right_corner' => '<fg=yellow>┐</>',
-            'top_center_corner' => '<fg=yellow>┬</>',
-            'top_left_corner' => '<fg=yellow>┌</>',
-            'center_right_corner' => '<fg=yellow>┤</>',
-            'center_center_corner' => '<fg=yellow>┼</>',
-            'center_left_corner' => '<fg=yellow>├</>',
-            'bottom_right_corner' => '<fg=yellow>┘</>',
-            'bottom_center_corner' => '<fg=yellow>┴</>',
-            'bottom_left_corner' => '<fg=yellow>└</>',
-            'line' => '<fg=bright-red>─</>',
-            'header_line' => '<fg=bright-red>═</>',
-            'border' => '<fg=bright-red>│</>',
-            'padding' => ' ',
-        ])->display();
+        $this
+            ->createAsciiTable($output, $headers, $rows)
+            ->setBorderCharacters([
+                'top_right_corner' => '<fg=yellow>┐</>',
+                'top_center_corner' => '<fg=yellow>┬</>',
+                'top_left_corner' => '<fg=yellow>┌</>',
+                'center_right_corner' => '<fg=yellow>┤</>',
+                'center_center_corner' => '<fg=yellow>┼</>',
+                'center_left_corner' => '<fg=yellow>├</>',
+                'bottom_right_corner' => '<fg=yellow>┘</>',
+                'bottom_center_corner' => '<fg=yellow>┴</>',
+                'bottom_left_corner' => '<fg=yellow>└</>',
+                'line' => '<fg=bright-red>─</>',
+                'header_line' => '<fg=bright-red>═</>',
+                'border' => '<fg=bright-red>│</>',
+                'padding' => ' ',
+            ])
+            ->display();
 
-        $this->createTabDelimitedTable($output, ['A','V'], [['01', 'X'], ['02', 'Y'], ['03', 'W']])->display();
+        $this->createTabDelimitedTable($output, ['A', 'V'], [['01', 'X'], ['02', 'Y'], ['03', 'W']])->display();
 
         return 0;
     }

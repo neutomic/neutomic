@@ -53,7 +53,7 @@ final readonly class FileHandlerFactory implements FactoryInterface
      *
      * @var non-empty-string|null
      */
-    private null|string $formatter;
+    private ?string $formatter;
 
     /**
      * The processor service identifiers.
@@ -71,8 +71,13 @@ final readonly class FileHandlerFactory implements FactoryInterface
      * @param null|non-empty-string $formatter The formatter service identifier.
      * @param null|list<non-empty-string> $processors The processor service identifiers.
      */
-    public function __construct(string $file, null|int|string|Level $level = null, null|bool $bubble = null, null|string $formatter = null, null|array $processors = null)
-    {
+    public function __construct(
+        string $file,
+        null|int|string|Level $level = null,
+        ?bool $bubble = null,
+        ?string $formatter = null,
+        ?array $processors = null,
+    ) {
         $this->file = $file;
         $this->level = $level;
         $this->bubble = $bubble ?? true;

@@ -32,15 +32,19 @@ final readonly class DeleteQuery extends AbstractWhereQuery implements DeleteQue
     /**
      * @var null|non-empty-string
      */
-    private null|string $alias;
+    private ?string $alias;
 
     /**
      * @param non-empty-string $table
      * @param null|non-empty-string $alias
      * @param null|CompositeExpressionInterface|non-empty-string $where
      */
-    public function __construct(AbstractionLayerInterface $dbal, string $table, null|string $alias = null, CompositeExpressionInterface|string|null $where = null)
-    {
+    public function __construct(
+        AbstractionLayerInterface $dbal,
+        string $table,
+        ?string $alias = null,
+        CompositeExpressionInterface|string|null $where = null,
+    ) {
         parent::__construct($dbal, $where);
 
         $this->table = $table;

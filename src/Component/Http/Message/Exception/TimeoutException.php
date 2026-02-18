@@ -16,6 +16,4 @@ namespace Neu\Component\Http\Message\Exception;
 use Neu\Component\Http\Exception\ExceptionInterface;
 use Neu\Component\Http\Exception\RuntimeException;
 
-final class TimeoutException extends RuntimeException implements ExceptionInterface
-{
-}
+final class TimeoutException extends RuntimeException implements ExceptionInterface {}

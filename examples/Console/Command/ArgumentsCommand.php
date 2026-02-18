@@ -32,7 +32,7 @@ final readonly class ArgumentsCommand implements CommandInterface
         if ($age->exists()) {
             $output->writeLine("<underline>You are <fg=yellow>{$age->getValue()}</> years old.</>");
         } else {
-            $output->writeLine("<underline>You did not provide your age.</>");
+            $output->writeLine('<underline>You did not provide your age.</>');
         }
 
         return 0;

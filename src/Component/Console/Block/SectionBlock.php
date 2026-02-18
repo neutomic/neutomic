@@ -17,8 +17,8 @@ use Neu\Component\Console\Formatter\Formatter;
 use Neu\Component\Console\Output\OutputInterface;
 use Neu\Component\Console\Output\Type;
 use Neu\Component\Console\Output\Verbosity;
-use Psl\Str;
 use Override;
+use Psl\Str;
 
 final readonly class SectionBlock implements BlockInterface
 {
@@ -36,7 +36,10 @@ final readonly class SectionBlock implements BlockInterface
     public function display(string $message, Verbosity $verbosity = Verbosity::Normal): self
     {
         $this->output->writeLine('', $verbosity);
-        $this->output->writeLine(Str\format('<color="bright-yellow">%s</>', Formatter::escapeTrailingBackslash($message)), $verbosity);
+        $this->output->writeLine(
+            Str\format('<color="bright-yellow">%s</>', Formatter::escapeTrailingBackslash($message)),
+            $verbosity,
+        );
 
         /** @var int<0, max> $width */
         $width = Str\width($this->output->format($message, Type::Plain));

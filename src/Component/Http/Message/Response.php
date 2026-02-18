@@ -15,8 +15,8 @@ namespace Neu\Component\Http\Message;
 
 use Neu\Component\Http\Message\Internal\CookieStorage;
 use Neu\Component\Http\Message\Internal\HeaderStorage;
-use Psl\Dict;
 use Override;
+use Psl\Dict;
 
 final readonly class Response implements ResponseInterface
 {
@@ -39,7 +39,7 @@ final readonly class Response implements ResponseInterface
     /**
      * The response body.
      */
-    protected null|BodyInterface $body;
+    protected ?BodyInterface $body;
 
     /**
      * Creates a new response instance.
@@ -49,8 +49,14 @@ final readonly class Response implements ResponseInterface
      * @param null|BodyInterface $body
      * @param array<non-empty-string, TrailerInterface> $trailers
      */
-    private function __construct(ProtocolVersion $protocolVersion, int $statusCode, HeaderStorage $headers, CookieStorage $cookies, null|BodyInterface $body = null, array $trailers = [])
-    {
+    private function __construct(
+        ProtocolVersion $protocolVersion,
+        int $statusCode,
+        HeaderStorage $headers,
+        CookieStorage $cookies,
+        ?BodyInterface $body = null,
+        array $trailers = [],
+    ) {
         $this->protocolVersion = $protocolVersion;
         $this->headerStorage = $headers;
         $this->statusCode = $statusCode;
@@ -74,17 +80,14 @@ final readonly class Response implements ResponseInterface
         int|StatusCode $statusCode = StatusCode::OK,
         array $headers = [],
         array $cookies = [],
-        null|BodyInterface $body = null,
+        ?BodyInterface $body = null,
         array $trailers = [],
     ): static {
         if ($statusCode instanceof StatusCode) {
             $statusCode = $statusCode->value;
         }
 
-        $trailers = Dict\reindex(
-            $trailers,
-            static fn (TrailerInterface $trailer): string => $trailer->getField(),
-        );
+        $trailers = Dict\reindex($trailers, static fn(TrailerInterface $trailer): string => $trailer->getField());
 
         return new self(
             $version,
@@ -117,14 +120,21 @@ final readonly class Response implements ResponseInterface
             return clone $this;
         }
 
-        return new self($version, $this->statusCode, $this->headerStorage, $this->cookieStorage, $this->body, $this->trailers);
+        return new self(
+            $version,
+            $this->statusCode,
+            $this->headerStorage,
+            $this->cookieStorage,
+            $this->body,
+            $this->trailers,
+        );
     }
 
     /**
      * @inheritDoc
      */
     #[Override]
-    public function getBody(): null|BodyInterface
+    public function getBody(): ?BodyInterface
     {
         return $this->body;
     }
@@ -133,9 +143,16 @@ final readonly class Response implements ResponseInterface
      * @inheritDoc
      */
     #[Override]
-    public function withBody(null|BodyInterface $body): static
+    public function withBody(?BodyInterface $body): static
     {
-        return new self($this->protocolVersion, $this->statusCode, $this->headerStorage, $this->cookieStorage, $body, $this->trailers);
+        return new self(
+            $this->protocolVersion,
+            $this->statusCode,
+            $this->headerStorage,
+            $this->cookieStorage,
+            $body,
+            $this->trailers,
+        );
     }
 
     /**
@@ -161,7 +178,14 @@ final readonly class Response implements ResponseInterface
             return clone $this;
         }
 
-        return new self($this->protocolVersion, $code, $this->headerStorage, $this->cookieStorage, $this->body, $this->trailers);
+        return new self(
+            $this->protocolVersion,
+            $code,
+            $this->headerStorage,
+            $this->cookieStorage,
+            $this->body,
+            $this->trailers,
+        );
     }
 
     /**
@@ -186,7 +210,7 @@ final readonly class Response implements ResponseInterface
      * @inheritDoc
      */
     #[Override]
-    public function getCookie(string $name): null|array
+    public function getCookie(string $name): ?array
     {
         return $this->cookieStorage->getCookie($name);
     }
@@ -199,7 +223,14 @@ final readonly class Response implements ResponseInterface
     {
         $cookieStorage = $this->cookieStorage->withCookie($name, $value);
 
-        return new self($this->protocolVersion, $this->statusCode, $this->headerStorage, $cookieStorage, $this->body, $this->trailers);
+        return new self(
+            $this->protocolVersion,
+            $this->statusCode,
+            $this->headerStorage,
+            $cookieStorage,
+            $this->body,
+            $this->trailers,
+        );
     }
 
     /**
@@ -210,7 +241,14 @@ final readonly class Response implements ResponseInterface
     {
         $cookieStorage = $this->cookieStorage->withAddedCookie($name, $value);
 
-        return new self($this->protocolVersion, $this->statusCode, $this->headerStorage, $cookieStorage, $this->body, $this->trailers);
+        return new self(
+            $this->protocolVersion,
+            $this->statusCode,
+            $this->headerStorage,
+            $cookieStorage,
+            $this->body,
+            $this->trailers,
+        );
     }
 
     /**
@@ -221,13 +259,27 @@ final readonly class Response implements ResponseInterface
     {
         $cookieStorage = $this->cookieStorage->withoutCookie($name);
 
-        return new self($this->protocolVersion, $this->statusCode, $this->headerStorage, $cookieStorage, $this->body, $this->trailers);
+        return new self(
+            $this->protocolVersion,
+            $this->statusCode,
+            $this->headerStorage,
+            $cookieStorage,
+            $this->body,
+            $this->trailers,
+        );
     }
 
     #[Override]
     protected function cloneWithHeaderStorage(HeaderStorage $headerStorage): static
     {
-        return new self($this->protocolVersion, $this->statusCode, $headerStorage, $this->cookieStorage, $this->body, $this->trailers);
+        return new self(
+            $this->protocolVersion,
+            $this->statusCode,
+            $headerStorage,
+            $this->cookieStorage,
+            $this->body,
+            $this->trailers,
+        );
     }
 
     /**
@@ -236,6 +288,13 @@ final readonly class Response implements ResponseInterface
     #[Override]
     protected function cloneWithTrailers(array $trailers): static
     {
-        return new self($this->protocolVersion, $this->statusCode, $this->headerStorage, $this->cookieStorage, $this->body, $trailers);
+        return new self(
+            $this->protocolVersion,
+            $this->statusCode,
+            $this->headerStorage,
+            $this->cookieStorage,
+            $this->body,
+            $trailers,
+        );
     }
 }

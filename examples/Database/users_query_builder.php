@@ -40,19 +40,29 @@ $database
         ['username' => ':username5', 'email' => ':email5', 'password' => ':password5', 'status' => ':status5'],
     )
     ->execute([
-        'username1' => 'foo', 'email1' => 'foo@example.com', 'password1' => '123456789', 'status1' => 1,
-        'username2' => 'bar', 'email2' => 'bar@example.com', 'password2' => '123456789', 'status2' => 2,
-        'username3' => 'baz', 'email3' => 'baz@example.com', 'password3' => '123456789', 'status3' => 2,
-        'username4' => 'qux', 'email4' => 'qux@example.com', 'password4' => '123456789', 'status4' => 2,
-        'username5' => 'dux', 'email5' => 'dux@example.com', 'password5' => '123456789', 'status5' => 2
+        'username1' => 'foo',
+        'email1' => 'foo@example.com',
+        'password1' => '123456789',
+        'status1' => 1,
+        'username2' => 'bar',
+        'email2' => 'bar@example.com',
+        'password2' => '123456789',
+        'status2' => 2,
+        'username3' => 'baz',
+        'email3' => 'baz@example.com',
+        'password3' => '123456789',
+        'status3' => 2,
+        'username4' => 'qux',
+        'email4' => 'qux@example.com',
+        'password4' => '123456789',
+        'status4' => 2,
+        'username5' => 'dux',
+        'email5' => 'dux@example.com',
+        'password5' => '123456789',
+        'status5' => 2,
     ]);
 
-$users = $database
-    ->createQueryBuilder()
-    ->select('u.username', 'u.email')
-    ->from('users', 'u')
-    ->execute()
-    ->getRows();
+$users = $database->createQueryBuilder()->select('u.username', 'u.email')->from('users', 'u')->execute()->getRows();
 
 assert(count($users) === 5);
 foreach ($users as $user) {
@@ -62,36 +72,33 @@ foreach ($users as $user) {
 $database
     ->createQueryBuilder()
     ->delete('users', 'u')
-    ->where(
-        $database->createExpressionBuilder()->equal('u.username', ':username')
-    )
+    ->where($database->createExpressionBuilder()->equal('u.username', ':username'))
     ->execute(['username' => 'dux']);
 
-$users = $database
-    ->createQueryBuilder()
-    ->select('u.*')
-    ->from('users', 'u')
-    ->execute()
-    ->getRows();
+$users = $database->createQueryBuilder()->select('u.*')->from('users', 'u')->execute()->getRows();
 
 assert(count($users) === 4);
 foreach ($users as $user) {
-    IO\write_line('- username: "%s", email: "%s", password: "%s"', $user['username'], $user['email'], $user['password']);
+    IO\write_line(
+        '- username: "%s", email: "%s", password: "%s"',
+        $user['username'],
+        $user['email'],
+        $user['password'],
+    );
 }
 
 [$foo] = $database
     ->createQueryBuilder()
     ->select('u.password')
     ->from('users', 'u')
-    ->where(
-        $database->createExpressionBuilder()->equal('username', ':username')
-    )
+    ->where($database->createExpressionBuilder()->equal('username', ':username'))
     ->execute(['username' => 'foo'])
     ->getRows();
 
 IO\write_line('- username: "foo", password: "%s"', $foo['password']);
 
-[['username' => $username, 'email' => $email, 'password' => $password, 'status' => $status]] = $database->createQueryBuilder()
+[['username' => $username, 'email' => $email, 'password' => $password, 'status' => $status]] = $database
+    ->createQueryBuilder()
     ->select('u.*')
     ->from('users', 'u')
     ->offset(2)

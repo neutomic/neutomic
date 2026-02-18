@@ -58,7 +58,7 @@ interface ExchangeInterface extends MessageInterface
      *
      * @return null|TrailerInterface The trailer for the specified field name, or null if not found.
      */
-    public function getTrailer(string $field): null|TrailerInterface;
+    public function getTrailer(string $field): ?TrailerInterface;
 
     /**
      * Returns a new instance with the specified trailer added or replaced.

@@ -13,6 +13,4 @@ declare(strict_types=1);
 
 namespace Neu\Component\Cache\Exception;
 
-final class InvalidValueException extends InvalidArgumentException
-{
-}
+final class InvalidValueException extends InvalidArgumentException {}

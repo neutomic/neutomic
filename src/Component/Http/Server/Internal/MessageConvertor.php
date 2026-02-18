@@ -64,13 +64,12 @@ final readonly class MessageConvertor
             ->withProtocolVersion(ProtocolVersion::from($request->getProtocolVersion()))
             ->withCookies($cookies)
             ->withQueryParameters($request->getQueryParameters())
-            ->withAddedAttributes($request->getAttributes())
-        ;
+            ->withAddedAttributes($request->getAttributes());
 
         if ($ampTrailers = $request->getTrailers()) {
             foreach ($ampTrailers->getFields() as $field) {
                 $neuRequest = $neuRequest->withTrailer(Trailer::create($field, Amp\async(
-                    static fn (): array => $ampTrailers->await()->getHeaderArray($field),
+                    static fn(): array => $ampTrailers->await()->getHeaderArray($field),
                 )));
             }
         }
@@ -84,10 +83,7 @@ final readonly class MessageConvertor
         );
 
         $body = $request->getBody();
-        $neuRequest = $neuRequest->withBody(RequestBody::fromReadableStream(
-            $body,
-            $body->increaseSizeLimit(...),
-        ));
+        $neuRequest = $neuRequest->withBody(RequestBody::fromReadableStream($body, $body->increaseSizeLimit(...)));
 
         return [$context, $neuRequest];
     }
@@ -104,9 +100,7 @@ final readonly class MessageConvertor
         $ampResponse = new AmpResponse($response->getStatusCode());
 
         if ($body = $response->getBody()) {
-            $ampResponse->setBody(
-                $stream = new ReadableIterableStream($body->getIterator()),
-            );
+            $ampResponse->setBody($stream = new ReadableIterableStream($body->getIterator()));
 
             $ampResponse->onDispose(static function () use ($body, $stream): void {
                 $body->close();
@@ -135,7 +129,7 @@ final readonly class MessageConvertor
 
                 $expires = $cookie->getExpires();
                 if (null !== $expires) {
-                    $attribute = $attribute->withExpiry(new DateTimeImmutable('@' . ((string) $expires)));
+                    $attribute = $attribute->withExpiry(new DateTimeImmutable('@' . (string) $expires));
                 }
 
                 $maxAge = $cookie->getMaxAge();
@@ -158,11 +152,7 @@ final readonly class MessageConvertor
                     $attribute = $attribute->withSameSite($sameSite->value);
                 }
 
-                $ampResponse->setCookie(new ResponseCookie(
-                    $name,
-                    $cookie->getValue(),
-                    $attribute,
-                ));
+                $ampResponse->setCookie(new ResponseCookie($name, $cookie->getValue(), $attribute));
             }
         }
 

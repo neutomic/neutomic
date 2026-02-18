@@ -34,7 +34,7 @@ final readonly class CacheHandlerFactory implements FactoryInterface
     /**
      * @param non-empty-string|null $store
      */
-    public function __construct(null|string $store = null)
+    public function __construct(?string $store = null)
     {
         $this->store = $store ?? StoreInterface::class;
     }
@@ -42,8 +42,6 @@ final readonly class CacheHandlerFactory implements FactoryInterface
     #[Override]
     public function __invoke(ContainerInterface $container): CacheHandler
     {
-        return new CacheHandler(
-            $container->getTyped($this->store, StoreInterface::class)
-        );
+        return new CacheHandler($container->getTyped($this->store, StoreInterface::class));
     }
 }

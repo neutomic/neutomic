@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\DependencyInjection;
 
-use Psr\Container\ContainerInterface;
 use Override;
+use Psr\Container\ContainerInterface;
 
 /**
  * @template T of object

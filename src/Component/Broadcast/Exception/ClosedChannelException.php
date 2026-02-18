@@ -13,6 +13,4 @@ declare(strict_types=1);
 
 namespace Neu\Component\Broadcast\Exception;
 
-final class ClosedChannelException extends LogicException implements ExceptionInterface
-{
-}
+final class ClosedChannelException extends LogicException implements ExceptionInterface {}

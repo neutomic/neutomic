@@ -94,5 +94,9 @@ interface CsrfTokenManagerInterface
      *
      * @return bool True if the token is valid, false otherwise.
      */
-    public function validateToken(RequestInterface $request, string $identifier, #[SensitiveParameter] string $value): bool;
+    public function validateToken(
+        RequestInterface $request,
+        string $identifier,
+        #[SensitiveParameter] string $value,
+    ): bool;
 }

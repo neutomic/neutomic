@@ -19,10 +19,10 @@ use Neu\Component\Http\Runtime\RuntimeInterface;
 use Neu\Component\Http\Server\Event\ServerStartedEvent;
 use Neu\Component\Http\Server\Event\ServerStoppingEvent;
 use Neu\Component\Http\Server\Exception\ServerStateConflictException;
+use Override;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
-use Override;
 
 /**
  * A server that listens for incoming HTTP requests and dispatches them to the appropriate handler.
@@ -59,10 +59,14 @@ final class Server implements ServerInterface
     /**
      * The socket HTTP server instance.
      */
-    private null|SocketHttpServer $socketHttpServer = null;
+    private ?SocketHttpServer $socketHttpServer = null;
 
-    public function __construct(ServerInfrastructure $infrastructureFactory, RuntimeInterface $runtime, EventDispatcherInterface $eventDispatcher, LoggerInterface $logger = new NullLogger())
-    {
+    public function __construct(
+        ServerInfrastructure $infrastructureFactory,
+        RuntimeInterface $runtime,
+        EventDispatcherInterface $eventDispatcher,
+        LoggerInterface $logger = new NullLogger(),
+    ) {
         $this->infrastructure = $infrastructureFactory;
         $this->runtime = $runtime;
         $this->dispatcher = $eventDispatcher;

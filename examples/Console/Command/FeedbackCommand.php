@@ -51,7 +51,7 @@ final readonly class FeedbackCommand implements CommandInterface
         // Cycle feedback
         $cycle = $this->createCycleFeedback($output, 100, 'Waiting for client connection:', 10);
         $cycle->setCharacterSequence(['.', '..', '...', '....', '...', '..']);
-        $cycle->setFinishCharacter("CONNECTED");
+        $cycle->setFinishCharacter('CONNECTED');
 
         for ($i = 0; $i < 99; $i++) {
             $cycle->advance();

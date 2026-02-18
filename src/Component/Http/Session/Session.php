@@ -35,7 +35,7 @@ final class Session implements SessionInterface
      *
      * @var non-empty-string|null
      */
-    private null|string $id;
+    private ?string $id;
 
     /**
      * Indicates if the session has been regenerated.
@@ -65,14 +65,14 @@ final class Session implements SessionInterface
      * @param array<non-empty-string, mixed> $data
      * @param non-empty-string|null $id
      */
-    public function __construct(array $data, null|string $id = null)
+    public function __construct(array $data, ?string $id = null)
     {
         $this->data = $data;
         $this->originalData = $data;
         $this->id = $id;
 
         if (isset($data[static::SESSION_AGE_KEY])) {
-            $age = (int)$data[static::SESSION_AGE_KEY];
+            $age = (int) $data[static::SESSION_AGE_KEY];
             if ($age > 0) {
                 $this->age = $age;
             }
@@ -83,7 +83,7 @@ final class Session implements SessionInterface
      * @inheritDoc
      */
     #[Override]
-    public function getId(): null|string
+    public function getId(): ?string
     {
         return $this->id;
     }

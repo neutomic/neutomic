@@ -15,8 +15,8 @@ namespace Neu\Component\Console\Output;
 
 use Neu\Component\Console\Formatter\Formatter;
 use Neu\Component\Console\Formatter\FormatterInterface;
-use Psl\Html;
 use Override;
+use Psl\Html;
 
 abstract class AbstractOutput implements OutputInterface
 {
@@ -33,13 +33,16 @@ abstract class AbstractOutput implements OutputInterface
     /**
      * The output cursor.
      */
-    protected null|Cursor $cursor = null;
+    protected ?Cursor $cursor = null;
 
     /**
      * Construct a new `Output` object.
      */
-    public function __construct(Verbosity $verbosity = Verbosity::Normal, null|bool $decorated = null, null|FormatterInterface $formatter = null)
-    {
+    public function __construct(
+        Verbosity $verbosity = Verbosity::Normal,
+        ?bool $decorated = null,
+        ?FormatterInterface $formatter = null,
+    ) {
         $this->verbosity = $verbosity;
         $this->formatter = $formatter ?? new Formatter($decorated);
 
@@ -65,8 +68,11 @@ abstract class AbstractOutput implements OutputInterface
      * @inheritDoc
      */
     #[Override]
-    final public function writeLine(string $message, Verbosity $verbosity = Verbosity::Normal, Type $type = Type::Normal): void
-    {
+    final public function writeLine(
+        string $message,
+        Verbosity $verbosity = Verbosity::Normal,
+        Type $type = Type::Normal,
+    ): void {
         $this->write($message . OutputInterface::END_OF_LINE, $verbosity, $type);
     }
 
@@ -128,7 +134,7 @@ abstract class AbstractOutput implements OutputInterface
      */
     protected function shouldOutput(Verbosity $verbosity): bool
     {
-        return ($verbosity->value <= $this->verbosity->value);
+        return $verbosity->value <= $this->verbosity->value;
     }
 
     /**

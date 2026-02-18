@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Neu\Component\Console\UserInput;
 
+use Override;
 use Psl\Iter;
 use Psl\Str;
-use Override;
 
 /**
  * @extends AbstractUserInput<bool>
@@ -89,7 +89,7 @@ final class ConfirmationUserInput extends AbstractUserInput
      * @inheritDoc
      */
     #[Override]
-    public function setDefault(null|string $default): self
+    public function setDefault(?string $default): self
     {
         parent::setDefault($default);
         if (null === $default) {

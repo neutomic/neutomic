@@ -16,8 +16,8 @@ namespace Neu\Component\Http\Runtime\DependencyInjection\Factory\ContentDelivery
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Runtime\ContentDelivery\ContentDeliverer;
-use Psr\Log\LoggerInterface;
 use Override;
+use Psr\Log\LoggerInterface;
 
 /**
  * Factory for creating a {@see ContentDeliverer} instance.
@@ -34,7 +34,7 @@ final readonly class ContentDelivererFactory implements FactoryInterface
     /**
      * @param non-empty-string|null $logger
      */
-    public function __construct(null|string $logger = null)
+    public function __construct(?string $logger = null)
     {
         $this->logger = $logger ?? LoggerInterface::class;
     }
@@ -42,8 +42,6 @@ final readonly class ContentDelivererFactory implements FactoryInterface
     #[Override]
     public function __invoke(ContainerInterface $container): ContentDeliverer
     {
-        return new ContentDeliverer(
-            $container->getTyped($this->logger, LoggerInterface::class),
-        );
+        return new ContentDeliverer($container->getTyped($this->logger, LoggerInterface::class));
     }
 }

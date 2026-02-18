@@ -21,6 +21,4 @@ use Neu\Component\Http\Runtime\ContentDelivery\ContentDeliverer;
  *
  * @see ContentDeliverer::deliver() for more information.
  */
-final class FilesystemException extends RuntimeException
-{
-}
+final class FilesystemException extends RuntimeException {}

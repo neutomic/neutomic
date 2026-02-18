@@ -24,9 +24,10 @@ final class PrefixMapOrRoute
      * @param null|PrefixMap $map
      * @param null|Route $route
      */
-    private function __construct(private null|PrefixMap $map, private null|Route $route)
-    {
-    }
+    private function __construct(
+        private ?PrefixMap $map,
+        private ?Route $route,
+    ) {}
 
     /**
      * Create an instance from a PrefixMap.

@@ -31,7 +31,7 @@ final class FileNotFoundHttpException extends HttpException
      * @param string $message The exception message (optional).
      * @param null|Throwable $previous The previous throwable used for exception chaining (optional).
      */
-    public function __construct(string $message = '', null|Throwable $previous = null)
+    public function __construct(string $message = '', ?Throwable $previous = null)
     {
         parent::__construct(StatusCode::NotFound, [], $message, $previous);
     }

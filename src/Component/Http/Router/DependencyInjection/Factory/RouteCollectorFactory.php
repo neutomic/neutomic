@@ -38,7 +38,7 @@ final readonly class RouteCollectorFactory implements FactoryInterface
      *
      * @param non-empty-string|null $registry The registry service identifier.
      */
-    public function __construct(null|string $registry = null)
+    public function __construct(?string $registry = null)
     {
         $this->registry = $registry ?? RegistryInterface::class;
     }

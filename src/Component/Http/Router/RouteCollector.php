@@ -63,8 +63,14 @@ final readonly class RouteCollector
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
-    public function route(string $name, string $pattern, Method|array $methods, Closure|HandlerInterface $handler, int $priority = 0, array $attributes = []): void
-    {
+    public function route(
+        string $name,
+        string $pattern,
+        Method|array $methods,
+        Closure|HandlerInterface $handler,
+        int $priority = 0,
+        array $attributes = [],
+    ): void {
         if (!$handler instanceof HandlerInterface) {
             $handler = new ClosureHandler($handler);
         }
@@ -87,8 +93,13 @@ final readonly class RouteCollector
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
-    public function get(string $name, string $pattern, Closure|HandlerInterface $handler, int $priority = 0, array $attributes = []): void
-    {
+    public function get(
+        string $name,
+        string $pattern,
+        Closure|HandlerInterface $handler,
+        int $priority = 0,
+        array $attributes = [],
+    ): void {
         $this->route($name, $pattern, Method::Get, $handler, $priority, $attributes);
     }
 
@@ -101,8 +112,13 @@ final readonly class RouteCollector
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
-    public function post(string $name, string $pattern, Closure|HandlerInterface $handler, int $priority = 0, array $attributes = []): void
-    {
+    public function post(
+        string $name,
+        string $pattern,
+        Closure|HandlerInterface $handler,
+        int $priority = 0,
+        array $attributes = [],
+    ): void {
         $this->route($name, $pattern, Method::Post, $handler, $priority, $attributes);
     }
 
@@ -115,8 +131,13 @@ final readonly class RouteCollector
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
-    public function put(string $name, string $pattern, Closure|HandlerInterface $handler, int $priority = 0, array $attributes = []): void
-    {
+    public function put(
+        string $name,
+        string $pattern,
+        Closure|HandlerInterface $handler,
+        int $priority = 0,
+        array $attributes = [],
+    ): void {
         $this->route($name, $pattern, Method::Put, $handler, $priority, $attributes);
     }
 
@@ -129,8 +150,13 @@ final readonly class RouteCollector
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
-    public function patch(string $name, string $pattern, Closure|HandlerInterface $handler, int $priority = 0, array $attributes = []): void
-    {
+    public function patch(
+        string $name,
+        string $pattern,
+        Closure|HandlerInterface $handler,
+        int $priority = 0,
+        array $attributes = [],
+    ): void {
         $this->route($name, $pattern, Method::Patch, $handler, $priority, $attributes);
     }
 
@@ -143,8 +169,13 @@ final readonly class RouteCollector
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
-    public function delete(string $name, string $pattern, Closure|HandlerInterface $handler, int $priority = 0, array $attributes = []): void
-    {
+    public function delete(
+        string $name,
+        string $pattern,
+        Closure|HandlerInterface $handler,
+        int $priority = 0,
+        array $attributes = [],
+    ): void {
         $this->route($name, $pattern, Method::Delete, $handler, $priority, $attributes);
     }
 
@@ -157,8 +188,13 @@ final readonly class RouteCollector
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
-    public function head(string $name, string $pattern, Closure|HandlerInterface $handler, int $priority = 0, array $attributes = []): void
-    {
+    public function head(
+        string $name,
+        string $pattern,
+        Closure|HandlerInterface $handler,
+        int $priority = 0,
+        array $attributes = [],
+    ): void {
         $this->route($name, $pattern, Method::Head, $handler, $priority, $attributes);
     }
 
@@ -171,8 +207,13 @@ final readonly class RouteCollector
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
-    public function options(string $name, string $pattern, Closure|HandlerInterface $handler, int $priority = 0, array $attributes = []): void
-    {
+    public function options(
+        string $name,
+        string $pattern,
+        Closure|HandlerInterface $handler,
+        int $priority = 0,
+        array $attributes = [],
+    ): void {
         $this->route($name, $pattern, Method::Options, $handler, $priority, $attributes);
     }
 
@@ -185,8 +226,13 @@ final readonly class RouteCollector
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
-    public function purge(string $name, string $pattern, Closure|HandlerInterface $handler, int $priority = 0, array $attributes = []): void
-    {
+    public function purge(
+        string $name,
+        string $pattern,
+        Closure|HandlerInterface $handler,
+        int $priority = 0,
+        array $attributes = [],
+    ): void {
         $this->route($name, $pattern, Method::Purge, $handler, $priority, $attributes);
     }
 
@@ -199,8 +245,13 @@ final readonly class RouteCollector
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
-    public function trace(string $name, string $pattern, Closure|HandlerInterface $handler, int $priority = 0, array $attributes = []): void
-    {
+    public function trace(
+        string $name,
+        string $pattern,
+        Closure|HandlerInterface $handler,
+        int $priority = 0,
+        array $attributes = [],
+    ): void {
         $this->route($name, $pattern, Method::Trace, $handler, $priority, $attributes);
     }
 
@@ -213,8 +264,13 @@ final readonly class RouteCollector
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
-    public function connect(string $name, string $pattern, Closure|HandlerInterface $handler, int $priority = 0, array $attributes = []): void
-    {
+    public function connect(
+        string $name,
+        string $pattern,
+        Closure|HandlerInterface $handler,
+        int $priority = 0,
+        array $attributes = [],
+    ): void {
         $this->route($name, $pattern, Method::Connect, $handler, $priority, $attributes);
     }
 
@@ -227,8 +283,13 @@ final readonly class RouteCollector
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes of the route.
      */
-    public function any(string $name, string $pattern, Closure|HandlerInterface $handler, int $priority = 0, array $attributes = []): void
-    {
+    public function any(
+        string $name,
+        string $pattern,
+        Closure|HandlerInterface $handler,
+        int $priority = 0,
+        array $attributes = [],
+    ): void {
         $this->route($name, $pattern, Method::cases(), $handler, $priority, $attributes);
     }
 

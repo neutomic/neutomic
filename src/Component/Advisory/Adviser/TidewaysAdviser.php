@@ -29,7 +29,7 @@ final readonly class TidewaysAdviser implements AdviserInterface
      * @return Advice|null An instance of Advice if Tideways is enabled, or null if it is disabled.
      */
     #[Override]
-    public function getAdvice(): null|Advice
+    public function getAdvice(): ?Advice
     {
         if (!extension_loaded('tideways')) {
             return null;
@@ -38,7 +38,7 @@ final readonly class TidewaysAdviser implements AdviserInterface
         return Advice::forPerformance(
             'Disable Tideways',
             'Tideways should be disabled in production environments to improve PHP performance.',
-            'Disable the "tideways" extension in the PHP configuration file.'
+            'Disable the "tideways" extension in the PHP configuration file.',
         );
     }
 }

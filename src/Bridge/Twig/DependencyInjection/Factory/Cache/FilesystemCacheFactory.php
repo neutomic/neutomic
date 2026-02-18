@@ -39,7 +39,7 @@ final readonly class FilesystemCacheFactory implements FactoryInterface
      * @param non-empty-string $cache The cache directory, or null to disable caching.
      * @param null|int $options The cache options.
      */
-    public function __construct(string $cache, null|int $options = null)
+    public function __construct(string $cache, ?int $options = null)
     {
         $this->cache = $cache;
         $this->options = $options ?? 0;

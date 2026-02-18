@@ -61,7 +61,7 @@ trait MessageConvenienceMethodsTrait
      *
      * @return null|non-empty-list<non-empty-string> A list of values for the specified header or null if the header does not exist.
      */
-    public function getHeader(string $name): null|array
+    public function getHeader(string $name): ?array
     {
         return $this->headerStorage->getHeader($name);
     }
@@ -77,7 +77,7 @@ trait MessageConvenienceMethodsTrait
      *
      * @return null|non-empty-string A single string of concatenated header values, or null if the header is absent.
      */
-    public function getHeaderLine(string $name): null|string
+    public function getHeaderLine(string $name): ?string
     {
         return $this->headerStorage->getHeaderLine($name);
     }
@@ -98,9 +98,7 @@ trait MessageConvenienceMethodsTrait
      */
     public function withHeader(string $name, array|string $value): static
     {
-        return $this->cloneWithHeaderStorage(
-            $this->headerStorage->withHeader($name, $value),
-        );
+        return $this->cloneWithHeaderStorage($this->headerStorage->withHeader($name, $value));
     }
 
     /**
@@ -118,9 +116,7 @@ trait MessageConvenienceMethodsTrait
      */
     public function withAddedHeader(string $name, array|string $value): static
     {
-        return $this->cloneWithHeaderStorage(
-            $this->headerStorage->withAddedHeader($name, $value),
-        );
+        return $this->cloneWithHeaderStorage($this->headerStorage->withAddedHeader($name, $value));
     }
 
     /**
@@ -135,9 +131,7 @@ trait MessageConvenienceMethodsTrait
      */
     public function withoutHeader(string $name): static
     {
-        return $this->cloneWithHeaderStorage(
-            $this->headerStorage->withoutHeader($name),
-        );
+        return $this->cloneWithHeaderStorage($this->headerStorage->withoutHeader($name));
     }
 
     /**

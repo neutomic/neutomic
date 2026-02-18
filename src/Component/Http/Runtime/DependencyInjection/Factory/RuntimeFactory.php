@@ -62,8 +62,13 @@ final readonly class RuntimeFactory implements FactoryInterface
      * @param non-empty-string|null $recovery
      * @param positive-int|null $concurrencyLimit
      */
-    public function __construct(null|string $eventDispatcher = null, null|string $handlerResolver = null, null|string $middlewareQueue = null, null|string $recovery = null, null|int $concurrencyLimit = null)
-    {
+    public function __construct(
+        ?string $eventDispatcher = null,
+        ?string $handlerResolver = null,
+        ?string $middlewareQueue = null,
+        ?string $recovery = null,
+        ?int $concurrencyLimit = null,
+    ) {
         $this->eventDispatcher = $eventDispatcher ?? EventDispatcherInterface::class;
         $this->handlerResolver = $handlerResolver ?? HandlerResolverInterface::class;
         $this->middlewareQueue = $middlewareQueue ?? MiddlewareQueueInterface::class;

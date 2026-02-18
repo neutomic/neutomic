@@ -21,12 +21,12 @@ interface StyleInterface
     /**
      * Sets style foreground color.
      */
-    public function setForeground(null|ForegroundColor $color = null): self;
+    public function setForeground(?ForegroundColor $color = null): self;
 
     /**
      * Sets style background color.
      */
-    public function setBackground(null|BackgroundColor $color = null): self;
+    public function setBackground(?BackgroundColor $color = null): self;
 
     /**
      * Sets some specific style effect.

@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Router\PatternParser\Node;
 
-use Psl\Str;
 use Override;
+use Psl\Str;
 
 use function preg_quote;
 
@@ -37,7 +37,7 @@ final readonly class ParameterNode implements Node
      *
      * @var null|non-empty-string
      */
-    private null|string $regexp;
+    private ?string $regexp;
 
     /**
      * Create a new {@see ParameterNode} instance.
@@ -45,7 +45,7 @@ final readonly class ParameterNode implements Node
      * @param non-empty-string $name The name of the parameter.
      * @param null|non-empty-string $regexp The regular expression of the parameter.
      */
-    public function __construct(string $name, null|string $regexp = null)
+    public function __construct(string $name, ?string $regexp = null)
     {
         $this->name = $name;
         $this->regexp = $regexp;
@@ -66,7 +66,7 @@ final readonly class ParameterNode implements Node
      *
      * @return null|non-empty-string
      */
-    public function getRegexp(): null|string
+    public function getRegexp(): ?string
     {
         return $this->regexp;
     }

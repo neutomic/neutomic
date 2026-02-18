@@ -46,7 +46,7 @@ final readonly class StdoutHandlerFactory implements FactoryInterface
      *
      * @var non-empty-string|null
      */
-    private null|string $formatter;
+    private ?string $formatter;
 
     /**
      * The processor service identifiers.
@@ -63,8 +63,12 @@ final readonly class StdoutHandlerFactory implements FactoryInterface
      * @param non-empty-string|null $formatter The formatter service identifier.
      * @param list<non-empty-string>|null $processors The processor service identifiers.
      */
-    public function __construct(null|int|string|Level $level = null, null|bool $bubble = null, null|string $formatter = null, null|array $processors = null)
-    {
+    public function __construct(
+        null|int|string|Level $level = null,
+        ?bool $bubble = null,
+        ?string $formatter = null,
+        ?array $processors = null,
+    ) {
         $this->level = $level;
         $this->bubble = $bubble ?? true;
         $this->formatter = $formatter;

@@ -15,6 +15,4 @@ namespace Neu\Framework\Exception;
 
 use RuntimeException as RootRuntimeException;
 
-final class RuntimeException extends RootRuntimeException implements ExceptionInterface
-{
-}
+final class RuntimeException extends RootRuntimeException implements ExceptionInterface {}

@@ -18,19 +18,19 @@ return [
         'middleware' => [
             'compression' => false,
             'static-content' => false,
-        ]
+        ],
     ],
     'http' => [
         'server' => [
             'sockets' => [[
                 'host' => '127.0.0.1',
                 'port' => 1337,
-            ]]
+            ]],
         ],
         'session' => [
             'cache' => [
                 'limiter' => CacheLimiter::Public,
-            ]
-        ]
-    ]
+            ],
+        ],
+    ],
 ];

@@ -24,8 +24,7 @@ final readonly class PreparedStatement implements PreparedStatementInterface
     public function __construct(
         private string $sql,
         private SqlStatement $statement,
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritDoc

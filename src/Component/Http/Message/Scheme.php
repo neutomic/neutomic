@@ -18,7 +18,7 @@ enum Scheme: string
     case Http = 'http';
     case Https = 'https';
 
-    public static function fromPort(int $port): null|self
+    public static function fromPort(int $port): ?self
     {
         return match ($port) {
             80 => self::Http,

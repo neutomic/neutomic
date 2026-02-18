@@ -28,8 +28,13 @@ final class Option extends Definition
      * @param non-empty-string $name The name of the option.
      * @param null|non-empty-string $alias The alias of the option.
      */
-    public function __construct(string $name, null|string $alias = null, string $description = '', Mode $mode = Mode::Optional, bool $aliased = true)
-    {
+    public function __construct(
+        string $name,
+        ?string $alias = null,
+        string $description = '',
+        Mode $mode = Mode::Optional,
+        bool $aliased = true,
+    ) {
         parent::__construct($name, $alias, $description, $mode);
 
         if ($aliased && Str\length($name) > 1) {

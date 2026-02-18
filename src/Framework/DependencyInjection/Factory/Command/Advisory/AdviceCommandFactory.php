@@ -36,7 +36,7 @@ final readonly class AdviceCommandFactory implements FactoryInterface
     /**
      * @param null|non-empty-string $advisory The advisory service to use.
      */
-    public function __construct(null|string $advisory = null)
+    public function __construct(?string $advisory = null)
     {
         $this->advisory = $advisory ?? AdvisoryInterface::class;
     }
@@ -47,8 +47,6 @@ final readonly class AdviceCommandFactory implements FactoryInterface
     #[Override]
     public function __invoke(ContainerInterface $container): AdviceCommand
     {
-        return new AdviceCommand(
-            $container->getTyped($this->advisory, AdvisoryInterface::class),
-        );
+        return new AdviceCommand($container->getTyped($this->advisory, AdvisoryInterface::class));
     }
 }

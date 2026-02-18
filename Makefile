@@ -8,12 +8,12 @@ update:                                                              			## updat
 	composer update
 
 coding-standard-fix:                                                            ## apply automated coding standard fixes
-	./vendor/bin/php-cs-fixer fix --config=config/.php_cs.dist.php -vvv
-	./vendor/bin/phpcbf --basepath=. --standard=config/.phpcs.xml
+	./vendor/bin/mago --config config/mago.toml fmt
+	./vendor/bin/mago --config config/mago.toml lint --fix --unsafe
 
 coding-standard-check:                                                          ## check coding-standard compliance
-	./vendor/bin/php-cs-fixer fix --config=config/.php_cs.dist.php --dry-run -vvv
-	./vendor/bin/phpcs --basepath=. --standard=config/.phpcs.xml
+	./vendor/bin/mago --config config/mago.toml fmt --check
+	./vendor/bin/mago --config config/mago.toml lint
 
 static-analysis:                                                                ## run static analysis checks
 	./vendor/bin/psalm -c config/psalm.xml

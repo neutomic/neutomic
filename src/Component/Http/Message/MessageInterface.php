@@ -47,7 +47,7 @@ interface MessageInterface
      *
      * @return null|non-empty-list<non-empty-string> A list of values for the specified header or null if the header does not exist.
      */
-    public function getHeader(string $name): null|array;
+    public function getHeader(string $name): ?array;
 
     /**
      * Retrieves a single string composed of all values of a specific header, concatenated using a comma.
@@ -60,7 +60,7 @@ interface MessageInterface
      *
      * @return null|non-empty-string A single string of concatenated header values, or null if the header is absent.
      */
-    public function getHeaderLine(string $name): null|string;
+    public function getHeaderLine(string $name): ?string;
 
     /**
      * Returns a new instance of the message with the specified header replaced with the provided value(s).
@@ -110,7 +110,7 @@ interface MessageInterface
      *
      * @return ?BodyInterface Returns the body of the message or null if the body has not been set.
      */
-    public function getBody(): null|BodyInterface;
+    public function getBody(): ?BodyInterface;
 
     /**
      * Returns a new instance with the specified message body.
@@ -119,5 +119,5 @@ interface MessageInterface
      *
      * @return static A new instance with the specified body.
      */
-    public function withBody(null|BodyInterface $body): static;
+    public function withBody(?BodyInterface $body): static;
 }

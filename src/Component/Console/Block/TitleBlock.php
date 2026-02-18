@@ -16,8 +16,8 @@ namespace Neu\Component\Console\Block;
 use Neu\Component\Console\Formatter\Formatter;
 use Neu\Component\Console\Output\OutputInterface;
 use Neu\Component\Console\Output\Verbosity;
-use Psl\Str;
 use Override;
+use Psl\Str;
 
 final readonly class TitleBlock implements BlockInterface
 {
@@ -37,10 +37,7 @@ final readonly class TitleBlock implements BlockInterface
         $this->output->writeLine('', $verbosity);
 
         $this->output->writeLine(
-            Str\format(
-                '   <bold underline color="bright-cyan">%s</>',
-                Formatter::escapeTrailingBackslash($message),
-            ),
+            Str\format('   <bold underline color="bright-cyan">%s</>', Formatter::escapeTrailingBackslash($message)),
             $verbosity,
         );
 

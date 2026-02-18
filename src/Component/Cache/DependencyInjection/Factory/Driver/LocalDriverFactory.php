@@ -33,13 +33,13 @@ final readonly class LocalDriverFactory implements FactoryInterface
     /**
      * @var null|positive-int
      */
-    private null|int $size;
+    private ?int $size;
 
     /**
      * @param positive-int $pruneInterval The interval in seconds to prune the cache.
      * @param null|positive-int $size The maximum size of the cache.
      */
-    public function __construct(null|int $pruneInterval = null, null|int $size = null)
+    public function __construct(?int $pruneInterval = null, ?int $size = null)
     {
         $this->pruneInterval = $pruneInterval ?? LocalDriver::PRUNE_INTERVAL;
         $this->size = $size;

@@ -23,7 +23,6 @@ final readonly class Notification
     public function __construct(
         public string $channel,
         public string $payload,
-        public int    $pid,
-    ) {
-    }
+        public int $pid,
+    ) {}
 }

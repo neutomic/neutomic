@@ -26,7 +26,7 @@ interface RequestInterface extends ExchangeInterface
      * @return null|RequestBodyInterface Returns the body of the request or null if the body has not been set.
      */
     #[Override]
-    public function getBody(): null|RequestBodyInterface;
+    public function getBody(): ?RequestBodyInterface;
 
     /**
      * Retrieves the HTTP method of the request.
@@ -137,7 +137,7 @@ interface RequestInterface extends ExchangeInterface
      * @return null|non-empty-list<string> A list of string values for the specified name,
      *                                     or null if none found.
      */
-    public function getCookie(string $name): null|array;
+    public function getCookie(string $name): ?array;
 
     /**
      * Returns a new instance of the request with the specified cookies.
@@ -223,7 +223,7 @@ interface RequestInterface extends ExchangeInterface
      *
      * @return null|non-empty-list<string> The list of values for the query parameter or null if the parameter does not exist.
      */
-    public function getQueryParameter(string $name): null|array;
+    public function getQueryParameter(string $name): ?array;
 
     /**
      * Returns a new instance of the request with the specified query parameters.
@@ -375,5 +375,5 @@ interface RequestInterface extends ExchangeInterface
      *
      * @return static A new instance with the specified session.
      */
-    public function withSession(null|SessionInterface $session): static;
+    public function withSession(?SessionInterface $session): static;
 }

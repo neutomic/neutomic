@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Neu\Component\Database\Query\Expression;
 
 use Countable;
-use Stringable;
 use Override;
+use Stringable;
 
 interface CompositeExpressionInterface extends Countable, Stringable
 {
@@ -27,7 +27,10 @@ interface CompositeExpressionInterface extends Countable, Stringable
      * @param non-empty-string|CompositeExpression $expression
      * @param non-empty-string|CompositeExpression ...$expressions
      */
-    public function with(string|CompositeExpressionInterface $expression, string|CompositeExpressionInterface ...$expressions): static;
+    public function with(
+        string|CompositeExpressionInterface $expression,
+        string|CompositeExpressionInterface ...$expressions,
+    ): static;
 
     /**
      * Retrieves the string representation of this composite expression.

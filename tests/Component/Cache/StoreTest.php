@@ -53,9 +53,9 @@ final class StoreTest extends TestCase
 
         $driver->delete('user');
 
-        $one = Psl\Async\run(static fn () => $cache->compute('user', $computer, ttl: 1));
+        $one = Psl\Async\run(static fn() => $cache->compute('user', $computer, ttl: 1));
         Psl\Async\later();
-        $two = Psl\Async\run(static fn () => $cache->compute('user', $computer, ttl: 1));
+        $two = Psl\Async\run(static fn() => $cache->compute('user', $computer, ttl: 1));
         $user = $one->await();
         static::assertSame('azjezz', $user);
         static::assertTrue($ref->value);

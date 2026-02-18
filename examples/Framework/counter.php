@@ -24,9 +24,9 @@ use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Framework\EngineInterface;
-use Psl\SecureRandom;
-use Psl\Env;
 use Override;
+use Psl\Env;
+use Psl\SecureRandom;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
@@ -37,9 +37,9 @@ final readonly class CounterHandler implements HandlerInterface
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         $session = $request->getSession();
-        $counter = (string) $session->update('counter', static function (null|int $value): int {
-            return null === $value ? 1 : $value + 1;
-        });
+        $counter = (string) $session->update('counter', static fn(?int $value): int => null === $value
+            ? 1
+            : $value + 1);
 
         return Response\text('Hello, World! You have visited this page ' . $counter . ' times.');
     }

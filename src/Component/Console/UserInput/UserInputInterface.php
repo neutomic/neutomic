@@ -33,7 +33,7 @@ interface UserInputInterface
      *
      * @param null|array{0: int<0, max>, 1: int<0, max>} $position
      */
-    public function setPosition(null|array $position): void;
+    public function setPosition(?array $position): void;
 
     /**
      * Present the user with a prompt and return the inputted value.

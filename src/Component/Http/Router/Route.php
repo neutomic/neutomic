@@ -62,7 +62,7 @@ final class Route
      *
      * @var PatternNode|null
      */
-    private null|PatternNode $parsedPattern = null;
+    private ?PatternNode $parsedPattern = null;
 
     /**
      * Create a new {@see Route} instance.
@@ -73,8 +73,13 @@ final class Route
      * @param int $priority The priority of the route.
      * @param array<non-empty-string, mixed> $attributes The attributes for the route.
      */
-    public function __construct(string $name, string $pattern, array $methods, int $priority = 0, array $attributes = [])
-    {
+    public function __construct(
+        string $name,
+        string $pattern,
+        array $methods,
+        int $priority = 0,
+        array $attributes = [],
+    ) {
         $this->name = $name;
         $this->pattern = $pattern;
         $this->methods = $methods;

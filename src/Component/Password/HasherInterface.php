@@ -52,7 +52,10 @@ interface HasherInterface
      *
      * @return bool True if the passwords match, false otherwise.
      */
-    public function verifyPassword(string $hashedPassword, #[SensitiveParameter] string $plainPassword): bool;
+    public function verifyPassword(
+        #[\SensitiveParameter] string $hashedPassword,
+        #[SensitiveParameter] string $plainPassword,
+    ): bool;
 
     /**
      * Checks if a hashed password needs to be rehashed.
@@ -66,5 +69,5 @@ interface HasherInterface
      *
      * @return bool True if the password needs rehashing, false otherwise.
      */
-    public function passwordNeedsRehash(string $hashedPassword): bool;
+    public function passwordNeedsRehash(#[\SensitiveParameter] string $hashedPassword): bool;
 }

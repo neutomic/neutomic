@@ -16,8 +16,8 @@ namespace Neu\Framework\DependencyInjection\Factory\Middleware;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Framework\Middleware\CompressionMiddleware;
-use Psr\Log\LoggerInterface;
 use Override;
+use Psr\Log\LoggerInterface;
 
 /**
  * Factory for creating a {@see CompressionMiddleware} instance.
@@ -88,11 +88,20 @@ final readonly class CompressionMiddlewareFactory implements FactoryInterface
      * @param null|int<8, 15> $window The window size.
      * @param null|int $priority The priority of the middleware.
      */
-    public function __construct(null|string $logger = null, null|int $minimumCompressibleContentLength = null, null|string $compressibleContentTypesRegex = null, null|int $level = null, null|int $memory = null, null|int $window = null, null|int $priority = null)
-    {
+    public function __construct(
+        ?string $logger = null,
+        ?int $minimumCompressibleContentLength = null,
+        ?string $compressibleContentTypesRegex = null,
+        ?int $level = null,
+        ?int $memory = null,
+        ?int $window = null,
+        ?int $priority = null,
+    ) {
         $this->logger = $logger ?? LoggerInterface::class;
-        $this->minimumCompressibleContentLength = $minimumCompressibleContentLength ?? CompressionMiddleware::DEFAULT_MINIMUM_COMPRESSIBLE_CONTENT_LENGTH;
-        $this->compressibleContentTypesRegex = $compressibleContentTypesRegex ?? CompressionMiddleware::DEFAULT_COMPRESSIBLE_CONTENT_TYPES_REGEX;
+        $this->minimumCompressibleContentLength =
+            $minimumCompressibleContentLength ?? CompressionMiddleware::DEFAULT_MINIMUM_COMPRESSIBLE_CONTENT_LENGTH;
+        $this->compressibleContentTypesRegex =
+            $compressibleContentTypesRegex ?? CompressionMiddleware::DEFAULT_COMPRESSIBLE_CONTENT_TYPES_REGEX;
         $this->level = $level ?? CompressionMiddleware::DEFAULT_LEVEL;
         $this->memory = $memory ?? CompressionMiddleware::DEFAULT_MEMORY;
         $this->window = $window ?? CompressionMiddleware::DEFAULT_WINDOW;

@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Neu\Component\Csrf\Generator;
 
 use Neu\Component\Csrf\Exception\RuntimeException;
+use Override;
 use Psl\Encoding\Base64;
 use Psl\SecureRandom;
-use Override;
 
 /**
  * A token generator implementation using {@see SecureRandom\bytes()}

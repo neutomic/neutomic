@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Neu\Bridge\Twig\Loader;
 
 use Amp\File;
+use Override;
 use Twig\Error\LoaderError;
 use Twig\Loader\FilesystemLoader as TwigFilesystemLoader;
 use Twig\Source;
-use Override;
 
 final class FilesystemLoader extends TwigFilesystemLoader implements ModificationAwareLoaderInterface
 {

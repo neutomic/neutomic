@@ -32,14 +32,14 @@ final readonly class ServerStoppingEventListener implements ListenerInterface
     /**
      * The database manager used to close all database, or null if not set.
      */
-    private null|DatabaseManagerInterface $databaseManager;
+    private ?DatabaseManagerInterface $databaseManager;
 
     /**
      * Create a new {@see ServerStoppingEventListener} instance.
      *
      * @param null|DatabaseManagerInterface $databaseManager The database manager used to close all database, or null if not set.
      */
-    public function __construct(null|DatabaseManagerInterface $databaseManager)
+    public function __construct(?DatabaseManagerInterface $databaseManager)
     {
         $this->databaseManager = $databaseManager;
     }

@@ -15,6 +15,4 @@ namespace Neu\Component\Broadcast\Exception;
 
 use Neu\Component\Exception\LogicException as RootLogicException;
 
-class LogicException extends RootLogicException implements ExceptionInterface
-{
-}
+class LogicException extends RootLogicException implements ExceptionInterface {}

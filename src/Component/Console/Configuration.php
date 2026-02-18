@@ -99,7 +99,7 @@ final readonly class Configuration
         bool $versionEnabled = true,
         bool $noInteractionEnabled = true,
         bool $ansiEnabled = true,
-        bool $noAnsiEnabled = true
+        bool $noAnsiEnabled = true,
     ) {
         $this->name = $name;
         $this->version = $version;

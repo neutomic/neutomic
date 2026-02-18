@@ -31,14 +31,14 @@ final readonly class ServerStoppingEventListenerFactory implements FactoryInterf
      *
      * @var non-empty-string|null
      */
-    private null|string $hubManager;
+    private ?string $hubManager;
 
     /**
      * Create a new {@see ServerStoppingEventListenerFactory} instance.
      *
      * @param null|non-empty-string $hubManager The hub manager service identifier.
      */
-    public function __construct(null|string $hubManager = null)
+    public function __construct(?string $hubManager = null)
     {
         $this->hubManager = $hubManager;
     }

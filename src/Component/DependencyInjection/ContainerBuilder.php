@@ -20,6 +20,7 @@ use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Configuration\Loader\LoaderInterface;
 use Neu\Component\DependencyInjection\Configuration\Resolver\Resolver;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
+use Override;
 use ReflectionClass;
 use ReflectionException;
 use Roave\BetterReflection\BetterReflection;
@@ -33,7 +34,6 @@ use Roave\BetterReflection\SourceLocator\Type\AutoloadSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\DirectoriesSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\SingleFileSourceLocator;
-use Override;
 
 use function array_walk_recursive;
 use function is_string;
@@ -90,8 +90,11 @@ final class ContainerBuilder implements ContainerBuilderInterface
      * @param Resolver $resolver The configuration resolver.
      * @param CombineStrategy $strategy The combine strategy to use for combining configuration documents.
      */
-    public function __construct(RegistryInterface $registry, Resolver $resolver, CombineStrategy $strategy = CombineStrategy::ReplaceRecursive)
-    {
+    public function __construct(
+        RegistryInterface $registry,
+        Resolver $resolver,
+        CombineStrategy $strategy = CombineStrategy::ReplaceRecursive,
+    ) {
         $this->registry = $registry;
         $this->resolver = $resolver;
         $this->strategy = $strategy;
@@ -200,10 +203,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
         $document = new Document([]);
         /** @var mixed $resource */
         foreach ($this->resources as $resource) {
-            $document = $document->combine(
-                $this->resolver->resolve($resource)->load($resource),
-                $this->strategy,
-            );
+            $document = $document->combine($this->resolver->resolve($resource)->load($resource), $this->strategy);
         }
 
         $document = $this->processConfiguration($document);
@@ -224,18 +224,22 @@ final class ContainerBuilder implements ContainerBuilderInterface
             }
 
             foreach ($this->registry->getInstanceOfProcessors() as $interface => $processors) {
-                if ($definition->isInstanceOf($interface)) {
-                    foreach ($processors as $processor) {
-                        $definition->addProcessor($processor);
-                    }
+                if (!$definition->isInstanceOf($interface)) {
+                    continue;
+                }
+
+                foreach ($processors as $processor) {
+                    $definition->addProcessor($processor);
                 }
             }
 
             foreach ($this->registry->getAttributeProcessors() as $attribute => $processors) {
-                if ($definition->hasAttribute($attribute)) {
-                    foreach ($processors as $processor) {
-                        $definition->addProcessor($processor);
-                    }
+                if (!$definition->hasAttribute($attribute)) {
+                    continue;
+                }
+
+                foreach ($processors as $processor) {
+                    $definition->addProcessor($processor);
                 }
             }
         }
@@ -256,9 +260,11 @@ final class ContainerBuilder implements ContainerBuilderInterface
     private function addCompositeExtensions(DocumentInterface $document): void
     {
         foreach ($this->extensions as $extension) {
-            if ($extension instanceof CompositeExtensionInterface) {
-                $this->addCompositeExtension($extension, $document);
+            if (!$extension instanceof CompositeExtensionInterface) {
+                continue;
             }
+
+            $this->addCompositeExtension($extension, $document);
         }
     }
 
@@ -292,7 +298,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
             return;
         }
 
-        $astLocator = (new BetterReflection())->astLocator();
+        $astLocator = new BetterReflection()->astLocator();
 
         /**
          * @psalm-suppress InternalClass
@@ -311,8 +317,11 @@ final class ContainerBuilder implements ContainerBuilderInterface
                 } elseif (File\isDirectory($path)) {
                     $locators[] = new DirectoriesSourceLocator([$path], $astLocator);
                 }
-            } catch (InvalidDirectory | InvalidFileInfo | InvalidFileLocation $exception) {
-                throw new RuntimeException('An error occurred while discovering services from "' . $path . '"', previous: $exception);
+            } catch (InvalidDirectory|InvalidFileInfo|InvalidFileLocation $exception) {
+                throw new RuntimeException(
+                    'An error occurred while discovering services from "' . $path . '"',
+                    previous: $exception,
+                );
             }
         }
 
@@ -369,9 +378,11 @@ final class ContainerBuilder implements ContainerBuilderInterface
             }
 
             foreach ($placeholders as $placeholder => $replacement) {
-                if (str_contains($value, $placeholder)) {
-                    $value = str_replace($placeholder, $replacement, $value);
+                if (!str_contains($value, $placeholder)) {
+                    continue;
                 }
+
+                $value = str_replace($placeholder, $replacement, $value);
             }
         });
 

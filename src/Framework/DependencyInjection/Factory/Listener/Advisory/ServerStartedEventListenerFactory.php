@@ -17,8 +17,8 @@ use Neu\Component\Advisory\AdvisoryInterface;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Framework\Listener\Advisory\ServerStartedEventListener;
-use Psr\Log\LoggerInterface;
 use Override;
+use Psr\Log\LoggerInterface;
 
 /**
  * Factory for creating a {@see ServerStartedEventListener} instance.
@@ -45,7 +45,7 @@ final readonly class ServerStartedEventListenerFactory implements FactoryInterfa
      * @param null|non-empty-string $advisory The advisory service to use.
      * @param null|non-empty-string $logger The logger service to use.
      */
-    public function __construct(null|string $advisory = null, null|string $logger = null)
+    public function __construct(?string $advisory = null, ?string $logger = null)
     {
         $this->advisory = $advisory ?? AdvisoryInterface::class;
         $this->logger = $logger ?? LoggerInterface::class;

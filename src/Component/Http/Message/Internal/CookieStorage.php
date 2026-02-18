@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Message\Internal;
 
-use Neu\Component\Http\Message\CookieInterface;
 use Neu\Component\Http\Exception\InvalidArgumentException;
+use Neu\Component\Http\Message\CookieInterface;
 
 use function array_merge;
 use function is_array;
@@ -118,7 +118,7 @@ final readonly class CookieStorage
      *
      * @return null|non-empty-list<T> The cookie value, or null if the cookie does not exist.
      */
-    public function getCookie(string $name): null|array
+    public function getCookie(string $name): ?array
     {
         $normalized = strtolower($name);
         if (!isset($this->cookieNames[$normalized])) {
@@ -200,7 +200,7 @@ final readonly class CookieStorage
         }
 
         $normalized = strtolower($name);
-        $cookie   = $this->cookieNames[$normalized];
+        $cookie = $this->cookieNames[$normalized];
 
         $cookies = $this->cookies;
         $cookieNames = $this->cookieNames;

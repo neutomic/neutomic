@@ -30,9 +30,8 @@ final readonly class ClosureFactory implements FactoryInterface
      * @param (Closure(ContainerInterface): T) $closure
      */
     public function __construct(
-        private Closure $closure
-    ) {
-    }
+        private Closure $closure,
+    ) {}
 
     /**
      * Create a service.

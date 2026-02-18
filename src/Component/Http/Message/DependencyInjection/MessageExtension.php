@@ -33,7 +33,10 @@ final readonly class MessageExtension implements ExtensionInterface
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
         $registry->addDefinition(Definition::ofType(MultipartParser::class, new Factory\Form\MultipartParserFactory()));
-        $registry->addDefinition(Definition::ofType(UrlEncodedParser::class, new Factory\Form\UrlEncodedParserFactory()));
+        $registry->addDefinition(Definition::ofType(
+            UrlEncodedParser::class,
+            new Factory\Form\UrlEncodedParserFactory(),
+        ));
         $registry->addDefinition(Definition::ofType(Parser::class, new Factory\Form\ParserFactory()));
 
         $registry->getDefinition(Parser::class)->addAlias(ParserInterface::class);

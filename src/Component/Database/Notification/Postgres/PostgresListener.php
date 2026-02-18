@@ -26,9 +26,8 @@ final readonly class PostgresListener implements ListenerInterface
      */
     public function __construct(
         private AmpPostgresListener $listener,
-        private string              $channel,
-    ) {
-    }
+        private string $channel,
+    ) {}
 
     /**
      * @inheritDoc

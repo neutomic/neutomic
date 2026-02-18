@@ -15,6 +15,4 @@ namespace Neu\Component\Http\ServerSentEvent\Exception;
 
 use Neu\Component\Http\Exception\ExceptionInterface as HttpExceptionInterface;
 
-interface ExceptionInterface extends HttpExceptionInterface
-{
-}
+interface ExceptionInterface extends HttpExceptionInterface {}

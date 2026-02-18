@@ -103,7 +103,7 @@ interface DocumentInterface extends Countable, IteratorAggregate
      *
      * @return DocumentInterface
      */
-    public function getDocument(string|int $index, null|bool $strict = null): DocumentInterface;
+    public function getDocument(string|int $index, ?bool $strict = null): DocumentInterface;
 
     /**
      * Return whether the entry value using its index is a document.

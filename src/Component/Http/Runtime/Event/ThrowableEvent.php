@@ -17,9 +17,9 @@ use Neu\Component\Http\Exception\HttpExceptionInterface;
 use Neu\Component\Http\Message\RequestInterface;
 use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Context;
+use Override;
 use Psr\EventDispatcher\StoppableEventInterface;
 use Throwable;
-use Override;
 
 /**
  * Event triggered when a throwable occurs during the processing of an HTTP request.
@@ -48,7 +48,7 @@ final readonly class ThrowableEvent implements StoppableEventInterface
      *
      * If null, the throwable will be rethrown.
      */
-    public null|ResponseInterface $response;
+    public ?ResponseInterface $response;
 
     /**
      * Constructs a new {@see ThrowableEvent} instance.
@@ -57,8 +57,12 @@ final readonly class ThrowableEvent implements StoppableEventInterface
      * @param Throwable $throwable The throwable that occurred.
      * @param ResponseInterface|null $response Optional initial response to be sent.
      */
-    public function __construct(Context $context, RequestInterface $request, Throwable $throwable, null|ResponseInterface $response = null)
-    {
+    public function __construct(
+        Context $context,
+        RequestInterface $request,
+        Throwable $throwable,
+        ?ResponseInterface $response = null,
+    ) {
         $this->context = $context;
         $this->request = $request;
         $this->throwable = $throwable;

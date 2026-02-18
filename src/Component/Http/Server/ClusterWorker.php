@@ -18,10 +18,10 @@ use Neu\Component\EventDispatcher\EventDispatcherInterface;
 use Neu\Component\Http\Exception\RuntimeException;
 use Neu\Component\Http\Server\Event\ClusterWorkerStartedEvent;
 use Neu\Component\Http\Server\Event\ClusterWorkerStoppedEvent;
+use Override;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
-use Override;
 
 /**
  * A worker that manages a server instance within a cluster.
@@ -51,8 +51,11 @@ final readonly class ClusterWorker implements ClusterWorkerInterface
      * @param ServerInterface $server The server instance to be managed by the worker.
      * @param EventDispatcherInterface $dispatcher The event dispatcher for handling worker events.
      */
-    public function __construct(ServerInterface $server, EventDispatcherInterface $dispatcher, LoggerInterface $logger = new NullLogger())
-    {
+    public function __construct(
+        ServerInterface $server,
+        EventDispatcherInterface $dispatcher,
+        LoggerInterface $logger = new NullLogger(),
+    ) {
         $this->server = $server;
         $this->dispatcher = $dispatcher;
         $this->logger = $logger;

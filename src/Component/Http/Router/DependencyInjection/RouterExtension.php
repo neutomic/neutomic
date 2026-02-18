@@ -32,8 +32,8 @@ use Neu\Component\Http\Router\Registry\RegistryInterface;
 use Neu\Component\Http\Router\RouteCollector;
 use Neu\Component\Http\Router\Router;
 use Neu\Component\Http\Router\RouterInterface;
-use Psl\Type;
 use Override;
+use Psl\Type;
 
 /**
  * A dependency injection extension for the router component.
@@ -67,32 +67,40 @@ final readonly class RouterExtension implements ExtensionInterface
     #[Override]
     public function register(DIRegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $configuration = $configurations->getDocument('http')->getOfTypeOrDefault('router', $this->getRouterConfigurationType(), []);
+        $configuration = $configurations->getDocument('http')->getOfTypeOrDefault(
+            'router',
+            $this->getRouterConfigurationType(),
+            [],
+        );
 
         // Register registry
         $registry->addDefinition(Definition::ofType(Registry::class, new RegistryFactory()));
-        $registry->addDefinition(Definition::ofType(RouteCollector::class, new RouteCollectorFactory(
-            $configuration['collector']['registry'] ?? null,
-        )));
-        $registry->addDefinition(Definition::ofType(Generator::class, new GeneratorFactory(
-            $configuration['generator']['registry'] ?? null,
-        )));
-        $registry->addDefinition(Definition::ofType(Matcher::class, new MatcherFactory(
-            $configuration['matcher']['registry'] ?? null,
-        )));
-        $registry->addDefinition(Definition::ofType(Router::class, new RouterFactory(
-            $configuration['router']['matcher'] ?? null,
-            $configuration['router']['generator'] ?? null,
-        )));
+        $registry->addDefinition(Definition::ofType(
+            RouteCollector::class,
+            new RouteCollectorFactory($configuration['collector']['registry'] ?? null),
+        ));
+        $registry->addDefinition(Definition::ofType(
+            Generator::class,
+            new GeneratorFactory($configuration['generator']['registry'] ?? null),
+        ));
+        $registry->addDefinition(Definition::ofType(
+            Matcher::class,
+            new MatcherFactory($configuration['matcher']['registry'] ?? null),
+        ));
+        $registry->addDefinition(Definition::ofType(
+            Router::class,
+            new RouterFactory(
+                $configuration['router']['matcher'] ?? null,
+                $configuration['router']['generator'] ?? null,
+            ),
+        ));
 
         $registry->getDefinition(Registry::class)->addAlias(RegistryInterface::class);
         $registry->getDefinition(Generator::class)->addAlias(GeneratorInterface::class);
         $registry->getDefinition(Matcher::class)->addAlias(MatcherInterface::class);
         $registry->getDefinition(Router::class)->addAlias(RouterInterface::class);
 
-        $registry->addHook(new RegisterRoutesHook(
-            $configuration['hooks']['register-routes']['registry'] ?? null,
-        ));
+        $registry->addHook(new RegisterRoutesHook($configuration['hooks']['register-routes']['registry'] ?? null));
     }
 
     /**

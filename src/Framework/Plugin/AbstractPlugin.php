@@ -40,8 +40,11 @@ abstract class AbstractPlugin implements PluginInterface
      * @inheritDoc
      */
     #[Override]
-    public function route(ContainerInterface $container, RouterRegistryInterface $registry, RouteCollector $collector): void
-    {
+    public function route(
+        ContainerInterface $container,
+        RouterRegistryInterface $registry,
+        RouteCollector $collector,
+    ): void {
         // Default implementation does nothing
     }
 

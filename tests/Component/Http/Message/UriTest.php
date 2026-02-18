@@ -55,8 +55,8 @@ final class UriTest extends TestCase
                     'port' => 8080,
                     'path' => '/path',
                     'query' => 'query',
-                    'fragment' => 'fragment'
-                ]
+                    'fragment' => 'fragment',
+                ],
             ],
             'no host' => [
                 '/path?query#fragment',
@@ -66,8 +66,8 @@ final class UriTest extends TestCase
                     'port' => null,
                     'path' => '/path',
                     'query' => 'query',
-                    'fragment' => 'fragment'
-                ]
+                    'fragment' => 'fragment',
+                ],
             ],
             'no port' => [
                 'https://example.com/path',
@@ -77,8 +77,8 @@ final class UriTest extends TestCase
                     'port' => null,
                     'path' => '/path',
                     'query' => null,
-                    'fragment' => null
-                ]
+                    'fragment' => null,
+                ],
             ],
             'no query' => [
                 'https://example.com/path#fragment',
@@ -88,8 +88,8 @@ final class UriTest extends TestCase
                     'port' => null,
                     'path' => '/path',
                     'query' => null,
-                    'fragment' => 'fragment'
-                ]
+                    'fragment' => 'fragment',
+                ],
             ],
             'no fragment' => [
                 'https://example.com/path?query',
@@ -99,8 +99,8 @@ final class UriTest extends TestCase
                     'port' => null,
                     'path' => '/path',
                     'query' => 'query',
-                    'fragment' => null
-                ]
+                    'fragment' => null,
+                ],
             ],
             'empty query' => [
                 'https://example.com/path?',
@@ -110,8 +110,8 @@ final class UriTest extends TestCase
                     'port' => null,
                     'path' => '/path',
                     'query' => '',
-                    'fragment' => null
-                ]
+                    'fragment' => null,
+                ],
             ],
             'empty fragment' => [
                 'https://example.com/path#',
@@ -121,8 +121,8 @@ final class UriTest extends TestCase
                     'port' => null,
                     'path' => '/path',
                     'query' => null,
-                    'fragment' => ''
-                ]
+                    'fragment' => '',
+                ],
             ],
             'no path' => [
                 'https://example.com:8081?query#fragment',
@@ -132,8 +132,8 @@ final class UriTest extends TestCase
                     'port' => 8081,
                     'path' => '',
                     'query' => 'query',
-                    'fragment' => 'fragment'
-                ]
+                    'fragment' => 'fragment',
+                ],
             ],
         ];
     }
@@ -199,7 +199,7 @@ final class UriTest extends TestCase
 
         static::assertSame('user:password', $newUri->getUserInformation());
         static::assertSame('user:password@example.com', $newUri->getAuthority());
-        static::assertSame('https://user:password@example.com', (string)$newUri);
+        static::assertSame('https://user:password@example.com', (string) $newUri);
     }
 
     public function testWithNullUserRemovesUserInformation(): void
@@ -209,7 +209,7 @@ final class UriTest extends TestCase
 
         static::assertNull($newUri->getUserInformation());
         static::assertSame('example.com', $newUri->getAuthority());
-        static::assertSame('https://example.com', (string)$newUri);
+        static::assertSame('https://example.com', (string) $newUri);
     }
 
     public function testWithEmptyUserThrows(): void

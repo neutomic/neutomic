@@ -21,6 +21,4 @@ use Neu\Component\Console\Input\Definition\Flag;
  *
  * @extends AbstractBag<Flag>
  */
-final class FlagBag extends AbstractBag
-{
-}
+final class FlagBag extends AbstractBag {}

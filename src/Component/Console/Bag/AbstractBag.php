@@ -17,8 +17,8 @@ use ArrayIterator;
 use Countable;
 use Iterator;
 use IteratorAggregate;
-use Psl\Iter;
 use Override;
+use Psl\Iter;
 
 /**
  * A bag can be used for managing sets of specialized data.

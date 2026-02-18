@@ -31,13 +31,13 @@ final readonly class FilesystemLoaderFactory implements FactoryInterface
     /**
      * @var null|non-empty-string
      */
-    private null|string $root;
+    private ?string $root;
 
     /**
      * @param array<non-empty-string, null|non-empty-string> $paths
      * @param null|non-empty-string $root
      */
-    public function __construct(null|array $paths, null|string $root)
+    public function __construct(?array $paths, ?string $root)
     {
         $this->paths = $paths ?? [];
         $this->root = $root;

@@ -15,6 +15,4 @@ namespace Neu\Component\Http\Exception;
 
 use Neu\Component\Exception\UnexpectedValueException as RootUnexpectedValueException;
 
-final class UnexpectedValueException extends RootUnexpectedValueException implements ExceptionInterface
-{
-}
+final class UnexpectedValueException extends RootUnexpectedValueException implements ExceptionInterface {}

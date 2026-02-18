@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Neu\Component\EventDispatcher\Listener\Registry;
 
 use Neu\Component\EventDispatcher\Listener\ListenerInterface;
+use Override;
 use Psl\Iter;
 use Psl\Vec;
-use Override;
 
 use function is_subclass_of;
 
@@ -40,7 +40,9 @@ final class Registry implements RegistryInterface
     #[Override]
     public function register(string $event, ListenerInterface $listener, int $priority = 0): void
     {
-        if (isset($this->listeners[$priority][$event]) && Iter\contains($this->listeners[$priority][$event], $listener)) {
+        if (
+            isset($this->listeners[$priority][$event]) && Iter\contains($this->listeners[$priority][$event], $listener)
+        ) {
             return;
         }
 
@@ -101,18 +103,17 @@ final class Registry implements RegistryInterface
             return $this->optimized[$name];
         }
 
-        $priorities = Vec\sort(
-            Vec\keys($this->listeners),
-            static fn (int $a, int $b): int => $a <=> $b,
-        );
+        $priorities = Vec\sort(Vec\keys($this->listeners), static fn(int $a, int $b): int => $a <=> $b);
 
         $result = [];
         foreach ($priorities as $priority) {
             foreach ($this->listeners[$priority] as $event => $listeners) {
-                if ($name === $event || is_subclass_of($name, $event)) {
-                    foreach ($listeners as $listener) {
-                        $result[] = $listener;
-                    }
+                if (!($name === $event || is_subclass_of($name, $event))) {
+                    continue;
+                }
+
+                foreach ($listeners as $listener) {
+                    $result[] = $listener;
                 }
             }
         }

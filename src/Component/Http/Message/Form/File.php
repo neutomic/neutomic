@@ -48,12 +48,12 @@ final readonly class File implements FileInterface
      *
      * @var null|non-empty-string
      */
-    private null|string $extension;
+    private ?string $extension;
 
     /**
      * The body of the field.
      */
-    private null|BodyInterface $body;
+    private ?BodyInterface $body;
 
     /**
      * Creates a new {@see File} instance.
@@ -67,8 +67,14 @@ final readonly class File implements FileInterface
      *
      * @internal
      */
-    private function __construct(string $name, string $filename, string $mimeType, null|string $extension, HeaderStorage $headers, null|BodyInterface $body)
-    {
+    private function __construct(
+        string $name,
+        string $filename,
+        string $mimeType,
+        ?string $extension,
+        HeaderStorage $headers,
+        ?BodyInterface $body,
+    ) {
         $this->name = $name;
         $this->filename = $filename;
         $this->mimeType = $mimeType;
@@ -87,8 +93,14 @@ final readonly class File implements FileInterface
      * @param array<non-empty-string, non-empty-list<non-empty-string>> $headers The headers of the file.
      * @param BodyInterface $body The body of the file.
      */
-    public static function create(string $name, string $filename, string $mimeType, null|string $extension, array $headers = [], null|BodyInterface $body = null): static
-    {
+    public static function create(
+        string $name,
+        string $filename,
+        string $mimeType,
+        ?string $extension,
+        array $headers = [],
+        ?BodyInterface $body = null,
+    ): static {
         return new self($name, $filename, $mimeType, $extension, HeaderStorage::fromHeaders($headers), $body);
     }
 
@@ -123,7 +135,7 @@ final readonly class File implements FileInterface
      * @inheritDoc
      */
     #[Override]
-    public function getExtension(): null|string
+    public function getExtension(): ?string
     {
         return $this->extension;
     }
@@ -132,7 +144,7 @@ final readonly class File implements FileInterface
      * @inheritDoc
      */
     #[Override]
-    public function getBody(): null|BodyInterface
+    public function getBody(): ?BodyInterface
     {
         return $this->body;
     }
@@ -141,7 +153,7 @@ final readonly class File implements FileInterface
      * @inheritDoc
      */
     #[Override]
-    public function withBody(null|BodyInterface $body): static
+    public function withBody(?BodyInterface $body): static
     {
         return new self($this->name, $this->filename, $this->mimeType, $this->extension, $this->headerStorage, $body);
     }

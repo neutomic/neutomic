@@ -32,7 +32,7 @@ final class MiddlewareQueueTest extends TestCase
         $this->context = new Context(
             workerId: null,
             client: $this->createMock(Client::class),
-            sendInformationalResponse: static fn () => null,
+            sendInformationalResponse: static fn() => null,
         );
     }
 
@@ -66,10 +66,16 @@ final class MiddlewareQueueTest extends TestCase
         $handler->expects(static::never())->method('handle');
 
         $middlewareOne->expects(static::once())->method('process')->willReturn($response);
-        $middlewareTwo->expects(static::once())->method('process')->willReturnCallback(
-            static fn (Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface =>
-                $next->handle($context, $request)
-        );
+        $middlewareTwo
+            ->expects(static::once())
+            ->method('process')
+            ->willReturnCallback(
+                static fn(
+                    Context $context,
+                    RequestInterface $request,
+                    HandlerInterface $next,
+                ): ResponseInterface => $next->handle($context, $request),
+            );
 
         $queue = new MiddlewareQueue();
         $queue->enqueue($middlewareOne);
@@ -91,10 +97,16 @@ final class MiddlewareQueueTest extends TestCase
 
         $handler->expects(static::never())->method('handle');
         $middlewareOne->expects(static::exactly(2))->method('process')->willReturn($response);
-        $middlewareTwo->expects(static::exactly(2))->method('process')->willReturnCallback(
-            static fn (Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface =>
-            $next->handle($context, $request)
-        );
+        $middlewareTwo
+            ->expects(static::exactly(2))
+            ->method('process')
+            ->willReturnCallback(
+                static fn(
+                    Context $context,
+                    RequestInterface $request,
+                    HandlerInterface $next,
+                ): ResponseInterface => $next->handle($context, $request),
+            );
 
         $queue = new MiddlewareQueue();
         $queue->enqueue($middlewareOne);
@@ -117,10 +129,16 @@ final class MiddlewareQueueTest extends TestCase
 
         $handler->expects(static::never())->method('handle');
         $middlewareOne->expects(static::exactly(2))->method('process')->willReturn($response);
-        $middlewareTwo->expects(static::exactly(2))->method('process')->willReturnCallback(
-            static fn (Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface =>
-            $next->handle($context, $request)
-        );
+        $middlewareTwo
+            ->expects(static::exactly(2))
+            ->method('process')
+            ->willReturnCallback(
+                static fn(
+                    Context $context,
+                    RequestInterface $request,
+                    HandlerInterface $next,
+                ): ResponseInterface => $next->handle($context, $request),
+            );
 
         $queue = new MiddlewareQueue();
         $queue->enqueue($middlewareOne);
@@ -145,15 +163,27 @@ final class MiddlewareQueueTest extends TestCase
 
         $handler->expects(static::once())->method('handle')->with($this->context, $request)->willReturn($response);
 
-        $middlewareTwo->expects(static::once())->method('process')->willReturnCallback(
-            static fn (Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface =>
-                $next->handle($context, $request)
-        );
+        $middlewareTwo
+            ->expects(static::once())
+            ->method('process')
+            ->willReturnCallback(
+                static fn(
+                    Context $context,
+                    RequestInterface $request,
+                    HandlerInterface $next,
+                ): ResponseInterface => $next->handle($context, $request),
+            );
 
-        $middlewareOne->expects(static::once())->method('process')->willReturnCallback(
-            static fn (Context $context, RequestInterface $request, HandlerInterface $next): ResponseInterface =>
-                $next->handle($context, $request)
-        );
+        $middlewareOne
+            ->expects(static::once())
+            ->method('process')
+            ->willReturnCallback(
+                static fn(
+                    Context $context,
+                    RequestInterface $request,
+                    HandlerInterface $next,
+                ): ResponseInterface => $next->handle($context, $request),
+            );
 
         $queue = new MiddlewareQueue();
         $queue->enqueue($middlewareOne);

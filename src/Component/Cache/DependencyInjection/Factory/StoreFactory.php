@@ -34,7 +34,7 @@ final readonly class StoreFactory implements FactoryInterface
     /**
      * @param null|non-empty-string $driver The service identifier of the driver to use, defaults to {@see DriverInterface}.
      */
-    public function __construct(null|string $driver = null)
+    public function __construct(?string $driver = null)
     {
         $this->driver = $driver ?? DriverInterface::class;
     }
@@ -42,8 +42,6 @@ final readonly class StoreFactory implements FactoryInterface
     #[Override]
     public function __invoke(ContainerInterface $container): Store
     {
-        return new Store(
-            $container->getTyped($this->driver, DriverInterface::class)
-        );
+        return new Store($container->getTyped($this->driver, DriverInterface::class));
     }
 }

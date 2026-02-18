@@ -17,8 +17,8 @@ use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\EventDispatcher\EventDispatcherInterface;
 use Neu\Component\Http\Server\Cluster;
-use Psr\Log\LoggerInterface;
 use Override;
+use Psr\Log\LoggerInterface;
 
 /**
  * Factory for creating a {@see Cluster} instance.
@@ -46,7 +46,7 @@ final readonly class ClusterFactory implements FactoryInterface
      *
      * @var positive-int|null
      */
-    private null|int $workers;
+    private ?int $workers;
 
     /**
      * Create a new {@see ClusterFactory} instance.
@@ -55,7 +55,7 @@ final readonly class ClusterFactory implements FactoryInterface
      * @param non-empty-string|null $logger The logger service to be used by the cluster.
      * @param positive-int|null $workers The number of worker processes to be managed by the cluster.
      */
-    public function __construct(null|string $eventDispatcher = null, null|string $logger = null, null|int $workers = null)
+    public function __construct(?string $eventDispatcher = null, ?string $logger = null, ?int $workers = null)
     {
         $this->eventDispatcher = $eventDispatcher ?? EventDispatcherInterface::class;
         $this->logger = $logger ?? LoggerInterface::class;

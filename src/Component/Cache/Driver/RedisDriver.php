@@ -29,7 +29,7 @@ final class RedisDriver implements DriverInterface
      *
      * @var null|RedisClient
      */
-    private null|RedisClient $client;
+    private ?RedisClient $client;
 
     /**
      * Creates a new redis cache driver.
@@ -73,7 +73,7 @@ final class RedisDriver implements DriverInterface
      * @inheritDoc
      */
     #[Override]
-    public function set(string $key, mixed $value, null|int $ttl = null): void
+    public function set(string $key, mixed $value, ?int $ttl = null): void
     {
         if (null === $this->client) {
             throw new RuntimeException('The redis client has been closed.');

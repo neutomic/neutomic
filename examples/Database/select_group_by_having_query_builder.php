@@ -41,13 +41,27 @@ $database
         ['name' => ':name7', 'department' => ':department7', 'salary' => ':salary7'],
     )
     ->execute([
-        'name1' => 'Jasmine',  'department1' => 2, 'salary1' => 4000,
-        'name2' => 'Anna',     'department2' => 1, 'salary2' => 3500,
-        'name3' => 'James',    'department3' => 1, 'salary3' => 2500,
-        'name4' => 'David',    'department4' => 2, 'salary4' => 5000,
-        'name5' => 'Mark',     'department5' => 2, 'salary5' => 3000,
-        'name6' => 'Salma',    'department6' => 3, 'salary6' => 4600,
-        'name7' => 'Ali',      'department7' => 3, 'salary7' => 3900,
+        'name1' => 'Jasmine',
+        'department1' => 2,
+        'salary1' => 4000,
+        'name2' => 'Anna',
+        'department2' => 1,
+        'salary2' => 3500,
+        'name3' => 'James',
+        'department3' => 1,
+        'salary3' => 2500,
+        'name4' => 'David',
+        'department4' => 2,
+        'salary4' => 5000,
+        'name5' => 'Mark',
+        'department5' => 2,
+        'salary5' => 3000,
+        'name6' => 'Salma',
+        'department6' => 3,
+        'salary6' => 4600,
+        'name7' => 'Ali',
+        'department7' => 3,
+        'salary7' => 3900,
     ]);
 
 $data = $database
@@ -57,8 +71,7 @@ $data = $database
     ->groupBy('e.department')
     ->orderBy('e.department', OrderDirection::Descending)
     ->execute()
-    ->getRows()
-;
+    ->getRows();
 
 foreach ($data as ['department' => $department, 'avg' => $avg]) {
     IO\write_line('Average salary in department number %d, is %d.', $department, $avg);
@@ -69,13 +82,10 @@ $data = $database
     ->select('e.department', 'AVG(e.salary)')
     ->from('employees', 'e')
     ->groupBy('e.department')
-    ->having(
-        $database->createExpressionBuilder()->greaterThan('AVG(e.salary)', '3000')
-    )
+    ->having($database->createExpressionBuilder()->greaterThan('AVG(e.salary)', '3000'))
     ->orderBy('e.department', OrderDirection::Descending)
     ->execute()
-    ->getRows()
-;
+    ->getRows();
 
 foreach ($data as ['department' => $department, 'avg' => $avg]) {
     IO\write_line('Average salary in department number %d, is %d.', $department, $avg);

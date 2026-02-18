@@ -20,12 +20,12 @@ use Neu\Component\DependencyInjection\Exception\InvalidConfigurationException;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Neu\Component\DependencyInjection\RegistryInterface;
 use Neu\Component\Password\HasherInterface;
-use Neu\Component\Password\HasherManagerInterface;
 use Neu\Component\Password\HasherManager;
+use Neu\Component\Password\HasherManagerInterface;
 use Neu\Component\Password\NativeHasher;
 use Neu\Component\Password\PlainHasher;
-use Psl\Type;
 use Override;
+use Psl\Type;
 
 /**
  * The password extension.
@@ -57,9 +57,7 @@ final readonly class PasswordExtension implements ExtensionInterface
     #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $configuration = $configurations
-            ->getOfTypeOrDefault('password', $this->getConfigurationType(), [])
-        ;
+        $configuration = $configurations->getOfTypeOrDefault('password', $this->getConfigurationType(), []);
 
         $hashers = $configuration['hashers'] ?? [];
 
@@ -126,10 +124,11 @@ final readonly class PasswordExtension implements ExtensionInterface
      */
     private function registerNativeHasher(RegistryInterface $registry, string $serviceId, array $config): void
     {
-        $registry->addDefinition(Definition::create($serviceId, NativeHasher::class, new Factory\NativeHasherFactory(
-            $config['algorithm'] ?? null,
-            $config['options'] ?? null,
-        )));
+        $registry->addDefinition(Definition::create(
+            $serviceId,
+            NativeHasher::class,
+            new Factory\NativeHasherFactory($config['algorithm'] ?? null, $config['options'] ?? null),
+        ));
     }
 
     /**
@@ -141,13 +140,16 @@ final readonly class PasswordExtension implements ExtensionInterface
      *
      * @throws ExceptionInterface
      */
-    private function setDefaultHasher(RegistryInterface $registry, array $hasherDefinitions, string $defaultHasherId): void
-    {
+    private function setDefaultHasher(
+        RegistryInterface $registry,
+        array $hasherDefinitions,
+        string $defaultHasherId,
+    ): void {
         if (!isset($hasherDefinitions[$defaultHasherId])) {
             if (!$registry->hasDefinition($defaultHasherId)) {
-                throw new InvalidConfigurationException(
-                    'The default password hasher "' . $defaultHasherId . '" is not defined.',
-                );
+                throw new InvalidConfigurationException('The default password hasher "'
+                . $defaultHasherId
+                . '" is not defined.');
             }
 
             $definition = $registry->getDefinition($defaultHasherId);
@@ -157,13 +159,16 @@ final readonly class PasswordExtension implements ExtensionInterface
 
         if (!$definition->isInstanceOf(HasherInterface::class)) {
             throw new InvalidConfigurationException(
-                'The default password hasher "' . $defaultHasherId . '" must be an instance of "' . HasherInterface::class . '".',
+                'The default password hasher "'
+                . $defaultHasherId
+                . '" must be an instance of "'
+                . HasherInterface::class
+                . '".',
             );
         }
 
         $definition->addAlias(HasherInterface::class);
     }
-
 
     /**
      * Register the {@see HasherManager} service.
@@ -172,9 +177,15 @@ final readonly class PasswordExtension implements ExtensionInterface
      * @param non-empty-string $defaultHasherId
      * @param array<non-empty-string, non-empty-string> $hasherDefinitions
      */
-    private function registerHasherManager(RegistryInterface $registry, string $defaultHasherId, array $hasherDefinitions): void
-    {
-        $definition = Definition::ofType(HasherManager::class, new Factory\HasherManagerFactory($defaultHasherId, $hasherDefinitions));
+    private function registerHasherManager(
+        RegistryInterface $registry,
+        string $defaultHasherId,
+        array $hasherDefinitions,
+    ): void {
+        $definition = Definition::ofType(
+            HasherManager::class,
+            new Factory\HasherManagerFactory($defaultHasherId, $hasherDefinitions),
+        );
         $definition->addAlias(HasherManagerInterface::class);
 
         $registry->addDefinition($definition);
@@ -187,29 +198,26 @@ final readonly class PasswordExtension implements ExtensionInterface
     {
         return Type\shape([
             'default' => Type\optional(Type\non_empty_string()),
-            'hashers' => Type\optional(Type\dict(
-                Type\non_empty_string(),
-                Type\union(
-                    Type\shape([
-                        'type' => Type\literal_scalar('plain')
-                    ]),
-                    Type\shape([
-                        'type' => Type\literal_scalar('native'),
-                        'algorithm' => Type\optional(Type\union(
-                            Type\literal_scalar('default'),
-                            Type\literal_scalar('bcrypt'),
-                            Type\literal_scalar('argon2i'),
-                            Type\literal_scalar('argon2id')
-                        )),
-                        'options' => Type\optional(Type\shape([
-                            'cost' => Type\optional(Type\int()),
-                            'time_cost' => Type\optional(Type\int()),
-                            'memory_cost' => Type\optional(Type\int()),
-                            'threads' => Type\optional(Type\int())
-                        ])),
-                    ]),
-                )
-            ))
+            'hashers' => Type\optional(Type\dict(Type\non_empty_string(), Type\union(
+                Type\shape([
+                    'type' => Type\literal_scalar('plain'),
+                ]),
+                Type\shape([
+                    'type' => Type\literal_scalar('native'),
+                    'algorithm' => Type\optional(Type\union(
+                        Type\literal_scalar('default'),
+                        Type\literal_scalar('bcrypt'),
+                        Type\literal_scalar('argon2i'),
+                        Type\literal_scalar('argon2id'),
+                    )),
+                    'options' => Type\optional(Type\shape([
+                        'cost' => Type\optional(Type\int()),
+                        'time_cost' => Type\optional(Type\int()),
+                        'memory_cost' => Type\optional(Type\int()),
+                        'threads' => Type\optional(Type\int()),
+                    ])),
+                ]),
+            ))),
         ]);
     }
 }

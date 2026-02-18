@@ -18,12 +18,12 @@ use BackedEnum;
 use Neu\Component\DependencyInjection\Exception\ExceptionInterface;
 use Neu\Component\DependencyInjection\Exception\InvalidEntryException;
 use Neu\Component\DependencyInjection\Exception\MissingEntryException;
+use Override;
 use Psl\Iter;
 use Psl\Type;
 use Psl\Type\TypeInterface;
 use Psl\Vec;
 use Throwable;
-use Override;
 
 use function array_merge;
 use function array_merge_recursive;
@@ -38,8 +38,7 @@ final readonly class Document implements DocumentInterface
     public function __construct(
         private array $entries,
         private bool $strict = false,
-    ) {
-    }
+    ) {}
 
     /**
      * Create a new configuration container.
@@ -104,7 +103,11 @@ final readonly class Document implements DocumentInterface
         try {
             return $type->coerce($value);
         } catch (Type\Exception\CoercionException $e) {
-            throw $this->invalidEntry($index, 'cannot be coerced into the expected type "' . $type->toString() . '"', $e);
+            throw $this->invalidEntry(
+                $index,
+                'cannot be coerced into the expected type "' . $type->toString() . '"',
+                $e,
+            );
         }
     }
 
@@ -145,7 +148,7 @@ final readonly class Document implements DocumentInterface
      * @inheritDoc
      */
     #[Override]
-    public function getDocument(int|string $index, null|bool $strict = null): DocumentInterface
+    public function getDocument(int|string $index, ?bool $strict = null): DocumentInterface
     {
         if (!$this->has($index)) {
             return new self([], $strict ?? $this->strict);
@@ -210,14 +213,11 @@ final readonly class Document implements DocumentInterface
         if ($recursive) {
             return new self(
                 array_replace_recursive($this->entries, $document->getAll()),
-                $this->strict || $document->isStrict()
+                $this->strict || $document->isStrict(),
             );
         }
 
-        return new self(
-            array_replace($this->entries, $document->getAll()),
-            $this->strict || $document->isStrict()
-        );
+        return new self(array_replace($this->entries, $document->getAll()), $this->strict || $document->isStrict());
     }
 
     /**
@@ -229,14 +229,11 @@ final readonly class Document implements DocumentInterface
         if ($recursive) {
             return new self(
                 array_merge_recursive($this->entries, $document->getAll()),
-                $this->strict || $document->isStrict()
+                $this->strict || $document->isStrict(),
             );
         }
 
-        return new self(
-            array_merge($this->entries, $document->getAll()),
-            $this->strict || $document->isStrict()
-        );
+        return new self(array_merge($this->entries, $document->getAll()), $this->strict || $document->isStrict());
     }
 
     /**
@@ -268,8 +265,11 @@ final readonly class Document implements DocumentInterface
         return new MissingEntryException('Entry ' . $index . ' does not exist within the container.');
     }
 
-    private function invalidEntry(int|string $index, string $message, null|Throwable $previous = null): InvalidEntryException
-    {
+    private function invalidEntry(
+        int|string $index,
+        string $message,
+        ?Throwable $previous = null,
+    ): InvalidEntryException {
         if (Type\string()->matches($index)) {
             $index = '"' . $index . '"';
         } else {

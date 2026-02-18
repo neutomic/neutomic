@@ -18,6 +18,4 @@ use Neu\Component\Http\Exception\RuntimeException;
 /**
  * Thrown when attempting to send an event to a closed stream.
  */
-final class StreamClosedException extends RuntimeException implements ExceptionInterface
-{
-}
+final class StreamClosedException extends RuntimeException implements ExceptionInterface {}

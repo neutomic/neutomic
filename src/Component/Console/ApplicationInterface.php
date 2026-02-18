@@ -48,7 +48,7 @@ interface ApplicationInterface extends EventDispatcherAwareInterface
      *
      * @return null|EventDispatcherInterface The event dispatcher object, or null if none is set.
      */
-    public function getEventDispatcher(): null|EventDispatcherInterface;
+    public function getEventDispatcher(): ?EventDispatcherInterface;
 
     /**
      * Run the application with the given input and output.
@@ -58,5 +58,5 @@ interface ApplicationInterface extends EventDispatcherAwareInterface
      *
      * @return int The exit status code.
      */
-    public function run(null|InputInterface $input = null, null|OutputInterface $output = null): int;
+    public function run(?InputInterface $input = null, ?OutputInterface $output = null): int;
 }

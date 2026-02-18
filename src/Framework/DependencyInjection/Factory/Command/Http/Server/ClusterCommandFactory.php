@@ -51,8 +51,11 @@ final readonly class ClusterCommandFactory implements FactoryInterface
      * @param list<non-empty-string>|null $watchDirectories The directories to watch for changes.
      * @param list<non-empty-string>|null $watchExtensions The extensions to watch for changes.
      */
-    public function __construct(null|float $watchInterval = null, null|array $watchDirectories = null, null|array $watchExtensions = null)
-    {
+    public function __construct(
+        ?float $watchInterval = null,
+        ?array $watchDirectories = null,
+        ?array $watchExtensions = null,
+    ) {
         $this->watchInterval = $watchInterval ?? Configuration::DEFAULT_POLL_INTERVAL;
         $this->watchDirectories = $watchDirectories ?? [];
         $this->watchExtensions = $watchExtensions ?? [];
@@ -71,8 +74,9 @@ final readonly class ClusterCommandFactory implements FactoryInterface
             $directories[] = $project->entrypoint;
         }
 
-        $watcherConfiguration = Configuration::createForDirectories($directories)
-            ->withPollInterval($this->watchInterval);
+        $watcherConfiguration = Configuration::createForDirectories(
+            $directories,
+        )->withPollInterval($this->watchInterval);
 
         if ($this->watchExtensions !== []) {
             $watcherConfiguration = $watcherConfiguration->withExtensions($this->watchExtensions);

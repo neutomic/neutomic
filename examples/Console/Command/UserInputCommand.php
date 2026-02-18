@@ -48,7 +48,6 @@ final readonly class UserInputCommand implements CommandInterface
 
         $output->writeLine('You picked: ' . $choice);
 
-
         return 0;
     }
 }

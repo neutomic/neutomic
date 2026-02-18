@@ -15,6 +15,4 @@ namespace Neu\Component\Http\Session\Exception;
 
 use Neu\Component\Http\Exception\RuntimeException as RootRuntimeException;
 
-final class RuntimeException extends RootRuntimeException implements ExceptionInterface
-{
-}
+final class RuntimeException extends RootRuntimeException implements ExceptionInterface {}

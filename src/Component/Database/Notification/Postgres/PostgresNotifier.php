@@ -31,8 +31,7 @@ final readonly class PostgresNotifier implements NotifierInterface
     public function __construct(
         private PostgresExecutor $executor,
         private string $channel,
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritDoc

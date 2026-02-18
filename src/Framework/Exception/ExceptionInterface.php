@@ -18,6 +18,4 @@ use Throwable;
 /**
  * Base exception interface for all exceptions thrown by the framework.
  */
-interface ExceptionInterface extends Throwable
-{
-}
+interface ExceptionInterface extends Throwable {}

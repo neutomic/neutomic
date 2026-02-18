@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Neu\Component\Database\Query\Expression;
 
+use Override;
 use Psl\Str;
 use Psl\Vec;
-use Override;
 
 final readonly class Builder implements BuilderInterface
 {
@@ -23,8 +23,10 @@ final readonly class Builder implements BuilderInterface
      * @inheritDoc
      */
     #[Override]
-    public function and(string|CompositeExpressionInterface $expression, string|CompositeExpressionInterface ...$expressions): CompositeExpressionInterface
-    {
+    public function and(
+        string|CompositeExpressionInterface $expression,
+        string|CompositeExpressionInterface ...$expressions,
+    ): CompositeExpressionInterface {
         return CompositeExpression::and($expression, ...$expressions);
     }
 
@@ -32,8 +34,10 @@ final readonly class Builder implements BuilderInterface
      * @inheritDoc
      */
     #[Override]
-    public function or(string|CompositeExpressionInterface $expression, string|CompositeExpressionInterface ...$expressions): CompositeExpressionInterface
-    {
+    public function or(
+        string|CompositeExpressionInterface $expression,
+        string|CompositeExpressionInterface ...$expressions,
+    ): CompositeExpressionInterface {
         return CompositeExpression::or($expression, ...$expressions);
     }
 
@@ -122,7 +126,7 @@ final readonly class Builder implements BuilderInterface
      * @inheritDoc
      */
     #[Override]
-    public function like(string $expression, string $pattern, null|string $escapeCharacters = null): string
+    public function like(string $expression, string $pattern, ?string $escapeCharacters = null): string
     {
         $comparison = $this->rawComparison($expression, 'LIKE', $pattern);
         if (null === $escapeCharacters) {
@@ -136,7 +140,7 @@ final readonly class Builder implements BuilderInterface
      * @inheritDoc
      */
     #[Override]
-    public function notLike(string $expression, string $pattern, null|string $escapeCharacters = null): string
+    public function notLike(string $expression, string $pattern, ?string $escapeCharacters = null): string
     {
         $comparison = $this->rawComparison($expression, 'NOT LIKE', $pattern);
         if (null === $escapeCharacters) {
@@ -152,7 +156,11 @@ final readonly class Builder implements BuilderInterface
     #[Override]
     public function in(string $expression, string $setExpression, string ...$setExpressions): string
     {
-        return $this->rawComparison($expression, 'IN', '(' . Str\join(Vec\concat([$setExpression], $setExpressions), ', ') . ')');
+        return $this->rawComparison(
+            $expression,
+            'IN',
+            '(' . Str\join(Vec\concat([$setExpression], $setExpressions), ', ') . ')',
+        );
     }
 
     /**
@@ -161,7 +169,11 @@ final readonly class Builder implements BuilderInterface
     #[Override]
     public function notIn(string $expression, string $setExpression, string ...$setExpressions): string
     {
-        return $this->rawComparison($expression, 'NOT IN', '(' . Str\join(Vec\concat([$setExpression], $setExpressions), ', ') . ')');
+        return $this->rawComparison(
+            $expression,
+            'NOT IN',
+            '(' . Str\join(Vec\concat([$setExpression], $setExpressions), ', ') . ')',
+        );
     }
 
     /**

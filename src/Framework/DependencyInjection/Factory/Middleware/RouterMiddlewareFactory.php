@@ -40,7 +40,7 @@ final readonly class RouterMiddlewareFactory implements FactoryInterface
      * @param non-empty-string|null $matcher Router matcher service identifier.
      * @param int|null $priority Middleware priority.
      */
-    public function __construct(null|string $matcher = null, null|int $priority = null)
+    public function __construct(?string $matcher = null, ?int $priority = null)
     {
         $this->matcher = $matcher ?? MatcherInterface::class;
         $this->priority = $priority ?? RouterMiddleware::PRIORITY;
@@ -52,9 +52,6 @@ final readonly class RouterMiddlewareFactory implements FactoryInterface
     #[Override]
     public function __invoke(ContainerInterface $container): RouterMiddleware
     {
-        return new RouterMiddleware(
-            $container->getTyped($this->matcher, MatcherInterface::class),
-            $this->priority,
-        );
+        return new RouterMiddleware($container->getTyped($this->matcher, MatcherInterface::class), $this->priority);
     }
 }

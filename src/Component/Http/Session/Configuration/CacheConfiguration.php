@@ -44,9 +44,9 @@ final readonly class CacheConfiguration
      *
      * @var CacheLimiter|null
      */
-    public null|CacheLimiter $limiter;
+    public ?CacheLimiter $limiter;
 
-    public function __construct(int $expires = self::DEFAULT_CACHE_EXPIRE, null|CacheLimiter $limiter = null)
+    public function __construct(int $expires = self::DEFAULT_CACHE_EXPIRE, ?CacheLimiter $limiter = null)
     {
         $this->expires = $expires;
         $this->limiter = $limiter;

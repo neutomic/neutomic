@@ -28,11 +28,12 @@ final class CsrfTokenManagerFactoryTest extends TestCase
         $storage = $this->createMock(CsrfTokenStorageInterface::class);
 
         $container = $this->createMock(ContainerInterface::class);
-        $container->expects(static::exactly(2))
+        $container
+            ->expects(static::exactly(2))
             ->method('getTyped')
             ->willReturnMap([
                 [CsrfTokenGeneratorInterface::class, CsrfTokenGeneratorInterface::class, $generator],
-                [CsrfTokenStorageInterface::class, CsrfTokenStorageInterface::class, $storage],
+                [CsrfTokenStorageInterface::class,   CsrfTokenStorageInterface::class,   $storage],
             ]);
 
         $factory = new CsrfTokenManagerFactory();
@@ -47,11 +48,12 @@ final class CsrfTokenManagerFactoryTest extends TestCase
         $storage = $this->createMock(CsrfTokenStorageInterface::class);
 
         $container = $this->createMock(ContainerInterface::class);
-        $container->expects(static::exactly(2))
+        $container
+            ->expects(static::exactly(2))
             ->method('getTyped')
             ->willReturnMap([
                 ['custom_generator', CsrfTokenGeneratorInterface::class, $generator],
-                ['custom_storage', CsrfTokenStorageInterface::class, $storage],
+                ['custom_storage',   CsrfTokenStorageInterface::class,   $storage],
             ]);
 
         $factory = new CsrfTokenManagerFactory('custom_generator', 'custom_storage');

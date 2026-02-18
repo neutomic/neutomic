@@ -17,12 +17,12 @@ use Neu\Component\DependencyInjection\Configuration\Document;
 use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Exception\InvalidConfigurationException;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
+use Override;
 use Psl\File;
 use Psl\Filesystem;
 use Psl\Json;
 use Psl\Str;
 use Psl\Type;
-use Override;
 
 /**
  * @implements LoaderInterface<non-empty-string>
@@ -38,10 +38,7 @@ final class JsonFileLoader implements LoaderInterface
         try {
             $content = File\read($resource);
         } catch (File\Exception\ExceptionInterface $previous) {
-            throw new RuntimeException(
-                'failed to read json resource file "' . $resource . '".',
-                previous: $previous
-            );
+            throw new RuntimeException('failed to read json resource file "' . $resource . '".', previous: $previous);
         }
 
         try {
@@ -49,7 +46,7 @@ final class JsonFileLoader implements LoaderInterface
         } catch (Json\Exception\DecodeException $previous) {
             throw new InvalidConfigurationException(
                 'failed to decode json resource file "' . $resource . '".',
-                previous: $previous
+                previous: $previous,
             );
         }
 

@@ -25,5 +25,5 @@ interface AdviserInterface
      *
      * @return Advice|null An instance of Advice, or null if no advice is available.
      */
-    public function getAdvice(): null|Advice;
+    public function getAdvice(): ?Advice;
 }

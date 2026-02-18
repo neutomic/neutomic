@@ -98,7 +98,7 @@ final readonly class HeaderStorage
      *
      * @return non-empty-list<non-empty-string>|null
      */
-    public function getHeader(string $name): null|array
+    public function getHeader(string $name): ?array
     {
         $normalized = strtolower($name);
         if (!isset($this->headerNames[$normalized])) {
@@ -115,7 +115,7 @@ final readonly class HeaderStorage
      *
      * @return non-empty-string|null
      */
-    public function getHeaderLine(string $name): null|string
+    public function getHeaderLine(string $name): ?string
     {
         $header = $this->getHeader($name);
         if ($header === null) {
@@ -177,7 +177,7 @@ final readonly class HeaderStorage
         }
 
         $normalized = strtolower($name);
-        $header   = $this->headerNames[$normalized];
+        $header = $this->headerNames[$normalized];
 
         $headers = $this->headers;
         $headerNames = $this->headerNames;

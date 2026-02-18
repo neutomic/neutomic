@@ -34,18 +34,10 @@ final class EventDispatcherTest extends TestCase
     {
         $event = new OrderCreatedEvent(1);
         $listener1 = $this->createMock(ListenerInterface::class);
-        $listener1
-            ->expects(static::once())
-            ->method('process')
-            ->with($event)
-            ->willReturn($event);
+        $listener1->expects(static::once())->method('process')->with($event)->willReturn($event);
 
         $listener2 = $this->createMock(ListenerInterface::class);
-        $listener2
-            ->expects(static::once())
-            ->method('process')
-            ->with($event)
-            ->willReturn($event);
+        $listener2->expects(static::once())->method('process')->with($event)->willReturn($event);
 
         $registry = new Registry();
         $registry->register(OrderCreatedEvent::class, $listener1);
@@ -155,8 +147,8 @@ final class EventDispatcherTest extends TestCase
         $dispatcher = new EventDispatcher($provider);
 
         [$errors, [$one, $two]] = Amp\Future\awaitAll([
-            Amp\async(static fn () =>  $dispatcher->dispatch($event)),
-            Amp\async(static fn () =>  $dispatcher->dispatch($event)),
+            Amp\async(static fn() => $dispatcher->dispatch($event)),
+            Amp\async(static fn() => $dispatcher->dispatch($event)),
         ]);
 
         static::assertSame([], $errors);

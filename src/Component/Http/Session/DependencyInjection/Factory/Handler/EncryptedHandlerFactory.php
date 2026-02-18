@@ -16,8 +16,8 @@ namespace Neu\Component\Http\Session\DependencyInjection\Factory\Handler;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Factory\FactoryInterface;
 use Neu\Component\Http\Session\Handler\EncryptedHandler;
-use SensitiveParameter;
 use Override;
+use SensitiveParameter;
 
 /**
  * A factory to create an encrypted handler instance.
@@ -31,12 +31,12 @@ final readonly class EncryptedHandlerFactory implements FactoryInterface
      *
      * @var null|non-empty-string
      */
-    private null|string $secret;
+    private ?string $secret;
 
     /**
      * @param null|non-empty-string $secret
      */
-    public function __construct(#[SensitiveParameter] null|string $secret = null)
+    public function __construct(#[SensitiveParameter] ?string $secret = null)
     {
         $this->secret = $secret;
     }

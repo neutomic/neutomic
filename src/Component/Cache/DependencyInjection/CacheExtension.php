@@ -31,9 +31,9 @@ use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\Exception\InvalidConfigurationException;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Neu\Component\DependencyInjection\RegistryInterface;
+use Override;
 use Psl\Class;
 use Psl\Type;
-use Override;
 
 use function array_key_first;
 
@@ -77,9 +77,7 @@ final class CacheExtension implements ExtensionInterface
     #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $configuration = $configurations
-            ->getOfTypeOrDefault('cache', $this->getConfigurationType(), [])
-        ;
+        $configuration = $configurations->getOfTypeOrDefault('cache', $this->getConfigurationType(), []);
 
         $stores = $configuration['stores'] ?? [];
 
@@ -127,7 +125,11 @@ final class CacheExtension implements ExtensionInterface
                 $this->registerServiceDriver($registry, $driverServiceId, $config);
             }
 
-            $registry->addDefinition(Definition::create($storeServiceId, StoreInterface::class, new StoreFactory($driverServiceId)));
+            $registry->addDefinition(Definition::create(
+                $storeServiceId,
+                StoreInterface::class,
+                new StoreFactory($driverServiceId),
+            ));
 
             $storeDefinitions[$name] = $storeServiceId;
         }
@@ -144,10 +146,11 @@ final class CacheExtension implements ExtensionInterface
      */
     private function registerLocalDriver(RegistryInterface $registry, string $serviceId, array $config): void
     {
-        $registry->addDefinition(Definition::create($serviceId, LocalDriver::class, new LocalDriverFactory(
-            pruneInterval: $config['prune-interval'] ?? null,
-            size: $config['size'] ?? null,
-        )));
+        $registry->addDefinition(Definition::create(
+            $serviceId,
+            LocalDriver::class,
+            new LocalDriverFactory(pruneInterval: $config['prune-interval'] ?? null, size: $config['size'] ?? null),
+        ));
     }
 
     /**
@@ -159,10 +162,14 @@ final class CacheExtension implements ExtensionInterface
      */
     private function registerFilesystemDriver(RegistryInterface $registry, string $serviceId, array $config): void
     {
-        $registry->addDefinition(Definition::create($serviceId, FilesystemDriver::class, new FilesystemDriverFactory(
-            directory: $config['directory'],
-            pruneInterval: $config['prune-interval'] ?? null,
-        )));
+        $registry->addDefinition(Definition::create(
+            $serviceId,
+            FilesystemDriver::class,
+            new FilesystemDriverFactory(
+                directory: $config['directory'],
+                pruneInterval: $config['prune-interval'] ?? null,
+            ),
+        ));
     }
 
     /**
@@ -175,15 +182,21 @@ final class CacheExtension implements ExtensionInterface
     private function registerRedisDriver(RegistryInterface $registry, string $serviceId, array $config): void
     {
         if (!Class\exists(RedisConfig::class)) {
-            throw new InvalidConfigurationException('The "amphp/redis" package is required to use the redis cache driver.');
+            throw new InvalidConfigurationException(
+                'The "amphp/redis" package is required to use the redis cache driver.',
+            );
         }
 
-        $registry->addDefinition(Definition::create($serviceId, RedisDriver::class, new RedisDriverFactory(
-            uri: $config['uri'],
-            timeout: $config['timeout'] ?? null,
-            database: $config['database'] ?? null,
-            password: $config['password'] ?? null,
-        )));
+        $registry->addDefinition(Definition::create(
+            $serviceId,
+            RedisDriver::class,
+            new RedisDriverFactory(
+                uri: $config['uri'],
+                timeout: $config['timeout'] ?? null,
+                database: $config['database'] ?? null,
+                password: $config['password'] ?? null,
+            ),
+        ));
     }
 
     /**
@@ -198,7 +211,9 @@ final class CacheExtension implements ExtensionInterface
         $serviceDefinition = $registry->getDefinition($config['service']);
 
         if (!$serviceDefinition->isInstanceOf(DriverInterface::class)) {
-            throw new InvalidConfigurationException('The service "' . $config['service'] . '" must implement "' . DriverInterface::class . '".');
+            throw new InvalidConfigurationException(
+                'The service "' . $config['service'] . '" must implement "' . DriverInterface::class . '".',
+            );
         }
 
         $serviceDefinition->addAlias($serviceId);
@@ -215,7 +230,9 @@ final class CacheExtension implements ExtensionInterface
     {
         if (!isset($storeDefinitions[$defaultStore])) {
             if (!$registry->hasDefinition($defaultStore)) {
-                throw new InvalidConfigurationException('The default cache store "' . $defaultStore . '" is not defined.');
+                throw new InvalidConfigurationException('The default cache store "'
+                . $defaultStore
+                . '" is not defined.');
             }
 
             $definition = $registry->getDefinition($defaultStore);
@@ -224,7 +241,11 @@ final class CacheExtension implements ExtensionInterface
         }
 
         if (!$definition->isInstanceOf(StoreInterface::class)) {
-            throw new InvalidConfigurationException('The default cache store "' . $defaultStore . '" must be an instance of "' . StoreInterface::class . '".');
+            throw new InvalidConfigurationException('The default cache store "'
+            . $defaultStore
+            . '" must be an instance of "'
+            . StoreInterface::class
+            . '".');
         }
 
         $definition->addAlias(StoreInterface::class);
@@ -237,9 +258,15 @@ final class CacheExtension implements ExtensionInterface
      * @param non-empty-string $defaultStore
      * @param array<non-empty-string, non-empty-string> $storeDefinitions
      */
-    private function registerStoreManager(RegistryInterface $registry, string $defaultStore, array $storeDefinitions): void
-    {
-        $definition = Definition::ofType(StoreManager::class, new StoreManagerFactory($defaultStore, $storeDefinitions));
+    private function registerStoreManager(
+        RegistryInterface $registry,
+        string $defaultStore,
+        array $storeDefinitions,
+    ): void {
+        $definition = Definition::ofType(
+            StoreManager::class,
+            new StoreManagerFactory($defaultStore, $storeDefinitions),
+        );
         $definition->addAlias(StoreManagerInterface::class);
 
         $registry->addDefinition($definition);
@@ -252,32 +279,29 @@ final class CacheExtension implements ExtensionInterface
     {
         return Type\shape([
             'default' => Type\optional(Type\non_empty_string()),
-            'stores' => Type\optional(Type\dict(
-                Type\non_empty_string(),
-                Type\union(
-                    Type\shape([
-                        'driver' => Type\literal_scalar('local'),
-                        'size' => Type\optional(Type\positive_int()),
-                        'prune-interval' => Type\optional(Type\positive_int()),
-                    ]),
-                    Type\shape([
-                        'driver' => Type\literal_scalar('filesystem'),
-                        'directory' => Type\non_empty_string(),
-                        'prune-interval' => Type\optional(Type\positive_int()),
-                    ]),
-                    Type\shape([
-                        'driver' => Type\union(Type\literal_scalar('redis'), Type\literal_scalar('valkey')),
-                        'uri' => Type\non_empty_string(),
-                        'timeout' => Type\optional(Type\int()),
-                        'database' => Type\optional(Type\int()),
-                        'password' => Type\optional(Type\string()),
-                    ]),
-                    Type\shape([
-                        'driver' => Type\literal_scalar('service'),
-                        'service' => Type\non_empty_string(),
-                    ])
-                ),
-            )),
+            'stores' => Type\optional(Type\dict(Type\non_empty_string(), Type\union(
+                Type\shape([
+                    'driver' => Type\literal_scalar('local'),
+                    'size' => Type\optional(Type\positive_int()),
+                    'prune-interval' => Type\optional(Type\positive_int()),
+                ]),
+                Type\shape([
+                    'driver' => Type\literal_scalar('filesystem'),
+                    'directory' => Type\non_empty_string(),
+                    'prune-interval' => Type\optional(Type\positive_int()),
+                ]),
+                Type\shape([
+                    'driver' => Type\union(Type\literal_scalar('redis'), Type\literal_scalar('valkey')),
+                    'uri' => Type\non_empty_string(),
+                    'timeout' => Type\optional(Type\int()),
+                    'database' => Type\optional(Type\int()),
+                    'password' => Type\optional(Type\string()),
+                ]),
+                Type\shape([
+                    'driver' => Type\literal_scalar('service'),
+                    'service' => Type\non_empty_string(),
+                ]),
+            ))),
         ]);
     }
 }

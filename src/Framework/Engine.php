@@ -15,20 +15,20 @@ namespace Neu\Framework;
 
 use Amp\Cluster\Cluster as AmpCluster;
 use Neu\Component\Console\ApplicationInterface;
-use Neu\Component\Console\Terminal;
 use Neu\Component\Console\Command\Registry\RegistryInterface as ConsoleRegistryInterface;
+use Neu\Component\Console\Terminal;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\EventDispatcher\Listener\Registry\RegistryInterface as EventRegistryInterface;
 use Neu\Component\Http\Router\Registry\RegistryInterface as RouterRegistryInterface;
 use Neu\Component\Http\Router\RouteCollector;
+use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
 use Neu\Component\Http\Server\Cluster;
 use Neu\Component\Http\Server\ClusterWorkerInterface;
 use Neu\Component\Http\Server\ServerInterface;
 use Neu\Framework\Plugin\PluginInterface;
-use Psl\Env;
-use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
-use Throwable;
 use Override;
+use Psl\Env;
+use Throwable;
 
 /**
  * An engine that initializes the project, manages plugins, and runs the application.
@@ -69,8 +69,7 @@ final class Engine implements EngineInterface
         private readonly string $middlewareQueueServiceId,
         private readonly string $eventDispatcherRegistryServiceId,
         private readonly string $consoleRegistryServiceId,
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritDoc
@@ -118,7 +117,11 @@ final class Engine implements EngineInterface
             $application = $this->container->getTyped($this->applicationServiceId, ApplicationInterface::class);
             $application->run();
         } catch (Throwable $e) {
-            throw new Exception\RuntimeException('Failed to run the engine in console mode: ' . $e->getMessage(), 0, $e);
+            throw new Exception\RuntimeException(
+                'Failed to run the engine in console mode: ' . $e->getMessage(),
+                0,
+                $e,
+            );
         }
     }
 
@@ -153,7 +156,11 @@ final class Engine implements EngineInterface
                 $this->runClusterWatcher();
             }
         } catch (Throwable $e) {
-            throw new Exception\RuntimeException('Failed to run the engine in cluster mode: ' . $e->getMessage(), 0, $e);
+            throw new Exception\RuntimeException(
+                'Failed to run the engine in cluster mode: ' . $e->getMessage(),
+                0,
+                $e,
+            );
         }
     }
 
@@ -171,7 +178,11 @@ final class Engine implements EngineInterface
                 $this->runConsoleOnly();
             }
         } catch (Throwable $e) {
-            throw new Exception\RuntimeException('Failed to run the engine in application mode: ' . $e->getMessage(), 0, $e);
+            throw new Exception\RuntimeException(
+                'Failed to run the engine in application mode: ' . $e->getMessage(),
+                0,
+                $e,
+            );
         }
     }
 
@@ -202,7 +213,6 @@ final class Engine implements EngineInterface
         AmpCluster::awaitTermination();
         $worker->stop();
     }
-
 
     /**
      * Set up the plugins.

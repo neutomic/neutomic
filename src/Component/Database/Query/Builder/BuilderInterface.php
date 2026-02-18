@@ -57,7 +57,7 @@ interface BuilderInterface
      * @param non-empty-string $table
      * @param non-empty-string|null $alias
      */
-    public function delete(string $table, null|string $alias = null): DeleteQueryInterface;
+    public function delete(string $table, ?string $alias = null): DeleteQueryInterface;
 
     /**
      * Create an update query.
@@ -77,7 +77,7 @@ interface BuilderInterface
      * @param non-empty-string $table
      * @param non-empty-string|null $alias
      */
-    public function update(string $table, null|string $alias = null): UpdateQueryInterface;
+    public function update(string $table, ?string $alias = null): UpdateQueryInterface;
 
     /**
      * Create an insert query.

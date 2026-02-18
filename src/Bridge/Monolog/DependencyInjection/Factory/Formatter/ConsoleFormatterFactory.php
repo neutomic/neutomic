@@ -54,8 +54,12 @@ final readonly class ConsoleFormatterFactory implements FactoryInterface
      * @param bool $allowInlineLineBreaks Whether to allow inline line breaks in log messages.
      * @param bool $ignoreEmptyContextAndExtra Whether to ignore empty context and extra data in log messages.
      */
-    public function __construct(null|string $format = null, null|string $dateFormat = null, null|bool $allowInlineLineBreaks = null, null|bool $ignoreEmptyContextAndExtra = null)
-    {
+    public function __construct(
+        ?string $format = null,
+        ?string $dateFormat = null,
+        ?bool $allowInlineLineBreaks = null,
+        ?bool $ignoreEmptyContextAndExtra = null,
+    ) {
         $this->format = $format ?? ConsoleFormatter::DEFAULT_FORMAT;
         $this->dateFormat = $dateFormat ?? NormalizerFormatter::SIMPLE_DATE;
         $this->allowInlineLineBreaks = $allowInlineLineBreaks ?? false;

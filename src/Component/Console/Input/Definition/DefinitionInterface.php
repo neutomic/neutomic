@@ -33,7 +33,7 @@ interface DefinitionInterface
      *
      * @return non-empty-string|null
      */
-    public function getAlias(): null|string;
+    public function getAlias(): ?string;
 
     /**
      * Retrieve the description of the {@see DefinitionInterface}.

@@ -20,7 +20,7 @@ interface QueryResultInterface
     /**
      * Return the next query result if available.
      */
-    public function nextQueryResult(): null|QueryResultInterface;
+    public function nextQueryResult(): ?QueryResultInterface;
 
     /**
      * Returns the actual rows returned by the successful query, each row including the typed values for each column.
@@ -50,7 +50,7 @@ interface QueryResultInterface
      *
      * @return null|int<0, max>
      */
-    public function getRowCount(): null|int;
+    public function getRowCount(): ?int;
 
     /**
      * The number of database rows affected in the current result, or null if the number of rows is
@@ -70,7 +70,7 @@ interface QueryResultInterface
      *
      * @return null|int<0, max>
      */
-    public function getAffectedRowCount(): null|int;
+    public function getAffectedRowCount(): ?int;
 
     /**
      * Get the underlying SQL result.

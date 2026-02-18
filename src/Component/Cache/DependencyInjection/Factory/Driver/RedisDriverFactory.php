@@ -31,9 +31,9 @@ use function Amp\Redis\createRedisClient;
 final readonly class RedisDriverFactory implements FactoryInterface
 {
     private string $uri;
-    private null|int $timeout;
-    private null|int $database;
-    private null|string $password;
+    private ?int $timeout;
+    private ?int $database;
+    private ?string $password;
 
     /**
      * @param string $uri The URI to connect to.
@@ -41,8 +41,12 @@ final readonly class RedisDriverFactory implements FactoryInterface
      * @param null|int $database The database to select.
      * @param null|string $password The password to authenticate with.
      */
-    public function __construct(string $uri, null|int $timeout = null, null|int $database = null, null|string $password = null)
-    {
+    public function __construct(
+        string $uri,
+        ?int $timeout = null,
+        ?int $database = null,
+        #[\SensitiveParameter] ?string $password = null,
+    ) {
         $this->uri = $uri;
         $this->timeout = $timeout;
         $this->database = $database;
@@ -58,7 +62,11 @@ final readonly class RedisDriverFactory implements FactoryInterface
         try {
             $config = RedisConfig::fromUri($this->uri, $this->timeout ?? RedisConfig::DEFAULT_TIMEOUT);
         } catch (RedisException $e) {
-            throw new InvalidArgumentException('Failed to create Redis configuration from URI: ' . $e->getMessage(), 0, $e);
+            throw new InvalidArgumentException(
+                'Failed to create Redis configuration from URI: ' . $e->getMessage(),
+                0,
+                $e,
+            );
         }
 
         if (null !== $this->database) {
@@ -69,8 +77,6 @@ final readonly class RedisDriverFactory implements FactoryInterface
             $config = $config->withPassword($this->password);
         }
 
-        return new RedisDriver(
-            client: createRedisClient($config)
-        );
+        return new RedisDriver(client: createRedisClient($config));
     }
 }

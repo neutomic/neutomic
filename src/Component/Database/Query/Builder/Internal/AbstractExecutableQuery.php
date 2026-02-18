@@ -30,8 +30,7 @@ abstract readonly class AbstractExecutableQuery implements QueryInterface
 {
     public function __construct(
         protected AbstractionLayerInterface $dbal,
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritDoc
@@ -59,12 +58,15 @@ abstract readonly class AbstractExecutableQuery implements QueryInterface
      *
      * @return non-empty-string
      */
-    protected function getTableSQL(string $table, null|string $alias = null): string
+    protected function getTableSQL(string $table, ?string $alias = null): string
     {
         if ($this->dbal instanceof IdentifierQuoterInterface) {
-            return $this->dbal->quoteIdentifier($table) . ($alias !== null ? (' ' . $this->dbal->quoteIdentifier($alias)) : '');
+            return (
+                $this->dbal->quoteIdentifier($table)
+                . ($alias !== null ? ' ' . $this->dbal->quoteIdentifier($alias) : '')
+            );
         }
 
-        return $table . ($alias !== null ? (' ' . $alias) : '');
+        return $table . ($alias !== null ? ' ' . $alias : '');
     }
 }

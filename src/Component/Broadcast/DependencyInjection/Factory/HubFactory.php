@@ -34,10 +34,11 @@ final readonly class HubFactory implements FactoryInterface
     /**
      * @param null|non-empty-string $transport The service identifier of the transport to use, defaults to {@see TransportInterface}.
      */
-    public function __construct(null|string $transport = null)
+    public function __construct(?string $transport = null)
     {
         $this->transport = $transport ?? TransportInterface::class;
     }
+
     #[Override]
     public function __invoke(ContainerInterface $container): object
     {

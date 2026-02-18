@@ -31,13 +31,13 @@ final readonly class CacheConfigurationFactory implements FactoryInterface
 {
     private int $expires;
 
-    private null|CacheLimiter $limiter;
+    private ?CacheLimiter $limiter;
 
     /**
      * @param int|null $expires
      * @param CacheLimiter|string|null $limiter
      */
-    public function __construct(null|int $expires = null, null|CacheLimiter|string $limiter = null)
+    public function __construct(?int $expires = null, null|CacheLimiter|string $limiter = null)
     {
         if (null !== $limiter && !$limiter instanceof CacheLimiter) {
             $limiter = CacheLimiter::from($limiter);
@@ -50,9 +50,6 @@ final readonly class CacheConfigurationFactory implements FactoryInterface
     #[Override]
     public function __invoke(ContainerInterface $container): CacheConfiguration
     {
-        return new CacheConfiguration(
-            expires: $this->expires,
-            limiter: $this->limiter,
-        );
+        return new CacheConfiguration(expires: $this->expires, limiter: $this->limiter);
     }
 }

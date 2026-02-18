@@ -30,7 +30,7 @@ final class HasherNotFoundException extends RuntimeException
      *
      * @param non-empty-string $identifier
      */
-    public static function forStore(string $identifier, null|Throwable $previous = null): self
+    public static function forStore(string $identifier, ?Throwable $previous = null): self
     {
         return new self('Hasher "' . $identifier . '" was not found.', previous: $previous);
     }

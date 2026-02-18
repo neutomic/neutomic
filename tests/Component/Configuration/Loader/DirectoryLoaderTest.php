@@ -47,7 +47,11 @@ final class DirectoryLoaderTest extends TestCase
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
-            'Resolver has not been set on the "' . DirectoryLoader::class . '" loader, make sure to call "' . DirectoryLoader::class . '::setResolver()" before attempting to load resources.'
+            'Resolver has not been set on the "'
+            . DirectoryLoader::class
+            . '" loader, make sure to call "'
+            . DirectoryLoader::class
+            . '::setResolver()" before attempting to load resources.',
         );
 
         $loader->load(__DIR__ . '/../Resources/config/');

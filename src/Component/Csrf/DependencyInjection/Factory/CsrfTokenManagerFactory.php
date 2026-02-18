@@ -49,7 +49,7 @@ final readonly class CsrfTokenManagerFactory implements FactoryInterface
      * @param non-empty-string|null $storage The service identifier of the {@see CsrfTokenStorageInterface} implementation
      *                                       to use, if null, the default implementation is used.
      */
-    public function __construct(null|string $generator = null, null|string $storage = null)
+    public function __construct(?string $generator = null, ?string $storage = null)
     {
         $this->generator = $generator ?? CsrfTokenGeneratorInterface::class;
         $this->storage = $storage ?? CsrfTokenStorageInterface::class;

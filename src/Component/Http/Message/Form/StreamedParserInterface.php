@@ -31,5 +31,5 @@ interface StreamedParserInterface
      *
      * @return StreamedFormInterface The parsed form data.
      */
-    public function parseStreamed(RequestInterface $request, null|ParseOptions $options = null): StreamedFormInterface;
+    public function parseStreamed(RequestInterface $request, ?ParseOptions $options = null): StreamedFormInterface;
 }

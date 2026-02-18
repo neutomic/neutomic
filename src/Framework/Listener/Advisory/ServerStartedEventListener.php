@@ -19,8 +19,8 @@ use Neu\Component\DependencyInjection\ProjectMode;
 use Neu\Component\EventDispatcher\Attribute\Listener;
 use Neu\Component\EventDispatcher\Listener\ListenerInterface;
 use Neu\Component\Http\Server\Event\ServerStartedEvent;
-use Psr\Log\LoggerInterface;
 use Override;
+use Psr\Log\LoggerInterface;
 
 /**
  * @implements ListenerInterface<BeforeExecuteEvent>

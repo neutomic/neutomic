@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Neu\Component\Console\Table;
 
 use Neu\Component\Console\Output\OutputInterface;
-use Psl\Str;
 use Override;
+use Psl\Str;
 
 /**
  * The `TabDelimitedTable` class builds and outputs a table with values tab-delimited

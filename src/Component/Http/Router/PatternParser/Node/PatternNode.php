@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Router\PatternParser\Node;
 
+use Override;
 use Psl\Str;
 use Psl\Vec;
-use Override;
 
 /**
  * A node representing a pattern.
@@ -58,10 +58,9 @@ final readonly class PatternNode implements Node
     public function toRegularExpression(string $delimiter): string
     {
         /** @var non-empty-string */
-        return Str\join(Vec\map(
-            $this->children,
-            static fn (Node $child): string => $child->toRegularExpression($delimiter),
-        ), '');
+        return Str\join(Vec\map($this->children, static fn(Node $child): string => $child->toRegularExpression(
+            $delimiter,
+        )), '');
     }
 
     /**
@@ -72,7 +71,7 @@ final readonly class PatternNode implements Node
     {
         return '[' . Str\join(Vec\map(
             $this->children,
-            static fn (Node $child): string => $child->toString(),
+            static fn(Node $child): string => $child->toString(),
         ), ', ') . ']';
     }
 

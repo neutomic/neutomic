@@ -43,7 +43,7 @@ final readonly class XPoweredByMiddlewareFactory implements FactoryInterface
      * @param non-empty-string|null $poweredBy The powered by header value.
      * @param bool|null $exposePhpVersion Whether to expose PHP version in the powered by header.
      */
-    public function __construct(null|string $poweredBy = null, null|bool $exposePhpVersion = null)
+    public function __construct(?string $poweredBy = null, ?bool $exposePhpVersion = null)
     {
         $this->poweredBy = $poweredBy ?? XPoweredByMiddleware::DEFAULT_POWERED_BY;
         $this->exposePhpVersion = $exposePhpVersion ?? XPoweredByMiddleware::DEFAULT_EXPOSE_PHP_VERSION;

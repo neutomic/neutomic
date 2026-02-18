@@ -29,8 +29,12 @@ final class ByteStreamOutput extends AbstractOutput
     /**
      * Construct a new {@see ByteStreamOutput} object.
      */
-    public function __construct(ByteStream\WritableStream $outputStream, Verbosity $verbosity = Verbosity::Normal, null|bool $decorated = null, null|FormatterInterface $formatter = null)
-    {
+    public function __construct(
+        ByteStream\WritableStream $outputStream,
+        Verbosity $verbosity = Verbosity::Normal,
+        ?bool $decorated = null,
+        ?FormatterInterface $formatter = null,
+    ) {
         parent::__construct($verbosity, $decorated, $formatter);
 
         $this->outputStream = $outputStream;

@@ -45,9 +45,18 @@ final class CsrfExtensionTest extends TestCase
         static::assertTrue($registry->hasDefinition(SessionCsrfTokenStorage::class));
         static::assertTrue($registry->hasDefinition(UrlSafeCsrfTokenGenerator::class));
 
-        static::assertContains(CsrfTokenManagerInterface::class, $registry->getDefinition(CsrfTokenManager::class)->getAliases());
-        static::assertContains(CsrfTokenStorageInterface::class, $registry->getDefinition(SessionCsrfTokenStorage::class)->getAliases());
-        static::assertContains(CsrfTokenGeneratorInterface::class, $registry->getDefinition(UrlSafeCsrfTokenGenerator::class)->getAliases());
+        static::assertContains(
+            CsrfTokenManagerInterface::class,
+            $registry->getDefinition(CsrfTokenManager::class)->getAliases(),
+        );
+        static::assertContains(
+            CsrfTokenStorageInterface::class,
+            $registry->getDefinition(SessionCsrfTokenStorage::class)->getAliases(),
+        );
+        static::assertContains(
+            CsrfTokenGeneratorInterface::class,
+            $registry->getDefinition(UrlSafeCsrfTokenGenerator::class)->getAliases(),
+        );
     }
 
     public function testConfigurations(): void
@@ -58,13 +67,13 @@ final class CsrfExtensionTest extends TestCase
         $builder->addConfigurationResource([
             'csrf' => [
                 'storage' => [
-                    'prefix' => 'custom_prefix'
+                    'prefix' => 'custom_prefix',
                 ],
                 'manager' => [
                     'generator' => 'custom_generator',
-                    'storage' => 'custom_storage'
-                ]
-            ]
+                    'storage' => 'custom_storage',
+                ],
+            ],
         ]);
 
         $builder->addExtension(new CsrfExtension());
@@ -76,16 +85,34 @@ final class CsrfExtensionTest extends TestCase
         static::assertTrue($registry->hasDefinition(SessionCsrfTokenStorage::class));
         static::assertTrue($registry->hasDefinition(UrlSafeCsrfTokenGenerator::class));
 
-        static::assertContains(CsrfTokenManagerInterface::class, $registry->getDefinition(CsrfTokenManager::class)->getAliases());
-        static::assertContains(CsrfTokenStorageInterface::class, $registry->getDefinition(SessionCsrfTokenStorage::class)->getAliases());
-        static::assertContains(CsrfTokenGeneratorInterface::class, $registry->getDefinition(UrlSafeCsrfTokenGenerator::class)->getAliases());
+        static::assertContains(
+            CsrfTokenManagerInterface::class,
+            $registry->getDefinition(CsrfTokenManager::class)->getAliases(),
+        );
+        static::assertContains(
+            CsrfTokenStorageInterface::class,
+            $registry->getDefinition(SessionCsrfTokenStorage::class)->getAliases(),
+        );
+        static::assertContains(
+            CsrfTokenGeneratorInterface::class,
+            $registry->getDefinition(UrlSafeCsrfTokenGenerator::class)->getAliases(),
+        );
 
         $container = $this->createMock(ContainerInterface::class);
-        $container->expects(static::exactly(2))
+        $container
+            ->expects(static::exactly(2))
             ->method('getTyped')
             ->willReturnMap([
-                ['custom_generator', CsrfTokenGeneratorInterface::class, $this->createMock(CsrfTokenGeneratorInterface::class)],
-                ['custom_storage', CsrfTokenStorageInterface::class, $this->createMock(CsrfTokenStorageInterface::class)],
+                [
+                    'custom_generator',
+                    CsrfTokenGeneratorInterface::class,
+                    $this->createMock(CsrfTokenGeneratorInterface::class),
+                ],
+                [
+                    'custom_storage',
+                    CsrfTokenStorageInterface::class,
+                    $this->createMock(CsrfTokenStorageInterface::class),
+                ],
             ]);
 
         $registry->getDefinition(CsrfTokenManager::class)->resolve($container);
@@ -107,13 +134,13 @@ final class CsrfExtensionTest extends TestCase
         $builder->addConfigurationResource([
             'csrf' => [
                 'storage' => [
-                    'prefix' => ['invalid']
+                    'prefix' => ['invalid'],
                 ],
                 'manager' => [
                     'generator' => 'custom_generator',
-                    'storage' => 'custom_storage'
-                ]
-            ]
+                    'storage' => 'custom_storage',
+                ],
+            ],
         ]);
 
         $builder->addExtension(new CsrfExtension());
@@ -131,13 +158,13 @@ final class CsrfExtensionTest extends TestCase
         $builder->addConfigurationResource([
             'csrf' => [
                 'storage' => [
-                    'prefix' => 'custom_prefix'
+                    'prefix' => 'custom_prefix',
                 ],
                 'manager' => [
                     'generator' => ['invalid'],
-                    'storage' => 'custom_storage'
-                ]
-            ]
+                    'storage' => 'custom_storage',
+                ],
+            ],
         ]);
 
         $builder->addExtension(new CsrfExtension());

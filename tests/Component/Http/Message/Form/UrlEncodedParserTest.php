@@ -157,10 +157,13 @@ class UrlEncodedParserTest extends TestCase
             $fields[$field->getName()] = $field->getBody()?->getContents();
         }
 
-        static::assertSame([
-            'a' => '',
-            'b' => 'bravo'
-        ], $fields);
+        static::assertSame(
+            [
+                'a' => '',
+                'b' => 'bravo',
+            ],
+            $fields,
+        );
     }
 
     #[DataProvider('getParser')]
@@ -191,9 +194,12 @@ class UrlEncodedParserTest extends TestCase
             $fields[$field->getName()][] = $field->getBody()?->getContents();
         }
 
-        static::assertSame([
-            'a' => ['alpha', 'bravo', 'charlie']
-        ], $fields);
+        static::assertSame(
+            [
+                'a' => ['alpha', 'bravo', 'charlie'],
+            ],
+            $fields,
+        );
     }
 
     #[DataProvider('getParser')]
@@ -223,10 +229,13 @@ class UrlEncodedParserTest extends TestCase
             $fields[$field->getName()] = $field->getBody()?->getContents();
         }
 
-        static::assertSame([
-            'na me' => 'value with spaces',
-            'name2' => 'val@ue2'
-        ], $fields);
+        static::assertSame(
+            [
+                'na me' => 'value with spaces',
+                'name2' => 'val@ue2',
+            ],
+            $fields,
+        );
     }
 
     #[DataProvider('getParser')]
@@ -257,11 +266,14 @@ class UrlEncodedParserTest extends TestCase
             $fields[$field->getName()] = $field->getBody()?->getContents();
         }
 
-        static::assertSame([
-            'a' => 'alpha',
-            'b' => 'bravo',
-            'c' => 'charlie'
-        ], $fields);
+        static::assertSame(
+            [
+                'a' => 'alpha',
+                'b' => 'bravo',
+                'c' => 'charlie',
+            ],
+            $fields,
+        );
     }
 
     #[DataProvider('getParser')]
@@ -291,10 +303,13 @@ class UrlEncodedParserTest extends TestCase
             $fields[$field->getName()] = $field->getBody()?->getContents();
         }
 
-        static::assertSame([
-            'a' => '',
-            'b' => 'bravo'
-        ], $fields);
+        static::assertSame(
+            [
+                'a' => '',
+                'b' => 'bravo',
+            ],
+            $fields,
+        );
     }
 
     #[DataProvider('getParser')]
@@ -323,9 +338,12 @@ class UrlEncodedParserTest extends TestCase
             $fields[$field->getName()] = $field->getBody()?->getContents();
         }
 
-        static::assertSame([
-            'a' => 'alpha'
-        ], $fields);
+        static::assertSame(
+            [
+                'a' => 'alpha',
+            ],
+            $fields,
+        );
     }
 
     #[DataProvider('getParser')]
@@ -356,11 +374,14 @@ class UrlEncodedParserTest extends TestCase
             $fields[$field->getName()] = $field->getBody()?->getContents();
         }
 
-        static::assertSame([
-            'a' => 'alpha',
-            'b' => 'bravo',
-            'c' => 'charlie'
-        ], $fields);
+        static::assertSame(
+            [
+                'a' => 'alpha',
+                'b' => 'bravo',
+                'c' => 'charlie',
+            ],
+            $fields,
+        );
     }
 
     #[DataProvider('getParser')]
@@ -374,7 +395,7 @@ class UrlEncodedParserTest extends TestCase
             'd=delta',
             '&th',
             'at\'s=',
-            'it&x=1'
+            'it&x=1',
         ]));
 
         $form = $parser->parse($request);
@@ -399,7 +420,7 @@ class UrlEncodedParserTest extends TestCase
             'd=delta',
             '&th',
             'at\'s=',
-            'it&x=1'
+            'it&x=1',
         ]));
 
         $form = $parser->parseStreamed($request);
@@ -408,14 +429,17 @@ class UrlEncodedParserTest extends TestCase
             $fields[$field->getName()] = $field->getBody()?->getContents();
         }
 
-        static::assertSame([
-            'a' => 'alpha',
-            'b' => 'bravo',
-            'c' => 'charlie',
-            'd' => 'delta',
-            'that\'s' => 'it',
-            'x' => '1'
-        ], $fields);
+        static::assertSame(
+            [
+                'a' => 'alpha',
+                'b' => 'bravo',
+                'c' => 'charlie',
+                'd' => 'delta',
+                'that\'s' => 'it',
+                'x' => '1',
+            ],
+            $fields,
+        );
     }
 
     #[DataProvider('getParser')]
@@ -463,10 +487,13 @@ class UrlEncodedParserTest extends TestCase
             $fields[$field->getName()] = $field->getBody()?->getContents();
         }
 
-        static::assertSame([
-            'a' => 'xxxxxxxx',
-            'b' => 'y'
-        ], $fields);
+        static::assertSame(
+            [
+                'a' => 'xxxxxxxx',
+                'b' => 'y',
+            ],
+            $fields,
+        );
     }
 
     #[DataProvider('getStreamingParser')]
@@ -477,17 +504,21 @@ class UrlEncodedParserTest extends TestCase
 
         $request = Request::create(Method::Get, 'https://example.com');
         $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
-        $request = $request->withBody(RequestBody::fromIterable((static function () use ($reference): iterable {
-            yield 'key=';
-            yield 'x';
-            for ($i = 0; $i < 999; $i++) {
-                $reference->value .= 'w';
+        $request = $request->withBody(
+            RequestBody::fromIterable(
+                (static function () use ($reference): iterable {
+                    yield 'key=';
+                    yield 'x';
+                    for ($i = 0; $i < 999; $i++) {
+                        $reference->value .= 'w';
 
-                yield 'x';
+                        yield 'x';
 
-                Psl\Async\sleep(Duration::milliseconds(1));
-            }
-        })()));
+                        Psl\Async\sleep(Duration::milliseconds(1));
+                    }
+                })(),
+            ),
+        );
 
         $form = $parser->parseStreamed($request);
         $fields = [];

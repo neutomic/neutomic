@@ -16,6 +16,4 @@ namespace Neu\Component\Http\Server\Event;
 /**
  * Event that is triggered when the server has started.
  */
-final readonly class ServerStartedEvent
-{
-}
+final readonly class ServerStartedEvent {}

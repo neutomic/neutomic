@@ -15,8 +15,8 @@ namespace Neu\Component\DependencyInjection\Configuration\Loader;
 
 use Neu\Component\DependencyInjection\Configuration\Document;
 use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
-use Psl\Type;
 use Override;
+use Psl\Type;
 
 /**
  * @implements LoaderInterface<array<array-key, mixed>>

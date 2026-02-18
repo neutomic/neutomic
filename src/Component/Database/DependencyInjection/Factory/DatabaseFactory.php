@@ -40,7 +40,7 @@ final readonly class DatabaseFactory implements FactoryInterface
     /**
      * @param non-empty-string|null $connection The connection service identifier, defaults to {@see SqlConnection::class}.
      */
-    public function __construct(null|string $connection = null)
+    public function __construct(?string $connection = null)
     {
         $this->connection = $connection ?? SqlConnection::class;
     }

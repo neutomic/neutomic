@@ -21,14 +21,13 @@ final readonly class QueryResult implements QueryResultInterface
 {
     public function __construct(
         private SqlResult $result,
-    ) {
-    }
+    ) {}
 
     /**
      * @inheritDoc
      */
     #[Override]
-    public function nextQueryResult(): null|QueryResultInterface
+    public function nextQueryResult(): ?QueryResultInterface
     {
         $next = $this->result->getNextResult();
         if ($next === null) {
@@ -57,7 +56,7 @@ final readonly class QueryResult implements QueryResultInterface
      * @inheritDoc
      */
     #[Override]
-    public function getRowCount(): null|int
+    public function getRowCount(): ?int
     {
         if ($this->result instanceof SqlCommandResult) {
             return 0;
@@ -70,7 +69,7 @@ final readonly class QueryResult implements QueryResultInterface
      * @inheritDoc
      */
     #[Override]
-    public function getAffectedRowCount(): null|int
+    public function getAffectedRowCount(): ?int
     {
         /** @var null|int<0, max> */
         return $this->result->getRowCount();

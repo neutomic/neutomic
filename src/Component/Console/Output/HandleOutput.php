@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Neu\Component\Console\Output;
 
 use Neu\Component\Console\Formatter\FormatterInterface;
-use Psl\IO;
 use Override;
+use Psl\IO;
 
 /**
  * An {@see OutputInterface} implementation based on {@see IO\WriteHandleInterface}.
@@ -29,8 +29,12 @@ final class HandleOutput extends AbstractOutput
     /**
      * Construct a new {@see HandleOutput} object.
      */
-    public function __construct(IO\WriteHandleInterface $outputHandle, Verbosity $verbosity = Verbosity::Normal, null|bool $decorated = null, null|FormatterInterface $formatter = null)
-    {
+    public function __construct(
+        IO\WriteHandleInterface $outputHandle,
+        Verbosity $verbosity = Verbosity::Normal,
+        ?bool $decorated = null,
+        ?FormatterInterface $formatter = null,
+    ) {
         parent::__construct($verbosity, $decorated, $formatter);
 
         $this->outputHandle = $outputHandle;

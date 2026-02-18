@@ -68,7 +68,7 @@ interface ResponseInterface extends ExchangeInterface
      * @return null|list<CookieInterface> A list of {@see CookieInterface} values for the specified name,
      *                                    or null if none found.
      */
-    public function getCookie(string $name): null|array;
+    public function getCookie(string $name): ?array;
 
     /**
      * Returns a new instance of the response with the specified cookie replaced.

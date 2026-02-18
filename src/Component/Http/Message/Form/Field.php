@@ -32,7 +32,7 @@ final readonly class Field implements FieldInterface
     /**
      * The body of the field.
      */
-    private null|BodyInterface $body;
+    private ?BodyInterface $body;
 
     /**
      * Creates a new {@see Field} instance.
@@ -43,7 +43,7 @@ final readonly class Field implements FieldInterface
      *
      * @internal
      */
-    private function __construct(string $name, HeaderStorage $headers, null|BodyInterface $body)
+    private function __construct(string $name, HeaderStorage $headers, ?BodyInterface $body)
     {
         $this->name = $name;
         $this->headerStorage = $headers;
@@ -75,7 +75,7 @@ final readonly class Field implements FieldInterface
      * @inheritDoc
      */
     #[Override]
-    public function getBody(): null|BodyInterface
+    public function getBody(): ?BodyInterface
     {
         return $this->body;
     }
@@ -84,7 +84,7 @@ final readonly class Field implements FieldInterface
      * @inheritDoc
      */
     #[Override]
-    public function withBody(null|BodyInterface $body): static
+    public function withBody(?BodyInterface $body): static
     {
         return new self($this->name, $this->headerStorage, $body);
     }

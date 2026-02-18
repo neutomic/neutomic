@@ -57,7 +57,7 @@ interface FormInterface extends StreamedFormInterface
      *
      * @return FieldInterface|null The first {@see FieldInterface} implementation with the specified name, or null if not found.
      */
-    public function getFirstFieldByName(string $name): null|FieldInterface;
+    public function getFirstFieldByName(string $name): ?FieldInterface;
 
     /**
      * Checks if there are fields with a specific name.

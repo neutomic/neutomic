@@ -1,0 +1,67 @@
+# Welcome to Mago!
+# For full documentation, see https://mago.carthage.software/tools/overview
+php-version = "8.5.0"
+
+[source]
+paths = ["examples/", "src/", "tests/"]
+includes = ["vendor"]
+excludes = []
+
+[formatter]
+print-width = 120
+tab-width = 4
+use-tabs = false
+
+[linter]
+integrations = ["phpunit"]
+
+[linter.rules]
+# Thresholds for complexity metrics, these can be adjusted based on the project's needs and standards.
+# The current thresholds are set to values that are generally considered high, to accommodate existing code,
+# However, we should aim to gradually reduce these thresholds over time to improve code quality.
+halstead = { effort-threshold = 28000, difficulty-threshold = 30, volume-threshold = 2000 }
+cyclomatic-complexity = { threshold = 100 }
+kan-defect = { threshold = 7.0 }
+excessive-parameter-list = { threshold = 20 }
+too-many-methods = { threshold = 50 }
+too-many-properties = { threshold = 25 }
+too-many-enum-cases = { threshold = 70 }
+# Noisy rules, keep them disabled.
+no-else-clause = { enabled = false }
+no-boolean-flag-parameter = { enabled = false }
+no-isset = { enabled = false }
+no-empty-catch-clause = { enabled = false }
+# FFI is allowed.
+no-ffi = { enabled = false }
+# Disable certain rules in tests and examples, as they often contain code that is not production-ready or,
+# is meant to demonstrate specific concepts without adhering to strict coding standards.
+no-literal-password = { exclude = ["tests/", "examples/"] }
+no-redundant-file = { exclude = ["tests/"] }
+file-name = { exclude = ["tests/", "examples/"] }
+single-class-per-file = { exclude = ["tests/", "examples/"] }
+# TODO(azjezz): those rules are good, but they require a lot of work to fix the existing codebase, so we will enable them later
+assert-description = { enabled = false }
+no-multi-assignments = { enabled = false }
+no-error-control-operator = { enabled = false }
+no-assign-in-condition = { enabled = false }
+no-shorthand-ternary = { enabled = false }
+no-unsafe-finally = { enabled = false }
+no-empty = { enabled = false }
+use-specific-assertions = { enabled = false }
+braced-string-interpolation = { enabled = false }
+literal-named-argument = { enabled = false }
+
+[analyzer]
+plugins = ["psl"]
+find-unused-definitions = true
+find-unused-expressions = false
+analyze-dead-code = false
+memoize-properties = true
+allow-possibly-undefined-array-keys = true
+check-throws = false
+check-missing-override = false
+find-unused-parameters = false
+strict-list-index-checks = false
+no-boolean-literal-comparison = false
+check-missing-type-hints = false
+register-super-globals = true

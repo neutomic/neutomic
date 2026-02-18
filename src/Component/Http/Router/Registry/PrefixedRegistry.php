@@ -15,8 +15,8 @@ namespace Neu\Component\Http\Router\Registry;
 
 use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
-use Psl\Str;
 use Override;
+use Psl\Str;
 
 /**
  * A registry that adds a prefix to all routes.
@@ -57,7 +57,10 @@ final readonly class PrefixedRegistry implements RegistryInterface
     {
         $pattern = $this->prefix . '/' . Str\Byte\trim_left($route->pattern, '/');
 
-        $this->registry->register(new Route($route->name, $pattern, $route->methods, $route->priority, $route->attributes), $handler);
+        $this->registry->register(
+            new Route($route->name, $pattern, $route->methods, $route->priority, $route->attributes),
+            $handler,
+        );
     }
 
     /**

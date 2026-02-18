@@ -32,9 +32,9 @@ use Neu\Component\DependencyInjection\Exception\InvalidConfigurationException;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Neu\Component\DependencyInjection\RegistryInterface;
+use Override;
 use Psl\Class;
 use Psl\Type;
-use Override;
 
 use function array_key_first;
 
@@ -79,9 +79,7 @@ final class BroadcastExtension implements ExtensionInterface
     #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $configuration = $configurations
-            ->getOfTypeOrDefault('broadcast', $this->getConfigurationType(), [])
-        ;
+        $configuration = $configurations->getOfTypeOrDefault('broadcast', $this->getConfigurationType(), []);
 
         $hubs = $configuration['hubs'] ?? [];
 
@@ -133,7 +131,11 @@ final class BroadcastExtension implements ExtensionInterface
                 $this->registerServiceTransport($registry, $transportServiceId, $config);
             }
 
-            $registry->addDefinition(Definition::create($hubServiceId, HubInterface::class, new HubFactory($transportServiceId)));
+            $registry->addDefinition(Definition::create(
+                $hubServiceId,
+                HubInterface::class,
+                new HubFactory($transportServiceId),
+            ));
 
             $hubServices[$name] = $hubServiceId;
         }
@@ -173,18 +175,24 @@ final class BroadcastExtension implements ExtensionInterface
     private function registerPostgresTransport(RegistryInterface $registry, string $serviceId, array $config): void
     {
         if (!Class\exists(PostgresConfig::class)) {
-            throw new InvalidConfigurationException('The "amphp/postgres" package is required to use the postgres broadcast transport.');
+            throw new InvalidConfigurationException(
+                'The "amphp/postgres" package is required to use the postgres broadcast transport.',
+            );
         }
 
-        $registry->addDefinition(Definition::create($serviceId, PostgresTransport::class, new PostgresTransportFactory(
-            host: $config['host'],
-            port: $config['port'] ?? null,
-            user: $config['user'] ?? $config['username'] ?? null,
-            password: $config['password'] ?? null,
-            database: $config['database'] ?? null,
-            applicationName: $config['application-name'] ?? null,
-            sslMode: $config['ssl-mode'] ?? null,
-        )));
+        $registry->addDefinition(Definition::create(
+            $serviceId,
+            PostgresTransport::class,
+            new PostgresTransportFactory(
+                host: $config['host'],
+                port: $config['port'] ?? null,
+                user: $config['user'] ?? $config['username'] ?? null,
+                password: $config['password'] ?? null,
+                database: $config['database'] ?? null,
+                applicationName: $config['application-name'] ?? null,
+                sslMode: $config['ssl-mode'] ?? null,
+            ),
+        ));
     }
 
     /**
@@ -199,7 +207,9 @@ final class BroadcastExtension implements ExtensionInterface
         $serviceDefinition = $registry->getDefinition($config['service']);
 
         if (!$serviceDefinition->isInstanceOf(TransportInterface::class)) {
-            throw new InvalidConfigurationException('The service "' . $config['service'] . '" must implement "' . TransportInterface::class . '".');
+            throw new InvalidConfigurationException(
+                'The service "' . $config['service'] . '" must implement "' . TransportInterface::class . '".',
+            );
         }
 
         $serviceDefinition->addAlias($serviceId);
@@ -216,7 +226,9 @@ final class BroadcastExtension implements ExtensionInterface
     {
         if (!isset($hubServices[$defaultHub])) {
             if (!$registry->hasDefinition($defaultHub)) {
-                throw new InvalidConfigurationException('The default broadcast hub "' . $defaultHub . '" is not defined.');
+                throw new InvalidConfigurationException('The default broadcast hub "'
+                . $defaultHub
+                . '" is not defined.');
             }
 
             $definition = $registry->getDefinition($defaultHub);
@@ -225,7 +237,11 @@ final class BroadcastExtension implements ExtensionInterface
         }
 
         if (!$definition->isInstanceOf(HubInterface::class)) {
-            throw new InvalidConfigurationException('The default broadcast hub "' . $defaultHub . '" must be an instance of "' . HubInterface::class . '".');
+            throw new InvalidConfigurationException('The default broadcast hub "'
+            . $defaultHub
+            . '" must be an instance of "'
+            . HubInterface::class
+            . '".');
         }
 
         $definition->addAlias(HubInterface::class);
@@ -253,43 +269,40 @@ final class BroadcastExtension implements ExtensionInterface
     {
         return Type\shape([
             'default' => Type\optional(Type\non_empty_string()),
-            'hubs' => Type\optional(Type\dict(
-                Type\non_empty_string(),
-                Type\union(
-                    Type\shape([
-                        'transport' => Type\literal_scalar('local'),
-                    ]),
-                    Type\shape([
-                        'transport' => Type\literal_scalar('memory'),
-                    ]),
-                    Type\shape([
-                        'transport' => Type\union(
-                            Type\literal_scalar('pgsql'),
-                            Type\literal_scalar('postgres'),
-                            Type\literal_scalar('postgresql')
-                        ),
-                        'host' => Type\non_empty_string(),
-                        'port' => Type\optional(Type\int()),
-                        'user' => Type\optional(Type\string()),
-                        'username' => Type\optional(Type\string()),
-                        'password' => Type\optional(Type\string()),
-                        'database' => Type\optional(Type\string()),
-                        'application-name' => Type\optional(Type\string()),
-                        'ssl-mode' => Type\optional(Type\union(
-                            Type\literal_scalar('disable'),
-                            Type\literal_scalar('allow'),
-                            Type\literal_scalar('prefer'),
-                            Type\literal_scalar('require'),
-                            Type\literal_scalar('verify-ca'),
-                            Type\literal_scalar('verify-full')
-                        )),
-                    ]),
-                    Type\shape([
-                        'transport' => Type\literal_scalar('service'),
-                        'service' => Type\non_empty_string(),
-                    ])
-                ),
-            )),
+            'hubs' => Type\optional(Type\dict(Type\non_empty_string(), Type\union(
+                Type\shape([
+                    'transport' => Type\literal_scalar('local'),
+                ]),
+                Type\shape([
+                    'transport' => Type\literal_scalar('memory'),
+                ]),
+                Type\shape([
+                    'transport' => Type\union(
+                        Type\literal_scalar('pgsql'),
+                        Type\literal_scalar('postgres'),
+                        Type\literal_scalar('postgresql'),
+                    ),
+                    'host' => Type\non_empty_string(),
+                    'port' => Type\optional(Type\int()),
+                    'user' => Type\optional(Type\string()),
+                    'username' => Type\optional(Type\string()),
+                    'password' => Type\optional(Type\string()),
+                    'database' => Type\optional(Type\string()),
+                    'application-name' => Type\optional(Type\string()),
+                    'ssl-mode' => Type\optional(Type\union(
+                        Type\literal_scalar('disable'),
+                        Type\literal_scalar('allow'),
+                        Type\literal_scalar('prefer'),
+                        Type\literal_scalar('require'),
+                        Type\literal_scalar('verify-ca'),
+                        Type\literal_scalar('verify-full'),
+                    )),
+                ]),
+                Type\shape([
+                    'transport' => Type\literal_scalar('service'),
+                    'service' => Type\non_empty_string(),
+                ]),
+            ))),
         ]);
     }
 }

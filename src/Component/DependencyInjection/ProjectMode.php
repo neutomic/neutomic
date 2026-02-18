@@ -37,7 +37,7 @@ enum ProjectMode: string
      *
      * @throws InvalidArgumentException If the project mode set in the environment is invalid.
      */
-    public static function fromEnvironment(null|ProjectMode $default = null): self
+    public static function fromEnvironment(?ProjectMode $default = null): self
     {
         /** @psalm-suppress MissingThrowsDocblock */
         $value = Env\get_var(self::ENVIRONMENT_VARIABLE);
@@ -59,9 +59,9 @@ enum ProjectMode: string
             'development', 'dev', 'd' => self::Development,
             'production', 'prod', 'p' => self::Production,
             'testing', 'test', 't' => self::Testing,
-            default => throw new InvalidArgumentException(
-                'Invalid project mode "' . $mode . '", expected one of "development", "production", or "testing".',
-            ),
+            default => throw new InvalidArgumentException('Invalid project mode "'
+            . $mode
+            . '", expected one of "development", "production", or "testing".'),
         };
     }
 

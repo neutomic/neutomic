@@ -36,7 +36,7 @@ final readonly class NormalizerFormatterFactory implements FactoryInterface
      *
      * @param ?string $dateFormat The date format for log messages.
      */
-    public function __construct(null|string $dateFormat = null)
+    public function __construct(?string $dateFormat = null)
     {
         $this->dateFormat = $dateFormat ?? NormalizerFormatter::SIMPLE_DATE;
     }
@@ -48,9 +48,7 @@ final readonly class NormalizerFormatterFactory implements FactoryInterface
     public function __invoke(ContainerInterface $container): object
     {
         try {
-            return new NormalizerFormatter(
-                dateFormat: $this->dateFormat
-            );
+            return new NormalizerFormatter(dateFormat: $this->dateFormat);
         } catch (\RuntimeException $e) {
             throw new RuntimeException(message: 'Failed to create the normalizer formatter.', previous: $e);
         }

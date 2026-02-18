@@ -15,6 +15,4 @@ namespace Neu\Component\Exception;
 
 use OutOfBoundsException as RootOutOfBoundsException;
 
-class OutOfBoundsException extends RootOutOfBoundsException implements ExceptionInterface
-{
-}
+class OutOfBoundsException extends RootOutOfBoundsException implements ExceptionInterface {}

@@ -55,7 +55,9 @@ final readonly class ApplicationAwareCommand implements ApplicationAwareCommandI
 
         $elapsed = time() - $time;
 
-        $output->writeLine('I am done! it took me ' . $elapsed . ' seconds, but the sub-commands slept for total of 9 seconds.');
+        $output->writeLine('I am done! it took me '
+        . $elapsed
+        . ' seconds, but the sub-commands slept for total of 9 seconds.');
 
         return 0;
     }

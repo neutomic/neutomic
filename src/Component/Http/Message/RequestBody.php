@@ -28,8 +28,8 @@ use Error;
 use Neu\Component\Http\Exception\LogicException;
 use Neu\Component\Http\Exception\RuntimeException;
 use Neu\Component\Http\Message\Exception\TimeoutException;
-use Traversable;
 use Override;
+use Traversable;
 
 final class RequestBody implements RequestBodyInterface
 {
@@ -46,7 +46,7 @@ final class RequestBody implements RequestBodyInterface
     /**
      * The callback to upgrade the size limit of the request body.
      */
-    private null|Closure $upgradeSize;
+    private ?Closure $upgradeSize;
 
     /**
      * The mutex to synchronize access to the body.
@@ -59,7 +59,7 @@ final class RequestBody implements RequestBodyInterface
      * @param Payload $payload The payload, encapsulating the actual data of the body.
      * @param null|(Closure(int): void) $upgradeSize Optional callback to adjust the size limit of the request body.
      */
-    public function __construct(Payload $payload, null|Closure $upgradeSize = null)
+    public function __construct(Payload $payload, ?Closure $upgradeSize = null)
     {
         $this->mode = BodyMode::None;
         $this->payload = $payload;
@@ -79,7 +79,7 @@ final class RequestBody implements RequestBodyInterface
      *
      * @return self The new request body.
      */
-    public static function fromIterable(iterable $iterable, null|Closure $upgradeSize = null): self
+    public static function fromIterable(iterable $iterable, ?Closure $upgradeSize = null): self
     {
         return new self(new Payload(new ReadableIterableStream($iterable)), $upgradeSize);
     }
@@ -92,7 +92,7 @@ final class RequestBody implements RequestBodyInterface
      *
      * @return self The new request body.
      */
-    public static function fromReadableStream(ReadableStream $stream, null|Closure $upgradeSize = null): self
+    public static function fromReadableStream(ReadableStream $stream, ?Closure $upgradeSize = null): self
     {
         return new self(new Payload($stream), $upgradeSize);
     }
@@ -105,7 +105,7 @@ final class RequestBody implements RequestBodyInterface
      *
      * @return self The new request body.
      */
-    public static function fromString(string $string, null|Closure $upgradeSize = null): self
+    public static function fromString(string $string, ?Closure $upgradeSize = null): self
     {
         return new self(new Payload($string), $upgradeSize);
     }
@@ -134,7 +134,7 @@ final class RequestBody implements RequestBodyInterface
      * @inheritDoc
      */
     #[Override]
-    public function getChunk(null|float $timeout = null): null|string
+    public function getChunk(?float $timeout = null): ?string
     {
         if ($this->mode === BodyMode::Closed) {
             throw new LogicException('Cannot read from a closed body');
@@ -155,7 +155,7 @@ final class RequestBody implements RequestBodyInterface
             return $this->payload->read(new TimeoutCancellation($timeout));
         } catch (AmpTimeoutException $e) {
             throw new TimeoutException('Reading from the body timed out', 0, $e);
-        } catch (StreamException | PendingReadError $e) {
+        } catch (StreamException|PendingReadError $e) {
             throw new RuntimeException('An error occurred while reading from the body', 0, $e);
         } finally {
             $lock->release();
@@ -166,7 +166,7 @@ final class RequestBody implements RequestBodyInterface
      * @inheritDoc
      */
     #[Override]
-    public function getContents(null|float $timeout = null): string
+    public function getContents(?float $timeout = null): string
     {
         if ($this->mode === BodyMode::Buffered) {
             throw new LogicException('Cannot buffer a body more than once');
@@ -191,7 +191,7 @@ final class RequestBody implements RequestBodyInterface
             return $this->payload->buffer(new TimeoutCancellation($timeout));
         } catch (CancelledException $e) {
             throw new TimeoutException('Reading from the body timed out', 0, $e);
-        } catch (StreamException | PendingReadError | Error $e) {
+        } catch (StreamException|PendingReadError|Error $e) {
             throw new RuntimeException('An error occurred while reading from the body', 0, $e);
         } finally {
             $lock->release();
@@ -216,10 +216,10 @@ final class RequestBody implements RequestBodyInterface
 
         $lock = $this->mutex->acquire();
         try {
-            while (null !== $chunk = $this->payload->read()) {
+            while (null !== ($chunk = $this->payload->read())) {
                 yield $chunk;
             }
-        } catch (StreamException | PendingReadError $e) {
+        } catch (StreamException|PendingReadError $e) {
             throw new RuntimeException('An error occurred while reading from the body', 0, $e);
         } finally {
             $lock->release();

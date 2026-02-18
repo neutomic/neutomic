@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Message\Form;
 
-use Psl\Vec;
 use Override;
+use Psl\Vec;
 
 /**
  * Represents a form containing fields.
@@ -52,10 +52,7 @@ final readonly class Form implements FormInterface
     public function getFiles(): array
     {
         /** @var list<FileInterface> */
-        return Vec\filter(
-            $this->fields,
-            static fn (FieldInterface $field) => $field instanceof FileInterface,
-        );
+        return Vec\filter($this->fields, static fn(FieldInterface $field) => $field instanceof FileInterface);
     }
 
     /**
@@ -64,17 +61,14 @@ final readonly class Form implements FormInterface
     #[Override]
     public function getFieldsByName(string $name): array
     {
-        return Vec\filter(
-            $this->fields,
-            static fn (FieldInterface $field) => $field->getName() === $name,
-        );
+        return Vec\filter($this->fields, static fn(FieldInterface $field) => $field->getName() === $name);
     }
 
     /**
      * @inheritDoc
      */
     #[Override]
-    public function getFirstFieldByName(string $name): null|FieldInterface
+    public function getFirstFieldByName(string $name): ?FieldInterface
     {
         foreach ($this->fields as $field) {
             if ($field->getName() === $name) {

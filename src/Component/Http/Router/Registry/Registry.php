@@ -19,11 +19,11 @@ use Neu\Component\Http\Router\PrefixMap\PrefixMap;
 use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Utility\AlternativeFinder;
+use Override;
 use Psl\Dict;
 use Psl\Iter;
 use Psl\Str;
 use Psl\Vec;
-use Override;
 
 final class Registry implements RegistryInterface
 {
@@ -46,7 +46,7 @@ final class Registry implements RegistryInterface
      *
      * @var null|array<value-of<Method>, PrefixMap>
      */
-    private null|array $prefixMaps = null;
+    private ?array $prefixMaps = null;
 
     /**
      * @inheritDoc
@@ -112,9 +112,7 @@ final class Registry implements RegistryInterface
     #[Override]
     public function getRoutes(): array
     {
-        return Vec\sort($this->routes, static function (Route $a, Route $b): int {
-            return $a->priority <=> $b->priority;
-        });
+        return Vec\sort($this->routes, static fn(Route $a, Route $b): int => $a->priority <=> $b->priority);
     }
 
     /**

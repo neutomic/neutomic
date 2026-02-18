@@ -29,11 +29,11 @@ use Neu\Component\Console\Input\InputInterface;
 use Neu\Component\Console\Output\OutputInterface;
 use Neu\Component\DependencyInjection\Project;
 use Neu\Component\Http\Server\ClusterInterface;
+use Override;
 use Psl\Async;
 use Psl\DateTime\Duration;
 use Psl\Str;
 use Revolt\EventLoop\UnsupportedFeatureException;
-use Override;
 
 /**
  * Starts the HTTP server cluster, initializing multiple worker processes to handle requests.
@@ -45,11 +45,11 @@ use Override;
     name: 'http:server:cluster',
     description: 'Starts the HTTP server cluster, initializing multiple worker processes to handle requests.',
     flags: new FlagBag([
-        new Flag('skip-watcher', 's', description: 'Skip enabling the file system watcher')
+        new Flag('skip-watcher', 's', description: 'Skip enabling the file system watcher'),
     ]),
     options: new OptionBag([
         new Option('workers', 'w', description: 'The number of workers to use'),
-    ])
+    ]),
 )]
 final readonly class ClusterCommand extends AbstractCommand
 {
@@ -76,16 +76,14 @@ final readonly class ClusterCommand extends AbstractCommand
         if ($option->exists()) {
             $workers = Str\to_int($option->getValue());
             if (null === $workers || $workers < 1) {
-                $this->createErrorBlock($output)->display(
-                    'The number of workers must be an integer greater than 1.'
-                );
+                $this->createErrorBlock($output)->display('The number of workers must be an integer greater than 1.');
 
                 return ExitCode::Failure;
             }
 
             if (1 === $workers) {
                 $this->createErrorBlock($output)->display(
-                    'The number of workers must be greater than 1, use the "http:server:start" command to start the server in single-threaded mode.'
+                    'The number of workers must be greater than 1, use the "http:server:start" command to start the server in single-threaded mode.',
                 );
 
                 return ExitCode::Failure;
@@ -99,16 +97,14 @@ final readonly class ClusterCommand extends AbstractCommand
         // Wait for the workers output to be flushed:
         Async\sleep(Duration::seconds(1));
 
-        $this->createSuccessBlock($output)->display(
-            'The server cluster has started successfully.'
-        );
+        $this->createSuccessBlock($output)->display('The server cluster has started successfully.');
 
         if ([] !== $this->watcherConfiguration->directories) {
             $fsWatcher = Watcher::create(
                 $this->watcherConfiguration
                     ->withWatchDirectories(false)
                     ->withWatchForAccess(false)
-                    ->withWatchForModifications(false)
+                    ->withWatchForModifications(false),
             );
 
             $fsWatcher->register(EventType::Created, $this->restart(...));
@@ -118,16 +114,14 @@ final readonly class ClusterCommand extends AbstractCommand
 
             $fsWatcher->enable();
 
-            $this->createSuccessBlock($output)->display(
-                'The file system watcher has been enabled.'
-            );
+            $this->createSuccessBlock($output)->display('The file system watcher has been enabled.');
         }
 
         try {
             Cluster::awaitTermination();
         } catch (UnsupportedFeatureException) {
             $this->createWarningBlock($output)->display(
-                'Signal handling is not supported on this platform. The server will not be able to gracefully shut down.'
+                'Signal handling is not supported on this platform. The server will not be able to gracefully shut down.',
             );
         }
 
@@ -136,9 +130,7 @@ final readonly class ClusterCommand extends AbstractCommand
         // Wait for the workers output to be flushed:
         Async\sleep(Duration::seconds(1));
 
-        $this->createSuccessBlock($output)->display(
-            'The server cluster has stopped successfully.'
-        );
+        $this->createSuccessBlock($output)->display('The server cluster has stopped successfully.');
 
         return ExitCode::Success;
     }
@@ -153,8 +145,6 @@ final readonly class ClusterCommand extends AbstractCommand
         // Wait for the workers output to be flushed:
         Async\sleep(Duration::seconds(1));
 
-        $this->createSuccessBlock($this->output)->display(
-            'The server cluster has been restarted.'
-        );
+        $this->createSuccessBlock($this->output)->display('The server cluster has been restarted.');
     }
 }

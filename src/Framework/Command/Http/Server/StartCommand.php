@@ -23,8 +23,8 @@ use Neu\Component\Console\Output\OutputInterface;
 use Neu\Component\DependencyInjection\ProjectMode;
 use Neu\Component\Http\Exception\ExceptionInterface;
 use Neu\Component\Http\Server\ServerInterface;
-use Revolt\EventLoop\UnsupportedFeatureException;
 use Override;
+use Revolt\EventLoop\UnsupportedFeatureException;
 
 #[Command(
     name: 'http:server:start',
@@ -53,14 +53,12 @@ final readonly class StartCommand implements CommandInterface
     {
         $this->server->start();
 
-        $this->createSuccessBlock($output)->display(
-            'The server has started successfully.'
-        );
+        $this->createSuccessBlock($output)->display('The server has started successfully.');
 
         if ($this->mode->isProduction()) {
             $this->createWarningBlock($output)->display(
-                'The server is running in single-threaded mode, which is not suitable for production environments.' .
-                ' Use the "http:server:cluster" command to start the server in clustered mode.'
+                'The server is running in single-threaded mode, which is not suitable for production environments.'
+                . ' Use the "http:server:cluster" command to start the server in clustered mode.',
             );
         }
 
@@ -68,15 +66,13 @@ final readonly class StartCommand implements CommandInterface
             Cluster::awaitTermination();
         } catch (UnsupportedFeatureException) {
             $this->createWarningBlock($output)->display(
-                'Signal handling is not supported on this platform. The server will not be able to gracefully shut down.'
+                'Signal handling is not supported on this platform. The server will not be able to gracefully shut down.',
             );
         }
 
         $this->server->stop();
 
-        $this->createSuccessBlock($output)->display(
-            'The server has stopped successfully.'
-        );
+        $this->createSuccessBlock($output)->display('The server has stopped successfully.');
 
         return ExitCode::Success;
     }

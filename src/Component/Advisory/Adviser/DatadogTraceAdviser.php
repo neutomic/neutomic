@@ -29,7 +29,7 @@ final readonly class DatadogTraceAdviser implements AdviserInterface
      * @return Advice|null An instance of Advice if Datadog Trace is enabled, or null if it is disabled.
      */
     #[Override]
-    public function getAdvice(): null|Advice
+    public function getAdvice(): ?Advice
     {
         if (!extension_loaded('datadog_trace')) {
             return null;
@@ -38,7 +38,7 @@ final readonly class DatadogTraceAdviser implements AdviserInterface
         return Advice::forPerformance(
             'Disable Datadog Trace',
             'Datadog Trace should be disabled in production environments to improve PHP performance.',
-            'Disable the "datadog_trace" extension in the PHP configuration file.'
+            'Disable the "datadog_trace" extension in the PHP configuration file.',
         );
     }
 }

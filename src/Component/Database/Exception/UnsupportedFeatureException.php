@@ -13,6 +13,4 @@ declare(strict_types=1);
 
 namespace Neu\Component\Database\Exception;
 
-final class UnsupportedFeatureException extends RuntimeException
-{
-}
+final class UnsupportedFeatureException extends RuntimeException {}

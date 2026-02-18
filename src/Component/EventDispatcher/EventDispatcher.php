@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Neu\Component\EventDispatcher;
 
 use Neu\Component\EventDispatcher\Listener\Registry\RegistryInterface;
+use Override;
 use Psl\Async;
 use Psr\EventDispatcher\StoppableEventInterface;
-use Override;
 
 final readonly class EventDispatcher implements EventDispatcherInterface
 {
@@ -54,7 +54,7 @@ final readonly class EventDispatcher implements EventDispatcherInterface
                 }
 
                 return $event;
-            }
+            },
         );
     }
 

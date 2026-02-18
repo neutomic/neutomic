@@ -29,8 +29,8 @@ use Neu\Component\Http\Runtime\Middleware\MiddlewareQueue;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
 use Neu\Component\Http\Runtime\Runtime;
 use Neu\Component\Http\Runtime\RuntimeInterface;
-use Psl\Type;
 use Override;
+use Psl\Type;
 
 /**
  * A dependency injection extension for the HTTP runtime.
@@ -63,23 +63,36 @@ final readonly class RuntimeExtension implements ExtensionInterface
     #[Override]
     public function register(RegistryInterface $registry, DocumentInterface $configurations): void
     {
-        $defaultLogger = $configurations->getDocument('http')->getOfTypeOrDefault('logger', Type\non_empty_string(), null);
-        $configuration = $configurations->getDocument('http')->getOfTypeOrDefault('runtime', $this->getConfigurationType(), []);
+        $defaultLogger = $configurations->getDocument('http')->getOfTypeOrDefault(
+            'logger',
+            Type\non_empty_string(),
+            null,
+        );
+        $configuration = $configurations->getDocument('http')->getOfTypeOrDefault(
+            'runtime',
+            $this->getConfigurationType(),
+            [],
+        );
 
-        $registry->addDefinition(Definition::ofType(HandlerResolver::class, new HandlerResolverFactory(
-            fallback: $configuration['handler']['fallback'] ?? null,
-        )));
+        $registry->addDefinition(Definition::ofType(
+            HandlerResolver::class,
+            new HandlerResolverFactory(fallback: $configuration['handler']['fallback'] ?? null),
+        ));
         $registry->addDefinition(Definition::ofType(MiddlewareQueue::class, new MiddlewareQueueFactory()));
-        $registry->addDefinition(Definition::ofType(Runtime::class, new RuntimeFactory(
-            eventDispatcher: $configuration['event-dispatcher'] ?? null,
-            handlerResolver: $configuration['handler-resolver'] ?? null,
-            middlewareQueue: $configuration['middleware-queue'] ?? null,
-            recovery: $configuration['recovery'] ?? null,
-            concurrencyLimit: $configuration['concurrency-limit'] ?? null,
-        )));
-        $registry->addDefinition(Definition::ofType(ContentDeliverer::class, new ContentDelivererFactory(
-            logger: $configuration['content-delivery']['logger'] ?? $defaultLogger ?? null,
-        )));
+        $registry->addDefinition(Definition::ofType(
+            Runtime::class,
+            new RuntimeFactory(
+                eventDispatcher: $configuration['event-dispatcher'] ?? null,
+                handlerResolver: $configuration['handler-resolver'] ?? null,
+                middlewareQueue: $configuration['middleware-queue'] ?? null,
+                recovery: $configuration['recovery'] ?? null,
+                concurrencyLimit: $configuration['concurrency-limit'] ?? null,
+            ),
+        ));
+        $registry->addDefinition(Definition::ofType(
+            ContentDeliverer::class,
+            new ContentDelivererFactory(logger: $configuration['content-delivery']['logger'] ?? $defaultLogger ?? null),
+        ));
 
         $registry->getDefinition(HandlerResolver::class)->addAlias(HandlerResolverInterface::class);
         $registry->getDefinition(MiddlewareQueue::class)->addAlias(MiddlewareQueueInterface::class);

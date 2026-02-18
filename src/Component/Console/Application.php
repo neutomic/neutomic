@@ -30,10 +30,10 @@ use Neu\Component\Console\Output\Verbosity;
 use Neu\Component\Console\Recovery\Recovery;
 use Neu\Component\Console\Recovery\RecoveryInterface;
 use Neu\Component\EventDispatcher\EventDispatcherInterface;
+use Override;
 use Psl\Async;
 use Psl\Env;
 use Throwable;
-use Override;
 
 /**
  * The application class is the main entry point for the console application.
@@ -60,7 +60,7 @@ final class Application implements ApplicationInterface
     /**
      * The event dispatcher to dispatch events during the application lifecycle.
      */
-    private null|EventDispatcherInterface $dispatcher;
+    private ?EventDispatcherInterface $dispatcher;
 
     /**
      * The keyed semaphore is used to ensure that multiple commands can run concurrently, but not the same command.
@@ -69,8 +69,12 @@ final class Application implements ApplicationInterface
      */
     private Async\KeyedSequence $semaphore;
 
-    public function __construct(Configuration $configuration, RegistryInterface $registry, null|RecoveryInterface $errorHandler = null, null|EventDispatcherInterface $dispatcher = null)
-    {
+    public function __construct(
+        Configuration $configuration,
+        RegistryInterface $registry,
+        ?RecoveryInterface $errorHandler = null,
+        ?EventDispatcherInterface $dispatcher = null,
+    ) {
         $this->configuration = $configuration;
         $this->registry = $registry;
         $this->errorHandler = $errorHandler ?? new Recovery();
@@ -120,7 +124,7 @@ final class Application implements ApplicationInterface
      * @inheritDoc
      */
     #[Override]
-    public function getEventDispatcher(): null|EventDispatcherInterface
+    public function getEventDispatcher(): ?EventDispatcherInterface
     {
         return $this->dispatcher;
     }
@@ -138,7 +142,7 @@ final class Application implements ApplicationInterface
      * @inheritDoc
      */
     #[Override]
-    public function run(null|InputInterface $input = null, null|OutputInterface $output = null): int
+    public function run(?InputInterface $input = null, ?OutputInterface $output = null): int
     {
         Env\set_var('COLUMNS', (string) Terminal::getWidth());
         Env\set_var('LINES', (string) Terminal::getHeight());
@@ -163,7 +167,7 @@ final class Application implements ApplicationInterface
             $verbosity_set = false;
             if ($this->configuration->quietFlagEnabled && $input->getFlag('quiet')->exists()) {
                 $verbosity_set = true;
-                Env\set_var('SHELL_VERBOSITY', (string)Verbosity::Quite->value);
+                Env\set_var('SHELL_VERBOSITY', (string) Verbosity::Quite->value);
 
                 $output->setVerbosity(Verbosity::Quite);
                 $input->setInteractive(false);
@@ -182,7 +186,7 @@ final class Application implements ApplicationInterface
                     default => Verbosity::Debug,
                 };
 
-                Env\set_var('SHELL_VERBOSITY', (string)$verbosity->value);
+                Env\set_var('SHELL_VERBOSITY', (string) $verbosity->value);
                 $output->setVerbosity($verbosity);
             }
 
@@ -309,61 +313,52 @@ final class Application implements ApplicationInterface
          * Add global flags
          */
         if ($this->configuration->helpFlagEnabled) {
-            $input->addFlag(
-                (new Flag('help', description: 'Display this help screen.'))->alias('h'),
-            );
+            $input->addFlag(new Flag('help', description: 'Display this help screen.')->alias('h'));
         }
 
         if ($this->configuration->versionFlagEnabled) {
-            $input->addFlag(
-                (new Flag('version', description: 'Display the application\'s version'))->alias('V'),
-            );
+            $input->addFlag(new Flag('version', description: 'Display the application\'s version')->alias('V'));
         }
 
         if ($this->configuration->quietFlagEnabled) {
-            $input->addFlag(
-                (new Flag('quiet', description: 'Suppress all output.'))->alias('q'),
-            );
+            $input->addFlag(new Flag('quiet', description: 'Suppress all output.')->alias('q'));
         }
 
         if ($this->configuration->verboseFlagEnabled) {
             $input->addFlag(
-                (new Flag('verbose', description: 'Set the verbosity of the application\'s output.'))->alias('v')->setStackable(true),
+                new Flag('verbose', description: 'Set the verbosity of the application\'s output.')
+                    ->alias('v')
+                    ->setStackable(true),
             );
         }
 
         if ($this->configuration->noInteractionFlagEnabled) {
-            $input->addFlag(
-                (new Flag('no-interaction', description: 'Force disable input interaction'))->alias('n'),
-            );
+            $input->addFlag(new Flag('no-interaction', description: 'Force disable input interaction')->alias('n'));
         }
 
         if ($this->configuration->ansiFlagEnabled) {
-            $input->addFlag(
-                (new Flag('ansi', description: 'Force enable ANSI output')),
-            );
+            $input->addFlag(new Flag('ansi', description: 'Force enable ANSI output'));
         }
 
         if ($this->configuration->noAnsiFlagEnabled) {
-            $input->addFlag(
-                (new Flag('no-ansi', description: 'Force disable ANSI output')),
-            );
+            $input->addFlag(new Flag('no-ansi', description: 'Force disable ANSI output'));
         }
     }
 
     /**
      * Render the help screen for the application or the specified command.
      */
-    private function renderHelpScreen(InputInterface $input, OutputInterface $output, null|Command\Configuration $configuration = null): void
-    {
+    private function renderHelpScreen(
+        InputInterface $input,
+        OutputInterface $output,
+        ?Command\Configuration $configuration = null,
+    ): void {
         $helpScreen = new HelpScreen($this, $input);
         if ($configuration !== null) {
             $helpScreen->setCommandConfiguration($configuration);
         }
 
-        $output->write(
-            $helpScreen->render()
-        );
+        $output->write($helpScreen->render());
     }
 
     /**
@@ -384,9 +379,7 @@ final class Application implements ApplicationInterface
     {
         if ($this->dispatcher !== null) {
             $dispatcher = $this->dispatcher;
-            $event = $dispatcher->dispatch(
-                new AfterExecuteEvent($input, $output, $exitCode),
-            );
+            $event = $dispatcher->dispatch(new AfterExecuteEvent($input, $output, $exitCode));
 
             $exitCode = $event->exitCode;
         }

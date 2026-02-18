@@ -43,43 +43,45 @@ final class HelpScreen
      * The optional name of the application when not outputting a {@see HelpScreen}
      * for a specific {@see CommandInterface}.
      */
-    protected string $name = '';
+    private string $name = '';
 
     /**
      * The available commands configuration objects available.
      *
      * @var array<string, CommandConfiguration>
      */
-    protected array $commands;
+    private array $commands;
 
     /**
      * The current command configuration the {@see HelpScreen} refers to.
      */
-    protected null|CommandConfiguration $configuration = null;
+    private ?CommandConfiguration $configuration = null;
 
     /**
      * The available {@see Flag} objects accepted.
      */
-    protected FlagBag $flags;
+    private FlagBag $flags;
 
     /**
      * The available {@see Option} objects accepted.
      */
-    protected OptionBag $options;
+    private OptionBag $options;
 
     /**
      * The available {@see Argument} objects accepted.
      */
-    protected ArgumentBag $arguments;
+    private ArgumentBag $arguments;
 
     /**
      * Construct a new instance of the {@see HelpScreen}.
      */
-    public function __construct(private readonly Application $application, InputInterface $input)
-    {
+    public function __construct(
+        private readonly Application $application,
+        InputInterface $input,
+    ) {
         $this->commands = Dict\reindex(
             $application->getRegistry()->getConfigurations(),
-            static fn (CommandConfiguration $configuration): string => $configuration->name,
+            static fn(CommandConfiguration $configuration): string => $configuration->name,
         );
 
         $this->arguments = $input->getArguments();
@@ -120,11 +122,13 @@ final class HelpScreen
             }
         }
 
-        if (($this->configuration === null) && 0 !== Iter\count($this->commands)) {
+        if ($this->configuration === null && 0 !== Iter\count($this->commands)) {
             $lines[] = $this->renderCommands();
         }
 
-        return Str\join($lines, OutputInterface::END_OF_LINE . OutputInterface::END_OF_LINE) . OutputInterface::END_OF_LINE;
+        return (
+            Str\join($lines, OutputInterface::END_OF_LINE . OutputInterface::END_OF_LINE) . OutputInterface::END_OF_LINE
+        );
     }
 
     /**
@@ -132,7 +136,7 @@ final class HelpScreen
      * either the name of the application (when not rendering for a specific
      * command) or the name of the command and its description.
      */
-    protected function renderHeading(): string
+    private function renderHeading(): string
     {
         $lines = [];
         if ($this->configuration !== null) {
@@ -165,7 +169,7 @@ final class HelpScreen
     /**
      * When rendering a for a specific command, build and return the usage section.
      */
-    protected function renderUsage(): string
+    private function renderUsage(): string
     {
         $usage = [];
         if ($this->configuration !== null) {
@@ -223,11 +227,7 @@ final class HelpScreen
             $usage[] = '[<argument>]';
         }
 
-        return Str\format(
-            '<fg=yellow>Usage</>%s  %s',
-            OutputInterface::END_OF_LINE,
-            Str\join($usage, ' '),
-        );
+        return Str\format('<fg=yellow>Usage</>%s  %s', OutputInterface::END_OF_LINE, Str\join($usage, ' '));
     }
 
     /**
@@ -237,7 +237,7 @@ final class HelpScreen
      *
      * @param AbstractBag<T> $arguments
      */
-    protected function renderSection(AbstractBag $arguments): string
+    private function renderSection(AbstractBag $arguments): string
     {
         $entries = [];
         foreach ($arguments as $argument) {
@@ -250,20 +250,14 @@ final class HelpScreen
             $entries[$name] = $argument->getDescription();
         }
 
-        $maxLength = Math\max(Vec\map(
-            Vec\keys($entries),
-            static fn (string $key): int => Str\length($key),
-        )) ?? 0;
+        $maxLength = Math\max(Vec\map(Vec\keys($entries), Str\length(...))) ?? 0;
 
         $descriptionLength = Terminal::getWidth() - 6 - $maxLength;
         $output = [];
         foreach ($entries as $name => $description) {
             $formatted = '  ' . Str\pad_right($name, $maxLength);
             $formatted = Str\format('<fg=green>%s</>', $formatted);
-            $description = Str\split(
-                Str\wrap($description, $descriptionLength, '{{NC-BREAK}}'),
-                '{{NC-BREAK}}',
-            );
+            $description = Str\split(Str\wrap($description, $descriptionLength, '{{NC-BREAK}}'), '{{NC-BREAK}}');
             $formatted .= '  ' . ($description[0] ?? '');
             $description = Vec\drop($description, 1);
             $pad = Str\repeat(' ', $maxLength + 6);
@@ -280,24 +274,19 @@ final class HelpScreen
     /**
      * Build the list of available commands and their descriptions.
      */
-    protected function renderCommands(): string
+    private function renderCommands(): string
     {
         $this->commands = Dict\sort_by_key($this->commands);
 
         /** @var int<0, max> $maxLength */
-        $maxLength = Math\max(
-            Vec\map(
-                Vec\keys($this->commands),
-                static function ($key): int {
-                    $width = Str\width($key);
-                    if (Str\contains($key, ':')) {
-                        $width += 2;
-                    }
+        $maxLength = Math\max(Vec\map(Vec\keys($this->commands), static function ($key): int {
+            $width = Str\width($key);
+            if (Str\contains($key, ':')) {
+                $width += 2;
+            }
 
-                    return $width;
-                },
-            ),
-        ) ?? 0;
+            return $width;
+        })) ?? 0;
         $descriptionLength = Terminal::getWidth() - 4 - $maxLength;
 
         $output = [];
@@ -318,19 +307,24 @@ final class HelpScreen
 
                 /** @var int<0, max> $length */
                 $length = $maxLength - 2;
-                $formatted = $prefix . '<' . ($command->enabled ? 'fg=green' : 'bg=red;fg=white') . '>' .
-                    Str\pad_right($name, $length) .
-                    '</>';
+                $formatted =
+                    $prefix
+                    . '<'
+                    . ($command->enabled ? 'fg=green' : 'bg=red;fg=white')
+                    . '>'
+                    . Str\pad_right($name, $length)
+                    . '</>';
             } else {
-                $formatted = '<' . ($command->enabled ? 'fg=green' : 'bg=red;fg=white') . '>' . Str\pad_right($name, $maxLength) . '</>';
+                $formatted =
+                    '<'
+                    . ($command->enabled ? 'fg=green' : 'bg=red;fg=white')
+                    . '>'
+                    . Str\pad_right($name, $maxLength)
+                    . '</>';
             }
 
             $description = Str\split(
-                Str\wrap(
-                    $command->description,
-                    $descriptionLength,
-                    '{{NC-BREAK}}',
-                ),
+                Str\wrap($command->description, $descriptionLength, '{{NC-BREAK}}'),
                 '{{NC-BREAK}}',
             );
             $formatted .= '  ' . ($description[0] ?? '');
@@ -344,7 +338,9 @@ final class HelpScreen
             $output[] = '  ' . $formatted;
         }
 
-        return '<fg=yellow>Available Commands:</>' . OutputInterface::END_OF_LINE . Str\join($output, OutputInterface::END_OF_LINE);
+        return '<fg=yellow>Available Commands:</>'
+        . OutputInterface::END_OF_LINE
+        . Str\join($output, OutputInterface::END_OF_LINE);
     }
 
     /**

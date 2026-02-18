@@ -18,10 +18,10 @@ use Neu\Component\DependencyInjection\Configuration\Document;
 use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Exception\NoSupportiveLoaderException;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
+use Override;
 use Psl\Filesystem;
 use Psl\Type;
 use Psl\Vec;
-use Override;
 
 /**
  * A loader that loads documents from a directory.
@@ -57,36 +57,25 @@ final class DirectoryLoader implements ResolverAwareLoaderInterface
             $document = new Document([]);
             $resolver = $this->getResolver();
             foreach (Vec\sort(Filesystem\read_directory($resource)) as $node) {
-                if (Filesystem\is_file($node)) {
-                    try {
-                        $loader = $resolver->resolve($node);
-                    } catch (NoSupportiveLoaderException) {
-                        continue;
-                    }
-
-                    $document = match ($this->strategy) {
-                        CombineStrategy::Merge => $document->merge(
-                            $loader->load($node),
-                            recursive: false,
-                        ),
-                        CombineStrategy::MergeRecursive => $document->merge(
-                            $loader->load($node),
-                        ),
-                        CombineStrategy::Replace => $document->replace(
-                            $loader->load($node),
-                            recursive: false,
-                        ),
-                        CombineStrategy::ReplaceRecursive => $document->replace(
-                            $loader->load($node),
-                        ),
-                    };
+                if (!Filesystem\is_file($node)) {
+                    continue;
                 }
+
+                try {
+                    $loader = $resolver->resolve($node);
+                } catch (NoSupportiveLoaderException) {
+                    continue;
+                }
+
+                $document = match ($this->strategy) {
+                    CombineStrategy::Merge => $document->merge($loader->load($node), recursive: false),
+                    CombineStrategy::MergeRecursive => $document->merge($loader->load($node)),
+                    CombineStrategy::Replace => $document->replace($loader->load($node), recursive: false),
+                    CombineStrategy::ReplaceRecursive => $document->replace($loader->load($node)),
+                };
             }
         } catch (Filesystem\Exception\ExceptionInterface $previous) {
-            throw new RuntimeException(
-                'failed to read directory "' . $resource . '".',
-                previous: $previous
-            );
+            throw new RuntimeException('failed to read directory "' . $resource . '".', previous: $previous);
         }
 
         return $document;

@@ -29,7 +29,7 @@ final readonly class BlackfireAdviser implements AdviserInterface
      * @return Advice|null An instance of Advice if Blackfire is enabled, or null if it is disabled.
      */
     #[Override]
-    public function getAdvice(): null|Advice
+    public function getAdvice(): ?Advice
     {
         if (!extension_loaded('blackfire')) {
             return null;
@@ -38,7 +38,7 @@ final readonly class BlackfireAdviser implements AdviserInterface
         return Advice::forPerformance(
             'Disable Blackfire',
             'Blackfire should be disabled in production environments to improve PHP performance.',
-            'Disable the "blackfire" extension in the PHP configuration file.'
+            'Disable the "blackfire" extension in the PHP configuration file.',
         );
     }
 }

@@ -14,12 +14,12 @@ declare(strict_types=1);
 namespace Neu\Component\Console\Input;
 
 use Iterator;
+use Override;
 use Psl\Dict;
 use Psl\Iter;
 use Psl\Regex;
 use Psl\Str\Byte;
 use Psl\Vec;
-use Override;
 
 /**
  * The `Lexer` handles all parsing and pairing of the provided input.
@@ -138,7 +138,7 @@ final class Lexer implements Iterator
     #[Override]
     public function valid(): bool
     {
-        return ($this->position < $this->length);
+        return $this->position < $this->length;
     }
 
     /**
@@ -152,7 +152,7 @@ final class Lexer implements Iterator
         $key = Iter\first($this->items);
         $this->items = Vec\values(Dict\drop($this->items, 1));
 
-        if ($key !== null && $matches = Regex\first_match($key, "#\A([^\s'\"=]+)=(.+?)$#")) {
+        if ($key !== null && ($matches = Regex\first_match($key, "#\A([^\s'\"=]+)=(.+?)$#"))) {
             $key = $matches[1];
             $this->items = Vec\concat([$matches[2]], $this->items);
         } else {
@@ -225,7 +225,7 @@ final class Lexer implements Iterator
      *
      * @return Token|null
      */
-    public function peek(): null|array
+    public function peek(): ?array
     {
         if (Iter\count($this->items) > 0) {
             return $this->processInput($this->items[0]);

@@ -16,7 +16,6 @@ namespace Neu\Tests\Component\EventDispatcher\Fixture\Event;
 class OrderEvent
 {
     public function __construct(
-        public int $orderId
-    ) {
-    }
+        public int $orderId,
+    ) {}
 }

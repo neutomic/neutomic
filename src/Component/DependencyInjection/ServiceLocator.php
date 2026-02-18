@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\DependencyInjection;
 
-use Psl\Vec;
 use Override;
+use Psl\Vec;
 
 /**
  * @template T of object

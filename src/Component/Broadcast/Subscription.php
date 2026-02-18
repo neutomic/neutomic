@@ -16,9 +16,9 @@ namespace Neu\Component\Broadcast;
 use Amp\Pipeline\ConcurrentIterator;
 use Amp\Pipeline\DisposedException;
 use Closure;
-use Traversable;
 use IteratorAggregate;
 use Override;
+use Traversable;
 
 /**
  * Represents a subscription to a channel, providing an iterator to receive messages.
@@ -48,7 +48,7 @@ final class Subscription implements IteratorAggregate
      *
      * @var null|(Closure(): void)
      */
-    private null|Closure $release;
+    private ?Closure $release;
 
     /**
      * Create a new {@see Subscription} instance.
@@ -85,7 +85,7 @@ final class Subscription implements IteratorAggregate
      *
      * @return Message<T>|null The next message, or `null` if the subscription was cancelled.
      */
-    public function receive(): null|Message
+    public function receive(): ?Message
     {
         if (null === $this->release) {
             // the subscription was cancelled

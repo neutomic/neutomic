@@ -47,9 +47,7 @@ $database->transactional(static function (TransactionInterface $transaction): vo
     $transaction
         ->createQueryBuilder()
         ->delete('users', 'u')
-        ->where(
-            $transaction->createExpressionBuilder()->equal('u.username', ':username')
-        )
+        ->where($transaction->createExpressionBuilder()->equal('u.username', ':username'))
         ->execute(['username' => 'dux']);
 
     $users = $transaction->fetchAllNumeric('users');
@@ -65,8 +63,10 @@ $database->transactional(static function (TransactionInterface $transaction): vo
         'username' => $username,
         'email' => $email,
         'password' => $password,
-        'status' => $status
-    ] = $transaction->fetchAllAssociative('users', offset: 2, limit: 1, order_by: ['email' => OrderDirection::Descending])[0];
+        'status' => $status,
+    ] = $transaction->fetchAllAssociative('users', offset: 2, limit: 1, order_by: [
+        'email' => OrderDirection::Descending,
+    ])[0];
     assert('baz' === $username);
     IO\write_line('- username: "%s", email: "%s", password: "%s", status: %d', $username, $email, $password, $status);
 });

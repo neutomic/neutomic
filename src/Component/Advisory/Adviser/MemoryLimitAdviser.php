@@ -31,7 +31,7 @@ final readonly class MemoryLimitAdviser implements AdviserInterface
      * @return Advice|null An instance of Advice if the memory limit is set too low, or null if it is set appropriately.
      */
     #[Override]
-    public function getAdvice(): null|Advice
+    public function getAdvice(): ?Advice
     {
         $memoryLimit = (string) ini_get('memory_limit');
         $memoryLimit = Internal\Utility::parseValue($memoryLimit);
@@ -39,8 +39,10 @@ final readonly class MemoryLimitAdviser implements AdviserInterface
         if ($memoryLimit !== -1 && $memoryLimit < self::MEMORY_LIMIT_THRESHOLD) {
             return Advice::forPerformance(
                 'Increase PHP Memory Limit',
-                'The current PHP memory limit ( ' . ((string) $memoryLimit) . ' ) is set too low, which can cause issues with memory-intensive operations.',
-                'Increase the memory limit in your php.ini configuration file to at least 128MB or set it to -1 for unlimited memory.'
+                'The current PHP memory limit ( '
+                . (string) $memoryLimit
+                . ' ) is set too low, which can cause issues with memory-intensive operations.',
+                'Increase the memory limit in your php.ini configuration file to at least 128MB or set it to -1 for unlimited memory.',
             );
         }
 

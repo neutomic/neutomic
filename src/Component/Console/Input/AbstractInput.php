@@ -24,10 +24,10 @@ use Neu\Component\Console\Input\Definition\Flag;
 use Neu\Component\Console\Input\Definition\Mode;
 use Neu\Component\Console\Input\Definition\Option;
 use Neu\Component\Console\Terminal;
+use Override;
 use Psl\Regex;
 use Psl\Str;
 use Psl\Vec;
-use Override;
 
 /**
  * The {@see AbstractInput} class contains all available {@see Flag}, {@see Argument}, and {@see Option}
@@ -68,7 +68,7 @@ abstract class AbstractInput implements InputInterface
      *
      * @var null|non-empty-string
      */
-    private null|string $command = null;
+    private ?string $command = null;
 
     /**
      * All parameters provided in the input that do not match a given command
@@ -87,7 +87,7 @@ abstract class AbstractInput implements InputInterface
      */
     public function __construct(array $args)
     {
-        $args = Vec\filter($args, static fn (string $arg): bool => '' !== $arg);
+        $args = Vec\filter($args, static fn(string $arg): bool => '' !== $arg);
 
         $this->input = new Lexer($args);
         $this->flags = new FlagBag();
@@ -133,7 +133,7 @@ abstract class AbstractInput implements InputInterface
      * @inheritDoc
      */
     #[Override]
-    public function getActiveCommand(): null|string
+    public function getActiveCommand(): ?string
     {
         if ($this->parsed) {
             return $this->command;
@@ -156,7 +156,7 @@ abstract class AbstractInput implements InputInterface
     {
         $lexer = $this->input;
         if ($rewind) {
-            $lexer = new Lexer(Vec\map($this->invalid, static fn ($entry) => $entry['raw']));
+            $lexer = new Lexer(Vec\map($this->invalid, static fn($entry) => $entry['raw']));
         }
 
         foreach ($lexer as $val) {
@@ -181,7 +181,6 @@ abstract class AbstractInput implements InputInterface
                 continue;
             }
 
-
             $this->invalid[] = $val;
         }
 
@@ -205,25 +204,21 @@ abstract class AbstractInput implements InputInterface
                 $flag->assign(1);
             }
 
-            $this->invalid = Vec\filter(
-                $this->invalid,
-                static fn ($entry) => $entry['value'] !== $input['value'],
-            );
+            $this->invalid = Vec\filter($this->invalid, static fn($entry) => $entry['value'] !== $input['value']);
 
             return true;
         }
 
         foreach ($this->flags->getIterator() as $flag) {
-            if ($key === $flag->getNegativeAlias()) {
-                $flag->assign(0);
-
-                $this->invalid = Vec\filter(
-                    $this->invalid,
-                    static fn ($entry) => $entry['value'] !== $input['value'],
-                );
-
-                return true;
+            if ($key !== $flag->getNegativeAlias()) {
+                continue;
             }
+
+            $flag->assign(0);
+
+            $this->invalid = Vec\filter($this->invalid, static fn($entry) => $entry['value'] !== $input['value']);
+
+            return true;
         }
 
         return false;
@@ -248,15 +243,11 @@ abstract class AbstractInput implements InputInterface
         // Peak ahead to make sure we get a value.
         $nextValue = $lexer->peek();
         if ($nextValue === null) {
-            throw new MissingValueException(
-                Str\format('No value given for the option `%s`.', $input['value']),
-            );
+            throw new MissingValueException(Str\format('No value given for the option `%s`.', $input['value']));
         }
 
         if (!$lexer->end() && Lexer::isAnnotated($nextValue['raw'])) {
-            throw new MissingValueException(
-                Str\format('No value is present for option `%s`.', $key),
-            );
+            throw new MissingValueException(Str\format('No value is present for option `%s`.', $key));
         }
 
         $lexer->shift();
@@ -274,7 +265,7 @@ abstract class AbstractInput implements InputInterface
 
         $this->invalid = Vec\filter(
             $this->invalid,
-            static fn ($entry) => $entry['value'] !== $input['value'] && $entry['value'] !== $value,
+            static fn($entry) => $entry['value'] !== $input['value'] && $entry['value'] !== $value,
         );
 
         return true;
@@ -289,16 +280,15 @@ abstract class AbstractInput implements InputInterface
     private function parseArgument(array $input): bool
     {
         foreach ($this->arguments as $argument) {
-            if (!$argument->exists()) {
-                $argument->assign($input['raw']);
-
-                $this->invalid = Vec\filter(
-                    $this->invalid,
-                    static fn ($entry) => $entry['value'] !== $input['value'],
-                );
-
-                return true;
+            if ($argument->exists()) {
+                continue;
             }
+
+            $argument->assign($input['raw']);
+
+            $this->invalid = Vec\filter($this->invalid, static fn($entry) => $entry['value'] !== $input['value']);
+
+            return true;
         }
 
         return false;
@@ -312,9 +302,7 @@ abstract class AbstractInput implements InputInterface
     {
         $argument = $this->arguments->get($key);
         if ($argument === null) {
-            throw new InvalidInputDefinitionException(
-                Str\format('The argument "%s" does not exist.', $key),
-            );
+            throw new InvalidInputDefinitionException(Str\format('The argument "%s" does not exist.', $key));
         }
 
         return $argument;
@@ -348,9 +336,7 @@ abstract class AbstractInput implements InputInterface
     {
         $flag = $this->flags->get($key);
         if ($flag === null) {
-            throw new InvalidInputDefinitionException(
-                Str\format('The flag "%s" does not exist.', $key),
-            );
+            throw new InvalidInputDefinitionException(Str\format('The flag "%s" does not exist.', $key));
         }
 
         return $flag;
@@ -384,9 +370,7 @@ abstract class AbstractInput implements InputInterface
     {
         $option = $this->options->get($key);
         if ($option === null) {
-            throw new InvalidInputDefinitionException(
-                Str\format('The option "%s" does not exist.', $key),
-            );
+            throw new InvalidInputDefinitionException(Str\format('The option "%s" does not exist.', $key));
         }
 
         return $option;
@@ -424,9 +408,7 @@ abstract class AbstractInput implements InputInterface
             }
 
             if (!$flag->exists()) {
-                throw new MissingValueException(
-                    Str\format('Required flag `%s` is not present.', $name),
-                );
+                throw new MissingValueException(Str\format('Required flag `%s` is not present.', $name));
             }
         }
 
@@ -436,9 +418,7 @@ abstract class AbstractInput implements InputInterface
             }
 
             if (!$option->exists()) {
-                throw new MissingValueException(
-                    Str\format('No value present for required option `%s`.', $name),
-                );
+                throw new MissingValueException(Str\format('No value present for required option `%s`.', $name));
             }
         }
 
@@ -448,20 +428,16 @@ abstract class AbstractInput implements InputInterface
             }
 
             if (!$argument->exists()) {
-                throw new MissingValueException(
-                    Str\format('No value present for required argument `%s`.', $name),
-                );
+                throw new MissingValueException(Str\format('No value present for required argument `%s`.', $name));
             }
         }
 
         foreach ($this->invalid as $value) {
-            throw new RuntimeException(
-                Str\format(
-                    'The %s `%s` does not exist.',
-                    Lexer::isAnnotated($value['raw']) ? 'option' : 'argument',
-                    $value['raw'],
-                ),
-            );
+            throw new RuntimeException(Str\format(
+                'The %s `%s` does not exist.',
+                Lexer::isAnnotated($value['raw']) ? 'option' : 'argument',
+                $value['raw'],
+            ));
         }
     }
 

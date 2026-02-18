@@ -36,5 +36,5 @@ interface ParserInterface
      *
      * @return FormInterface A form data instance.
      */
-    public function parse(RequestInterface $request, null|ParseOptions $options = null): FormInterface;
+    public function parse(RequestInterface $request, ?ParseOptions $options = null): FormInterface;
 }

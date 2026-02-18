@@ -48,7 +48,11 @@ interface PluginInterface
      * @param RouterRegistryInterface $registry The router registry.
      * @param RouteCollector $collector The route collector.
      */
-    public function route(ContainerInterface $container, RouterRegistryInterface $registry, RouteCollector $collector): void;
+    public function route(
+        ContainerInterface $container,
+        RouterRegistryInterface $registry,
+        RouteCollector $collector,
+    ): void;
 
     /**
      * Enqueue middleware.

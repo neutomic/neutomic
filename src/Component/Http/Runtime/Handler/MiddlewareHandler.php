@@ -23,9 +23,8 @@ final readonly class MiddlewareHandler implements HandlerInterface
 {
     public function __construct(
         private MiddlewareInterface $middleware,
-        private HandlerInterface $next
-    ) {
-    }
+        private HandlerInterface $next,
+    ) {}
 
     /**
      * @inheritDoc

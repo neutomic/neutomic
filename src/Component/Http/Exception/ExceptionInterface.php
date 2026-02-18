@@ -15,6 +15,4 @@ namespace Neu\Component\Http\Exception;
 
 use Neu\Component\Exception\ExceptionInterface as RootExceptionInterface;
 
-interface ExceptionInterface extends RootExceptionInterface
-{
-}
+interface ExceptionInterface extends RootExceptionInterface {}

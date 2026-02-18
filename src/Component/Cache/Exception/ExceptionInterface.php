@@ -18,6 +18,4 @@ use Neu\Component\Exception\ExceptionInterface as ContractExceptionInterface;
 /**
  * Interface for all exceptions thrown by the cache contracts.
  */
-interface ExceptionInterface extends ContractExceptionInterface
-{
-}
+interface ExceptionInterface extends ContractExceptionInterface {}

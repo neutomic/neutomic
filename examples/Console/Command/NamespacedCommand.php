@@ -33,17 +33,21 @@ final readonly class NamespacedCommand extends AbstractCommand
 {
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->createSectionBlock($this->output)
+        $this
+            ->createSectionBlock($this->output)
             ->display('This is a namespaced command')
-            ->display('Using a namespace as part of your command name, helps you to group related commands together and avoid conflicts with other commands.')
+            ->display(
+                'Using a namespace as part of your command name, helps you to group related commands together and avoid conflicts with other commands.',
+            )
             ->display('This is a good practice when you have a lot of commands in your application.')
-            ->display('The application help screen will display the namespace as a group of commands.')
-        ;
+            ->display('The application help screen will display the namespace as a group of commands.');
 
-        $this->createWarningBlock($this->output)
-            ->display('This command uses multiple configurations to demonstrate how to group related commands together.')
-            ->display('Meaning it has multiple names and descriptions, but they all point to the same command object.')
-        ;
+        $this
+            ->createWarningBlock($this->output)
+            ->display(
+                'This command uses multiple configurations to demonstrate how to group related commands together.',
+            )
+            ->display('Meaning it has multiple names and descriptions, but they all point to the same command object.');
 
         return 0;
     }

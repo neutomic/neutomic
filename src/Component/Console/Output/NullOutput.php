@@ -55,9 +55,7 @@ final class NullOutput extends AbstractOutput implements ConsoleOutputInterface
      * @inheritDoc
      */
     #[Override]
-    public function write(string $message, Verbosity $verbosity = Verbosity::Normal, Type $type = Type::Normal): void
-    {
-    }
+    public function write(string $message, Verbosity $verbosity = Verbosity::Normal, Type $type = Type::Normal): void {}
 
     /**
      * @inheritDoc
@@ -72,9 +70,7 @@ final class NullOutput extends AbstractOutput implements ConsoleOutputInterface
      * @inheritDoc
      */
     #[Override]
-    protected function doWrite(string $content): void
-    {
-    }
+    protected function doWrite(string $content): void {}
 
     /**
      * @inheritDoc

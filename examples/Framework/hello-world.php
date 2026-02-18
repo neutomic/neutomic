@@ -24,9 +24,9 @@ use Neu\Component\Http\Router\Route;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Framework\EngineInterface;
-use Psl\SecureRandom;
-use Psl\Env;
 use Override;
+use Psl\Env;
+use Psl\SecureRandom;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
@@ -104,14 +104,14 @@ final readonly class HelloWorldHandler implements HandlerInterface
                 'compression' => false,
                 'static-content' => false,
                 'session' => false,
-            ]
+            ],
         ],
         'http' => [
             'server' => [
                 'sockets' => [[
                     'host' => '127.0.0.1',
                     'port' => 1337,
-                ]]
+                ]],
             ],
         ],
     ]);
@@ -144,7 +144,7 @@ final readonly class HelloWorldHandler implements HandlerInterface
     /* |----------------------------------------| */
     /* | Run the engine.                        | */
     /* |----------------------------------------| */
-    $engine->run(match($project->mode->isProduction()) {
+    $engine->run(match ($project->mode->isProduction()) {
         true => Neu\Framework\Mode::HttpCluster,
         false => Neu\Framework\Mode::HttpServer,
     });

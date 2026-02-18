@@ -56,7 +56,7 @@ final readonly class ApplicationFactory implements FactoryInterface
      * @param non-empty-string|null $registry The registry service identifier, defaults to {@see RegistryInterface::class}.
      * @param non-empty-string|null $recovery The recovery service identifier, defaults to {@see RecoveryInterface::class}.
      */
-    public function __construct(null|string $configuration = null, null|string $registry = null, null|string $recovery = null)
+    public function __construct(?string $configuration = null, ?string $registry = null, ?string $recovery = null)
     {
         $this->configuration = $configuration ?? Configuration::class;
         $this->registry = $registry ?? RegistryInterface::class;

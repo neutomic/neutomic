@@ -29,7 +29,7 @@ final readonly class AssertationAdviser implements AdviserInterface
      * @return Advice|null An instance of Advice if assertions are not disabled, or null if they are.
      */
     #[Override]
-    public function getAdvice(): null|Advice
+    public function getAdvice(): ?Advice
     {
         $configuration = ini_get('zend.assertions');
         if ($configuration === '-1') {
@@ -39,7 +39,7 @@ final readonly class AssertationAdviser implements AdviserInterface
         return Advice::forPerformance(
             'Disable assertions in production',
             'Assertions are a debugging feature that should be disabled in production environments to improve performance.',
-            'Disable assertions in the PHP configuration file or set the `zend.assertions` directive to `-1`.'
+            'Disable assertions in the PHP configuration file or set the `zend.assertions` directive to `-1`.',
         );
     }
 }

@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Neu\Component\Console\UserInput;
 
+use Override;
 use Psl\Iter;
 use Psl\Str;
 use Psl\Vec;
-use Override;
 
 /**
  * The {@see MenuUserInput} class presents the user with a prompt and a list of available
@@ -77,7 +77,7 @@ final class MenuUserInput extends AbstractUserInput
     {
         $this->output->write('<fg=green>↪</> ');
         $input = $this->input->getUserInput();
-        if (($input === '') && null !== $this->default) {
+        if ($input === '' && null !== $this->default) {
             return $this->default;
         }
 

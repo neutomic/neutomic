@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Neu\Component\Console\Input\Definition;
 
-use Psl\Str;
 use Override;
+use Psl\Str;
 
 /**
  * A {@see Flag} is a boolean parameter (denoted by an integer) specified by a user.
@@ -40,8 +40,13 @@ final class Flag extends Definition
      * @param non-empty-string $name The name of the flag.
      * @param null|non-empty-string $alias The alias of the flag.
      */
-    public function __construct(string $name, null|string $alias = null, string $description = '', Mode $mode = Mode::Optional, bool $stackable = false)
-    {
+    public function __construct(
+        string $name,
+        ?string $alias = null,
+        string $description = '',
+        Mode $mode = Mode::Optional,
+        bool $stackable = false,
+    ) {
         parent::__construct($name, $alias, $description, $mode);
 
         $this->stackable = $stackable;
@@ -69,7 +74,7 @@ final class Flag extends Definition
         if ($this->stackable) {
             $value = $this->value ?? 0;
             /** @var positive-int $value */
-            $value = $value + 1;
+            $value += 1;
 
             $this->value = $value;
         }

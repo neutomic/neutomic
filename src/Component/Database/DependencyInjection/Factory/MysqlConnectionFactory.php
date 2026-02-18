@@ -37,52 +37,52 @@ final readonly class MysqlConnectionFactory implements FactoryInterface
     /**
      * The port of the MySQL server.
      */
-    private null|int $port;
+    private ?int $port;
 
     /**
      * The username for the MySQL connection.
      */
-    private null|string $user;
+    private ?string $user;
 
     /**
      * The password for the MySQL connection.
      */
-    private null|string $password;
+    private ?string $password;
 
     /**
      * The database name for the MySQL connection.
      */
-    private null|string $database;
+    private ?string $database;
 
     /**
      * The character set for the MySQL connection.
      */
-    private null|string $charset;
+    private ?string $charset;
 
     /**
      * The collation for the MySQL connection.
      */
-    private null|string $collate;
+    private ?string $collate;
 
     /**
      * The SQL mode for the MySQL connection.
      */
-    private null|string $sqlMode;
+    private ?string $sqlMode;
 
     /**
      * Whether to use compression for the connection.
      */
-    private null|bool $useCompression;
+    private ?bool $useCompression;
 
     /**
      * The private key to use for sha256_password authentication method.
      */
-    private null|string $key;
+    private ?string $key;
 
     /**
      * Whether to use local infile for the connection.
      */
-    private null|bool $useLocalInfile;
+    private ?bool $useLocalInfile;
 
     /**
      * Create a new MySQL connection factory.
@@ -101,16 +101,16 @@ final readonly class MysqlConnectionFactory implements FactoryInterface
      */
     public function __construct(
         string $host,
-        null|int $port = null,
-        null|string $user = null,
-        null|string $password = null,
-        null|string $database = null,
-        null|string $charset = null,
-        null|string $collate = null,
-        null|string $sqlMode = null,
-        null|bool $useCompression = null,
-        null|string $key = null,
-        null|bool $useLocalInfile = null
+        ?int $port = null,
+        ?string $user = null,
+        #[\SensitiveParameter] ?string $password = null,
+        ?string $database = null,
+        ?string $charset = null,
+        ?string $collate = null,
+        ?string $sqlMode = null,
+        ?bool $useCompression = null,
+        ?string $key = null,
+        ?bool $useLocalInfile = null,
     ) {
         $this->host = $host;
         $this->port = $port;
@@ -148,7 +148,7 @@ final readonly class MysqlConnectionFactory implements FactoryInterface
 
         try {
             return Mysql\connect($config);
-        } catch (SqlException | Error $e) {
+        } catch (SqlException|Error $e) {
             throw new InvalidArgumentException('Failed to connect to the database: ' . $e->getMessage(), 0, $e);
         }
     }

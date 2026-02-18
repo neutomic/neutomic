@@ -41,7 +41,10 @@ interface DatabaseInterface extends AbstractionLayerInterface
      * @return T
      */
     #[Override]
-    public function transactional(Closure $operation, TransactionIsolationLevel $isolation = TransactionIsolationLevel::ReadUncommitted): mixed;
+    public function transactional(
+        Closure $operation,
+        TransactionIsolationLevel $isolation = TransactionIsolationLevel::ReadUncommitted,
+    ): mixed;
 
     /**
      * Retrieve notification listener for the given channel.

@@ -76,7 +76,11 @@ trait AbstractionLayerConvenienceMethodsTrait
             $parameters[$name] = $value;
         }
 
-        return $this->createQueryBuilder()->insert($table)->values($values)->execute($parameters);
+        return $this
+            ->createQueryBuilder()
+            ->insert($table)
+            ->values($values)
+            ->execute($parameters);
     }
 
     /**
@@ -115,7 +119,11 @@ trait AbstractionLayerConvenienceMethodsTrait
             $set[] = $values;
         }
 
-        return $this->createQueryBuilder()->insert($table)->values(...$set)->execute($parameters);
+        return $this
+            ->createQueryBuilder()
+            ->insert($table)
+            ->values(...$set)
+            ->execute($parameters);
     }
 
     /**
@@ -208,8 +216,12 @@ trait AbstractionLayerConvenienceMethodsTrait
      *
      * @return null|array<non-empty-string, mixed>
      */
-    public function fetchOneAssociative(string $table, array $fields = ['*'], array $criteria = [], array $order_by = []): null|array
-    {
+    public function fetchOneAssociative(
+        string $table,
+        array $fields = ['*'],
+        array $criteria = [],
+        array $order_by = [],
+    ): ?array {
         $query = $this->createQueryBuilder()->select(...$fields)->from($table);
         [$query, $values] = $this->buildCriteria($query, $criteria);
 
@@ -247,8 +259,12 @@ trait AbstractionLayerConvenienceMethodsTrait
      *
      * @return null|list<mixed>
      */
-    public function fetchOneNumeric(string $table, array $fields = ['*'], array $criteria = [], array $order_by = []): null|array
-    {
+    public function fetchOneNumeric(
+        string $table,
+        array $fields = ['*'],
+        array $criteria = [],
+        array $order_by = [],
+    ): ?array {
         $row = $this->fetchOneAssociative($table, $fields, $criteria, $order_by);
         if (null === $row) {
             return null;
@@ -284,8 +300,14 @@ trait AbstractionLayerConvenienceMethodsTrait
      *
      * @return list<array<non-empty-string, mixed>>
      */
-    public function fetchAllAssociative(string $table, array $fields = ['*'], array $criteria = [], null|int $offset = null, null|int $limit = null, array $order_by = []): array
-    {
+    public function fetchAllAssociative(
+        string $table,
+        array $fields = ['*'],
+        array $criteria = [],
+        ?int $offset = null,
+        ?int $limit = null,
+        array $order_by = [],
+    ): array {
         $query = $this->createQueryBuilder()->select(...$fields)->from($table);
         [$query, $values] = $this->buildCriteria($query, $criteria);
 
@@ -332,11 +354,17 @@ trait AbstractionLayerConvenienceMethodsTrait
      *
      * @return list<list<mixed>>
      */
-    public function fetchAllNumeric(string $table, array $fields = ['*'], array $criteria = [], null|int $offset = null, null|int $limit = null, array $orderBy = []): array
-    {
+    public function fetchAllNumeric(
+        string $table,
+        array $fields = ['*'],
+        array $criteria = [],
+        ?int $offset = null,
+        ?int $limit = null,
+        array $orderBy = [],
+    ): array {
         return array_map(
-            static fn ($row) => array_values($row),
-            $this->fetchAllAssociative($table, $fields, $criteria, $offset, $limit, $orderBy)
+            array_values(...),
+            $this->fetchAllAssociative($table, $fields, $criteria, $offset, $limit, $orderBy),
         );
     }
 
@@ -375,7 +403,7 @@ trait AbstractionLayerConvenienceMethodsTrait
      */
     private function buildPlaceholder(string $column, string $prefix, int $index = 0): array
     {
-        $placeholder = $prefix . '_' . $column . '_' . ((string) $index);
+        $placeholder = $prefix . '_' . $column . '_' . (string) $index;
 
         return [$placeholder, ':' . $placeholder];
     }

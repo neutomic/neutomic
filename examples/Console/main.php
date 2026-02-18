@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Neu\Examples\Console;
 
+use Neu;
 use Neu\Component\Console\ApplicationInterface;
 use Neu\Component\DependencyInjection\ContainerBuilder;
 use Neu\Component\DependencyInjection\Project;
-use Neu;
 use Psl\Env;
 use Psl\SecureRandom;
 

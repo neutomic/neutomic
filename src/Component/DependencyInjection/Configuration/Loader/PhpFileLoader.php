@@ -16,10 +16,10 @@ namespace Neu\Component\DependencyInjection\Configuration\Loader;
 use Neu\Component\DependencyInjection\Configuration\Document;
 use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Exception\InvalidConfigurationException;
+use Override;
 use Psl\Filesystem;
 use Psl\Str;
 use Psl\Type;
-use Override;
 
 /**
  * @implements LoaderInterface<non-empty-string>
@@ -33,17 +33,14 @@ final class PhpFileLoader implements LoaderInterface
     public function load(mixed $resource): DocumentInterface
     {
         /** @var mixed $data */
-        $data = (static function () use ($resource): mixed {
-            /** @psalm-suppress UnresolvableInclude */
-            return @require $resource;
-        })();
+        $data = (static fn() => @require $resource)();
 
         try {
             $data = Type\dict(Type\string(), Type\mixed())->coerce($data);
         } catch (Type\Exception\CoercionException $previous) {
             throw new InvalidConfigurationException(
                 'failed to coerce php resource file "' . $resource . '".',
-                previous: $previous
+                previous: $previous,
             );
         }
 

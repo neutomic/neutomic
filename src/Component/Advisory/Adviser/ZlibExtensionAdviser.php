@@ -29,13 +29,13 @@ final readonly class ZlibExtensionAdviser implements AdviserInterface
      * @return Advice|null An instance of Advice if ext-zlib is not installed, or null if it is installed.
      */
     #[Override]
-    public function getAdvice(): null|Advice
+    public function getAdvice(): ?Advice
     {
         if (!extension_loaded('zlib')) {
             return Advice::forPerformance(
                 'Install ext-zlib',
                 'The ext-zlib extension is not installed. Installing it can enable HTTP compression middleware, improving performance.',
-                'Install the ext-zlib extension and ensure it is enabled in your PHP configuration.'
+                'Install the ext-zlib extension and ensure it is enabled in your PHP configuration.',
             );
         }
 

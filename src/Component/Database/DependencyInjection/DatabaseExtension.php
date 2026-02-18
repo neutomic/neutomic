@@ -31,9 +31,9 @@ use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Neu\Component\DependencyInjection\RegistryInterface;
+use Override;
 use Psl\Class;
 use Psl\Type;
-use Override;
 
 /**
  * A dependency injection extension for database connections.
@@ -113,7 +113,11 @@ final class DatabaseExtension implements ExtensionInterface
             $connectionServiceId = 'database.connection.' . $name;
             $databaseServiceId = 'database.' . $name;
 
-            if ($config['platform'] === 'mysql' || $config['platform'] === 'mysqli' || $config['platform'] === 'mariadb') {
+            if (
+                $config['platform'] === 'mysql'
+                || $config['platform'] === 'mysqli'
+                || $config['platform'] === 'mariadb'
+            ) {
                 /** @var MysqlConnectionConfiguration $config */
                 $this->registerMysqlConnection($registry, $connectionServiceId, $config);
             } else {
@@ -121,9 +125,11 @@ final class DatabaseExtension implements ExtensionInterface
                 $this->registerPostgresConnection($registry, $connectionServiceId, $config);
             }
 
-            $registry->addDefinition(Definition::create($databaseServiceId, DatabaseInterface::class, new DatabaseFactory(
-                connection: $connectionServiceId,
-            )));
+            $registry->addDefinition(Definition::create(
+                $databaseServiceId,
+                DatabaseInterface::class,
+                new DatabaseFactory(connection: $connectionServiceId),
+            ));
 
             $databaseDefinitions[$name] = $databaseServiceId;
         }
@@ -148,7 +154,33 @@ final class DatabaseExtension implements ExtensionInterface
 
         $pooled = $config['pooled'] ?? true;
         if ($pooled) {
-            $registry->addDefinition(Definition::create($serviceId, MysqlConnectionPool::class, new MysqlConnectionPoolFactory(
+            $registry->addDefinition(Definition::create(
+                $serviceId,
+                MysqlConnectionPool::class,
+                new MysqlConnectionPoolFactory(
+                    host: $config['host'],
+                    port: $config['port'] ?? null,
+                    user: $config['user'] ?? null,
+                    password: $config['password'] ?? null,
+                    database: $config['database'] ?? null,
+                    charset: $config['charset'] ?? null,
+                    collate: $config['collate'] ?? null,
+                    sqlMode: $config['sql-mode'] ?? null,
+                    useCompression: $config['use-compression'] ?? null,
+                    key: $config['key'] ?? null,
+                    useLocalInfile: $config['use-local-infile'] ?? null,
+                    maxConnections: $config['max-connections'] ?? null,
+                    idleTimeout: $config['idle-timeout'] ?? null,
+                ),
+            ));
+
+            return;
+        }
+
+        $registry->addDefinition(Definition::create(
+            $serviceId,
+            MysqlConnection::class,
+            new MysqlConnectionFactory(
                 host: $config['host'],
                 port: $config['port'] ?? null,
                 user: $config['user'] ?? null,
@@ -160,26 +192,8 @@ final class DatabaseExtension implements ExtensionInterface
                 useCompression: $config['use-compression'] ?? null,
                 key: $config['key'] ?? null,
                 useLocalInfile: $config['use-local-infile'] ?? null,
-                maxConnections: $config['max-connections'] ?? null,
-                idleTimeout: $config['idle-timeout'] ?? null,
-            )));
-
-            return;
-        }
-
-        $registry->addDefinition(Definition::create($serviceId, MysqlConnection::class, new MysqlConnectionFactory(
-            host: $config['host'],
-            port: $config['port'] ?? null,
-            user: $config['user'] ?? null,
-            password: $config['password'] ?? null,
-            database: $config['database'] ?? null,
-            charset: $config['charset'] ?? null,
-            collate: $config['collate'] ?? null,
-            sqlMode: $config['sql-mode'] ?? null,
-            useCompression: $config['use-compression'] ?? null,
-            key: $config['key'] ?? null,
-            useLocalInfile: $config['use-local-infile'] ?? null,
-        )));
+            ),
+        ));
     }
 
     /**
@@ -194,12 +208,37 @@ final class DatabaseExtension implements ExtensionInterface
     private function registerPostgresConnection(RegistryInterface $registry, string $serviceId, array $config): void
     {
         if (!Class\exists(PostgresConnectionPool::class)) {
-            throw new RuntimeException('The "amphp/postgres" package is required to use the postgres database connection.');
+            throw new RuntimeException(
+                'The "amphp/postgres" package is required to use the postgres database connection.',
+            );
         }
 
         $pooled = $config['pooled'] ?? true;
         if ($pooled) {
-            $registry->addDefinition(Definition::create($serviceId, PostgresConnectionPool::class, new PostgresConnectionPoolFactory(
+            $registry->addDefinition(Definition::create(
+                $serviceId,
+                PostgresConnectionPool::class,
+                new PostgresConnectionPoolFactory(
+                    host: $config['host'],
+                    port: $config['port'] ?? null,
+                    user: $config['user'] ?? null,
+                    password: $config['password'] ?? null,
+                    database: $config['database'] ?? null,
+                    applicationName: $config['application-name'] ?? null,
+                    sslMode: $config['ssl-mode'] ?? null,
+                    maxConnections: $config['max-connections'] ?? null,
+                    idleTimeout: $config['idle-timeout'] ?? null,
+                    resetConnections: $config['reset-connections'] ?? null,
+                ),
+            ));
+
+            return;
+        }
+
+        $registry->addDefinition(Definition::create(
+            $serviceId,
+            PostgresConnection::class,
+            new PostgresConnectionFactory(
                 host: $config['host'],
                 port: $config['port'] ?? null,
                 user: $config['user'] ?? null,
@@ -207,23 +246,8 @@ final class DatabaseExtension implements ExtensionInterface
                 database: $config['database'] ?? null,
                 applicationName: $config['application-name'] ?? null,
                 sslMode: $config['ssl-mode'] ?? null,
-                maxConnections: $config['max-connections'] ?? null,
-                idleTimeout: $config['idle-timeout'] ?? null,
-                resetConnections: $config['reset-connections'] ?? null,
-            )));
-
-            return;
-        }
-
-        $registry->addDefinition(Definition::create($serviceId, PostgresConnection::class, new PostgresConnectionFactory(
-            host: $config['host'],
-            port: $config['port'] ?? null,
-            user: $config['user'] ?? null,
-            password: $config['password'] ?? null,
-            database: $config['database'] ?? null,
-            applicationName: $config['application-name'] ?? null,
-            sslMode: $config['ssl-mode'] ?? null,
-        )));
+            ),
+        ));
     }
 
     /**
@@ -233,12 +257,15 @@ final class DatabaseExtension implements ExtensionInterface
      * @param non-empty-string $defaultDatabase
      * @param array<non-empty-string, non-empty-string> $databaseDefinitions
      */
-    private function registerDatabaseManager(RegistryInterface $registry, string $defaultDatabase, array $databaseDefinitions): void
-    {
-        $definition = Definition::ofType(DatabaseManager::class, new DatabaseManagerFactory(
-            defaultDatabaseId: $defaultDatabase,
-            services: $databaseDefinitions,
-        ));
+    private function registerDatabaseManager(
+        RegistryInterface $registry,
+        string $defaultDatabase,
+        array $databaseDefinitions,
+    ): void {
+        $definition = Definition::ofType(
+            DatabaseManager::class,
+            new DatabaseManagerFactory(defaultDatabaseId: $defaultDatabase, services: $databaseDefinitions),
+        );
 
         $definition->addAlias(DatabaseManagerInterface::class);
 
@@ -252,57 +279,54 @@ final class DatabaseExtension implements ExtensionInterface
     {
         return Type\shape([
             'default' => Type\optional(Type\non_empty_string()),
-            'databases' => Type\optional(Type\dict(
-                Type\non_empty_string(),
-                Type\union(
-                    Type\shape([
-                        'platform' => Type\union(
-                            Type\literal_scalar('mysql'),
-                            Type\literal_scalar('mysqli'),
-                            Type\literal_scalar('mariadb')
-                        ),
-                        'host' => Type\non_empty_string(),
-                        'port' => Type\optional(Type\int()),
-                        'user' => Type\optional(Type\string()),
-                        'password' => Type\optional(Type\string()),
-                        'database' => Type\optional(Type\string()),
-                        'charset' => Type\optional(Type\string()),
-                        'collate' => Type\optional(Type\string()),
-                        'sql-mode' => Type\optional(Type\string()),
-                        'use-compression' => Type\optional(Type\bool()),
-                        'key' => Type\optional(Type\string()),
-                        'use-local-infile' => Type\optional(Type\bool()),
-                        'pooled' => Type\optional(Type\bool()),
-                        'max-connections' => Type\optional(Type\positive_int()),
-                        'idle-timeout' => Type\optional(Type\positive_int()),
-                    ]),
-                    Type\shape([
-                        'platform' => Type\union(
-                            Type\literal_scalar('pgsql'),
-                            Type\literal_scalar('postgres'),
-                            Type\literal_scalar('postgresql')
-                        ),
-                        'host' => Type\non_empty_string(),
-                        'port' => Type\optional(Type\int()),
-                        'user' => Type\optional(Type\string()),
-                        'password' => Type\optional(Type\string()),
-                        'database' => Type\optional(Type\string()),
-                        'application-name' => Type\optional(Type\string()),
-                        'ssl-mode' => Type\optional(Type\union(
-                            Type\literal_scalar('disable'),
-                            Type\literal_scalar('allow'),
-                            Type\literal_scalar('prefer'),
-                            Type\literal_scalar('require'),
-                            Type\literal_scalar('verify-ca'),
-                            Type\literal_scalar('verify-full')
-                        )),
-                        'pooled' => Type\optional(Type\bool()),
-                        'max-connections' => Type\optional(Type\positive_int()),
-                        'idle-timeout' => Type\optional(Type\positive_int()),
-                        'reset-connections' => Type\optional(Type\bool()),
-                    ])
-                ),
-            )),
+            'databases' => Type\optional(Type\dict(Type\non_empty_string(), Type\union(
+                Type\shape([
+                    'platform' => Type\union(
+                        Type\literal_scalar('mysql'),
+                        Type\literal_scalar('mysqli'),
+                        Type\literal_scalar('mariadb'),
+                    ),
+                    'host' => Type\non_empty_string(),
+                    'port' => Type\optional(Type\int()),
+                    'user' => Type\optional(Type\string()),
+                    'password' => Type\optional(Type\string()),
+                    'database' => Type\optional(Type\string()),
+                    'charset' => Type\optional(Type\string()),
+                    'collate' => Type\optional(Type\string()),
+                    'sql-mode' => Type\optional(Type\string()),
+                    'use-compression' => Type\optional(Type\bool()),
+                    'key' => Type\optional(Type\string()),
+                    'use-local-infile' => Type\optional(Type\bool()),
+                    'pooled' => Type\optional(Type\bool()),
+                    'max-connections' => Type\optional(Type\positive_int()),
+                    'idle-timeout' => Type\optional(Type\positive_int()),
+                ]),
+                Type\shape([
+                    'platform' => Type\union(
+                        Type\literal_scalar('pgsql'),
+                        Type\literal_scalar('postgres'),
+                        Type\literal_scalar('postgresql'),
+                    ),
+                    'host' => Type\non_empty_string(),
+                    'port' => Type\optional(Type\int()),
+                    'user' => Type\optional(Type\string()),
+                    'password' => Type\optional(Type\string()),
+                    'database' => Type\optional(Type\string()),
+                    'application-name' => Type\optional(Type\string()),
+                    'ssl-mode' => Type\optional(Type\union(
+                        Type\literal_scalar('disable'),
+                        Type\literal_scalar('allow'),
+                        Type\literal_scalar('prefer'),
+                        Type\literal_scalar('require'),
+                        Type\literal_scalar('verify-ca'),
+                        Type\literal_scalar('verify-full'),
+                    )),
+                    'pooled' => Type\optional(Type\bool()),
+                    'max-connections' => Type\optional(Type\positive_int()),
+                    'idle-timeout' => Type\optional(Type\positive_int()),
+                    'reset-connections' => Type\optional(Type\bool()),
+                ]),
+            ))),
         ]);
     }
 }

@@ -34,7 +34,7 @@ final readonly class EventDispatcherFactory implements FactoryInterface
     /**
      * @param non-empty-string|null $registry The registry service identifier, defaults to {@see RegistryInterface::class}.
      */
-    public function __construct(null|string $registry = null)
+    public function __construct(?string $registry = null)
     {
         $this->registry = $registry ?? RegistryInterface::class;
     }
@@ -45,8 +45,6 @@ final readonly class EventDispatcherFactory implements FactoryInterface
     #[Override]
     public function __invoke(ContainerInterface $container): EventDispatcher
     {
-        return new EventDispatcher(
-            $container->getTyped($this->registry, RegistryInterface::class),
-        );
+        return new EventDispatcher($container->getTyped($this->registry, RegistryInterface::class));
     }
 }

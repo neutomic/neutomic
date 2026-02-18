@@ -39,7 +39,6 @@ final class PHPFileLoaderTest extends TestCase
         $loader->load(__DIR__ . '/../Resources/invalid-config/configuration.invalid.php');
     }
 
-
     #[DataProvider('getSupportCases')]
     public function testSupport(mixed $resource, bool $supported): void
     {

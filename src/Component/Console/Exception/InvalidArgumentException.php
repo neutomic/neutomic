@@ -15,6 +15,4 @@ namespace Neu\Component\Console\Exception;
 
 use Neu\Component\Exception\InvalidArgumentException as RootInvalidArgumentException;
 
-class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface
-{
-}
+class InvalidArgumentException extends RootInvalidArgumentException implements ExceptionInterface {}

@@ -29,7 +29,7 @@ final class ContainerTest extends TestCase
         $configuration = new Document([
             'foo' => null,
             'bar' => false,
-            'baz' => []
+            'baz' => [],
         ]);
 
         static::assertTrue($configuration->has('foo'));
@@ -95,8 +95,8 @@ final class ContainerTest extends TestCase
     {
         yield [
             ['foo' => 'hello'],
-            static fn (DocumentInterface $container) => $container->getDocument('foo'),
-            'Entry "foo" value cannot be coerced into the expected type "dict<array-key, mixed>"'
+            static fn(DocumentInterface $container) => $container->getDocument('foo'),
+            'Entry "foo" value cannot be coerced into the expected type "dict<array-key, mixed>"',
         ];
     }
 

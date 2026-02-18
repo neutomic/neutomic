@@ -26,8 +26,11 @@ trait UserInputFactoryTrait
      *
      * @throws InvalidArgumentException If the default value is not in the list of choices.
      */
-    protected function createConfirmationUserInput(InputInterface $input, OutputInterface $output, null|string $default = null): ConfirmationUserInput
-    {
+    protected function createConfirmationUserInput(
+        InputInterface $input,
+        OutputInterface $output,
+        ?string $default = null,
+    ): ConfirmationUserInput {
         $confirm = new ConfirmationUserInput($input, $output);
         $confirm->setDefault($default);
 
@@ -43,8 +46,12 @@ trait UserInputFactoryTrait
      *
      * @throws InvalidArgumentException If the default value is not in the list of choices.
      */
-    protected function createMenuUserInput(InputInterface $input, OutputInterface $output, array $choices, null|string $default = null): MenuUserInput
-    {
+    protected function createMenuUserInput(
+        InputInterface $input,
+        OutputInterface $output,
+        array $choices,
+        ?string $default = null,
+    ): MenuUserInput {
         $menu = new MenuUserInput($input, $output);
         $menu->setAcceptedValues($choices);
         $menu->setDefault($default);

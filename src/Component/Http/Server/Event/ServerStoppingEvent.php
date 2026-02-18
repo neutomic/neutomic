@@ -20,6 +20,4 @@ namespace Neu\Component\Http\Server\Event;
  * cease all operations. It can be used to perform cleanup, save state, or notify other components that the server
  * is no longer going to be active.
  */
-final readonly class ServerStoppingEvent
-{
-}
+final readonly class ServerStoppingEvent {}

@@ -22,8 +22,8 @@ use Neu\Component\Http\Router\Exception\RouteNotFoundHttpException;
 use Neu\Component\Http\Router\PrefixMap\PrefixMap;
 use Neu\Component\Http\Router\Registry\RegistryInterface;
 use Neu\Component\Http\Router\Route;
-use Throwable;
 use Override;
+use Throwable;
 
 use function array_key_exists;
 use function array_map;
@@ -60,7 +60,7 @@ final class Matcher implements MatcherInterface
                  *
                  * @return non-empty-string
                  */
-                static fn (string $value): string => rawurldecode($value) ?: $value,
+                static fn(string $value): string => rawurldecode($value) ?: $value,
                 $parameters,
             );
 
@@ -79,7 +79,7 @@ final class Matcher implements MatcherInterface
                      *
                      * @return non-empty-string
                      */
-                    static fn (string $value): string => rawurldecode($value) ?: $value,
+                    static fn(string $value): string => rawurldecode($value) ?: $value,
                     $parameters,
                 );
 
@@ -92,7 +92,11 @@ final class Matcher implements MatcherInterface
                 throw $throwable;
             }
 
-            throw new RuntimeException('An Error accrued while resolving route.', (int)$throwable->getCode(), $throwable);
+            throw new RuntimeException(
+                'An Error accrued while resolving route.',
+                (int) $throwable->getCode(),
+                $throwable,
+            );
         }
     }
 
@@ -101,7 +105,7 @@ final class Matcher implements MatcherInterface
      *
      * @return null|non-empty-list<Method>
      */
-    private function getAllowedMethods(UriInterface $uri): null|array
+    private function getAllowedMethods(UriInterface $uri): ?array
     {
         /** @var non-empty-string $path */
         $path = $uri->getPath() ?: '/';
@@ -156,7 +160,7 @@ final class Matcher implements MatcherInterface
     private static function matchWithMap(Method $method, UriInterface $uri, string $path, PrefixMap $map): array
     {
         if (isset($map->literals[$path])) {
-            return[$map->literals[$path], []];
+            return [$map->literals[$path], []];
         }
 
         if ($prefixes = $map->prefixes) {
@@ -174,9 +178,11 @@ final class Matcher implements MatcherInterface
             /** @var array<non-empty-string, non-empty-string> $data */
             $data = [];
             foreach ($matches as $name => $match) {
-                if (is_string($name) && $name !== '' && $match !== '') {
-                    $data[$name] = $match;
+                if (!(is_string($name) && $name !== '' && $match !== '')) {
+                    continue;
                 }
+
+                $data[$name] = $match;
             }
 
             $remaining = substr($path, strlen($matches[0]));

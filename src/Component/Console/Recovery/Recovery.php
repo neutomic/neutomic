@@ -20,9 +20,9 @@ use Neu\Component\Console\Input\InputInterface;
 use Neu\Component\Console\Output\ConsoleOutputInterface;
 use Neu\Component\Console\Output\OutputInterface;
 use Neu\Component\Console\Output\Verbosity;
+use Override;
 use Psl\Str;
 use Throwable;
-use Override;
 
 use function array_filter;
 use function array_map;
@@ -57,7 +57,7 @@ final class Recovery implements RecoveryInterface
         }
 
         if ($code > ExitCode::ExitStatusOutOfRange->value) {
-            $code %= (ExitCode::ExitStatusOutOfRange->value + 1);
+            $code %= ExitCode::ExitStatusOutOfRange->value + 1;
         }
 
         return $code;
@@ -69,24 +69,17 @@ final class Recovery implements RecoveryInterface
             ->createErrorBlock($output)
             ->withPrefix(' | ')
             ->withType($throwable::class)
-            ->display($throwable->getMessage())
-        ;
+            ->display($throwable->getMessage());
     }
 
     private function renderTrace(OutputInterface $output, Throwable $throwable): void
     {
         $sourceHighlighted = $this->renderSource($output, $throwable);
 
-        $frames = array_filter(
-            array_map(
-                static function (array $frame): array {
-                    unset($frame['args']);
-                    return $frame;
-                },
-                $throwable->getTrace(),
-            ),
-            static fn (array $frame): bool => isset($frame['function'], $frame['file']),
-        );
+        $frames = array_filter(array_map(static function (array $frame): array {
+            unset($frame['args']);
+            return $frame;
+        }, $throwable->getTrace()), static fn(array $frame): bool => isset($frame['function'], $frame['file']));
 
         if ([] !== $frames) {
             $output->writeLine(
@@ -106,12 +99,22 @@ final class Recovery implements RecoveryInterface
                 }
 
                 if (isset($frame['class'])) {
-                    $output->writeLine(Str\format('%s%s%s()', $frame['class'], $frame['type'] ?? '::', $frame['function'] ?? '???'), Verbosity::VeryVerbose);
+                    $output->writeLine(
+                        Str\format('%s%s%s()', $frame['class'], $frame['type'] ?? '::', $frame['function'] ?? '???'),
+                        Verbosity::VeryVerbose,
+                    );
                 } else {
                     $output->writeLine(Str\format(' %s()', $frame['function'] ?? '???'), Verbosity::VeryVerbose);
                 }
 
-                $output->writeLine(Str\format($traceFormat, $file, $file . (isset($frame['line']) ? (':' . ((string) $frame['line'])) : '')), Verbosity::VeryVerbose);
+                $output->writeLine(
+                    Str\format(
+                        $traceFormat,
+                        $file,
+                        $file . (isset($frame['line']) ? ':' . (string) $frame['line'] : ''),
+                    ),
+                    Verbosity::VeryVerbose,
+                );
                 $output->writeLine('', Verbosity::VeryVerbose);
             }
         }
@@ -120,14 +123,24 @@ final class Recovery implements RecoveryInterface
     private function renderSource(OutputInterface $output, Throwable $throwable): bool
     {
         if (!$this->isNeu($throwable->getFile())) {
-            $output->writeLine(Str\format('- <fg=bright-red;underline;bold;href=%1$s>%1$s:%2$d</>', $throwable->getFile(), $throwable->getLine()), Verbosity::Verbose);
+            $output->writeLine(
+                Str\format(
+                    '- <fg=bright-red;underline;bold;href=%1$s>%1$s:%2$d</>',
+                    $throwable->getFile(),
+                    $throwable->getLine(),
+                ),
+                Verbosity::Verbose,
+            );
             $output->writeLine('', Verbosity::Verbose);
 
             return true;
         }
 
         // Render it the same way, but no red or underline:
-        $output->writeLine(Str\format('- <fg=gray;href=%1$s>%1$s:%2$d</>', $throwable->getFile(), $throwable->getLine()), Verbosity::Verbose);
+        $output->writeLine(
+            Str\format('- <fg=gray;href=%1$s>%1$s:%2$d</>', $throwable->getFile(), $throwable->getLine()),
+            Verbosity::Verbose,
+        );
         $output->writeLine('', Verbosity::Verbose);
 
         return false;

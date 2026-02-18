@@ -19,6 +19,7 @@ use Neu\Component\Http\Message\Response;
 use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Message\StatusCode;
 use Neu\Component\Http\Runtime\Context;
+use Override;
 use Psl\Html;
 use Psl\Iter;
 use Psl\Str;
@@ -26,7 +27,6 @@ use Psl\Vec;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Throwable;
-use Override;
 
 /**
  * @psalm-type ThrowablesConfiguration = array<class-string<Throwable>, array{
@@ -107,146 +107,146 @@ final readonly class Recovery implements RecoveryInterface
     private function renderHtml(StatusCode $statusCode, Throwable $exception): string
     {
         return <<<HTML
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>{$statusCode->value} | {$statusCode->getReasonPhrase()}</title>
-            <style>
-                :root {
-                    --background-main: #f9f9f9;
-                    --background-container: #ffffff;
-                    --background-debug: #ffffff;
-                    --background-trace: #f8f8f8;
-                    --background-status: #ffdddd;
-                    --border-color-base: #ccc;
-                    --border-color-light: #bbb;
-                    --border-color-hover: #999;
-                    --text-color-primary: #333;
-                    --text-color-secondary: #555;
-                    --status-color: #ff0000;
-                }
-                body {
-                    margin: 0;
-                    padding: 4rem;
-                    font-family: Arial, sans-serif;
-                    background: var(--background-main);
-                    color: var(--text-color-primary);
-                    line-height: 1.5;
-                }
-                .container, .debug-container {
-                    max-width: 800px;
-                    background-color: var(--background-container);
-                    padding: 2rem;
-                    border: 1px solid var(--border-color-base);
-                    margin: 0 auto 2rem;
-                }
-                .debug-container {
-                    background-color: var(--background-debug);
-                    display: grid;
-                    grid-gap: 1rem;
-               }
-                .title, .description, .text {
-                    margin-top: 0;
-                    margin-bottom: 1rem;
-                }
-                .title {
-                    font-size: 2.4rem;
-                }
-                .description {
-                    font-size: 1.2rem;
-                    color: var(--text-color-secondary);
-                }
-                .text {
-                    font-size: 1rem;
-                    color: var(--text-color-secondary);
-                }
-                .status {
-                    color: var(--status-color);
-                    background-color: var(--background-status);
-                    padding: 0.2rem 0.5rem;
-                }
-                .actions {
-                    margin-top: 2rem;
-                }
-                .action {
-                    padding: 0.6rem 1.2rem;
-                    color: var(--text-color-secondary);
-                    font-size: 1rem;
-                    text-decoration: none;
-                    border: 1px solid var(--border-color-light);
-                    transition: all 0.3s ease;
-                    background-color: var(--background-container);
-                }
-                .action:hover {
-                    color: var(--text-color-primary);
-                    cursor: pointer;
-                    border-color: var(--border-color-hover);
-                }
-                .throwable {
-                    max-width: 800px;
-                    padding: 2rem;
-                    margin: 2rem auto;
-                    border: 1px solid var(--border-color-light);
-                    background-color: var(--background-debug);
-                }
-                .throwable-message {
-                    margin: 0;
-                    font-weight: normal;
-                    font-size: 1.2rem;
-                }
-                .throwable-type {
-                    font-weight: bold;
-                    text-decoration: none;
-                }
-                .throwable-source {
-                    display: block;
-                    font-weight: normal;
-                    color: var(--text-color-secondary);
-                    font-size: 1rem;
-                    text-decoration: underline;
-                }
-                .trace-container {
-                    background-color: var(--background-trace);
-                    border: 1px solid var(--border-color-light);
-                    color: var(--text-color-primary);
-                    padding: 1rem;
-                    margin-top: 1rem;
-                    max-height: 20rem;
-                    overflow-y: auto;
-                }
-                .trace-item {
-                    margin-bottom: 1rem;
-                    font-family: 'Courier New', monospace;
-                }
-                .trace-call {
-                    margin: 0;
-                    color: var(--text-color-primary);
-                    font-size: 1rem;
-                    font-weight: bold;
-                    cursor: pointer;
-                }
-                .trace-source {
-                    font-size: 0.9rem;
-                    color: var(--text-color-secondary);
-                }
-            </style>
-        </head>
-        <body>
-        <div class="container">
-            <h1 class="title">Oops! an error occurred</h1>
-            <p class="description">The server returned a <code class="status">{$statusCode->value}</code> response.</p>
-            <p class="text">Something went wrong while trying to process your request. we will fix this as soon as possible. sorry for the inconvenience.</p>
-            <div class="actions">
-                <button class="action" onmousedown="window.history.back();">back</button>
-                <button class="action" onmousedown="window.location.reload();">retry</button>
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>{$statusCode->value} | {$statusCode->getReasonPhrase()}</title>
+                <style>
+                    :root {
+                        --background-main: #f9f9f9;
+                        --background-container: #ffffff;
+                        --background-debug: #ffffff;
+                        --background-trace: #f8f8f8;
+                        --background-status: #ffdddd;
+                        --border-color-base: #ccc;
+                        --border-color-light: #bbb;
+                        --border-color-hover: #999;
+                        --text-color-primary: #333;
+                        --text-color-secondary: #555;
+                        --status-color: #ff0000;
+                    }
+                    body {
+                        margin: 0;
+                        padding: 4rem;
+                        font-family: Arial, sans-serif;
+                        background: var(--background-main);
+                        color: var(--text-color-primary);
+                        line-height: 1.5;
+                    }
+                    .container, .debug-container {
+                        max-width: 800px;
+                        background-color: var(--background-container);
+                        padding: 2rem;
+                        border: 1px solid var(--border-color-base);
+                        margin: 0 auto 2rem;
+                    }
+                    .debug-container {
+                        background-color: var(--background-debug);
+                        display: grid;
+                        grid-gap: 1rem;
+                   }
+                    .title, .description, .text {
+                        margin-top: 0;
+                        margin-bottom: 1rem;
+                    }
+                    .title {
+                        font-size: 2.4rem;
+                    }
+                    .description {
+                        font-size: 1.2rem;
+                        color: var(--text-color-secondary);
+                    }
+                    .text {
+                        font-size: 1rem;
+                        color: var(--text-color-secondary);
+                    }
+                    .status {
+                        color: var(--status-color);
+                        background-color: var(--background-status);
+                        padding: 0.2rem 0.5rem;
+                    }
+                    .actions {
+                        margin-top: 2rem;
+                    }
+                    .action {
+                        padding: 0.6rem 1.2rem;
+                        color: var(--text-color-secondary);
+                        font-size: 1rem;
+                        text-decoration: none;
+                        border: 1px solid var(--border-color-light);
+                        transition: all 0.3s ease;
+                        background-color: var(--background-container);
+                    }
+                    .action:hover {
+                        color: var(--text-color-primary);
+                        cursor: pointer;
+                        border-color: var(--border-color-hover);
+                    }
+                    .throwable {
+                        max-width: 800px;
+                        padding: 2rem;
+                        margin: 2rem auto;
+                        border: 1px solid var(--border-color-light);
+                        background-color: var(--background-debug);
+                    }
+                    .throwable-message {
+                        margin: 0;
+                        font-weight: normal;
+                        font-size: 1.2rem;
+                    }
+                    .throwable-type {
+                        font-weight: bold;
+                        text-decoration: none;
+                    }
+                    .throwable-source {
+                        display: block;
+                        font-weight: normal;
+                        color: var(--text-color-secondary);
+                        font-size: 1rem;
+                        text-decoration: underline;
+                    }
+                    .trace-container {
+                        background-color: var(--background-trace);
+                        border: 1px solid var(--border-color-light);
+                        color: var(--text-color-primary);
+                        padding: 1rem;
+                        margin-top: 1rem;
+                        max-height: 20rem;
+                        overflow-y: auto;
+                    }
+                    .trace-item {
+                        margin-bottom: 1rem;
+                        font-family: 'Courier New', monospace;
+                    }
+                    .trace-call {
+                        margin: 0;
+                        color: var(--text-color-primary);
+                        font-size: 1rem;
+                        font-weight: bold;
+                        cursor: pointer;
+                    }
+                    .trace-source {
+                        font-size: 0.9rem;
+                        color: var(--text-color-secondary);
+                    }
+                </style>
+            </head>
+            <body>
+            <div class="container">
+                <h1 class="title">Oops! an error occurred</h1>
+                <p class="description">The server returned a <code class="status">{$statusCode->value}</code> response.</p>
+                <p class="text">Something went wrong while trying to process your request. we will fix this as soon as possible. sorry for the inconvenience.</p>
+                <div class="actions">
+                    <button class="action" onmousedown="window.history.back();">back</button>
+                    <button class="action" onmousedown="window.location.reload();">retry</button>
+                </div>
             </div>
-        </div>
-        {$this->renderDebugInformation($exception)}
-        </body>
-        </html>
-        HTML;
+            {$this->renderDebugInformation($exception)}
+            </body>
+            </html>
+            HTML;
     }
 
     private function renderDebugInformation(Throwable $throwable): string
@@ -257,7 +257,7 @@ final readonly class Recovery implements RecoveryInterface
 
         $comment = '<!-- ' . Html\encode((string) $throwable) . ' -->';
 
-        return  $this->renderThrowableInformation($throwable) . $comment;
+        return $this->renderThrowableInformation($throwable) . $comment;
     }
 
     private function renderThrowableInformation(Throwable $throwable): string
@@ -270,14 +270,14 @@ final readonly class Recovery implements RecoveryInterface
         $exceptionTrace = $this->renderTrace($throwable);
 
         $result = <<<HTML
-            <div class="throwable">
-                <div class="throwable-summary">
-                    <h2 class="throwable-message"><span class="throwable-type">{$shortExceptionType}</span>: {$exceptionMessage}</h2>
-                    <a href="idea://open?file={$exceptionFile}&line={$exceptionLine}" class="throwable-source">{$exceptionFile}:{$exceptionLine}</a>
+                <div class="throwable">
+                    <div class="throwable-summary">
+                        <h2 class="throwable-message"><span class="throwable-type">{$shortExceptionType}</span>: {$exceptionMessage}</h2>
+                        <a href="idea://open?file={$exceptionFile}&line={$exceptionLine}" class="throwable-source">{$exceptionFile}:{$exceptionLine}</a>
+                    </div>
+                    <div class="trace-container">{$exceptionTrace}</div>
                 </div>
-                <div class="trace-container">{$exceptionTrace}</div>
-            </div>
-        HTML;
+            HTML;
 
         $previous = $throwable->getPrevious();
         if ($previous !== null) {
@@ -291,7 +291,7 @@ final readonly class Recovery implements RecoveryInterface
     {
         $frames = Vec\filter(
             $throwable->getTrace(),
-            static fn (array $frame): bool => isset($frame['function'], $frame['file']),
+            static fn(array $frame): bool => isset($frame['function'], $frame['file']),
         );
 
         $output = '<div class="trace-list">';
@@ -308,11 +308,11 @@ final readonly class Recovery implements RecoveryInterface
             }
 
             $output .= <<<HTML
-                <div class="trace-item">
-                    <p class="trace-call">{$call}</p>
-                    <a href="idea://open?file={$file}&line={$line}" class="trace-source">{$file}:{$line}</a>
-                </div>
-            HTML;
+                    <div class="trace-item">
+                        <p class="trace-call">{$call}</p>
+                        <a href="idea://open?file={$file}&line={$line}" class="trace-source">{$file}:{$line}</a>
+                    </div>
+                HTML;
         }
 
         return $output . '</div>';

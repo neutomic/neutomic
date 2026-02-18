@@ -20,9 +20,9 @@ use Neu\Component\Console\Command\Registry\RegistryInterface;
 use Neu\Component\DependencyInjection\ContainerInterface;
 use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\HookInterface;
+use Override;
 use ReflectionAttribute;
 use ReflectionObject;
-use Override;
 
 /**
  * A hook for registering commands in the {@see RegistryInterface}.
@@ -41,7 +41,7 @@ final readonly class RegisterCommandsHook implements HookInterface
      *
      * @param non-empty-string|null $registry The registry service identifier, defaults to {@see RegistryInterface::class}.
      */
-    public function __construct(null|string $registry = null)
+    public function __construct(?string $registry = null)
     {
         $this->registry = $registry ?? RegistryInterface::class;
     }
@@ -56,7 +56,11 @@ final readonly class RegisterCommandsHook implements HookInterface
 
         foreach ($container->getAttributed(Command::class) as $command) {
             if (!$command instanceof CommandInterface) {
-                throw new RuntimeException('The command "' . $command::class . '" must implement "' . CommandInterface::class . '".');
+                throw new RuntimeException('The command "'
+                . $command::class
+                . '" must implement "'
+                . CommandInterface::class
+                . '".');
             }
 
             foreach ($this->readConfiguration($command) as $configuration) {

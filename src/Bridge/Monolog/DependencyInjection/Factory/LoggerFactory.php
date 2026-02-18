@@ -40,7 +40,7 @@ final readonly class LoggerFactory implements FactoryInterface
     /**
      * The timezone for the logger.
      */
-    private null|DateTimeZone $timezone;
+    private ?DateTimeZone $timezone;
 
     /**
      * The handler service identifiers.
@@ -78,8 +78,14 @@ final readonly class LoggerFactory implements FactoryInterface
      *
      * @throws InvalidArgumentException If the timezone is invalid.
      */
-    public function __construct(string $channel, null|string $timezone = null, null|array $handlers = null, null|array $processors = null, null|bool $useLoggingLoopDetection = null, null|bool $useMicrosecondTimestamps = null)
-    {
+    public function __construct(
+        string $channel,
+        ?string $timezone = null,
+        ?array $handlers = null,
+        ?array $processors = null,
+        ?bool $useLoggingLoopDetection = null,
+        ?bool $useMicrosecondTimestamps = null,
+    ) {
         if (null !== $timezone) {
             try {
                 $timezone = new DateTimeZone($timezone);

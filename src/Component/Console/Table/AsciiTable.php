@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Neu\Component\Console\Table;
 
+use Override;
 use Psl\Iter;
 use Psl\Str;
-use Override;
 
 /**
  * The `AsciiTable` object with output a human-readable ASCII table in of the
@@ -71,7 +71,7 @@ final class AsciiTable extends AbstractTable
         'padding' => ' ',
     ];
 
-    private null|string $borderHeaderLine = null;
+    private ?string $borderHeaderLine = null;
 
     /**
      * A dictionary containing necessary characters used for building the border of the table.
@@ -148,14 +148,12 @@ final class AsciiTable extends AbstractTable
             $this->output->writeLine($this->buildBorder(header: true));
         }
 
-
         foreach ($this->rows as $row) {
             $this->output->writeLine($this->buildRow($row));
         }
 
         $this->output->writeLine($this->buildBorder(last: true));
     }
-
 
     /**
      * Build a border for the width of the row width for the class and using the
@@ -172,7 +170,7 @@ final class AsciiTable extends AbstractTable
                     $borderHeaderLine .= Str\repeat($this->borderCharacters['header_line'], $width);
                     $borderHeaderLine .= $this->borderCharacters['padding'];
 
-                    if ($k === Iter\count($this->columnWidths) - 1) {
+                    if ($k === (Iter\count($this->columnWidths) - 1)) {
                         $borderHeaderLine .= $this->borderCharacters['center_right_corner'];
                     } else {
                         $borderHeaderLine .= $this->borderCharacters['center_center_corner'];
@@ -198,7 +196,7 @@ final class AsciiTable extends AbstractTable
             $borderLine .= Str\repeat($this->borderCharacters['line'], $width);
             $borderLine .= $this->borderCharacters['padding'];
 
-            if ($k === Iter\count($this->columnWidths) - 1) {
+            if ($k === (Iter\count($this->columnWidths) - 1)) {
                 $borderLine .= $this->borderCharacters["{$prefix}right_corner"];
             } else {
                 $borderLine .= $this->borderCharacters["{$prefix}center_corner"];
@@ -236,6 +234,10 @@ final class AsciiTable extends AbstractTable
             $row[] = $this->buildCell($value, $index);
         }
 
-        return $this->borderCharacters['border'] . Str\join($row, $this->borderCharacters['border']) . $this->borderCharacters['border'];
+        return (
+            $this->borderCharacters['border']
+            . Str\join($row, $this->borderCharacters['border'])
+            . $this->borderCharacters['border']
+        );
     }
 }

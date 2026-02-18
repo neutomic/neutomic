@@ -14,15 +14,14 @@ declare(strict_types=1);
 namespace Neu\Component\Cache\Driver;
 
 use Amp\File;
-use Generator;
 use Neu\Component\Cache\Exception\InvalidKeyException;
 use Neu\Component\Cache\Exception\RuntimeException;
 use Neu\Component\Cache\Exception\UnavailableItemException;
+use Override;
 use Psl\Encoding;
 use Psl\Filesystem;
 use Psl\Hash;
 use Psl\Str;
-use Override;
 
 use function time;
 
@@ -71,7 +70,7 @@ final class FilesystemDriver extends AbstractDriver
      * @inheritDoc
      */
     #[Override]
-    public function set(string $key, mixed $value, null|int $ttl = null): void
+    public function set(string $key, mixed $value, ?int $ttl = null): void
     {
         try {
             $filename = $this->getFile($key);
@@ -163,7 +162,8 @@ final class FilesystemDriver extends AbstractDriver
         }
 
         $hash = Encoding\Base64\encode($hash, Encoding\Base64\Variant::UrlSafe, padding: false);
-        $directory = $this->directory . Filesystem\SEPARATOR . Str\Byte\uppercase($hash[0] . Filesystem\SEPARATOR . $hash[1]);
+        $directory =
+            $this->directory . Filesystem\SEPARATOR . Str\Byte\uppercase($hash[0] . Filesystem\SEPARATOR . $hash[1]);
         if (!File\isDirectory($directory)) {
             File\createDirectoryRecursively($directory);
         }

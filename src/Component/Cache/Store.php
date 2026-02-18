@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Neu\Component\Cache;
 
 use Closure;
-use Psl\Async;
 use Override;
+use Psl\Async;
 
 /**
  * A cache store implementation that uses a driver to store and retrieve items.
@@ -30,8 +30,9 @@ final class Store implements StoreInterface
      */
     private Async\KeyedSequence $sequence;
 
-    public function __construct(private readonly Driver\DriverInterface $driver)
-    {
+    public function __construct(
+        private readonly Driver\DriverInterface $driver,
+    ) {
         $this->sequence = new Async\KeyedSequence(
             /**
              * @param non-empty-string $key
@@ -69,7 +70,7 @@ final class Store implements StoreInterface
                 $this->driver->set($key, $value, $ttl);
 
                 return $value;
-            }
+            },
         );
     }
 
@@ -80,9 +81,10 @@ final class Store implements StoreInterface
     public function get(string $key): mixed
     {
         /** @var (Closure(): mixed) $computer */
-        $computer = static fn (): never => throw new Exception\UnavailableItemException(
-            'The value associated with the key "' . $key . '" is not available.',
-        );
+        $computer =
+            static fn(): never => throw new Exception\UnavailableItemException('The value associated with the key "'
+            . $key
+            . '" is not available.');
 
         /** @psalm-suppress MissingThrowsDocblock */
         return $this->compute($key, $computer);
@@ -109,7 +111,7 @@ final class Store implements StoreInterface
      * @return T
      */
     #[Override]
-    public function compute(string $key, Closure $computer, null|int $ttl = null): mixed
+    public function compute(string $key, Closure $computer, ?int $ttl = null): mixed
     {
         /** @var T */
         return $this->sequence->waitFor($key, [$computer, $ttl, false]);
@@ -139,7 +141,7 @@ final class Store implements StoreInterface
      * @return T
      */
     #[Override]
-    public function update(string $key, Closure $computer, null|int $ttl = null): mixed
+    public function update(string $key, Closure $computer, ?int $ttl = null): mixed
     {
         /** @var T */
         return $this->sequence->waitFor($key, [$computer, $ttl, true]);

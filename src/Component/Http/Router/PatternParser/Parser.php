@@ -168,7 +168,9 @@ enum Parser
         }
 
         if ($token->getType() !== TokenType::Colon) {
-            throw new RuntimeException('Expected parameter name "' . $name . '" to be followed by ":" or "}", got ' . $token->toString());
+            throw new RuntimeException(
+                'Expected parameter name "' . $name . '" to be followed by ":" or "}", got ' . $token->toString(),
+            );
         }
 
         array_shift($tokens); // consume the colon

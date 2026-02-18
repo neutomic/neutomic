@@ -14,8 +14,8 @@ declare(strict_types=1);
 namespace Neu\Component\Console\Input\Definition;
 
 use Neu\Component\Console\Exception\MissingValueException;
-use Psl\Str;
 use Override;
+use Psl\Str;
 
 /**
  * A {@see Definition} is an object that designates the parameters accepted by
@@ -39,7 +39,7 @@ abstract class Definition implements DefinitionInterface
      *
      * @var null|non-empty-string
      */
-    protected null|string $alias = null;
+    protected ?string $alias = null;
 
     /**
      * The description of the input.
@@ -69,8 +69,12 @@ abstract class Definition implements DefinitionInterface
      * @param non-empty-string $name The name of the definition.
      * @param null|non-empty-string $alias An alias for the definition.
      */
-    public function __construct(string $name, null|string $alias = null, string $description = '', Mode $mode = Mode::Optional)
-    {
+    public function __construct(
+        string $name,
+        ?string $alias = null,
+        string $description = '',
+        Mode $mode = Mode::Optional,
+    ) {
         $this->name = $name;
         $this->alias = $alias;
         $this->description = $description;
@@ -90,7 +94,7 @@ abstract class Definition implements DefinitionInterface
      * @inheritDoc
      */
     #[Override]
-    public function getAlias(): null|string
+    public function getAlias(): ?string
     {
         return $this->alias;
     }
@@ -162,7 +166,11 @@ abstract class Definition implements DefinitionInterface
             return $this->value;
         }
 
-        throw new MissingValueException(Str\format('The `%s` ( "%s" ) definition has not been assigned a value.', $this::class, $this->getName()));
+        throw new MissingValueException(Str\format(
+            'The `%s` ( "%s" ) definition has not been assigned a value.',
+            $this::class,
+            $this->getName(),
+        ));
     }
 
     /**

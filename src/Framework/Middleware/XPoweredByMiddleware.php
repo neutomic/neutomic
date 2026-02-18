@@ -67,8 +67,10 @@ final readonly class XPoweredByMiddleware implements MiddlewareInterface
      * @param non-empty-string $poweredBy The powered by header value.
      * @param bool $exposePhpVersion Whether to expose PHP version in the powered by header.
      */
-    public function __construct(string $poweredBy = self::DEFAULT_POWERED_BY, bool $exposePhpVersion = self::DEFAULT_EXPOSE_PHP_VERSION)
-    {
+    public function __construct(
+        string $poweredBy = self::DEFAULT_POWERED_BY,
+        bool $exposePhpVersion = self::DEFAULT_EXPOSE_PHP_VERSION,
+    ) {
         $this->poweredBy = $poweredBy;
         $this->exposePhpVersion = $exposePhpVersion;
     }

@@ -43,7 +43,7 @@ final readonly class RouterFactory implements FactoryInterface
      * @param non-empty-string|null $matcher The matcher service identifier.
      * @param non-empty-string|null $generator The generator service identifier.
      */
-    public function __construct(null|string $matcher = null, null|string $generator = null)
+    public function __construct(?string $matcher = null, ?string $generator = null)
     {
         $this->matcher = $matcher ?? MatcherInterface::class;
         $this->generator = $generator ?? GeneratorInterface::class;

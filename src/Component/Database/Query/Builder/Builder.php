@@ -27,9 +27,8 @@ use Override;
 final readonly class Builder implements BuilderInterface
 {
     public function __construct(
-        private AbstractionLayerInterface $dbal
-    ) {
-    }
+        private AbstractionLayerInterface $dbal,
+    ) {}
 
     /**
      * @inheritDoc
@@ -45,7 +44,7 @@ final readonly class Builder implements BuilderInterface
      * @inheritDoc
      */
     #[Override]
-    public function delete(string $table, null|string $alias = null): DeleteQueryInterface
+    public function delete(string $table, ?string $alias = null): DeleteQueryInterface
     {
         return new DeleteQuery($this->dbal, $table, $alias);
     }
@@ -54,7 +53,7 @@ final readonly class Builder implements BuilderInterface
      * @inheritDoc
      */
     #[Override]
-    public function update(string $table, null|string $alias = null): UpdateQueryInterface
+    public function update(string $table, ?string $alias = null): UpdateQueryInterface
     {
         return new UpdateQuery($this->dbal, $table, $alias);
     }

@@ -57,14 +57,14 @@ interface DefinitionInterface
      *
      * @return null|FactoryInterface<T>
      */
-    public function getFactory(): null|FactoryInterface;
+    public function getFactory(): ?FactoryInterface;
 
     /**
      * Set the factory.
      *
      * @param null|FactoryInterface<T> $factory
      */
-    public function setFactory(null|FactoryInterface $factory): static;
+    public function setFactory(?FactoryInterface $factory): static;
 
     /**
      * Get the processors.

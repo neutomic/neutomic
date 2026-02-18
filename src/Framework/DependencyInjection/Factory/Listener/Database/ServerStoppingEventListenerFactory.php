@@ -31,14 +31,14 @@ final readonly class ServerStoppingEventListenerFactory implements FactoryInterf
      *
      * @var non-empty-string|null
      */
-    private null|string $databaseManager;
+    private ?string $databaseManager;
 
     /**
      * Create a new {@see ServerStoppingEventListenerFactory} instance.
      *
      * @param null|non-empty-string $databaseManager The database manager service identifier.
      */
-    public function __construct(null|string $databaseManager = null)
+    public function __construct(?string $databaseManager = null)
     {
         $this->databaseManager = $databaseManager;
     }
@@ -51,7 +51,10 @@ final readonly class ServerStoppingEventListenerFactory implements FactoryInterf
     {
         if (null === $this->databaseManager) {
             if ($container->has(DatabaseManagerInterface::class)) {
-                $databaseManager = $container->getTyped(DatabaseManagerInterface::class, DatabaseManagerInterface::class);
+                $databaseManager = $container->getTyped(
+                    DatabaseManagerInterface::class,
+                    DatabaseManagerInterface::class,
+                );
             } else {
                 $databaseManager = null;
             }

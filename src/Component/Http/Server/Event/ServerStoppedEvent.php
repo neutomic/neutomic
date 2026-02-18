@@ -19,6 +19,4 @@ namespace Neu\Component\Http\Server\Event;
  * This event is triggered as part of the server shutdown sequence to notify listeners that the server is no longer
  * in active.
  */
-final readonly class ServerStoppedEvent
-{
-}
+final readonly class ServerStoppedEvent {}

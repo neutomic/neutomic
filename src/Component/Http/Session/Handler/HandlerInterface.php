@@ -29,7 +29,7 @@ interface HandlerInterface
      *
      * @return non-empty-string The session identifier.
      */
-    public function save(SessionInterface $session, null|int $ttl = null): string;
+    public function save(SessionInterface $session, ?int $ttl = null): string;
 
     /**
      * Load a session using its identifier.

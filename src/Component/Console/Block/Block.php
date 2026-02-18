@@ -18,9 +18,9 @@ use Neu\Component\Console\Output\OutputInterface;
 use Neu\Component\Console\Output\Type;
 use Neu\Component\Console\Output\Verbosity;
 use Neu\Component\Console\Terminal;
+use Override;
 use Psl\Str;
 use Psl\Vec;
-use Override;
 
 /**
  * The {@see Block} class is used to display a block of text in the output.
@@ -36,19 +36,19 @@ readonly class Block implements BlockInterface
      *
      * @var non-empty-string|null
      */
-    private null|string $type ;
+    private ?string $type;
 
     /**
      * The style of the block.
      *
      * @var non-empty-string|null
      */
-    private null|string $style ;
+    private ?string $style;
 
     /**
      * The prefix of the block.
      */
-    private string $prefix ;
+    private string $prefix;
 
     /**
      * Whether to add padding to the block.
@@ -58,12 +58,12 @@ readonly class Block implements BlockInterface
     /**
      * Whether to escape the message.
      */
-    private bool $escape ;
+    private bool $escape;
 
     /**
      * Whether to indent the block.
      */
-    private bool $indent ;
+    private bool $indent;
 
     /**
      * Create a new {@see Block} instance.
@@ -76,8 +76,15 @@ readonly class Block implements BlockInterface
      * @param bool $escape Whether to escape the message.
      * @param bool $indent Whether to indent the block.
      */
-    public function __construct(OutputInterface $output, null|string $type = null, null|string $style = null, string $prefix = ' ', bool $padding = false, bool $escape = false, bool $indent = false)
-    {
+    public function __construct(
+        OutputInterface $output,
+        ?string $type = null,
+        ?string $style = null,
+        string $prefix = ' ',
+        bool $padding = false,
+        bool $escape = false,
+        bool $indent = false,
+    ) {
         $this->output = $output;
         $this->type = $type;
         $this->style = $style;
@@ -92,7 +99,7 @@ readonly class Block implements BlockInterface
      *
      * @param non-empty-string|null $type
      */
-    public function withType(null|string $type): self
+    public function withType(?string $type): self
     {
         return new Block(
             $this->output,
@@ -110,7 +117,7 @@ readonly class Block implements BlockInterface
      *
      * @param non-empty-string|null $style
      */
-    public function withStyle(null|string $style): self
+    public function withStyle(?string $style): self
     {
         return new Block(
             $this->output,
@@ -203,9 +210,7 @@ readonly class Block implements BlockInterface
         $width = Terminal::getWidth();
         $indentWidth = 0;
         $lineIndentation = '';
-        $prefixWidth = Str\width(
-            $this->output->format($prefix, Type::Plain),
-        );
+        $prefixWidth = Str\width($this->output->format($prefix, Type::Plain));
 
         if ($type !== null) {
             $type = Str\format('[%s] ', $type);
@@ -223,12 +228,7 @@ readonly class Block implements BlockInterface
         }
 
         $lines = Str\split(
-            Str\wrap(
-                $message,
-                $width - $prefixWidth - $indentWidth,
-                OutputInterface::END_OF_LINE,
-                true,
-            ),
+            Str\wrap($message, $width - $prefixWidth - $indentWidth, OutputInterface::END_OF_LINE, true),
             OutputInterface::END_OF_LINE,
         );
         $firstLineIndex = 0;
@@ -245,8 +245,7 @@ readonly class Block implements BlockInterface
             }
 
             $line = $prefix . $line;
-            $fit = $width -
-                Str\width($this->output->format($line, Type::Plain));
+            $fit = $width - Str\width($this->output->format($line, Type::Plain));
             if ($fit > 0) {
                 $line .= Str\repeat(' ', $fit);
             }
@@ -254,7 +253,6 @@ readonly class Block implements BlockInterface
             if (null !== $style) {
                 $line = Str\format('<%s>%s</>', $style, $line);
             }
-
 
             $this->output->writeLine($line, $verbosity);
         }

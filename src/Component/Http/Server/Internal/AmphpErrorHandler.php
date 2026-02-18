@@ -17,8 +17,8 @@ use Amp\Http\Server\ErrorHandler;
 use Amp\Http\Server\Request;
 use Amp\Http\Server\Response;
 use Neu\Component\Http\Message\StatusCode;
-use Psr\Log\LoggerInterface;
 use Override;
+use Psr\Log\LoggerInterface;
 
 final readonly class AmphpErrorHandler implements ErrorHandler
 {
@@ -30,7 +30,7 @@ final readonly class AmphpErrorHandler implements ErrorHandler
     }
 
     #[Override]
-    public function handleError(int $status, null|string $reason = null, null|Request $request = null): Response
+    public function handleError(int $status, ?string $reason = null, ?Request $request = null): Response
     {
         $context = [
             'status' => $status,
@@ -48,8 +48,12 @@ final readonly class AmphpErrorHandler implements ErrorHandler
         $this->logger->error('An internal server error occurred', $context);
 
         // Always return a 500 response, as this error always originates from amphp/http-server, not the application.
-        return new Response(StatusCode::InternalServerError->value, [
-            'content-type' => 'text/plain',
-        ], 'Oops! something went wrong. Please try again later.');
+        return new Response(
+            StatusCode::InternalServerError->value,
+            [
+                'content-type' => 'text/plain',
+            ],
+            'Oops! something went wrong. Please try again later.',
+        );
     }
 }

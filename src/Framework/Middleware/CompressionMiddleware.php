@@ -23,9 +23,9 @@ use Neu\Component\Http\Message\ResponseInterface;
 use Neu\Component\Http\Runtime\Context;
 use Neu\Component\Http\Runtime\Handler\HandlerInterface;
 use Neu\Component\Http\Runtime\Middleware\PrioritizedMiddlewareInterface;
+use Override;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Override;
 
 use function array_map;
 use function deflate_add;
@@ -165,7 +165,7 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
         int $level = self::DEFAULT_LEVEL,
         int $memory = self::DEFAULT_MEMORY,
         int $window = self::DEFAULT_WINDOW,
-        int $priority = self::PRIORITY
+        int $priority = self::PRIORITY,
     ) {
         if (!extension_loaded('zlib')) {
             throw new RuntimeException('The compression middleware requires the zlib extension');
@@ -205,9 +205,10 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
         if (null !== $contentLength) {
             $contentLength = (int) $contentLength;
             if ($contentLength < $this->minimumCompressionContentLength) {
-                assert(
-                    $this->logger->debug('Skipping compression for response with content length {contentLength}', ['contentLength' => $contentLength]) || true
-                );
+                assert($this->logger->debug('Skipping compression for response with content length {contentLength}', [
+                    'contentLength' => $contentLength,
+                ])
+                || true);
 
                 return $response;
             }
@@ -221,26 +222,30 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
         }
 
         if (!preg_match($this->compressibleContentTypesRegex, $contentTypes)) {
-            assert($this->logger->debug('Skipping compression for response with content type: {contentTypes}', ['contentTypes' => $contentTypes]) || true);
+            assert($this->logger->debug('Skipping compression for response with content type: {contentTypes}', [
+                'contentTypes' => $contentTypes,
+            ])
+            || true);
 
             return $response;
         }
 
-
         $weight = 0;
         $encoding = null;
-        foreach (($request->getHeader('accept-encoding') ?? []) as $values) {
-            $values = array_map("trim", explode(",", $values));
+        foreach ($request->getHeader('accept-encoding') ?? [] as $values) {
+            $values = array_map('trim', explode(',', $values));
             foreach ($values as $value) {
-                if (preg_match(self::ENCODING_REGEX, $value, $matches)) {
-                    $quality = (float) ($matches[2] ?? 1);
-                    if ($quality <= $weight) {
-                        continue;
-                    }
-
-                    $weight = $quality;
-                    $encoding = strtolower($matches[1]);
+                if (!preg_match(self::ENCODING_REGEX, $value, $matches)) {
+                    continue;
                 }
+
+                $quality = (float) ($matches[2] ?? 1);
+                if ($quality <= $weight) {
+                    continue;
+                }
+
+                $weight = $quality;
+                $encoding = strtolower($matches[1]);
             }
         }
 
@@ -258,7 +263,10 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
 
         $mode = self::SUPPORTED_ENCODINGS[$encoding] ?? null;
         if (null === $mode) {
-            assert($this->logger->debug('Skipping compression for response with unsupported encoding: {encoding}', ['encoding' => $encoding]) || true);
+            assert($this->logger->debug('Skipping compression for response with unsupported encoding: {encoding}', [
+                'encoding' => $encoding,
+            ])
+            || true);
 
             return $response;
         }
@@ -277,7 +285,8 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
             } else {
                 assert($this->logger->debug('Skipping compression for response with body of size {size}', [
                     'size' => strlen($buffer),
-                ]) || true);
+                ])
+                || true);
 
                 // the response body is too small to compress
                 return $response->withBody(Body::fromString($buffer));
@@ -312,9 +321,7 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
             $response = $response->withHeader('Connection', 'close');
         }
 
-        return $response->withBody(Body::fromIterable(
-            self::read($context, $body, $buffer)
-        ));
+        return $response->withBody(Body::fromIterable(self::read($context, $body, $buffer)));
     }
 
     /**

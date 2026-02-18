@@ -211,9 +211,12 @@ final readonly class ServerInfrastructure
         $serverFactory = Cluster::getServerSocketFactory();
         if ($this->connectionLimit > 0) {
             $connectionLimit = $this->connectionLimit;
-            assert($this->logger->debug(
-                'Connection limiting enabled, limiting to ' . ((string) $connectionLimit) . ' connections.',
-            ) || true);
+            assert(
+                $this->logger->debug('Connection limiting enabled, limiting to '
+                . (string) $connectionLimit
+                . ' connections.')
+                || true,
+            );
 
             $serverFactory = new ConnectionLimitingServerSocketFactory(
                 new LocalSemaphore($connectionLimit),
@@ -224,15 +227,14 @@ final readonly class ServerInfrastructure
         $clientFactory = new SocketClientFactory($this->logger, $this->tlsHandshakeTimeout);
         if ($this->connectionLimitPerIP > 0) {
             $connectionLimitPerIP = $this->connectionLimitPerIP;
-            assert($this->logger->debug(
-                'Connection limiting per IP enabled, limiting to ' . ((string) $connectionLimitPerIP) . ' connections per IP.',
-            ) || true);
-
-            $clientFactory = new ConnectionLimitingClientFactory(
-                $clientFactory,
-                $this->logger,
-                $connectionLimitPerIP,
+            assert(
+                $this->logger->debug('Connection limiting per IP enabled, limiting to '
+                . (string) $connectionLimitPerIP
+                . ' connections per IP.')
+                || true,
             );
+
+            $clientFactory = new ConnectionLimitingClientFactory($clientFactory, $this->logger, $connectionLimitPerIP);
         }
 
         $httpDriverFactory = new DefaultHttpDriverFactory(
@@ -293,9 +295,9 @@ final readonly class ServerInfrastructure
             $port = $socketConfiguration['port'];
             $url = $scheme . '://' . $host;
             if ('http' === $scheme && 80 !== $port) {
-                $url .= ':' . ((string) $port);
+                $url .= ':' . (string) $port;
             } elseif ('https' === $scheme && 443 !== $port) {
-                $url .= ':' . ((string) $port);
+                $url .= ':' . (string) $port;
             }
 
             $urls[] = $url;
@@ -311,7 +313,7 @@ final readonly class ServerInfrastructure
      *
      * @return BindContext The bind context.
      */
-    private function createBindContext(null|array $bindConfiguration): BindContext
+    private function createBindContext(?array $bindConfiguration): BindContext
     {
         $context = new BindContext();
         $tcpNoDelay = $bindConfiguration['tcp-no-delay'] ?? false;
@@ -394,11 +396,13 @@ final readonly class ServerInfrastructure
 
             $certificate = $tlsConfiguration['certificate'] ?? null;
             if (null !== $certificate) {
-                $tls = $tls->withDefaultCertificate(new Certificate(
-                    $certificate['file'],
-                    $certificate['key'] ?? null,
-                    $certificate['passphrase'] ?? null,
-                ));
+                $tls = $tls->withDefaultCertificate(
+                    new Certificate(
+                        $certificate['file'],
+                        $certificate['key'] ?? null,
+                        $certificate['passphrase'] ?? null,
+                    ),
+                );
             }
 
             $certificates = $tlsConfiguration['certificates'] ?? [];
