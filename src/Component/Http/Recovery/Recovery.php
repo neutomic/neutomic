@@ -289,6 +289,7 @@ final readonly class Recovery implements RecoveryInterface
 
     private function renderTrace(Throwable $throwable): string
     {
+        /** @var list<array{file?: string, line?: int, function?: string, class?: string, type?: string}> $frames */
         $frames = Vec\filter(
             $throwable->getTrace(),
             static fn(array $frame): bool => isset($frame['function'], $frame['file']),
@@ -320,6 +321,7 @@ final readonly class Recovery implements RecoveryInterface
 
     private function shortenType(string $type): string
     {
+        /** @var non-empty-list<string> $parts */
         $parts = Str\split($type, '\\');
         $short = Html\encode_special_characters(Iter\last($parts));
         $type = Html\encode_special_characters($type);

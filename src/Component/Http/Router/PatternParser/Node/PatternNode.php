@@ -88,6 +88,8 @@ final readonly class PatternNode implements Node
 
     /**
      * @inheritDoc
+     *
+     * @mago-expect analysis:invalid-property-write
      */
     #[Override]
     public function __unserialize(array $data): void

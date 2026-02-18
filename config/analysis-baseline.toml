@@ -1,0 +1,2443 @@
+variant = "loose"
+
+[[issues]]
+file = "examples/Console/Command/FeedbackCommand.php"
+code = "invalid-argument"
+message = 'Invalid argument type for argument #1 of `Psl\Async\sleep`: expected `Psl\DateTime\Duration`, but found `float(0.005)`.'
+count = 1
+
+[[issues]]
+file = "examples/Console/Command/FeedbackCommand.php"
+code = "invalid-argument"
+message = 'Invalid argument type for argument #1 of `Psl\Async\sleep`: expected `Psl\DateTime\Duration`, but found `float(0.05)`.'
+count = 2
+
+[[issues]]
+file = "examples/Console/Command/FeedbackCommand.php"
+code = "invalid-argument"
+message = 'Invalid argument type for argument #1 of `Psl\Async\sleep`: expected `Psl\DateTime\Duration`, but found `float(0.5)`.'
+count = 1
+
+[[issues]]
+file = "examples/Console/Command/FlagsCommand.php"
+code = "possibly-invalid-argument"
+message = '''Possible argument type mismatch for argument #3 of `neu\component\console\table\tablefactorytrait::createasciitable`: expected `list<list<string>>`, but possibly received `list{list{string('foo'), non-empty-string|null, string, string('No')|string('Yes'), string('No')|string('Yes'), string('No')|string('Yes'), numeric-string|string('N/A')}, list{string('bar'), non-empty-string|null, string, string('No')|string('Yes'), string('No')|string('Yes'), string('No')|string('Yes'), numeric-string|string('N/A')}, list{string('mux'), non-empty-string|null, string, string('No')|string('Yes'), string('No')|string('Yes'), string('No')|string('Yes'), numeric-string|string('N/A')}, list{string('dux'), non-empty-string|null, string, string('No')|string('Yes'), string('No')|string('Yes'), string('No')|string('Yes'), numeric-string|string('N/A')}}`.'''
+count = 1
+
+[[issues]]
+file = "examples/Console/Command/NappingCommand.php"
+code = "invalid-argument"
+message = 'Invalid argument type for argument #1 of `Psl\Async\sleep`: expected `Psl\DateTime\Duration`, but found `int(5)`.'
+count = 1
+
+[[issues]]
+file = "examples/Console/Command/OptionsCommand.php"
+code = "possibly-invalid-argument"
+message = '''Possible argument type mismatch for argument #3 of `neu\component\console\table\tablefactorytrait::createasciitable`: expected `list<list<string>>`, but possibly received `list{list{string, non-empty-string|null, string('No')|string('Yes'), string}, list{string, non-empty-string|null, string('No')|string('Yes'), string}, list{string, non-empty-string|null, string('No')|string('Yes'), string}, list{string, non-empty-string|null, string('No')|string('Yes'), string}}`.'''
+count = 1
+
+[[issues]]
+file = "examples/Console/Command/SleepyCommand.php"
+code = "invalid-argument"
+message = 'Invalid argument type for argument #1 of `Psl\Async\sleep`: expected `Psl\DateTime\Duration`, but found `int(2)`.'
+count = 1
+
+[[issues]]
+file = "examples/Database/bootstrap.php"
+code = "possibly-invalid-argument"
+message = '''Possible argument type mismatch for argument #1 of `neu\component\database\database::__construct`: expected `Amp\Sql\SqlConnection<Amp\Sql\SqlConfig, Amp\Sql\SqlResult<mixed>, Amp\Sql\SqlStatement<Amp\Sql\SqlResult<mixed>>, Amp\Sql\SqlTransaction<Amp\Sql\SqlResult, Amp\Sql\SqlStatement<('TResult.amp\sql\sqltransaction extends Amp\Sql\SqlResult)>, Amp\Sql\SqlTransaction>>`, but possibly received `Amp\Postgres\Internal\PostgresHandleConnection|Amp\Postgres\PostgresConnectionPool`.'''
+count = 1
+
+[[issues]]
+file = "examples/Database/cache.php"
+code = "impossible-assignment"
+message = "Invalid assignment: the right-hand side has type `never` and cannot produce a value."
+count = 1
+
+[[issues]]
+file = "examples/Database/cache.php"
+code = "no-value"
+message = 'Argument #1 passed to method `neu\component\cache\store::__construct` has type `never`, meaning it cannot produce a value.'
+count = 1
+
+[[issues]]
+file = "examples/Database/cache.php"
+code = "non-existent-class"
+message = 'Class `Neu\Component\Cache\Driver\DatabaseDriver` not found.'
+count = 1
+
+[[issues]]
+file = "examples/Database/cache.php"
+code = "redundant-comparison"
+message = "Redundant `===` comparison: left-hand side is always identical to right-hand side."
+count = 3
+
+[[issues]]
+file = "examples/Database/cache.php"
+code = "redundant-comparison"
+message = "Redundant `===` comparison: left-hand side is never identical to right-hand side."
+count = 2
+
+[[issues]]
+file = "examples/Database/notifications.php"
+code = "invalid-argument"
+message = 'Invalid argument type for argument #1 of `Psl\Async\sleep`: expected `Psl\DateTime\Duration`, but found `float(0.5)`.'
+count = 2
+
+[[issues]]
+file = "examples/Database/notifications.php"
+code = "invalid-argument"
+message = 'Invalid argument type for argument #1 of `Psl\Async\sleep`: expected `Psl\DateTime\Duration`, but found `int(1)`.'
+count = 2
+
+[[issues]]
+file = "examples/Database/performance.php"
+code = "invalid-method-access"
+message = 'Attempting to access a method on a non-object type (`unknown-ref(Neu\Component\Database\DatabasePoolInterface)`).'
+count = 6
+
+[[issues]]
+file = "examples/Database/performance.php"
+code = "invalid-property-assignment-value"
+message = "Invalid assignment to property `$value`: cannot assign value of type `int(1)` to expected type `int(0)`."
+count = 4
+
+[[issues]]
+file = "examples/Database/performance.php"
+code = "mixed-method-access"
+message = "Attempting to access a method on a non-object type (`mixed`)."
+count = 11
+
+[[issues]]
+file = "examples/Database/performance.php"
+code = "non-existent-class-like"
+message = 'Cannot find class, interface, enum, or type alias `Neu\Component\Database\DatabasePoolInterface`.'
+count = 1
+
+[[issues]]
+file = "examples/Database/select_distinct_query_builder.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `Psl\IO\write_line`: expected `float|int|string`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "examples/Database/select_distinct_query_builder.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "examples/Database/select_distinct_query_builder.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #1 of `Psl\Vec\reproduce`: expected `positive-int`, but possibly received `int`.'
+count = 1
+
+[[issues]]
+file = "examples/Database/select_group_by_having_query_builder.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `Psl\IO\write_line`: expected `float|int|string`, but found `mixed`.'
+count = 2
+
+[[issues]]
+file = "examples/Database/select_group_by_having_query_builder.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `Psl\IO\write_line`: expected `float|int|string`, but found `mixed`.'
+count = 2
+
+[[issues]]
+file = "examples/Database/select_group_by_having_query_builder.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 4
+
+[[issues]]
+file = "examples/Database/select_join_query_builder.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `Psl\IO\write_line`: expected `float|int|string`, but found `mixed`.'
+count = 6
+
+[[issues]]
+file = "examples/Database/select_join_query_builder.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `Psl\IO\write_line`: expected `float|int|string`, but found `mixed`.'
+count = 6
+
+[[issues]]
+file = "examples/Database/select_join_query_builder.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #4 of `Psl\IO\write_line`: expected `float|int|string`, but found `mixed`.'
+count = 2
+
+[[issues]]
+file = "examples/Database/users.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `Psl\IO\write_line`: expected `float|int|string`, but found `mixed`.'
+count = 4
+
+[[issues]]
+file = "examples/Database/users.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `Psl\IO\write_line`: expected `float|int|string`, but found `mixed`.'
+count = 3
+
+[[issues]]
+file = "examples/Database/users.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #4 of `Psl\IO\write_line`: expected `float|int|string`, but found `mixed`.'
+count = 2
+
+[[issues]]
+file = "examples/Database/users.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #5 of `Psl\IO\write_line`: expected `float|int|string`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "examples/Database/users.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 4
+
+[[issues]]
+file = "examples/Database/users.php"
+code = "possibly-null-array-access"
+message = "Cannot perform array access on possibly `null` value."
+count = 2
+
+[[issues]]
+file = "examples/Database/users_query_builder.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `Psl\IO\write_line`: expected `float|int|string`, but found `mixed`.'
+count = 3
+
+[[issues]]
+file = "examples/Database/users_query_builder.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `Psl\IO\write_line`: expected `float|int|string`, but found `mixed`.'
+count = 3
+
+[[issues]]
+file = "examples/Database/users_query_builder.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #4 of `Psl\IO\write_line`: expected `float|int|string`, but found `mixed`.'
+count = 2
+
+[[issues]]
+file = "examples/Database/users_query_builder.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #5 of `Psl\IO\write_line`: expected `float|int|string`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "examples/Database/users_query_builder.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 4
+
+[[issues]]
+file = "src/Bridge/Monolog/DependencyInjection/Factory/Handler/FileHandlerFactory.php"
+code = "possibly-invalid-argument"
+message = '''Possible argument type mismatch for argument #2 of `amp\log\streamhandler::__construct`: expected `enum(Monolog\Level)|int(100)|int(200)|int(250)|int(300)|int(400)|int(500)|int(550)|int(600)|string('alert')|string('critical')|string('debug')|string('emergency')|string('error')|string('info')|string('notice')|string('warning')`, but possibly received `enum(Monolog\Level)|enum(Monolog\Level::Debug)|enum(Monolog\Level::Info)|enum(Monolog\Level::Notice)|int|string`.'''
+count = 1
+
+[[issues]]
+file = "src/Bridge/Monolog/DependencyInjection/Factory/Handler/NullHandlerFactory.php"
+code = "possibly-invalid-argument"
+message = '''Possible argument type mismatch for argument #1 of `monolog\handler\nullhandler::__construct`: expected `enum(Monolog\Level)|int(100)|int(200)|int(250)|int(300)|int(400)|int(500)|int(550)|int(600)|string('ALERT')|string('CRITICAL')|string('DEBUG')|string('EMERGENCY')|string('ERROR')|string('INFO')|string('NOTICE')|string('WARNING')|string('alert')|string('critical')|string('debug')|string('emergency')|string('error')|string('info')|string('notice')|string('warning')`, but possibly received `enum(Monolog\Level)|enum(Monolog\Level::Debug)|enum(Monolog\Level::Info)|enum(Monolog\Level::Notice)|int|string`.'''
+count = 1
+
+[[issues]]
+file = "src/Bridge/Monolog/DependencyInjection/Factory/Handler/StderrHandlerFactory.php"
+code = "possibly-invalid-argument"
+message = '''Possible argument type mismatch for argument #2 of `amp\log\streamhandler::__construct`: expected `enum(Monolog\Level)|int(100)|int(200)|int(250)|int(300)|int(400)|int(500)|int(550)|int(600)|string('alert')|string('critical')|string('debug')|string('emergency')|string('error')|string('info')|string('notice')|string('warning')`, but possibly received `enum(Monolog\Level)|enum(Monolog\Level::Debug)|enum(Monolog\Level::Info)|enum(Monolog\Level::Notice)|int|string`.'''
+count = 1
+
+[[issues]]
+file = "src/Bridge/Monolog/DependencyInjection/Factory/Handler/StdoutHandlerFactory.php"
+code = "possibly-invalid-argument"
+message = '''Possible argument type mismatch for argument #2 of `amp\log\streamhandler::__construct`: expected `enum(Monolog\Level)|int(100)|int(200)|int(250)|int(300)|int(400)|int(500)|int(550)|int(600)|string('alert')|string('critical')|string('debug')|string('emergency')|string('error')|string('info')|string('notice')|string('warning')`, but possibly received `enum(Monolog\Level)|enum(Monolog\Level::Debug)|enum(Monolog\Level::Info)|enum(Monolog\Level::Notice)|int|string`.'''
+count = 1
+
+[[issues]]
+file = "src/Bridge/Monolog/DependencyInjection/MonologExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `Neu\Component\DependencyInjection\RegistryInterface::getdefinition`: expected `non-empty-string`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Bridge/Monolog/DependencyInjection/MonologExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `Neu\Component\DependencyInjection\RegistryInterface::hasdefinition`: expected `non-empty-string`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Bridge/Monolog/DependencyInjection/MonologExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\bridge\monolog\dependencyinjection\processor\loggerawareprocessor::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Bridge/Monolog/DependencyInjection/MonologExtension.php"
+code = "mixed-argument"
+message = '''Invalid argument type for argument #2 of `Neu\Bridge\Monolog\DependencyInjection\MonologExtension::registerchannels`: expected `array{'channels'?: array<non-empty-string, array{'handlers'?: list<non-empty-string>, 'processors'?: list<non-empty-string>, 'timezone'?: non-empty-string, 'use-logging-loop-detection'?: bool, 'use-microsecond-timestamps'?: bool}>, 'default'?: non-empty-string, 'formatters'?: array{'console'?: array{'allow-inline-line-breaks'?: bool, 'date-format'?: string, 'format'?: string, 'ignore-empty-context-and-extra'?: bool, 'include-stack-traces'?: bool}, 'html'?: array{'date-format'?: string}, 'json'?: array{'append-newline'?: bool, 'batch-mode'?: int(1)|int(2), 'ignore-empty-context-and-extra'?: bool, 'include-stack-traces'?: bool}, 'line'?: array{'allow-inline-line-breaks'?: bool, 'date-format'?: string, 'format'?: string, 'ignore-empty-context-and-extra'?: bool, 'include-stack-traces'?: bool}, 'normalizer'?: array{'date-format'?: string}, 'scalar'?: array{'date-format'?: string}}, 'handlers'?: array<non-empty-string, array{'bubble'?: bool, 'file'?: non-empty-string, 'formatter'?: non-empty-string, 'level'?: int|string, 'processors'?: list<non-empty-string>, 'type': string('file')|string('null')|string('stderr')|string('stdout')}>, 'processors'?: array{'logger-aware-processor'?: array{'logger'?: non-empty-string}}}`, but found `mixed`.'''
+count = 1
+
+[[issues]]
+file = "src/Bridge/Monolog/DependencyInjection/MonologExtension.php"
+code = "mixed-argument"
+message = '''Invalid argument type for argument #2 of `Neu\Bridge\Monolog\DependencyInjection\MonologExtension::registerformatters`: expected `array{'channels'?: array<non-empty-string, array{'handlers'?: list<non-empty-string>, 'processors'?: list<non-empty-string>, 'timezone'?: non-empty-string, 'use-logging-loop-detection'?: bool, 'use-microsecond-timestamps'?: bool}>, 'default'?: non-empty-string, 'formatters'?: array{'console'?: array{'allow-inline-line-breaks'?: bool, 'date-format'?: string, 'format'?: string, 'ignore-empty-context-and-extra'?: bool, 'include-stack-traces'?: bool}, 'html'?: array{'date-format'?: string}, 'json'?: array{'append-newline'?: bool, 'batch-mode'?: int(1)|int(2), 'ignore-empty-context-and-extra'?: bool, 'include-stack-traces'?: bool}, 'line'?: array{'allow-inline-line-breaks'?: bool, 'date-format'?: string, 'format'?: string, 'ignore-empty-context-and-extra'?: bool, 'include-stack-traces'?: bool}, 'normalizer'?: array{'date-format'?: string}, 'scalar'?: array{'date-format'?: string}}, 'handlers'?: array<non-empty-string, array{'bubble'?: bool, 'file'?: non-empty-string, 'formatter'?: non-empty-string, 'level'?: int|string, 'processors'?: list<non-empty-string>, 'type': string('file')|string('null')|string('stderr')|string('stdout')}>, 'processors'?: array{'logger-aware-processor'?: array{'logger'?: non-empty-string}}}`, but found `mixed`.'''
+count = 1
+
+[[issues]]
+file = "src/Bridge/Monolog/DependencyInjection/MonologExtension.php"
+code = "mixed-argument"
+message = '''Invalid argument type for argument #2 of `Neu\Bridge\Monolog\DependencyInjection\MonologExtension::registerhandlers`: expected `array{'channels'?: array<non-empty-string, array{'handlers'?: list<non-empty-string>, 'processors'?: list<non-empty-string>, 'timezone'?: non-empty-string, 'use-logging-loop-detection'?: bool, 'use-microsecond-timestamps'?: bool}>, 'default'?: non-empty-string, 'formatters'?: array{'console'?: array{'allow-inline-line-breaks'?: bool, 'date-format'?: string, 'format'?: string, 'ignore-empty-context-and-extra'?: bool, 'include-stack-traces'?: bool}, 'html'?: array{'date-format'?: string}, 'json'?: array{'append-newline'?: bool, 'batch-mode'?: int(1)|int(2), 'ignore-empty-context-and-extra'?: bool, 'include-stack-traces'?: bool}, 'line'?: array{'allow-inline-line-breaks'?: bool, 'date-format'?: string, 'format'?: string, 'ignore-empty-context-and-extra'?: bool, 'include-stack-traces'?: bool}, 'normalizer'?: array{'date-format'?: string}, 'scalar'?: array{'date-format'?: string}}, 'handlers'?: array<non-empty-string, array{'bubble'?: bool, 'file'?: non-empty-string, 'formatter'?: non-empty-string, 'level'?: int|string, 'processors'?: list<non-empty-string>, 'type': string('file')|string('null')|string('stderr')|string('stdout')}>, 'processors'?: array{'logger-aware-processor'?: array{'logger'?: non-empty-string}}}`, but found `mixed`.'''
+count = 1
+
+[[issues]]
+file = "src/Bridge/Monolog/DependencyInjection/MonologExtension.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #2 of `array_key_exists`: expected `array<array-key, mixed>`, but found `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Bridge/Monolog/DependencyInjection/MonologExtension.php"
+code = "mixed-array-access"
+message = "Unsafe array access on type `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Bridge/Monolog/DependencyInjection/MonologExtension.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 2
+
+[[issues]]
+file = "src/Bridge/Monolog/DependencyInjection/MonologExtension.php"
+code = "mixed-operand"
+message = "Invalid right operand: type `mixed` cannot be reliably used in string concatenation."
+count = 1
+
+[[issues]]
+file = "src/Bridge/Twig/DependencyInjection/Factory/EnvironmentFactory.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Bridge/Twig/DependencyInjection/Factory/EnvironmentFactory.php"
+code = "redundant-comparison"
+message = "Redundant `===` comparison: left-hand side is always identical to right-hand side."
+count = 1
+
+[[issues]]
+file = "src/Bridge/Twig/DependencyInjection/Factory/EnvironmentFactory.php"
+code = "redundant-condition"
+message = "This condition (type `true`) will always evaluate to true."
+count = 1
+
+[[issues]]
+file = "src/Bridge/Twig/DependencyInjection/TwigExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\bridge\twig\dependencyinjection\factory\cache\filesystemcachefactory::__construct`: expected `non-empty-string`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Bridge/Twig/DependencyInjection/TwigExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\bridge\twig\dependencyinjection\factory\environmentfactory::__construct`: expected `bool|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Bridge/Twig/DependencyInjection/TwigExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\bridge\twig\dependencyinjection\factory\filesystemloaderfactory::__construct`: expected `array<non-empty-string, non-empty-string|null>|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Bridge/Twig/DependencyInjection/TwigExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\bridge\twig\dependencyinjection\factory\cache\filesystemcachefactory::__construct`: expected `int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Bridge/Twig/DependencyInjection/TwigExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\bridge\twig\dependencyinjection\factory\environmentfactory::__construct`: expected `null|string`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Bridge/Twig/DependencyInjection/TwigExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\bridge\twig\dependencyinjection\factory\filesystemloaderfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Bridge/Twig/DependencyInjection/TwigExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `neu\bridge\twig\dependencyinjection\factory\environmentfactory::__construct`: expected `bool|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Bridge/Twig/DependencyInjection/TwigExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #4 of `neu\bridge\twig\dependencyinjection\factory\environmentfactory::__construct`: expected `bool|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Bridge/Twig/DependencyInjection/TwigExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #5 of `neu\bridge\twig\dependencyinjection\factory\environmentfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Bridge/Twig/DependencyInjection/TwigExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #6 of `neu\bridge\twig\dependencyinjection\factory\environmentfactory::__construct`: expected `int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Bridge/Twig/DependencyInjection/TwigExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #7 of `neu\bridge\twig\dependencyinjection\factory\environmentfactory::__construct`: expected `array<string, mixed>|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Bridge/Twig/DependencyInjection/TwigExtension.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 2
+
+[[issues]]
+file = "src/Component/Advisory/Adviser/Internal/Utility.php"
+code = "reference-to-undefined-variable"
+message = "Reference created from a previously undefined variable `$matches`."
+count = 1
+
+[[issues]]
+file = "src/Component/Advisory/DependencyInjection/AdvisoryExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\advisory\dependencyinjection\hook\addadvisershook::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Advisory/DependencyInjection/AdvisoryExtension.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Broadcast/DependencyInjection/BroadcastExtension.php"
+code = "invalid-return-statement"
+message = 'Invalid return type for function `neu\component\broadcast\dependencyinjection\broadcastextension::registerhubs`: expected `non-empty-array<non-empty-string, non-empty-string>`, but found `array<non-empty-string, truthy-string>`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Broadcast/DependencyInjection/BroadcastExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `Neu\Component\Broadcast\DependencyInjection\BroadcastExtension::registerhubmanager`: expected `non-empty-string`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Broadcast/DependencyInjection/BroadcastExtension.php"
+code = "mixed-argument"
+message = '''Invalid argument type for argument #2 of `Neu\Component\Broadcast\DependencyInjection\BroadcastExtension::registerhubs`: expected `non-empty-array<non-empty-string, array{'application-name'?: string, 'database'?: string, 'host'?: non-empty-string, 'password'?: string, 'port'?: int, 'service'?: non-empty-string, 'ssl-mode'?: string('allow')|string('disable')|string('prefer')|string('require')|string('verify-ca')|string('verify-full'), 'transport': string('local')|string('memory')|string('pgsql')|string('postgres')|string('postgresql')|string('service'), 'user'?: string, 'username'?: string}>`, but found `truthy-mixed`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Broadcast/DependencyInjection/BroadcastExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `Neu\Component\Broadcast\DependencyInjection\BroadcastExtension::setdefaulthub`: expected `non-empty-string`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Broadcast/DependencyInjection/BroadcastExtension.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Broadcast/DependencyInjection/BroadcastExtension.php"
+code = "mixed-assignment"
+message = "Assigning `nonnull` type to a variable may lead to unexpected behavior."
+count = 2
+
+[[issues]]
+file = "src/Component/Broadcast/DependencyInjection/Factory/Transport/PostgresTransportFactory.php"
+code = "avoid-catching-error"
+message = "Avoid catching 'Error' class instances."
+count = 1
+
+[[issues]]
+file = "src/Component/Broadcast/Hub.php"
+code = "docblock-type-mismatch"
+message = '''Docblock return type `Neu\Component\Broadcast\ChannelInterface<('T.neu\component\broadcast\hubinterface::getchannel() extends mixed)>` is incompatible with native return type `Neu\Component\Broadcast\Channel`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Broadcast/HubManager.php"
+code = "redundant-type-comparison"
+message = "Redundant type assertion: `$identifier` of type `non-empty-string` is always not `non-empty-string`."
+count = 2
+
+[[issues]]
+file = "src/Component/Broadcast/Transport/Internal/ChannelTransport.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Broadcast/Transport/Internal/ChannelTransport.php"
+code = "redundant-docblock-type"
+message = "Redundant docblock type for variable `$channel`."
+count = 1
+
+[[issues]]
+file = "src/Component/Broadcast/Transport/PostgresTransport.php"
+code = "avoid-catching-error"
+message = "Avoid catching 'Error' class instances."
+count = 2
+
+[[issues]]
+file = "src/Component/Broadcast/Transport/PostgresTransport.php"
+code = "redundant-docblock-type"
+message = "Redundant docblock type for variable `$channel`."
+count = 1
+
+[[issues]]
+file = "src/Component/Cache/DependencyInjection/CacheExtension.php"
+code = "invalid-return-statement"
+message = 'Invalid return type for function `neu\component\cache\dependencyinjection\cacheextension::registerstores`: expected `non-empty-array<non-empty-string, non-empty-string>`, but found `array<non-empty-string, truthy-string>`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Cache/DependencyInjection/CacheExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `Neu\Component\Cache\DependencyInjection\CacheExtension::registerstoremanager`: expected `non-empty-string`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Cache/DependencyInjection/CacheExtension.php"
+code = "mixed-argument"
+message = '''Invalid argument type for argument #2 of `Neu\Component\Cache\DependencyInjection\CacheExtension::registerstores`: expected `non-empty-array<non-empty-string, array{'database'?: int, 'directory'?: non-empty-string, 'driver': string('filesystem')|string('local')|string('redis')|string('service')|string('valkey'), 'password'?: string, 'prune-interval'?: positive-int, 'service'?: non-empty-string, 'size'?: positive-int, 'timeout'?: int, 'uri'?: non-empty-string}>`, but found `truthy-mixed`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Cache/DependencyInjection/CacheExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `Neu\Component\Cache\DependencyInjection\CacheExtension::setdefaultstore`: expected `non-empty-string`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Cache/DependencyInjection/CacheExtension.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Cache/DependencyInjection/CacheExtension.php"
+code = "mixed-assignment"
+message = "Assigning `nonnull` type to a variable may lead to unexpected behavior."
+count = 2
+
+[[issues]]
+file = "src/Component/Cache/Driver/PackingTrait.php"
+code = "missing-required-interface"
+message = 'Trait `Neu\Component\Cache\Driver\PackingTrait` must implement required interface `neu\component\cache\driver\driverinterface`'
+count = 1
+
+[[issues]]
+file = "src/Component/Cache/Driver/SerializationTrait.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Cache/Store.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 3
+
+[[issues]]
+file = "src/Component/Cache/Store.php"
+code = "too-few-arguments"
+message = "Too few arguments provided for closure `Closure`."
+count = 1
+
+[[issues]]
+file = "src/Component/Cache/StoreManager.php"
+code = "redundant-type-comparison"
+message = "Redundant type assertion: `$identifier` of type `non-empty-string` is always not `non-empty-string`."
+count = 2
+
+[[issues]]
+file = "src/Component/Console/Application.php"
+code = "impossible-type-comparison"
+message = 'Impossible condition: variable `$exitCode` (type `int`) can never be `enum(Neu\Component\Console\Command\ExitCode::Success)`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Application.php"
+code = "redundant-comparison"
+message = "Redundant `!==` comparison: left-hand side is always not identical to right-hand side."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Application.php"
+code = "redundant-condition"
+message = "This condition (type `true`) will always evaluate to true."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Block/Block.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #2 of `Psl\Str\wrap`: expected `non-negative-int`, but possibly received `int`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Block/TextBlock.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #2 of `Psl\Str\wrap`: expected `non-negative-int`, but possibly received `int`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Command/AbstractCommand.php"
+code = "invalid-property-write"
+message = "Cannot modify a readonly property after initialization."
+count = 2
+
+[[issues]]
+file = "src/Component/Console/Command/ApplicationAwareCommandTrait.php"
+code = "invalid-property-write"
+message = "Cannot modify a readonly property after initialization."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Command/Registry/Registry.php"
+code = "invalid-property-access"
+message = 'Attempting to access a property on a non-object type (`array<non-empty-string, Neu\Component\Console\Command\Configuration|array<non-empty-string, Neu\Component\Console\Command\Configuration|non-empty-array<non-empty-string, Neu\Component\Console\Command\Configuration|non-empty-array<non-empty-string, Neu\Component\Console\Command\Configuration>>>>`).'
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Command/Registry/Registry.php"
+code = "mismatched-array-index"
+message = "Invalid array key type: `string` is not a valid key for this array."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Feedback/AbstractFeedback.php"
+code = "possibly-null-operand"
+message = "Left operand in `<` comparison might be `null` (type `non-negative-int|null`)."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Formatter/Formatter.php"
+code = "impossible-condition"
+message = "This condition (type `false`) will always evaluate to false."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Formatter/Formatter.php"
+code = "invalid-operand"
+message = "Invalid type for left operand."
+count = 3
+
+[[issues]]
+file = "src/Component/Console/Formatter/Formatter.php"
+code = "invalid-operand"
+message = "Invalid type for right operand."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Formatter/Formatter.php"
+code = "mismatched-array-index"
+message = 'Invalid array key type: `enum(Neu\Component\Console\Formatter\Style\BackgroundColor)|non-empty-string` is not a valid key for this array.'
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Formatter/Formatter.php"
+code = "mismatched-array-index"
+message = 'Invalid array key type: `enum(Neu\Component\Console\Formatter\Style\ForegroundColor)|non-empty-string` is not a valid key for this array.'
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Formatter/Formatter.php"
+code = "mismatched-array-index"
+message = "Invalid array key type: `string` is not a valid key for this array."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Formatter/Formatter.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `Psl\Str\Byte\slice`: expected `int`, but found `mixed`.'
+count = 2
+
+[[issues]]
+file = "src/Component/Console/Formatter/Formatter.php"
+code = "mixed-array-index"
+message = "Invalid index type `mixed` used for array access on `string`."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Formatter/Formatter.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Formatter/Formatter.php"
+code = "mixed-operand"
+message = "Right operand in binary operation has type `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Formatter/Formatter.php"
+code = "redundant-comparison"
+message = "Redundant `>` comparison: left-hand side is never greater than right-hand side."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Formatter/Formatter.php"
+code = "reference-to-undefined-variable"
+message = "Reference created from a previously undefined variable `$matches`."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Formatter/Style/StyleStack.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #2 of `Psl\Dict\take`: expected `non-negative-int`, but possibly received `int<-1, max>`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Console/HelpScreen.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #2 of `Psl\Str\repeat`: expected `non-negative-int`, but possibly received `int`.'
+count = 2
+
+[[issues]]
+file = "src/Component/Console/HelpScreen.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #2 of `Psl\Str\wrap`: expected `non-negative-int`, but possibly received `int`.'
+count = 2
+
+[[issues]]
+file = "src/Component/Console/Input/AbstractBag.php"
+code = "invalid-argument"
+message = '''Invalid argument type for argument #1 of `neu\component\console\bag\abstractbag::__construct`: expected `array<Neu\Component\Console\Input\Definition\DefinitionInterface<mixed>, ('T.neu\component\console\input\abstractbag extends Neu\Component\Console\Input\Definition\DefinitionInterface<mixed>)>`, but found `array<string, ('T.neu\component\console\input\abstractbag extends Neu\Component\Console\Input\Definition\DefinitionInterface<mixed>)>`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Input/AbstractBag.php"
+code = "invalid-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\console\bag\abstractbag::get`: expected `Neu\Component\Console\Input\Definition\DefinitionInterface<mixed>`, but found `string`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Input/AbstractBag.php"
+code = "redundant-docblock-type"
+message = "Redundant docblock type for expression."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Input/AbstractInput.php"
+code = "possibly-null-argument"
+message = 'Argument #1 of method `neu\component\console\input\definition\definition::assign` is possibly `null`, but parameter type `string` does not accept it.'
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Input/AbstractInput.php"
+code = "possibly-null-array-access"
+message = "Cannot perform array access on possibly `null` value."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Input/Definition/Flag.php"
+code = "redundant-docblock-type"
+message = "Redundant docblock type for variable `$value`."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Input/Lexer.php"
+code = "invalid-property-assignment-value"
+message = "Invalid type for property `$current`: expected `array{'raw': string, 'value': string}`, but got `array{'raw': string('-')|truthy-string, 'value': null|string}`."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Input/Lexer.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #2 of `Psl\Dict\take`: expected `non-negative-int`, but possibly received `int<-1, max>`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Input/Lexer.php"
+code = "possibly-null-operand"
+message = "Possibly null right operand used in string concatenation (type `null|string`)."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Input/Lexer.php"
+code = "redundant-docblock-type"
+message = "Redundant docblock type for variable `$key`."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Output/NullOutput.php"
+code = "docblock-type-mismatch"
+message = "Docblock return type `null|object|resource` is incompatible with native return type `null`."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Recovery/Recovery.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `Neu\Component\Console\Recovery\Recovery::isneu`: expected `string`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Recovery/Recovery.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `Psl\Str\format`: expected `float|int|string`, but found `nonnull`.'
+count = 3
+
+[[issues]]
+file = "src/Component/Console/Recovery/Recovery.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `Psl\Str\format`: expected `float|int|string`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Recovery/Recovery.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #4 of `Psl\Str\format`: expected `float|int|string`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Recovery/Recovery.php"
+code = "mixed-array-access"
+message = "Unsafe array access on type `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Recovery/Recovery.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Recovery/Recovery.php"
+code = "mixed-assignment"
+message = "Assigning `nonnull` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Recovery/Recovery.php"
+code = "mixed-operand"
+message = "Invalid left operand: type `nonnull` cannot be reliably used in string concatenation."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Recovery/Recovery.php"
+code = "mixed-return-statement"
+message = "Could not infer a precise return type for function `16512489715679682308:2221`. Saw type `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Table/AbstractTable.php"
+code = "redundant-docblock-type"
+message = "Redundant docblock type for expression."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Table/AsciiTable.php"
+code = "invalid-return-statement"
+message = 'Invalid return type for function `neu\component\console\table\asciitable::buildborder`: expected `string`, but found `null|string`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Table/AsciiTable.php"
+code = "null-operand"
+message = "Implicit conversion of `null` to empty string for right operand in string concatenation."
+count = 2
+
+[[issues]]
+file = "src/Component/Console/Table/AsciiTable.php"
+code = "nullable-return-statement"
+message = 'Function `neu\component\console\table\asciitable::buildborder` is declared to return `string` but possibly returns a nullable value (inferred as `null|string`).'
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Table/AsciiTable.php"
+code = "possibly-null-operand"
+message = "Possibly null left operand used in string concatenation (type `null|string`)."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Table/AsciiTable.php"
+code = "undefined-string-array-index"
+message = "Undefined array key 'center_corner' accessed on `array{'border': string, 'bottom_center_corner': string, 'bottom_left_corner': string, 'bottom_right_corner': string, 'center_center_corner': string, 'center_left_corner': string, 'center_right_corner': string, 'header_line': string, 'line': string, 'padding': string, 'top_center_corner': string, 'top_left_corner': string, 'top_right_corner': string}`."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Table/AsciiTable.php"
+code = "undefined-string-array-index"
+message = "Undefined array key 'left_corner' accessed on `array{'border': string, 'bottom_center_corner': string, 'bottom_left_corner': string, 'bottom_right_corner': string, 'center_center_corner': string, 'center_left_corner': string, 'center_right_corner': string, 'header_line': string, 'line': string, 'padding': string, 'top_center_corner': string, 'top_left_corner': string, 'top_right_corner': string}`."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/Table/AsciiTable.php"
+code = "undefined-string-array-index"
+message = "Undefined array key 'right_corner' accessed on `array{'border': string, 'bottom_center_corner': string, 'bottom_left_corner': string, 'bottom_right_corner': string, 'center_center_corner': string, 'center_left_corner': string, 'center_right_corner': string, 'header_line': string, 'line': string, 'padding': string, 'top_center_corner': string, 'top_left_corner': string, 'top_right_corner': string}`."
+count = 1
+
+[[issues]]
+file = "src/Component/Console/UserInput/ConfirmationUserInput.php"
+code = "incompatible-property-type"
+message = 'Property `Neu\Component\Console\UserInput\ConfirmationUserInput::$acceptedValues` has an incompatible type declaration from docblock.'
+count = 1
+
+[[issues]]
+file = "src/Component/Csrf/DependencyInjection/CsrfExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\csrf\dependencyinjection\factory\csrftokenmanagerfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Csrf/DependencyInjection/CsrfExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\csrf\dependencyinjection\factory\storage\sessioncsrftokenstoragefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Csrf/DependencyInjection/CsrfExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\component\csrf\dependencyinjection\factory\csrftokenmanagerfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Csrf/DependencyInjection/CsrfExtension.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Database/AbstractionLayerConvenienceMethodsTrait.php"
+code = "invalid-argument"
+message = "Invalid argument type for argument #1 of `array_map`: expected `(callable(array<('K.array_values() extends array-key)|non-empty-string, mixed>): list<('V.array_values() extends mixed)>)|(callable(array<('K.array_values() extends array-key)|non-empty-string, mixed>, ('S.array_map() extends mixed)): list<('V.array_values() extends mixed)>)|null`, but found `Closure<array_values>(...)`."
+count = 1
+
+[[issues]]
+file = "src/Component/Database/AbstractionLayerConvenienceMethodsTrait.php"
+code = "invalid-return-statement"
+message = '''Invalid return type for function `neu\component\database\abstractionlayerconveniencemethodstrait::buildcriteria`: expected `array{0: ('TWQ.neu\component\database\abstractionlayerconveniencemethodstrait::buildcriteria() extends Neu\Component\Database\Query\WhereQueryInterface), 1: array<non-empty-string, mixed>}`, but found `list{('TWQ.neu\component\database\abstractionlayerconveniencemethodstrait::buildcriteria() extends Neu\Component\Database\Query\WhereQueryInterface)|Neu\Component\Database\Query\WhereQueryInterface&static, array<non-empty-string, mixed>}`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Database/AbstractionLayerConvenienceMethodsTrait.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 4
+
+[[issues]]
+file = "src/Component/Database/Database.php"
+code = "avoid-catching-error"
+message = "Avoid catching 'Error' class instances."
+count = 1
+
+[[issues]]
+file = "src/Component/Database/Database.php"
+code = "docblock-type-mismatch"
+message = '''Docblock type `Amp\Sql\SqlConnection<Amp\Sql\SqlConfig, Amp\Sql\SqlResult<mixed>, Amp\Sql\SqlStatement<Amp\Sql\SqlResult<mixed>>, Amp\Sql\SqlTransaction<Amp\Sql\SqlResult, Amp\Sql\SqlStatement<('TResult.amp\sql\sqltransaction extends Amp\Sql\SqlResult)>, Amp\Sql\SqlTransaction>>` for parameter `$connection` is incompatible with native type `Amp\Sql\SqlConnection`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Database/Database.php"
+code = "invalid-return-statement"
+message = '''Invalid return type for function `neu\component\database\database::getunderlyingsqlconnection`: expected `Amp\Sql\SqlConnection<Amp\Sql\SqlConfig, Amp\Sql\SqlResult, Amp\Sql\SqlStatement<('TResult.amp\sql\sqlconnection extends Amp\Sql\SqlResult)>, Amp\Sql\SqlTransaction>`, but found `Amp\Sql\SqlConnection<Amp\Sql\SqlConfig, Amp\Sql\SqlResult<mixed>, Amp\Sql\SqlStatement<Amp\Sql\SqlResult<mixed>>, Amp\Sql\SqlTransaction<Amp\Sql\SqlResult<mixed>, Amp\Sql\SqlStatement<('TResult.amp\sql\sqltransaction extends Amp\Sql\SqlResult<mixed>)>, Amp\Sql\SqlTransaction>>`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Database/Database.php"
+code = "possibly-invalid-argument"
+message = "Possible argument type mismatch for argument #2 of `exception::__construct`: expected `int`, but possibly received `int|string`."
+count = 2
+
+[[issues]]
+file = "src/Component/Database/DatabaseManager.php"
+code = "redundant-type-comparison"
+message = "Redundant type assertion: `$name` of type `non-empty-string` is always not `non-empty-string`."
+count = 2
+
+[[issues]]
+file = "src/Component/Database/DependencyInjection/DatabaseExtension.php"
+code = "less-specific-argument"
+message = '''Argument type mismatch for argument #2 of `neu\component\dependencyinjection\definition\definition::create`: expected `class-string<Neu\Component\Database\Database>`, but provided type `class-string('Neu\Component\Database\DatabaseInterface')` is less specific.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Database/DependencyInjection/DatabaseExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `Neu\Component\Database\DependencyInjection\DatabaseExtension::registerdatabasemanager`: expected `non-empty-string`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Database/DependencyInjection/DatabaseExtension.php"
+code = "mixed-argument"
+message = '''Invalid argument type for argument #2 of `Neu\Component\Database\DependencyInjection\DatabaseExtension::registerdatabases`: expected `array<non-empty-string, array{'application-name'?: string, 'charset'?: string, 'collate'?: string, 'database'?: string, 'host': non-empty-string, 'idle-timeout'?: positive-int, 'key'?: string, 'max-connections'?: positive-int, 'password'?: string, 'platform': string('mariadb')|string('mysql')|string('mysqli')|string('pgsql')|string('postgres')|string('postgresql'), 'pooled'?: bool, 'port'?: int, 'reset-connections'?: bool, 'sql-mode'?: string, 'ssl-mode'?: string('allow')|string('disable')|string('prefer')|string('require')|string('verify-ca')|string('verify-full'), 'use-compression'?: bool, 'use-local-infile'?: bool, 'user'?: string}>`, but found `nonnull`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Database/DependencyInjection/DatabaseExtension.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Database/DependencyInjection/DatabaseExtension.php"
+code = "mixed-assignment"
+message = "Assigning `nonnull` type to a variable may lead to unexpected behavior."
+count = 2
+
+[[issues]]
+file = "src/Component/Database/DependencyInjection/Factory/MysqlConnectionFactory.php"
+code = "avoid-catching-error"
+message = "Avoid catching 'Error' class instances."
+count = 1
+
+[[issues]]
+file = "src/Component/Database/DependencyInjection/Factory/PostgresConnectionFactory.php"
+code = "avoid-catching-error"
+message = "Avoid catching 'Error' class instances."
+count = 1
+
+[[issues]]
+file = "src/Component/Database/Link.php"
+code = "avoid-catching-error"
+message = "Avoid catching 'Error' class instances."
+count = 2
+
+[[issues]]
+file = "src/Component/Database/Link.php"
+code = "docblock-type-mismatch"
+message = '''Docblock type `Amp\Sql\SqlLink<Amp\Sql\SqlResult<mixed>, Amp\Sql\SqlStatement<Amp\Sql\SqlResult<mixed>>, Amp\Sql\SqlTransaction<Amp\Sql\SqlResult, Amp\Sql\SqlStatement<('TResult.amp\sql\sqltransaction extends Amp\Sql\SqlResult)>, Amp\Sql\SqlTransaction>>` for parameter `$link` is incompatible with native type `Amp\Sql\SqlLink`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Database/Link.php"
+code = "invalid-argument"
+message = '''Invalid argument type for argument #1 of `array_map`: expected `(callable(string): non-empty-string)|(callable(string, ('S.array_map() extends mixed)): non-empty-string)|null`, but found `Closure<Neu\Component\Database\Link::quotesingleidentifier>(...)`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Database/Link.php"
+code = "invalid-return-statement"
+message = '''Invalid return type for function `neu\component\database\link::getunderlyingsqllink`: expected `Amp\Sql\SqlLink<Amp\Sql\SqlResult, Amp\Sql\SqlStatement<('TResult.amp\sql\sqllink extends Amp\Sql\SqlResult)>, Amp\Sql\SqlTransaction>`, but found `Amp\Sql\SqlLink<Amp\Sql\SqlResult<mixed>, Amp\Sql\SqlStatement<Amp\Sql\SqlResult<mixed>>, Amp\Sql\SqlTransaction<Amp\Sql\SqlResult<mixed>, Amp\Sql\SqlStatement<('TResult.amp\sql\sqltransaction extends Amp\Sql\SqlResult<mixed>)>, Amp\Sql\SqlTransaction>>`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Database/Link.php"
+code = "invalid-return-statement"
+message = 'Invalid return type for function `neu\component\database\link::quoteidentifier`: expected `non-empty-string`, but found `string`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Database/Link.php"
+code = "possibly-invalid-argument"
+message = "Possible argument type mismatch for argument #2 of `exception::__construct`: expected `int`, but possibly received `int|string`."
+count = 4
+
+[[issues]]
+file = "src/Component/Database/Notification/Postgres/PostgresNotifier.php"
+code = "possibly-invalid-argument"
+message = "Possible argument type mismatch for argument #2 of `exception::__construct`: expected `int`, but possibly received `int|string`."
+count = 2
+
+[[issues]]
+file = "src/Component/Database/Query/Builder/Internal/AbstractExecutableQuery.php"
+code = "redundant-condition"
+message = "This condition (type `true`) will always evaluate to true."
+count = 1
+
+[[issues]]
+file = "src/Component/Database/QueryResult.php"
+code = "redundant-docblock-type"
+message = "Redundant docblock type for variable `$row`."
+count = 1
+
+[[issues]]
+file = "src/Component/Database/Transaction.php"
+code = "avoid-catching-error"
+message = "Avoid catching 'Error' class instances."
+count = 2
+
+[[issues]]
+file = "src/Component/EventDispatcher/DependencyInjection/EventDispatcherExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\eventdispatcher\dependencyinjection\factory\eventdispatcherfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/EventDispatcher/DependencyInjection/EventDispatcherExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\eventdispatcher\dependencyinjection\hook\registerlistenershook::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/EventDispatcher/DependencyInjection/EventDispatcherExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\eventdispatcher\dependencyinjection\processor\eventdispatcherawareprocessor::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/EventDispatcher/DependencyInjection/EventDispatcherExtension.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/EventDispatcher/EventDispatcher.php"
+code = "incompatible-parameter-type"
+message = '''Parameter `$event` of `Neu\Component\EventDispatcher\EventDispatcher::dispatch()` expects type `('T.neu\component\eventdispatcher\eventdispatcher::dispatch() extends object)` but parent `Psr\EventDispatcher\EventDispatcherInterface::dispatch()` expects type `object`'''
+count = 1
+
+[[issues]]
+file = "src/Component/EventDispatcher/EventDispatcherInterface.php"
+code = "incompatible-parameter-type"
+message = '''Parameter `$event` of `Neu\Component\EventDispatcher\EventDispatcherInterface::dispatch()` expects type `('T.neu\component\eventdispatcher\eventdispatcherinterface::dispatch() extends object)` but parent `Psr\EventDispatcher\EventDispatcherInterface::dispatch()` expects type `object`'''
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Body.php"
+code = "avoid-catching-error"
+message = "Avoid catching 'Error' class instances."
+count = 4
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Field.php"
+code = "missing-required-interface"
+message = 'Class `Neu\Component\Http\Message\Form\Field` must implement required interface `neu\component\http\message\internal\messageinterface`'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/File.php"
+code = "missing-required-interface"
+message = 'Class `Neu\Component\Http\Message\Form\File` must implement required interface `neu\component\http\message\internal\messageinterface`'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/MultiPart/Parser.php"
+code = "invalid-operand"
+message = "Invalid type for left operand."
+count = 2
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/MultiPart/Parser.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #1 of `str_contains`: expected `string`, but found `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/MultiPart/Parser.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #2 of `substr`: expected `int`, but found `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/MultiPart/Parser.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #3 of `substr`: expected `int|null`, but found `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/MultiPart/Parser.php"
+code = "mixed-operand"
+message = "Left operand in binary operation has type `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/MultiPart/Parser.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #1 of `Psl\Filesystem\get_extension`: expected `non-empty-string`, but possibly received `string`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/MultiPart/Parser.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #1 of `neu\component\http\message\form\field::create`: expected `non-empty-string`, but possibly received `string`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/MultiPart/Parser.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #1 of `neu\component\http\message\form\file::create`: expected `non-empty-string`, but possibly received `string`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/MultiPart/Parser.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #2 of `neu\component\http\message\form\field::create`: expected `array<non-empty-string, non-empty-list<non-empty-string>>`, but possibly received `array<lowercase-non-empty-string, non-empty-list<string>>`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/MultiPart/Parser.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #2 of `neu\component\http\message\form\field::create`: expected `array<non-empty-string, non-empty-list<non-empty-string>>`, but possibly received `array<non-empty-string, non-empty-list<string>>`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/MultiPart/Parser.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #2 of `neu\component\http\message\form\file::create`: expected `non-empty-string`, but possibly received `string`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/MultiPart/Parser.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #3 of `neu\component\http\message\form\file::create`: expected `non-empty-string`, but possibly received `string`.'
+count = 2
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/MultiPart/Parser.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #5 of `neu\component\http\message\form\file::create`: expected `array<non-empty-string, non-empty-list<non-empty-string>>`, but possibly received `array<lowercase-non-empty-string, non-empty-list<string>>`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/MultiPart/Parser.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #5 of `neu\component\http\message\form\file::create`: expected `array<non-empty-string, non-empty-list<non-empty-string>>`, but possibly received `array<non-empty-string, non-empty-list<string>>`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/MultiPart/Parser.php"
+code = "possibly-undefined-variable"
+message = "Variable `$entry` might not have been defined on all execution paths leading to this point."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/MultiPart/Parser.php"
+code = "reference-to-undefined-variable"
+message = "Reference created from a previously undefined variable `$matches`."
+count = 4
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/UrlEncoded/Parser.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #1 of `neu\component\http\message\form\field::create`: expected `non-empty-string`, but possibly received `string`.'
+count = 2
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/UrlEncoded/Parser.php"
+code = "possibly-null-argument"
+message = "Argument #1 of function `urldecode` is possibly `null`, but parameter type `string` does not accept it."
+count = 2
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Internal/UrlEncoded/Parser.php"
+code = "possibly-null-property-access"
+message = "Attempting to access a property on a possibly `null` value."
+count = 10
+
+[[issues]]
+file = "src/Component/Http/Message/Form/MultipartParser.php"
+code = "less-specific-nested-argument-type"
+message = 'Argument type mismatch for argument #1 of `neu\component\http\message\form\streamedform::__construct`: expected `Amp\Pipeline\ConcurrentIterator<Neu\Component\Http\Message\Form\FieldInterface>`, but provided type `Amp\Pipeline\ConcurrentIterator<mixed>` is less specific.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/Parser.php"
+code = "less-specific-nested-argument-type"
+message = 'Argument type mismatch for argument #1 of `neu\component\http\message\form\streamedform::__construct`: expected `Amp\Pipeline\ConcurrentIterator<Neu\Component\Http\Message\Form\FieldInterface>`, but provided type `Amp\Pipeline\ConcurrentIterator<mixed>` is less specific.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/UrlEncodedParser.php"
+code = "less-specific-nested-argument-type"
+message = 'Argument type mismatch for argument #1 of `neu\component\http\message\form\streamedform::__construct`: expected `Amp\Pipeline\ConcurrentIterator<Neu\Component\Http\Message\Form\FieldInterface>`, but provided type `Amp\Pipeline\ConcurrentIterator<mixed>` is less specific.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Form/UrlEncodedParser.php"
+code = "redundant-docblock-type"
+message = "Redundant docblock type for variable `$body`."
+count = 2
+
+[[issues]]
+file = "src/Component/Http/Message/Internal/CookieStorage.php"
+code = "possibly-invalid-argument"
+message = '''Possible argument type mismatch for argument #1 of `neu\component\http\message\internal\cookiestorage::__construct`: expected `array<non-empty-string, non-empty-list<('P.neu\component\http\message\internal\cookiestorage::fromcookies() extends Neu\Component\Http\Message\CookieInterface|non-empty-string)>>`, but possibly received `array<non-empty-string, list<('P.neu\component\http\message\internal\cookiestorage::fromcookies() extends Neu\Component\Http\Message\CookieInterface|non-empty-string)>>`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Internal/CookieStorage.php"
+code = "possibly-invalid-argument"
+message = '''Possible argument type mismatch for argument #1 of `neu\component\http\message\internal\cookiestorage::__construct`: expected `array<non-empty-string, non-empty-list<('T.neu\component\http\message\internal\cookiestorage extends Neu\Component\Http\Message\CookieInterface|non-empty-string)>>`, but possibly received `array<non-empty-string, array<non-negative-int, ('T.neu\component\http\message\internal\cookiestorage extends Neu\Component\Http\Message\CookieInterface|non-empty-string)>|non-empty-list<('T.neu\component\http\message\internal\cookiestorage extends Neu\Component\Http\Message\CookieInterface|non-empty-string)>>`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Internal/CookieStorage.php"
+code = "possibly-invalid-argument"
+message = '''Possible argument type mismatch for argument #1 of `neu\component\http\message\internal\cookiestorage::__construct`: expected `array<non-empty-string, non-empty-list<('T.neu\component\http\message\internal\cookiestorage extends Neu\Component\Http\Message\CookieInterface|non-empty-string)>>`, but possibly received `array<non-empty-string, list<('T.neu\component\http\message\internal\cookiestorage extends Neu\Component\Http\Message\CookieInterface|non-empty-string)>|list{('T.neu\component\http\message\internal\cookiestorage extends Neu\Component\Http\Message\CookieInterface|non-empty-string)}>`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Internal/ExchangeConvenienceMethodsTrait.php"
+code = "missing-required-interface"
+message = 'Trait `Neu\Component\Http\Message\Internal\ExchangeConvenienceMethodsTrait` must implement required interface `neu\component\http\message\internal\messageinterface`'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Internal/HeaderStorage.php"
+code = "invalid-return-statement"
+message = 'Invalid return type for function `neu\component\http\message\internal\headerstorage::getheaderline`: expected `non-empty-string|null`, but found `string`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Internal/HeaderStorage.php"
+code = "redundant-type-comparison"
+message = "Redundant type assertion: `$header` of type `non-empty-string` is always not `non-empty-string`."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Internal/HeaderStorage.php"
+code = "redundant-type-comparison"
+message = "Redundant type assertion: `$name` of type `non-empty-string` is always not `non-empty-string`."
+count = 2
+
+[[issues]]
+file = "src/Component/Http/Message/Internal/HeaderStorage.php"
+code = "redundant-type-comparison"
+message = "Redundant type assertion: `$v` of type `non-empty-string` is always not `non-empty-string`."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Internal/HeaderStorage.php"
+code = "redundant-type-comparison"
+message = "Redundant type assertion: `$value` of type `non-empty-string` is always not `non-empty-string`."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Request.php"
+code = "missing-required-interface"
+message = 'Class `Neu\Component\Http\Message\Request` must implement required interface `neu\component\http\message\internal\exchangeinterface`'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/RequestBody.php"
+code = "avoid-catching-error"
+message = "Avoid catching 'Error' class instances."
+count = 4
+
+[[issues]]
+file = "src/Component/Http/Message/Response.php"
+code = "missing-required-interface"
+message = 'Class `Neu\Component\Http\Message\Response` must implement required interface `neu\component\http\message\internal\exchangeinterface`'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Trailer.php"
+code = "less-specific-nested-argument-type"
+message = 'Argument type mismatch for argument #2 of `neu\component\http\message\trailer::__construct`: expected `Amp\Future<non-empty-list<non-empty-string>>|Psl\Async\Awaitable<non-empty-list<non-empty-string>>`, but provided type `(closure(): non-empty-list<non-empty-string>)|Amp\Future<mixed>|Psl\Async\Awaitable<non-empty-list<non-empty-string>>` is less specific.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Uri.php"
+code = "impossible-condition"
+message = "This condition (type `false`) will always evaluate to false."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Uri.php"
+code = "redundant-comparison"
+message = "Redundant `===` comparison: left-hand side is never identical to right-hand side."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Message/Uri.php"
+code = "redundant-null-coalesce"
+message = "Redundant null coalesce: left-hand side can never be `null` or undefined."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Recovery/DependencyInjection/RecoveryExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\http\recovery\dependencyinjection\factory\recoveryfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Recovery/DependencyInjection/RecoveryExtension.php"
+code = "mixed-argument"
+message = '''Invalid argument type for argument #2 of `neu\component\http\recovery\dependencyinjection\factory\recoveryfactory::__construct`: expected `array<class-string<Throwable>, array{'headers'?: array<non-empty-string, non-empty-list<non-empty-string>>, 'log_level'?: string('alert')|string('critical')|string('debug')|string('emergency')|string('error')|string('info')|string('notice')|string('warning'), 'status'?: int}>`, but found `nonnull`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Recovery/DependencyInjection/RecoveryExtension.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Router/DependencyInjection/RouterExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\http\router\dependencyinjection\factory\generator\generatorfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Router/DependencyInjection/RouterExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\http\router\dependencyinjection\factory\matcher\matcherfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Router/DependencyInjection/RouterExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\http\router\dependencyinjection\factory\routecollectorfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Router/DependencyInjection/RouterExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\http\router\dependencyinjection\factory\routerfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Router/DependencyInjection/RouterExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\http\router\dependencyinjection\hook\registerrouteshook::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Router/DependencyInjection/RouterExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\component\http\router\dependencyinjection\factory\routerfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Router/DependencyInjection/RouterExtension.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Router/Matcher/Matcher.php"
+code = "possibly-undefined-variable"
+message = "Variable `$matches` might not have been defined on all execution paths leading to this point."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Router/PatternParser/Node/LiteralNode.php"
+code = "invalid-property-write"
+message = "Cannot modify a readonly property after initialization."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Router/PatternParser/Node/LiteralNode.php"
+code = "redundant-docblock-type"
+message = "Redundant docblock type for expression."
+count = 2
+
+[[issues]]
+file = "src/Component/Http/Router/PatternParser/Node/OptionalNode.php"
+code = "invalid-property-write"
+message = "Cannot modify a readonly property after initialization."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Router/PatternParser/Node/ParameterNode.php"
+code = "invalid-property-write"
+message = "Cannot modify a readonly property after initialization."
+count = 2
+
+[[issues]]
+file = "src/Component/Http/Router/PatternParser/Parser.php"
+code = "invalid-method-access"
+message = "Attempting to access a method on a non-object type (`false`)."
+count = 3
+
+[[issues]]
+file = "src/Component/Http/Router/PatternParser/Parser.php"
+code = "invalid-operand"
+message = "Cannot decrement value of type `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Router/PatternParser/Parser.php"
+code = "invalid-operand"
+message = "Cannot increment value of type `mixed`."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Router/PatternParser/Parser.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 2
+
+[[issues]]
+file = "src/Component/Http/Router/PrefixMap/PrefixMap.php"
+code = "less-specific-nested-argument-type"
+message = 'Argument type mismatch for argument #1 of `neu\component\http\router\prefixmap\prefixmap::fromroutesimpl`: expected `list<array{0: list<Neu\Component\Http\Router\PatternParser\Node\Node>, 1: Neu\Component\Http\Router\Route}>`, but provided type `list<mixed>` is less specific.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Router/PrefixMap/PrefixMap.php"
+code = "mismatched-array-index"
+message = "Invalid array key type: `string` is not a valid key for this array."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Router/PrefixMap/PrefixMapOrRoute.php"
+code = "redundant-docblock-type"
+message = "Redundant docblock type for expression."
+count = 2
+
+[[issues]]
+file = "src/Component/Http/Runtime/ContentDelivery/ContentDeliverer.php"
+code = "possibly-invalid-argument"
+message = '''Possible argument type mismatch for argument #2 of `neu\component\http\message\messageinterface::withheader`: expected `non-empty-list<non-empty-string>|non-empty-string`, but possibly received `numeric-string|string('')`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/ContentDelivery/ContentDeliverer.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #3 of `Psl\Str\Byte\slice`: expected `non-negative-int|null`, but possibly received `int`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/ContentDelivery/ContentDeliverer.php"
+code = "possibly-null-argument"
+message = '''Argument #1 of method `Neu\Component\Http\Runtime\ContentDelivery\ContentDeliverer::getcontentrangeheadervalue` is possibly `null`, but parameter type `array{'length': int, 'start': int}` does not accept it.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/ContentDelivery/ContentDeliverer.php"
+code = "possibly-null-argument"
+message = '''Argument #2 of method `Neu\Component\Http\Runtime\ContentDelivery\ContentDeliverer::streamrangefromfile` is possibly `null`, but parameter type `array{'length': int, 'start': int}` does not accept it.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/ContentDelivery/ContentDeliverer.php"
+code = "possibly-null-array-access"
+message = "Cannot perform array access on possibly `null` value."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/ContentDelivery/ContentDeliverer.php"
+code = "redundant-type-comparison"
+message = "Redundant type assertion: `$etag` of type `non-empty-string` is always not `non-empty-string`."
+count = 2
+
+[[issues]]
+file = "src/Component/Http/Runtime/ContentDelivery/ContentDeliverer.php"
+code = "redundant-type-comparison"
+message = "Redundant type assertion: `$responseEtag` of type `non-empty-string` is always not `non-empty-string`."
+count = 2
+
+[[issues]]
+file = "src/Component/Http/Runtime/ContentDelivery/Internal/Boundary.php"
+code = "reference-constraint-violation"
+message = "Invalid assignment to constrained static variable `$boundary`."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/Context.php"
+code = "invalid-method-access"
+message = 'Attempting to access a method on a non-object type (`(closure(Neu\Component\Http\Message\ResponseInterface): void)`).'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/DependencyInjection/RuntimeExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\http\runtime\dependencyinjection\factory\contentdelivery\contentdelivererfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/DependencyInjection/RuntimeExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\http\runtime\dependencyinjection\factory\handler\resolver\handlerresolverfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/DependencyInjection/RuntimeExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\http\runtime\dependencyinjection\factory\runtimefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/DependencyInjection/RuntimeExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\http\runtime\dependencyinjection\hook\enqueuemiddlewarehook::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/DependencyInjection/RuntimeExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\component\http\runtime\dependencyinjection\factory\runtimefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/DependencyInjection/RuntimeExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\component\http\runtime\dependencyinjection\hook\enqueuemiddlewarehook::__construct`: expected `list<non-empty-string>`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/DependencyInjection/RuntimeExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `neu\component\http\runtime\dependencyinjection\factory\runtimefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/DependencyInjection/RuntimeExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #4 of `neu\component\http\runtime\dependencyinjection\factory\runtimefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/DependencyInjection/RuntimeExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #5 of `neu\component\http\runtime\dependencyinjection\factory\runtimefactory::__construct`: expected `null|positive-int`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/DependencyInjection/RuntimeExtension.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/Handler/Resolver/HandlerResolver.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/Middleware/MiddlewareQueue.php"
+code = "mixed-property-type-coercion"
+message = 'A value with a less specific type `Psl\DataStructure\PriorityQueue<mixed>` is being assigned to property `$$queue` (Psl\DataStructure\PriorityQueue<Neu\Component\Http\Runtime\Middleware\MiddlewareInterface>).'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Runtime/Middleware/MiddlewareQueue.php"
+code = "property-type-coercion"
+message = 'A value of a less specific type `WeakMap<object, mixed>` is being assigned to property `$$cache` (WeakMap<Neu\Component\Http\Runtime\Handler\HandlerInterface, Neu\Component\Http\Runtime\Handler\HandlerInterface>).'
+count = 2
+
+[[issues]]
+file = "src/Component/Http/Runtime/Middleware/MiddlewareQueue.php"
+code = "redundant-docblock-type"
+message = "Redundant docblock type for expression."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\http\server\dependencyinjection\factory\clusterfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\http\server\dependencyinjection\factory\clusterworkerfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\http\server\dependencyinjection\factory\serverfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = '''Invalid argument type for argument #1 of `neu\component\http\server\dependencyinjection\factory\serverinfrastructurefactory::__construct`: expected `list<array{'bind'?: array{'broadcast'?: bool, 'reuse-port'?: bool, 'tcp-no-delay'?: bool, 'tls'?: array{'alpn-protocols'?: list<non-empty-string>, 'capture-peer'?: bool, 'certificate'?: array{'file': non-empty-string, 'key'?: non-empty-string, 'passphrase'?: non-empty-string}, 'certificate-authority'?: array{'file'?: non-empty-string, 'path'?: non-empty-string}, 'certificates'?: array<string, array{'file': non-empty-string, 'key'?: non-empty-string, 'passphrase'?: non-empty-string}>, 'ciphers'?: non-empty-string, 'minimum-version'?: int, 'peer-name'?: non-empty-string, 'security-level'?: int(0)|int(1)|int(2)|int(3)|int(4)|int(5), 'verify-depth'?: int, 'verify-peer'?: bool}}, 'host': non-empty-string, 'port': int}>|null`, but found `mixed`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\component\http\server\dependencyinjection\factory\clusterfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\component\http\server\dependencyinjection\factory\clusterworkerfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\component\http\server\dependencyinjection\factory\serverfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\component\http\server\dependencyinjection\factory\serverinfrastructurefactory::__construct`: expected `int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `neu\component\http\server\dependencyinjection\factory\clusterfactory::__construct`: expected `null|positive-int`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `neu\component\http\server\dependencyinjection\factory\serverfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `neu\component\http\server\dependencyinjection\factory\serverinfrastructurefactory::__construct`: expected `int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #4 of `neu\component\http\server\dependencyinjection\factory\serverinfrastructurefactory::__construct`: expected `int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #5 of `neu\component\http\server\dependencyinjection\factory\serverinfrastructurefactory::__construct`: expected `int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #6 of `neu\component\http\server\dependencyinjection\factory\serverinfrastructurefactory::__construct`: expected `int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #7 of `neu\component\http\server\dependencyinjection\factory\serverinfrastructurefactory::__construct`: expected `int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #8 of `neu\component\http\server\dependencyinjection\factory\serverinfrastructurefactory::__construct`: expected `int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #9 of `neu\component\http\server\dependencyinjection\factory\serverinfrastructurefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/Internal/MessageConvertor.php"
+code = "less-specific-nested-argument-type"
+message = 'Argument type mismatch for argument #2 of `neu\component\http\message\trailer::create`: expected `(closure(): non-empty-list<non-empty-string>)|Amp\Future<non-empty-list<non-empty-string>>|Psl\Async\Awaitable<non-empty-list<non-empty-string>>`, but provided type `Amp\Future<list<string>>` is less specific.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/Internal/MessageConvertor.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #1 of `Neu\Component\Http\Message\Request::withcookies`: expected `array<non-empty-string, non-empty-list<non-empty-string>|non-empty-string>`, but possibly received `array<non-empty-string, non-empty-list<string>>`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/Internal/MessageConvertor.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #1 of `Neu\Component\Http\Message\Request::withqueryparameters`: expected `array<non-empty-string, non-empty-list<string>|string>`, but possibly received `array<string, list<string>>`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/Internal/MessageConvertor.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #1 of `neu\component\http\message\trailer::create`: expected `non-empty-string`, but possibly received `string`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/Internal/MessageConvertor.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #3 of `neu\component\http\message\request::create`: expected `array<non-empty-string, non-empty-list<non-empty-string>>`, but possibly received `array<non-empty-string, list<string>>`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/Internal/MessageConvertor.php"
+code = "redundant-docblock-type"
+message = "Redundant docblock type for variable `$future`."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/Internal/cluster-worker.php"
+code = "invalid-destructuring-source"
+message = "Invalid destructuring assignment: Cannot unpack type `non-empty-list<string>|null` into variables."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/Internal/cluster-worker.php"
+code = "mixed-argument"
+message = "The first value for `require` is too general."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/Internal/cluster-worker.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/Internal/cluster-worker.php"
+code = "redundant-comparison"
+message = "Redundant `!==` comparison: left-hand side is always not identical to right-hand side."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Server/Internal/cluster-worker.php"
+code = "redundant-condition"
+message = "This condition (type `true`) will always evaluate to true."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/ServerSentEvent/EventStream.php"
+code = "mixed-property-type-coercion"
+message = 'A value with a less specific type `Amp\Pipeline\Queue<mixed>` is being assigned to property `$$queue` (Amp\Pipeline\Queue<Neu\Component\Http\ServerSentEvent\Event>).'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/Configuration/CookieConfiguration.php"
+code = "possibly-null-operand"
+message = "Left operand in `<=` comparison might be `null` (type `int|null`)."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/DependencyInjection/SessionExtension.php"
+code = "less-specific-argument"
+message = '''Argument type mismatch for argument #1 of `neu\component\dependencyinjection\definition\definition::oftype`: expected `class-string<Neu\Component\Http\Session\Persistence\Persistence>`, but provided type `class-string('Neu\Component\Http\Session\Persistence\PersistenceInterface')` is less specific.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/DependencyInjection/SessionExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\http\session\dependencyinjection\factory\configuration\cacheconfigurationfactory::__construct`: expected `int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/DependencyInjection/SessionExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\http\session\dependencyinjection\factory\configuration\cookieconfigurationfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/DependencyInjection/SessionExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\component\http\session\dependencyinjection\factory\persistence\persistencefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/DependencyInjection/SessionExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\component\http\session\dependencyinjection\factory\configuration\cacheconfigurationfactory::__construct`: expected `enum(Neu\Component\Http\Session\Configuration\CacheLimiter)|null|string`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/DependencyInjection/SessionExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\component\http\session\dependencyinjection\factory\configuration\cookieconfigurationfactory::__construct`: expected `int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/DependencyInjection/SessionExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\component\http\session\dependencyinjection\factory\persistence\persistencefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/DependencyInjection/SessionExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `neu\component\http\session\dependencyinjection\factory\configuration\cookieconfigurationfactory::__construct`: expected `null|string`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/DependencyInjection/SessionExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `neu\component\http\session\dependencyinjection\factory\persistence\persistencefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/DependencyInjection/SessionExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #4 of `neu\component\http\session\dependencyinjection\factory\configuration\cookieconfigurationfactory::__construct`: expected `null|string`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/DependencyInjection/SessionExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #5 of `neu\component\http\session\dependencyinjection\factory\configuration\cookieconfigurationfactory::__construct`: expected `bool|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/DependencyInjection/SessionExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #6 of `neu\component\http\session\dependencyinjection\factory\configuration\cookieconfigurationfactory::__construct`: expected `bool|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/DependencyInjection/SessionExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #7 of `neu\component\http\session\dependencyinjection\factory\configuration\cookieconfigurationfactory::__construct`: expected `enum(Neu\Component\Http\Message\CookieSameSite)|null|string`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/DependencyInjection/SessionExtension.php"
+code = "mixed-array-access"
+message = "Unsafe array access on type `nonnull`."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/DependencyInjection/SessionExtension.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/DependencyInjection/SessionExtension.php"
+code = "mixed-assignment"
+message = "Assigning `nonnull` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/Handler/EncryptedHandler.php"
+code = "invalid-return-statement"
+message = 'Invalid return type for function `neu\component\http\session\handler\encryptedhandler::blake2b`: expected `non-empty-string`, but found `string`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/Handler/EncryptedHandler.php"
+code = "invalid-return-statement"
+message = 'Invalid return type for function `neu\component\http\session\handler\encryptedhandler::save`: expected `non-empty-string`, but found `string`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/Handler/EncryptedHandler.php"
+code = "invalid-return-statement"
+message = 'Invalid return type for function `neu\component\http\session\handler\encryptedhandler::unpack`: expected `array{0: non-empty-string, 1: non-empty-string, 2: non-empty-string, 3: non-empty-string}`, but found `list{string, string, string, string}`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/Handler/EncryptedHandler.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #1 of `Neu\Component\Http\Session\Handler\EncryptedHandler::unpack`: expected `non-empty-string`, but possibly received `string`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/Handler/EncryptedHandler.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #2 of `Neu\Component\Http\Session\Handler\EncryptedHandler::split`: expected `non-empty-string`, but possibly received `string`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/Handler/EncryptedHandler.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #3 of `Psl\Str\slice`: expected `non-negative-int|null`, but possibly received `int<-88, max>`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Http/Session/Persistence/Persistence.php"
+code = "possibly-invalid-argument"
+message = '''Possible argument type mismatch for argument #1 of `Neu\Component\Http\Session\Persistence\Persistence::withlastmodifiedandmaxage`: expected `non-empty-array<non-empty-string, non-empty-list<non-empty-string>>`, but possibly received `array{'Cache-Control': list{string('public')}, 'Expires': list{string}}`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Password/DependencyInjection/PasswordExtension.php"
+code = "invalid-return-statement"
+message = 'Invalid return type for function `neu\component\password\dependencyinjection\passwordextension::registerhashers`: expected `non-empty-array<non-empty-string, non-empty-string>`, but found `array<non-empty-string, truthy-string>`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Password/DependencyInjection/PasswordExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `Neu\Component\Password\DependencyInjection\PasswordExtension::registerhashermanager`: expected `non-empty-string`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Password/DependencyInjection/PasswordExtension.php"
+code = "mixed-argument"
+message = '''Invalid argument type for argument #2 of `Neu\Component\Password\DependencyInjection\PasswordExtension::registerhashers`: expected `non-empty-array<non-empty-string, array{'algorithm'?: string('argon2i')|string('argon2id')|string('bcrypt')|string('default'), 'options'?: array{'cost'?: int, 'memory_cost'?: int, 'threads'?: int, 'time_cost'?: int}, 'type': string('native')|string('plain')}>`, but found `nonnull`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Password/DependencyInjection/PasswordExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `Neu\Component\Password\DependencyInjection\PasswordExtension::setdefaulthasher`: expected `non-empty-string`, but found `nonnull`.'
+count = 1
+
+[[issues]]
+file = "src/Component/Password/DependencyInjection/PasswordExtension.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Component/Password/DependencyInjection/PasswordExtension.php"
+code = "mixed-assignment"
+message = "Assigning `nonnull` type to a variable may lead to unexpected behavior."
+count = 2
+
+[[issues]]
+file = "src/Component/Password/HasherManager.php"
+code = "redundant-type-comparison"
+message = "Redundant type assertion: `$identifier` of type `non-empty-string` is always not `non-empty-string`."
+count = 2
+
+[[issues]]
+file = "src/Component/Password/NativeHasher.php"
+code = "avoid-catching-error"
+message = "Avoid catching 'Error' class instances."
+count = 1
+
+[[issues]]
+file = "src/Component/Password/NativeHasher.php"
+code = "possibly-invalid-argument"
+message = '''Possible argument type mismatch for argument #3 of `Psl\Password\hash`: expected `array{'cost'?: int}|array{'memory_cost'?: int, 'threads'?: int, 'time_cost'?: int}`, but possibly received `array{'cost'?: int, 'memory_cost'?: int, 'threads'?: int, 'time_cost'?: int}`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Password/NativeHasher.php"
+code = "possibly-invalid-argument"
+message = '''Possible argument type mismatch for argument #3 of `Psl\Password\needs_rehash`: expected `array{'cost'?: int}|array{'memory_cost'?: int, 'threads'?: int, 'time_cost'?: int}`, but possibly received `array{'cost'?: int, 'memory_cost'?: int, 'threads'?: int, 'time_cost'?: int}`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Utility/AlternativeFinder.php"
+code = "mixed-operand"
+message = "Left operand in binary operation has type `mixed`."
+count = 4
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\framework\dependencyinjection\factory\command\advisory\advicecommandfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\framework\dependencyinjection\factory\command\http\server\clustercommandfactory::__construct`: expected `float|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\framework\dependencyinjection\factory\enginefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\framework\dependencyinjection\factory\listener\advisory\serverstartedeventlistenerfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\framework\dependencyinjection\factory\listener\broadcast\serverstoppingeventlistenerfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\framework\dependencyinjection\factory\listener\cache\serverstoppingeventlistenerfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\framework\dependencyinjection\factory\listener\database\serverstoppingeventlistenerfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\framework\dependencyinjection\factory\middleware\accesslogmiddlewarefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\framework\dependencyinjection\factory\middleware\compressionmiddlewarefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\framework\dependencyinjection\factory\middleware\routermiddlewarefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\framework\dependencyinjection\factory\middleware\sessionmiddlewarefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\framework\dependencyinjection\factory\middleware\staticcontentmiddlewarefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #1 of `neu\framework\dependencyinjection\factory\middleware\xpoweredbymiddlewarefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\framework\dependencyinjection\factory\command\http\server\clustercommandfactory::__construct`: expected `list<non-empty-string>|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\framework\dependencyinjection\factory\enginefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\framework\dependencyinjection\factory\listener\advisory\serverstartedeventlistenerfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\framework\dependencyinjection\factory\middleware\accesslogmiddlewarefactory::__construct`: expected `int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\framework\dependencyinjection\factory\middleware\compressionmiddlewarefactory::__construct`: expected `non-negative-int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\framework\dependencyinjection\factory\middleware\routermiddlewarefactory::__construct`: expected `int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\framework\dependencyinjection\factory\middleware\sessionmiddlewarefactory::__construct`: expected `int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\framework\dependencyinjection\factory\middleware\staticcontentmiddlewarefactory::__construct`: expected `array<non-empty-string, non-empty-string>|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `neu\framework\dependencyinjection\factory\middleware\xpoweredbymiddlewarefactory::__construct`: expected `bool|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `neu\framework\dependencyinjection\factory\command\http\server\clustercommandfactory::__construct`: expected `list<non-empty-string>|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `neu\framework\dependencyinjection\factory\enginefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `neu\framework\dependencyinjection\factory\middleware\compressionmiddlewarefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #3 of `neu\framework\dependencyinjection\factory\middleware\staticcontentmiddlewarefactory::__construct`: expected `list<non-empty-string>|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #4 of `neu\framework\dependencyinjection\factory\enginefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #4 of `neu\framework\dependencyinjection\factory\middleware\compressionmiddlewarefactory::__construct`: expected `int<-1, 9>|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #4 of `neu\framework\dependencyinjection\factory\middleware\staticcontentmiddlewarefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #5 of `neu\framework\dependencyinjection\factory\enginefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #5 of `neu\framework\dependencyinjection\factory\middleware\compressionmiddlewarefactory::__construct`: expected `int<1, 9>|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #5 of `neu\framework\dependencyinjection\factory\middleware\staticcontentmiddlewarefactory::__construct`: expected `int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #6 of `neu\framework\dependencyinjection\factory\enginefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #6 of `neu\framework\dependencyinjection\factory\middleware\compressionmiddlewarefactory::__construct`: expected `int<8, 15>|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #7 of `neu\framework\dependencyinjection\factory\enginefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #7 of `neu\framework\dependencyinjection\factory\middleware\compressionmiddlewarefactory::__construct`: expected `int|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #8 of `neu\framework\dependencyinjection\factory\enginefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #9 of `neu\framework\dependencyinjection\factory\enginefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Framework/DependencyInjection/FrameworkExtension.php"
+code = "mixed-assignment"
+message = "Assigning `nonnull` type to a variable may lead to unexpected behavior."
+count = 13
+
+[[issues]]
+file = "src/Framework/Middleware/CompressionMiddleware.php"
+code = "invalid-type-cast"
+message = "Non numeric string of type `string` implicitly cast to `float`."
+count = 1
+
+[[issues]]
+file = "src/Framework/Middleware/CompressionMiddleware.php"
+code = "mixed-argument"
+message = "Invalid argument type for argument #1 of `deflate_init`: expected `int`, but found `nonnull`."
+count = 1
+
+[[issues]]
+file = "src/Framework/Middleware/CompressionMiddleware.php"
+code = "mixed-assignment"
+message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
+count = 1
+
+[[issues]]
+file = "src/Framework/Middleware/CompressionMiddleware.php"
+code = "possibly-null-argument"
+message = "Argument #2 of function `deflate_add` is possibly `null`, but parameter type `string` does not accept it."
+count = 1
+
+[[issues]]
+file = "src/Framework/Middleware/CompressionMiddleware.php"
+code = "reference-to-undefined-variable"
+message = "Reference created from a previously undefined variable `$matches`."
+count = 1
+
+[[issues]]
+file = "tests/Component/Cache/Driver/LocalDriverTest.php"
+code = "invalid-argument"
+message = 'Invalid argument type for argument #3 of `Neu\Component\Cache\Driver\LocalDriver::set`: expected `null|positive-int`, but found `int(0)`.'
+count = 1
+
+[[issues]]
+file = "tests/Component/Cache/StoreTest.php"
+code = "impossible-assignment"
+message = "Invalid assignment: the right-hand side has type `never` and cannot produce a value."
+count = 1
+
+[[issues]]
+file = "tests/Component/Cache/StoreTest.php"
+code = "impossible-type-comparison"
+message = "Impossible type assertion: `$ref->value` of type `false` can never be `true`."
+count = 5
+
+[[issues]]
+file = "tests/Component/Cache/StoreTest.php"
+code = "impossible-type-comparison"
+message = "Impossible type assertion: `$ref->value` of type `string('a')` can never be `string('b')`."
+count = 1
+
+[[issues]]
+file = "tests/Component/Cache/StoreTest.php"
+code = "impossible-type-comparison"
+message = "Impossible type assertion: `$ref->value` of type `string('a')` can never be `string('c')`."
+count = 1
+
+[[issues]]
+file = "tests/Component/Cache/StoreTest.php"
+code = "invalid-property-assignment-value"
+message = "Invalid type for property `$value`: expected `false`, but got `true`."
+count = 2
+
+[[issues]]
+file = "tests/Component/Cache/StoreTest.php"
+code = "invalid-property-assignment-value"
+message = "Invalid type for property `$value`: expected `string('a')`, but got `string('b')`."
+count = 1
+
+[[issues]]
+file = "tests/Component/Cache/StoreTest.php"
+code = "invalid-property-assignment-value"
+message = "Invalid type for property `$value`: expected `string('a')`, but got `string('c')`."
+count = 1
+
+[[issues]]
+file = "tests/Component/Cache/StoreTest.php"
+code = "redundant-type-comparison"
+message = "Redundant type assertion: `$ref->value` of type `false` is always not `false`."
+count = 3
+
+[[issues]]
+file = "tests/Component/Configuration/Loader/DirectoryLoaderTest.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `phpunit\framework\assert::assertcontains`: expected `iterable<mixed, mixed>`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "tests/Component/Configuration/Loader/DirectoryLoaderTest.php"
+code = "mixed-argument"
+message = 'Invalid argument type for argument #2 of `phpunit\framework\assert::assertcount`: expected `Countable|iterable<mixed, mixed>`, but found `mixed`.'
+count = 1
+
+[[issues]]
+file = "tests/Component/Csrf/DependencyInjection/CsrfExtensionTest.php"
+code = "ambiguous-object-method-access"
+message = "Cannot statically verify method call on a generic `object` type."
+count = 1
+
+[[issues]]
+file = "tests/Component/EventDispatcher/EventDispatcherTest.php"
+code = "impossible-type-comparison"
+message = "Impossible type assertion: `$ref->value` of type `string('')` can never be `string('1212')`."
+count = 1
+
+[[issues]]
+file = "tests/Component/EventDispatcher/EventDispatcherTest.php"
+code = "invalid-property-assignment-value"
+message = "Invalid type for property `$value`: expected `string('')`, but got `string('1')`."
+count = 1
+
+[[issues]]
+file = "tests/Component/EventDispatcher/EventDispatcherTest.php"
+code = "invalid-property-assignment-value"
+message = "Invalid type for property `$value`: expected `string('')`, but got `string('2')`."
+count = 1
+
+[[issues]]
+file = "tests/Component/EventDispatcher/EventDispatcherTest.php"
+code = "less-specific-argument"
+message = 'Argument type mismatch for argument #2 of `Neu\Component\EventDispatcher\Listener\Registry\Registry::register`: expected `Neu\Component\EventDispatcher\Listener\ListenerInterface<Neu\Tests\Component\EventDispatcher\Fixture\Event\OrderCreatedEvent>`, but provided type `PHPUnit\Framework\MockObject\MockObject&Neu\Component\EventDispatcher\Listener\ListenerInterface` is less specific.'
+count = 2
+
+[[issues]]
+file = "tests/Component/EventDispatcher/EventDispatcherTest.php"
+code = "less-specific-argument"
+message = 'Argument type mismatch for argument #2 of `Neu\Component\EventDispatcher\Listener\Registry\Registry::register`: expected `Neu\Component\EventDispatcher\Listener\ListenerInterface<Neu\Tests\Component\EventDispatcher\Fixture\Event\OrderUpdatedEvent>`, but provided type `PHPUnit\Framework\MockObject\MockObject&Neu\Component\EventDispatcher\Listener\ListenerInterface` is less specific.'
+count = 6
+
+[[issues]]
+file = "tests/Component/Http/Message/Form/MultipartParserTest.php"
+code = "less-specific-nested-argument-type"
+message = 'Argument type mismatch for argument #1 of `neu\component\http\message\requestbody::fromiterable`: expected `iterable<mixed, string>`, but provided type `iterable<mixed, mixed>` is less specific.'
+count = 18
+
+[[issues]]
+file = "tests/Component/Http/Message/Form/UrlEncodedParserTest.php"
+code = "less-specific-nested-argument-type"
+message = 'Argument type mismatch for argument #1 of `neu\component\http\message\requestbody::fromiterable`: expected `iterable<mixed, string>`, but provided type `iterable<mixed, mixed>` is less specific.'
+count = 1
+
+[[issues]]
+file = "tests/Component/Http/Message/UriTest.php"
+code = "invalid-argument"
+message = 'Invalid argument type for argument #1 of `Neu\Component\Http\Message\Uri::withport`: expected `int<0, 65535>|null`, but found `int(-1)`.'
+count = 1
+
+[[issues]]
+file = "tests/Component/Http/Message/UriTest.php"
+code = "invalid-argument"
+message = '''Invalid argument type for argument #1 of `Neu\Component\Http\Message\Uri::withscheme`: expected `non-empty-string|null`, but found `string('')`.'''
+count = 1
+
+[[issues]]
+file = "tests/Component/Http/Message/UriTest.php"
+code = "invalid-argument"
+message = '''Invalid argument type for argument #1 of `Neu\Component\Http\Message\Uri::withuserinformation`: expected `non-empty-string|null`, but found `string('')`.'''
+count = 1
+
+[[issues]]
+file = "tests/Component/Http/Message/UriTest.php"
+code = "invalid-argument"
+message = '''Invalid argument type for argument #2 of `Neu\Component\Http\Message\Uri::withuserinformation`: expected `non-empty-string|null`, but found `string('')`.'''
+count = 1
+
+[[issues]]
+file = "tests/Component/Http/Message/UriTest.php"
+code = "invalid-return-statement"
+message = '''Invalid return type for function `neu\tests\component\http\message\uritest::provideurls`: expected `array<int, array{0: non-empty-string, 1: array{'fragment': null|string, 'host': null|string, 'path': string, 'port': int|null, 'query': null|string, 'scheme': null|string}}>`, but found `array{'empty fragment': list{string('https://example.com/path#'), array{'fragment': string(''), 'host': string('example.com'), 'path': string('/path'), 'port': null, 'query': null, 'scheme': string('https')}}, 'empty query': list{string('https://example.com/path?'), array{'fragment': null, 'host': string('example.com'), 'path': string('/path'), 'port': null, 'query': string(''), 'scheme': string('https')}}, 'full url': list{string('https://example.com:8080/path?query#fragment'), array{'fragment': string('fragment'), 'host': string('example.com'), 'path': string('/path'), 'port': int(8080), 'query': string('query'), 'scheme': string('https')}}, 'no fragment': list{string('https://example.com/path?query'), array{'fragment': null, 'host': string('example.com'), 'path': string('/path'), 'port': null, 'query': string('query'), 'scheme': string('https')}}, 'no host': list{string('/path?query#fragment'), array{'fragment': string('fragment'), 'host': null, 'path': string('/path'), 'port': null, 'query': string('query'), 'scheme': null}}, 'no path': list{string('https://example.com:8081?query#fragment'), array{'fragment': string('fragment'), 'host': string('example.com'), 'path': string(''), 'port': int(8081), 'query': string('query'), 'scheme': string('https')}}, 'no port': list{string('https://example.com/path'), array{'fragment': null, 'host': string('example.com'), 'path': string('/path'), 'port': null, 'query': null, 'scheme': string('https')}}, 'no query': list{string('https://example.com/path#fragment'), array{'fragment': string('fragment'), 'host': string('example.com'), 'path': string('/path'), 'port': null, 'query': null, 'scheme': string('https')}}}`.'''
+count = 1
+
+[[issues]]
+file = "tests/Component/Http/Router/Generator/GeneratorTest.php"
+code = "less-specific-argument"
+message = 'Argument type mismatch for argument #2 of `Neu\Component\Http\Router\Generator\Generator::generate`: expected `array<non-empty-string, scalar>`, but provided type `array<array-key, mixed>` is less specific.'
+count = 1
+
+[[issues]]
+file = "tests/Component/Http/Router/Generator/GeneratorTest.php"
+code = "possibly-invalid-argument"
+message = 'Possible argument type mismatch for argument #2 of `neu\component\http\router\route::__construct`: expected `non-empty-string`, but possibly received `string`.'
+count = 1

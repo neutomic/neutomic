@@ -218,6 +218,7 @@ final class Application implements ApplicationInterface
                 $throwable = $event->throwable;
             }
 
+            // @mago-expect analysis:redundant-logical-operation - false positive, the condition is not redundant
             if ($exitCode === null || ExitCode::Success !== $exitCode) {
                 $exitCode = $this->errorHandler->recover($input, $output, $throwable);
             }

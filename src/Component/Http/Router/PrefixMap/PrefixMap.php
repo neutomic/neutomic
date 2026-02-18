@@ -210,7 +210,6 @@ final readonly class PrefixMap
             },
         );
 
-        /** @var array<string, list<array{0: string, 1: list<Node>, 2: Route}>> $by_first */
         $by_first = Dict\group_by(
             $regexps,
             /**
@@ -258,21 +257,20 @@ final readonly class PrefixMap
             return [0, []];
         }
 
-        /** @var non-empty-list<int<0, max>> $lengths */
         $lengths = Vec\map($keys, Byte\length(...));
         $minimum = Math\min($lengths);
 
+        /** @var array<non-empty-string, list<non-empty-string>> $mapping */
+        $mapping = Dict\group_by(
+            $keys,
+            /**
+             * @param non-empty-string $key
+             */
+            static fn(string $key): string => Byte\slice($key, 0, $minimum),
+        );
         return [
             $minimum,
-            Dict\group_by(
-                $keys,
-                /**
-                 * @param non-empty-string $key
-                 *
-                 * @return non-empty-string
-                 */
-                static fn(string $key) => Byte\slice($key, 0, $minimum),
-            ),
+            $mapping,
         ];
     }
 
@@ -295,6 +293,8 @@ final readonly class PrefixMap
      * Restore the object state from an array.
      *
      * @param State $data The serialized state of the object.
+     *
+     * @mago-expect analysis:invalid-property-write - false positive
      */
     public function __unserialize(array $data): void
     {

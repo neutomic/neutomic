@@ -87,6 +87,7 @@ final readonly class Document implements DocumentInterface
     #[Override]
     public function getOfType(string|int $index, Type\TypeInterface $type): mixed
     {
+        // @mago-expect analysis:mixed-assignment
         $value = $this->get($index);
         if ($value instanceof BackedEnum) {
             $value = $value->value;
@@ -246,7 +247,7 @@ final readonly class Document implements DocumentInterface
     }
 
     /**
-     * @inheritDoc
+     * @return ArrayIterator<array-key, mixed>
      */
     #[Override]
     public function getIterator(): ArrayIterator

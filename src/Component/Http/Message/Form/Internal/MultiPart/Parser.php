@@ -58,7 +58,6 @@ enum Parser
      *
      * @param RequestInterface $request The HTTP request containing form data.
      * @param null|RequestBodyInterface $body The request body.
-     * @param ParseOptions $options The parsing options.
      *
      * @return null|non-empty-string The boundary or null if not found.
      */

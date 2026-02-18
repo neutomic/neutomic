@@ -116,7 +116,10 @@ final class Container implements ContainerInterface
     }
 
     /**
-     * @inheritDoc
+     * @return object - The service instance.
+     *
+     * @throws Exception\ServiceNotFoundException No entry was found for **this** identifier.
+     * @throws Exception\ExceptionInterface Error while retrieving the entry.
      */
     #[Override]
     public function get(string $id): object
@@ -163,7 +166,6 @@ final class Container implements ContainerInterface
     {
         DisposedObjectException::guard($this);
 
-        /** @psalm-suppress MissingThrowsDocblock - Psr exception is never thrown */
         $service = $this->get($id);
         if ($service instanceof $type) {
             return $service;
@@ -177,7 +179,13 @@ final class Container implements ContainerInterface
     }
 
     /**
-     * @inheritDoc
+     * Retrieves all the services for a given type.
+     *
+     * @template T of object
+     *
+     * @param class-string<T> $type
+     *
+     * @return iterable<T>
      */
     #[Override]
     public function getInstancesOf(string $type): iterable
@@ -189,7 +197,10 @@ final class Container implements ContainerInterface
                 continue;
             }
 
-            yield $definition->resolve($this);
+            /** @var T $object */
+            $object = $definition->resolve($this);
+
+            yield $object;
         }
     }
 

@@ -109,12 +109,10 @@ final class Cluster implements ClusterInterface
 
             try {
                 foreach ($iterator as $message) {
-                    /** @psalm-suppress RedundantCondition */
-                    assert($this->logger->debug('Broadcasting a message received from worker "{worker}".', [
+                    $this->logger->debug('Broadcasting a message received from worker "{worker}".', [
                         'worker' => $message->getWorker()->getId(),
                         'data' => $message->getData(),
-                    ])
-                    || true);
+                    ]);
 
                     $watcher->broadcast($message->getData());
                 }

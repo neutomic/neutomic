@@ -100,6 +100,7 @@ final class Resolver implements ResolverInterface
     #[Override]
     public function resolve(mixed $resource): LoaderInterface
     {
+        // @mago-expect analysis:redundant-type-comparison
         foreach ($this->loaders as $loader) {
             if (!$loader->supports($resource)) {
                 continue;
@@ -109,7 +110,6 @@ final class Resolver implements ResolverInterface
                 $loader->setResolver($this);
             }
 
-            /** @var LoaderInterface<ResourceType> */
             return $loader;
         }
 

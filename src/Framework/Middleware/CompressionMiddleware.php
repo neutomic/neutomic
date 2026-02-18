@@ -190,13 +190,13 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
 
         $body = $response->getBody();
         if (null === $body) {
-            assert($this->logger->debug('skipping compression for response with no body') || true);
+            $this->logger->debug('skipping compression for response with no body');
 
             return $response;
         }
 
         if ($response->hasHeader('content-encoding')) {
-            assert($this->logger->debug('Skipping compression for response with existing content encoding') || true);
+            $this->logger->debug('Skipping compression for response with existing content encoding');
 
             return $response;
         }
@@ -205,10 +205,9 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
         if (null !== $contentLength) {
             $contentLength = (int) $contentLength;
             if ($contentLength < $this->minimumCompressionContentLength) {
-                assert($this->logger->debug('Skipping compression for response with content length {contentLength}', [
+                $this->logger->debug('Skipping compression for response with content length {contentLength}', [
                     'contentLength' => $contentLength,
-                ])
-                || true);
+                ]);
 
                 return $response;
             }
@@ -216,16 +215,15 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
 
         $contentTypes = $response->getHeaderLine('Content-Type');
         if (null === $contentTypes) {
-            assert($this->logger->debug('Skipping compression for response with empty content type') || true);
+            $this->logger->debug('Skipping compression for response with empty content type');
 
             return $response;
         }
 
         if (!preg_match($this->compressibleContentTypesRegex, $contentTypes)) {
-            assert($this->logger->debug('Skipping compression for response with content type: {contentTypes}', [
+            $this->logger->debug('Skipping compression for response with content type: {contentTypes}', [
                 'contentTypes' => $contentTypes,
-            ])
-            || true);
+            ]);
 
             return $response;
         }
@@ -250,23 +248,22 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
         }
 
         if (null === $encoding || '' === $encoding) {
-            assert($this->logger->debug('Skipping compression for response with no acceptable encoding') || true);
+            $this->logger->debug('Skipping compression for response with no acceptable encoding');
 
             return $response;
         }
 
         if (self::IDENTITY_ENCODING === $encoding) {
-            assert($this->logger->debug('Skipping compression for response with identity encoding') || true);
+            $this->logger->debug('Skipping compression for response with identity encoding');
 
             return $response;
         }
 
         $mode = self::SUPPORTED_ENCODINGS[$encoding] ?? null;
         if (null === $mode) {
-            assert($this->logger->debug('Skipping compression for response with unsupported encoding: {encoding}', [
+            $this->logger->debug('Skipping compression for response with unsupported encoding: {encoding}', [
                 'encoding' => $encoding,
-            ])
-            || true);
+            ]);
 
             return $response;
         }
@@ -283,10 +280,9 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
                     break;
                 }
             } else {
-                assert($this->logger->debug('Skipping compression for response with body of size {size}', [
+                $this->logger->debug('Skipping compression for response with body of size {size}', [
                     'size' => strlen($buffer),
-                ])
-                || true);
+                ]);
 
                 // the response body is too small to compress
                 return $response->withBody(Body::fromString($buffer));

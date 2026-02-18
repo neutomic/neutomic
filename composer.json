@@ -42,8 +42,6 @@
         "phpunit/phpunit": "^11.1.3",
         "ext-zlib": "*",
         "amphp/redis": "^2.0",
-        "php-standard-library/psalm-plugin": "^2.3",
-        "vimeo/psalm": "^6.13",
         "carthage-software/mago": "^1.9"
     },
     "conflict": {

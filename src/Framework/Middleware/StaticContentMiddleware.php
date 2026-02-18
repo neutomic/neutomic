@@ -115,10 +115,9 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
         $extension = Filesystem\get_extension($path);
         // If the file has no extension:
         if (null === $extension) {
-            assert($this->logger->debug('Skipped file "{path}" with no extension.', [
+            $this->logger->debug('Skipped file "{path}" with no extension.', [
                 'path' => $path,
-            ])
-            || true);
+            ]);
 
             // Pass the request to the next handler:
             return $next->handle($context, $request);
@@ -131,13 +130,10 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
         if ([] !== $this->extensions) {
             // Check if the extension is not in the list of configured extensions:
             if (!Iter\contains($this->extensions, $extension)) {
-                assert(
-                    $this->logger->debug('Requested file "{path}" has an extension "{extension}" that is not allowed.', [
-                        'path' => $path,
-                        'extension' => $extension,
-                    ])
-                    || true,
-                );
+                $this->logger->debug('Requested file "{path}" has an extension "{extension}" that is not allowed.', [
+                    'path' => $path,
+                    'extension' => $extension,
+                ]);
 
                 // Pass the request
                 return $next->handle($context, $request);
@@ -148,14 +144,11 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
             // If the request path does not start with the prefix:
             if (!Str\Byte\starts_with($path, $prefix)) {
                 // Log the mismatch:
-                assert(
-                    $this->logger->debug('Request path "{path}" does not start with the prefix "{prefix}" for root "{root}".', [
-                        'path' => $path,
-                        'prefix' => $prefix,
-                        'root' => $root,
-                    ])
-                    || true,
-                );
+                $this->logger->debug('Request path "{path}" does not start with the prefix "{prefix}" for root "{root}".', [
+                    'path' => $path,
+                    'prefix' => $prefix,
+                    'root' => $root,
+                ]);
 
                 // Continue to the next root:
                 continue;
@@ -169,11 +162,10 @@ final readonly class StaticContentMiddleware implements PrioritizedMiddlewareInt
                 // Deliver the file:
                 return $this->deliverer->deliver($request, $file);
             } catch (FileNotFoundHttpException) {
-                assert($this->logger->debug('Requested file "{path}" does not exist within root "{root}".', [
+                $this->logger->debug('Requested file "{path}" does not exist within root "{root}".', [
                     'path' => $path,
                     'root' => $root,
-                ])
-                || true);
+                ]);
 
                 // Continue to the next root:
                 continue;

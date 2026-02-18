@@ -2,7 +2,6 @@
 
 ![Unit tests status](https://github.com/neutomic/neutomic/workflows/unit%20tests/badge.svg)
 ![Static analysis status](https://github.com/neutomic/neutomic/workflows/static%20analysis/badge.svg)
-![Security analysis status](https://github.com/neutomic/neutomic/workflows/security%20analysis/badge.svg)
 ![Coding standards status](https://github.com/neutomic/neutomic/workflows/coding%20standards/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/neutomic/neutomic/badge.svg)](https://coveralls.io/github/neutomic/neutomic)
 [![Total Downloads](https://poser.pugx.org/neutomic/neutomic/d/total.svg)](https://packagist.org/packages/neutomic/neutomic)

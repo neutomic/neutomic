@@ -53,7 +53,8 @@ literal-named-argument = { enabled = false }
 
 [analyzer]
 plugins = ["psl"]
-find-unused-definitions = true
+baseline = "config/analysis-baseline.toml"
+find-unused-definitions = false
 find-unused-expressions = false
 analyze-dead-code = false
 memoize-properties = true

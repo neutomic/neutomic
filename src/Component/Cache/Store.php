@@ -58,12 +58,10 @@ final class Store implements StoreInterface
 
                 if ($update) {
                     /**
-                     * @psalm-suppress MixedAssignment
-                     * @psalm-suppress TooManyArguments
+                     * @mago-expect analysis:too-many-arguments
                      */
                     $value = $computer($existing);
                 } else {
-                    /** @psalm-suppress MixedAssignment */
                     $value = $computer();
                 }
 

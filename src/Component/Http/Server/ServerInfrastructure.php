@@ -211,12 +211,10 @@ final readonly class ServerInfrastructure
         $serverFactory = Cluster::getServerSocketFactory();
         if ($this->connectionLimit > 0) {
             $connectionLimit = $this->connectionLimit;
-            assert(
-                $this->logger->debug('Connection limiting enabled, limiting to '
-                . (string) $connectionLimit
-                . ' connections.')
-                || true,
-            );
+
+            $this->logger->debug('Connection limiting enabled, limiting to '
+            . (string) $connectionLimit
+            . ' connections.');
 
             $serverFactory = new ConnectionLimitingServerSocketFactory(
                 new LocalSemaphore($connectionLimit),
@@ -227,12 +225,10 @@ final readonly class ServerInfrastructure
         $clientFactory = new SocketClientFactory($this->logger, $this->tlsHandshakeTimeout);
         if ($this->connectionLimitPerIP > 0) {
             $connectionLimitPerIP = $this->connectionLimitPerIP;
-            assert(
-                $this->logger->debug('Connection limiting per IP enabled, limiting to '
-                . (string) $connectionLimitPerIP
-                . ' connections per IP.')
-                || true,
-            );
+
+            $this->logger->debug('Connection limiting per IP enabled, limiting to '
+            . (string) $connectionLimitPerIP
+            . ' connections per IP.');
 
             $clientFactory = new ConnectionLimitingClientFactory($clientFactory, $this->logger, $connectionLimitPerIP);
         }

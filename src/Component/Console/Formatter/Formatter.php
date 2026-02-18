@@ -181,6 +181,7 @@ final class Formatter extends AbstractFormatter
             $text = Byte\trim_left($text);
         }
 
+        // @mago-expect analysis:redundant-logical-operation - false positive, the condition is not redundant
         if ($currentLineLength > 0 && $width > $currentLineLength) {
             /** @var int<0, max> $i */
             $i = $width - $currentLineLength;

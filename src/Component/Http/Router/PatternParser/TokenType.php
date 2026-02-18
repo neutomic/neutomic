@@ -48,6 +48,8 @@ enum TokenType: string
      * @param string $byte The byte to check.
      *
      * @return bool True if the byte is a special token, false otherwise.
+     *
+     * @psalm-assert-if-true non-empty-string $byte
      */
     public static function isSpecialToken(string $byte): bool
     {

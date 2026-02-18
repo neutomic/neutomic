@@ -24,7 +24,7 @@ final class InvalidIdentifierException extends InvalidArgumentException
      * Create a new {@see InvalidIdentifierException} for the given identifier.
      *
      * @param non-empty-string $identifier The invalid session identifier.
-     * @param null|Throwable $throwable The previous throwable used for the exception chaining.
+     * @param null|Throwable $previous The previous throwable used for the exception chaining.
      *
      * @return self The InvalidIdentifierException instance.
      */

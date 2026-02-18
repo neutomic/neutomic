@@ -30,6 +30,11 @@ use Symfony\Component\Yaml\Yaml;
  */
 final class YamlFileLoader implements LoaderInterface
 {
+    /**
+     * The flags used for parsing the YAML content.
+     *
+     * @var 258
+     */
     private const int YAML_PARSE_FLAGS = Yaml::PARSE_EXCEPTION_ON_INVALID_TYPE | Yaml::PARSE_CONSTANT;
 
     /**
@@ -45,7 +50,7 @@ final class YamlFileLoader implements LoaderInterface
         }
 
         try {
-            /** @psalm-suppress MixedAssignment */
+            // @mago-expect analysis:mixed-assignment
             $data = Yaml::parse($content, self::YAML_PARSE_FLAGS);
         } catch (ParseException $previous) {
             throw new InvalidConfigurationException(

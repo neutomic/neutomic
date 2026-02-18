@@ -86,7 +86,6 @@ final class ContainerBuilder implements ContainerBuilderInterface
     /**
      * Create a new {@see ContainerBuilder} instance.
      *
-     * @param Project $project The project instance.
      * @param Resolver $resolver The configuration resolver.
      * @param CombineStrategy $strategy The combine strategy to use for combining configuration documents.
      */
@@ -386,6 +385,7 @@ final class ContainerBuilder implements ContainerBuilderInterface
             }
         });
 
+        /** @var array $configurations */
         return new Document($configurations);
     }
 }

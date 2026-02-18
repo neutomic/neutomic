@@ -52,7 +52,7 @@ interface ContainerInterface extends DisposableInterface, PsrContainerInterface
      *
      * Unlike {@see get()}, this method verifies that the service is of the given type.
      *
-     * @template T
+     * @template T of object
      *
      * @param non-empty-string $id The identifier of the service.
      * @param class-string<T> $type The type of the service.

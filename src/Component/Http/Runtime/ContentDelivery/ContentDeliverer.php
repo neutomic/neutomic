@@ -96,10 +96,9 @@ final readonly class ContentDeliverer
     {
         if (!File\exists($file)) {
             // Return null to indicate that the request should be passed to the next handler:
-            assert($this->logger->debug('Requested file "{file}" does not exist.', [
+            $this->logger->debug('Requested file "{file}" does not exist.', [
                 'file' => $file,
-            ])
-            || true);
+            ]);
 
             throw FileNotFoundHttpException::create($file);
         }
@@ -107,10 +106,9 @@ final readonly class ContentDeliverer
         // If the file is a directory:
         if (File\isDirectory($file)) {
             // Return null to indicate that the request should be passed to the next handler:
-            assert($this->logger->debug('Requested file "{file}" is a directory.', [
+            $this->logger->debug('Requested file "{file}" is a directory.', [
                 'file' => $file,
-            ])
-            || true);
+            ]);
 
             throw FileNotFoundHttpException::isDirectory($file);
         }
