@@ -1,12 +1,12 @@
-name: "format"
+name: "coding standards"
 
 on:
   pull_request: ~
   push: ~
 
 jobs:
-  format:
-    name: "format"
+  coding-standards:
+    name: "coding standards"
     runs-on: "ubuntu-latest"
     steps:
       - name: "checkout"

@@ -31,4 +31,4 @@ jobs:
         run: just install
 
       - name: "running static analysis"
-        run: just static-analysis
+        run: just analyze
