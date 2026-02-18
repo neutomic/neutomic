@@ -78,7 +78,6 @@ final readonly class AccessLogMiddleware implements PrioritizedMiddlewareInterfa
             'remote' => $context->getClient()->getRemoteAddress()->toString(),
             'local' => $context->getClient()->getLocalAddress()->toString(),
             'client' => $context->getClient()->getId(),
-            'worker' => $context->getWorkerId(),
         ]);
 
         return $response;

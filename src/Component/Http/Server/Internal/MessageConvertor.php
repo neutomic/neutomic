@@ -35,10 +35,6 @@ use Psl\Vec;
 
 /**
  * Represents a message convertor that converts between Amp and Neu HTTP messages.
- *
- * @psalm-suppress MissingThrowsDocblock
- * @psalm-suppress ArgumentTypeCoercion
- * @psalm-suppress InvalidArgument
  */
 final readonly class MessageConvertor
 {
@@ -74,13 +70,9 @@ final readonly class MessageConvertor
             }
         }
 
-        $context = new Context(
-            Amp\Cluster\Cluster::getContextId(),
-            $request->getClient(),
-            static function (ResponseInterface $_): never {
-                throw new RuntimeException('Unable to send informational response, feature not supported.');
-            },
-        );
+        $context = new Context($request->getClient(), static function (ResponseInterface $_): never {
+            throw new RuntimeException('Unable to send informational response, feature not supported.');
+        });
 
         $body = $request->getBody();
         $neuRequest = $neuRequest->withBody(RequestBody::fromReadableStream($body, $body->increaseSizeLimit(...)));

@@ -16,20 +16,17 @@ namespace Neu\Component\Broadcast\DependencyInjection;
 use Amp\Postgres\PostgresConfig;
 use Neu\Component\Broadcast\DependencyInjection\Factory\HubFactory;
 use Neu\Component\Broadcast\DependencyInjection\Factory\HubManagerFactory;
-use Neu\Component\Broadcast\DependencyInjection\Factory\Transport\LocalTransportFactory;
 use Neu\Component\Broadcast\DependencyInjection\Factory\Transport\MemoryTransportFactory;
 use Neu\Component\Broadcast\DependencyInjection\Factory\Transport\PostgresTransportFactory;
 use Neu\Component\Broadcast\HubInterface;
 use Neu\Component\Broadcast\HubManager;
 use Neu\Component\Broadcast\HubManagerInterface;
-use Neu\Component\Broadcast\Transport\LocalTransport;
 use Neu\Component\Broadcast\Transport\MemoryTransport;
 use Neu\Component\Broadcast\Transport\PostgresTransport;
 use Neu\Component\Broadcast\Transport\TransportInterface;
 use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\Exception\InvalidConfigurationException;
-use Neu\Component\DependencyInjection\Exception\RuntimeException;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Neu\Component\DependencyInjection\RegistryInterface;
 use Override;
@@ -42,9 +39,7 @@ use function array_key_first;
  * A dependency injection extension for the broadcast component.
  *
  * @psalm-type PostgresSslMode = 'disable'|'allow'|'prefer'|'require'|'verify-ca'|'verify-full'
- * @psalm-type LocalTransportConfiguration = array{
- *     transport: 'local',
- * }
+ *
  * @psalm-type MemoryTransportConfiguration = array{
  *     transport: 'memory'
  * }
@@ -63,7 +58,7 @@ use function array_key_first;
  *      transport: 'service',
  *      service: non-empty-string
  * }
- * @psalm-type TransportConfiguration = LocalTransportConfiguration|MemoryTransportConfiguration|PostgresTransportConfiguration|ServiceTransportConfiguration
+ * @psalm-type TransportConfiguration = MemoryTransportConfiguration|PostgresTransportConfiguration|ServiceTransportConfiguration
  * @psalm-type Configuration = array{
  *      default?: non-empty-string,
  *      hubs?: array<non-empty-string, TransportConfiguration>
@@ -108,20 +103,12 @@ final class BroadcastExtension implements ExtensionInterface
     {
         $hubServices = [];
 
-        $registeredLocalTransport = false;
         foreach ($hubs as $name => $config) {
             $transportServiceId = 'broadcast.transport.' . $name;
             $hubServiceId = 'broadcast.hub.' . $name;
 
             $transport = $config['transport'];
-            if ('local' === $transport) {
-                if ($registeredLocalTransport) {
-                    throw new RuntimeException('Only one local broadcast transport can be registered.');
-                }
-
-                $registeredLocalTransport = true;
-                $this->registerLocalTransport($registry, $transportServiceId);
-            } elseif ('memory' === $transport) {
+            if ('memory' === $transport) {
                 $this->registerMemoryTransport($registry, $transportServiceId);
             } elseif ('pgsql' === $transport || 'postgres' === $transport || 'postgresql' === $transport) {
                 /** @var PostgresTransportConfiguration $config */
@@ -152,17 +139,6 @@ final class BroadcastExtension implements ExtensionInterface
     private function registerMemoryTransport(RegistryInterface $registry, string $serviceId): void
     {
         $registry->addDefinition(Definition::create($serviceId, MemoryTransport::class, new MemoryTransportFactory()));
-    }
-
-    /**
-     * Register a local broadcast transport.
-     *
-     * @param RegistryInterface $registry
-     * @param non-empty-string $serviceId
-     */
-    private function registerLocalTransport(RegistryInterface $registry, string $serviceId): void
-    {
-        $registry->addDefinition(Definition::create($serviceId, LocalTransport::class, new LocalTransportFactory()));
     }
 
     /**

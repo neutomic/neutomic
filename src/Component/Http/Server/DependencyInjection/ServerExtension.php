@@ -17,12 +17,6 @@ use Neu\Component\DependencyInjection\Configuration\DocumentInterface;
 use Neu\Component\DependencyInjection\Definition\Definition;
 use Neu\Component\DependencyInjection\ExtensionInterface;
 use Neu\Component\DependencyInjection\RegistryInterface;
-use Neu\Component\Http\Server\Cluster;
-use Neu\Component\Http\Server\ClusterInterface;
-use Neu\Component\Http\Server\ClusterWorker;
-use Neu\Component\Http\Server\ClusterWorkerInterface;
-use Neu\Component\Http\Server\DependencyInjection\Factory\ClusterFactory;
-use Neu\Component\Http\Server\DependencyInjection\Factory\ClusterWorkerFactory;
 use Neu\Component\Http\Server\DependencyInjection\Factory\ServerFactory;
 use Neu\Component\Http\Server\DependencyInjection\Factory\ServerInfrastructureFactory;
 use Neu\Component\Http\Server\Server;
@@ -48,10 +42,6 @@ use Psl\Type;
  *     runtime?: non-empty-string,
  *     event-dispatcher?: non-empty-string,
  *     sockets?: list<ServerSocketConfiguration>,
- *     cluster?: array{
- *         workers?: positive-int,
- *         logger?: non-empty-string,
- *     }
  * }
  */
 final readonly class ServerExtension implements ExtensionInterface
@@ -95,25 +85,8 @@ final readonly class ServerExtension implements ExtensionInterface
                 logger: $configuration['logger'] ?? $defaultLogger ?? null,
             ),
         ));
-        $registry->addDefinition(Definition::ofType(
-            ClusterWorker::class,
-            new ClusterWorkerFactory(
-                dispatcher: $configuration['event-dispatcher'] ?? null,
-                logger: $configuration['cluster']['logger'] ?? $defaultLogger ?? null,
-            ),
-        ));
-        $registry->addDefinition(Definition::ofType(
-            Cluster::class,
-            new ClusterFactory(
-                logger: $configuration['cluster']['logger'] ?? $defaultLogger ?? null,
-                eventDispatcher: $configuration['event-dispatcher'] ?? null,
-                workers: $configuration['cluster']['workers'] ?? null,
-            ),
-        ));
 
         $registry->getDefinition(Server::class)->addAlias(ServerInterface::class);
-        $registry->getDefinition(Cluster::class)->addAlias(ClusterInterface::class);
-        $registry->getDefinition(ClusterWorker::class)->addAlias(ClusterWorkerInterface::class);
     }
 
     /**
@@ -172,10 +145,6 @@ final readonly class ServerExtension implements ExtensionInterface
                     ])),
                 ])),
             ]))),
-            'cluster' => Type\optional(Type\shape([
-                'workers' => Type\optional(Type\positive_int()),
-                'logger' => Type\optional(Type\non_empty_string()),
-            ])),
         ]);
     }
 }

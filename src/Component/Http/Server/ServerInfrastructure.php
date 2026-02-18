@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Neu\Component\Http\Server;
 
-use Amp\Cluster\Cluster;
 use Amp\Http\Server\Driver\ConnectionLimitingClientFactory;
 use Amp\Http\Server\Driver\ConnectionLimitingServerSocketFactory;
 use Amp\Http\Server\Driver\DefaultHttpDriverFactory;
@@ -23,6 +22,7 @@ use Amp\Http\Server\SocketHttpServer;
 use Amp\Socket\BindContext;
 use Amp\Socket\Certificate;
 use Amp\Socket\InternetAddress;
+use Amp\Socket\ResourceServerSocketFactory;
 use Amp\Socket\ServerTlsContext;
 use Amp\Sync\LocalSemaphore;
 use Psr\Log\LoggerInterface;
@@ -208,7 +208,7 @@ final readonly class ServerInfrastructure
      */
     public function createSocketHttpServer(): SocketHttpServer
     {
-        $serverFactory = Cluster::getServerSocketFactory();
+        $serverFactory = new ResourceServerSocketFactory();
         if ($this->connectionLimit > 0) {
             $connectionLimit = $this->connectionLimit;
 

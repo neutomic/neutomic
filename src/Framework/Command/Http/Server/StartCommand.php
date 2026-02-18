@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Neu\Framework\Command\Http\Server;
 
-use Amp\Cluster\Cluster;
 use Neu\Component\Console\Attribute\Command;
 use Neu\Component\Console\Block\BlockFactoryTrait;
 use Neu\Component\Console\Command\CommandInterface;
@@ -24,12 +23,8 @@ use Neu\Component\DependencyInjection\ProjectMode;
 use Neu\Component\Http\Exception\ExceptionInterface;
 use Neu\Component\Http\Server\ServerInterface;
 use Override;
-use Revolt\EventLoop\UnsupportedFeatureException;
 
-#[Command(
-    name: 'http:server:start',
-    description: 'Starts the HTTP server in single-threaded mode, handling requests without clustering.',
-)]
+#[Command(name: 'http:server:start', description: 'Starts the HTTP server in single-threaded mode, handling requests.')]
 final readonly class StartCommand implements CommandInterface
 {
     use BlockFactoryTrait;
@@ -54,21 +49,6 @@ final readonly class StartCommand implements CommandInterface
         $this->server->start();
 
         $this->createSuccessBlock($output)->display('The server has started successfully.');
-
-        if ($this->mode->isProduction()) {
-            $this->createWarningBlock($output)->display(
-                'The server is running in single-threaded mode, which is not suitable for production environments.'
-                . ' Use the "http:server:cluster" command to start the server in clustered mode.',
-            );
-        }
-
-        try {
-            Cluster::awaitTermination();
-        } catch (UnsupportedFeatureException) {
-            $this->createWarningBlock($output)->display(
-                'Signal handling is not supported on this platform. The server will not be able to gracefully shut down.',
-            );
-        }
 
         $this->server->stop();
 

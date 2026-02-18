@@ -21,7 +21,6 @@ use Amp\Sync\ChannelException;
 use Neu\Component\Broadcast\Exception\AlreadyListeningException;
 use Neu\Component\Broadcast\Exception\ClosedTransportException;
 use Neu\Component\Broadcast\Exception\RuntimeException;
-use Neu\Component\Broadcast\Transport\LocalTransport;
 use Neu\Component\Broadcast\Transport\MemoryTransport;
 use Neu\Component\Broadcast\Transport\TransportInterface;
 use Override;
@@ -29,7 +28,7 @@ use Override;
 /**
  * A transport mechanism that sends and receives messages using channels.
  *
- * This transport is internal, and should not be used directly, use {@see MemoryTransport} or {@see LocalTransport} instead.
+ * This transport is internal, and should not be used directly, use {@see MemoryTransport} instead.
  *
  * @internal
  */

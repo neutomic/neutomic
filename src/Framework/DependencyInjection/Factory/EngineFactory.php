@@ -21,8 +21,6 @@ use Neu\Component\EventDispatcher\Listener\Registry\RegistryInterface as EventRe
 use Neu\Component\Http\Router\Registry\RegistryInterface as RouterRegistryInterface;
 use Neu\Component\Http\Router\RouteCollector;
 use Neu\Component\Http\Runtime\Middleware\MiddlewareQueueInterface;
-use Neu\Component\Http\Server\ClusterInterface;
-use Neu\Component\Http\Server\ClusterWorkerInterface;
 use Neu\Component\Http\Server\ServerInterface;
 use Neu\Framework\Engine;
 use Override;
@@ -47,20 +45,6 @@ final readonly class EngineFactory implements FactoryInterface
      * @var non-empty-string
      */
     private string $server;
-
-    /**
-     * The cluster service id.
-     *
-     * @var non-empty-string
-     */
-    private string $cluster;
-
-    /**
-     * The cluster worker service id.
-     *
-     * @var non-empty-string
-     */
-    private string $clusterWorker;
 
     /**
      * The router registry service id.
@@ -102,8 +86,6 @@ final readonly class EngineFactory implements FactoryInterface
      *
      * @param null|non-empty-string $application The console application service id.
      * @param null|non-empty-string $server The server service id.
-     * @param null|non-empty-string $cluster The cluster service id.
-     * @param null|non-empty-string $clusterWorker The cluster worker service id.
      * @param null|non-empty-string $routerRegistry The router registry service id.
      * @param null|non-empty-string $routeCollector The route collector service id.
      * @param null|non-empty-string $middlewareQueue The middleware queue service id.
@@ -113,8 +95,6 @@ final readonly class EngineFactory implements FactoryInterface
     public function __construct(
         ?string $application = null,
         ?string $server = null,
-        ?string $cluster = null,
-        ?string $clusterWorker = null,
         ?string $routerRegistry = null,
         ?string $routeCollector = null,
         ?string $middlewareQueue = null,
@@ -123,8 +103,6 @@ final readonly class EngineFactory implements FactoryInterface
     ) {
         $this->application = $application ?? ApplicationInterface::class;
         $this->server = $server ?? ServerInterface::class;
-        $this->cluster = $cluster ?? ClusterInterface::class;
-        $this->clusterWorker = $clusterWorker ?? ClusterWorkerInterface::class;
         $this->routerRegistry = $routerRegistry ?? RouterRegistryInterface::class;
         $this->routeCollector = $routeCollector ?? RouteCollector::class;
         $this->middlewareQueue = $middlewareQueue ?? MiddlewareQueueInterface::class;
@@ -142,8 +120,6 @@ final readonly class EngineFactory implements FactoryInterface
             $container,
             $this->application,
             $this->server,
-            $this->cluster,
-            $this->clusterWorker,
             $this->routerRegistry,
             $this->routeCollector,
             $this->middlewareQueue,

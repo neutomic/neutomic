@@ -429,6 +429,12 @@ count = 1
 [[issues]]
 file = "src/Component/Broadcast/DependencyInjection/BroadcastExtension.php"
 code = "invalid-return-statement"
+message = '''Invalid return type for function `neu\component\broadcast\dependencyinjection\broadcastextension::getconfigurationtype`: expected `Psl\Type\TypeInterface<array{'default'?: non-empty-string, 'hubs'?: array<non-empty-string, array{'application-name'?: string, 'database'?: string, 'host'?: non-empty-string, 'password'?: string, 'port'?: int, 'service'?: non-empty-string, 'ssl-mode'?: string('allow')|string('disable')|string('prefer')|string('require')|string('verify-ca')|string('verify-full'), 'transport': string('memory')|string('pgsql')|string('postgres')|string('postgresql')|string('service'), 'user'?: string, 'username'?: string}>}>`, but found `Psl\Type\TypeInterface<array{'default'?: non-empty-string, 'hubs'?: array<non-empty-string, array{'application-name'?: string, 'database'?: string, 'host'?: non-empty-string, 'password'?: string, 'port'?: int, 'service'?: non-empty-string, 'ssl-mode'?: string('allow')|string('disable')|string('prefer')|string('require')|string('verify-ca')|string('verify-full'), 'transport': string('local')|string('memory')|string('pgsql')|string('postgres')|string('postgresql')|string('service'), 'user'?: string, 'username'?: string}>}>`.'''
+count = 1
+
+[[issues]]
+file = "src/Component/Broadcast/DependencyInjection/BroadcastExtension.php"
+code = "invalid-return-statement"
 message = 'Invalid return type for function `neu\component\broadcast\dependencyinjection\broadcastextension::registerhubs`: expected `non-empty-array<non-empty-string, non-empty-string>`, but found `array<non-empty-string, truthy-string>`.'
 count = 1
 
@@ -441,7 +447,7 @@ count = 1
 [[issues]]
 file = "src/Component/Broadcast/DependencyInjection/BroadcastExtension.php"
 code = "mixed-argument"
-message = '''Invalid argument type for argument #2 of `Neu\Component\Broadcast\DependencyInjection\BroadcastExtension::registerhubs`: expected `non-empty-array<non-empty-string, array{'application-name'?: string, 'database'?: string, 'host'?: non-empty-string, 'password'?: string, 'port'?: int, 'service'?: non-empty-string, 'ssl-mode'?: string('allow')|string('disable')|string('prefer')|string('require')|string('verify-ca')|string('verify-full'), 'transport': string('local')|string('memory')|string('pgsql')|string('postgres')|string('postgresql')|string('service'), 'user'?: string, 'username'?: string}>`, but found `truthy-mixed`.'''
+message = '''Invalid argument type for argument #2 of `Neu\Component\Broadcast\DependencyInjection\BroadcastExtension::registerhubs`: expected `non-empty-array<non-empty-string, array{'application-name'?: string, 'database'?: string, 'host'?: non-empty-string, 'password'?: string, 'port'?: int, 'service'?: non-empty-string, 'ssl-mode'?: string('allow')|string('disable')|string('prefer')|string('require')|string('verify-ca')|string('verify-full'), 'transport': string('memory')|string('pgsql')|string('postgres')|string('postgresql')|string('service'), 'user'?: string, 'username'?: string}>`, but found `truthy-mixed`.'''
 count = 1
 
 [[issues]]
@@ -1629,18 +1635,6 @@ count = 1
 [[issues]]
 file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
 code = "mixed-argument"
-message = 'Invalid argument type for argument #1 of `neu\component\http\server\dependencyinjection\factory\clusterfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
-count = 1
-
-[[issues]]
-file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
-code = "mixed-argument"
-message = 'Invalid argument type for argument #1 of `neu\component\http\server\dependencyinjection\factory\clusterworkerfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
-count = 1
-
-[[issues]]
-file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
-code = "mixed-argument"
 message = 'Invalid argument type for argument #1 of `neu\component\http\server\dependencyinjection\factory\serverfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
 count = 1
 
@@ -1653,18 +1647,6 @@ count = 1
 [[issues]]
 file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
 code = "mixed-argument"
-message = 'Invalid argument type for argument #2 of `neu\component\http\server\dependencyinjection\factory\clusterfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
-count = 1
-
-[[issues]]
-file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
-code = "mixed-argument"
-message = 'Invalid argument type for argument #2 of `neu\component\http\server\dependencyinjection\factory\clusterworkerfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
-count = 1
-
-[[issues]]
-file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
-code = "mixed-argument"
 message = 'Invalid argument type for argument #2 of `neu\component\http\server\dependencyinjection\factory\serverfactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
 count = 1
 
@@ -1672,12 +1654,6 @@ count = 1
 file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
 code = "mixed-argument"
 message = 'Invalid argument type for argument #2 of `neu\component\http\server\dependencyinjection\factory\serverinfrastructurefactory::__construct`: expected `int|null`, but found `mixed`.'
-count = 1
-
-[[issues]]
-file = "src/Component/Http/Server/DependencyInjection/ServerExtension.php"
-code = "mixed-argument"
-message = 'Invalid argument type for argument #3 of `neu\component\http\server\dependencyinjection\factory\clusterfactory::__construct`: expected `null|positive-int`, but found `mixed`.'
 count = 1
 
 [[issues]]
@@ -1768,36 +1744,6 @@ count = 1
 file = "src/Component/Http/Server/Internal/MessageConvertor.php"
 code = "redundant-docblock-type"
 message = "Redundant docblock type for variable `$future`."
-count = 1
-
-[[issues]]
-file = "src/Component/Http/Server/Internal/cluster-worker.php"
-code = "invalid-destructuring-source"
-message = "Invalid destructuring assignment: Cannot unpack type `non-empty-list<string>|null` into variables."
-count = 1
-
-[[issues]]
-file = "src/Component/Http/Server/Internal/cluster-worker.php"
-code = "mixed-argument"
-message = "The first value for `require` is too general."
-count = 1
-
-[[issues]]
-file = "src/Component/Http/Server/Internal/cluster-worker.php"
-code = "mixed-assignment"
-message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
-count = 1
-
-[[issues]]
-file = "src/Component/Http/Server/Internal/cluster-worker.php"
-code = "redundant-comparison"
-message = "Redundant `!==` comparison: left-hand side is always not identical to right-hand side."
-count = 1
-
-[[issues]]
-file = "src/Component/Http/Server/Internal/cluster-worker.php"
-code = "redundant-condition"
-message = "This condition (type `true`) will always evaluate to true."
 count = 1
 
 [[issues]]
@@ -2025,12 +1971,6 @@ count = 1
 [[issues]]
 file = "src/Framework/DependencyInjection/FrameworkExtension.php"
 code = "mixed-argument"
-message = 'Invalid argument type for argument #1 of `neu\framework\dependencyinjection\factory\command\http\server\clustercommandfactory::__construct`: expected `float|null`, but found `mixed`.'
-count = 1
-
-[[issues]]
-file = "src/Framework/DependencyInjection/FrameworkExtension.php"
-code = "mixed-argument"
 message = 'Invalid argument type for argument #1 of `neu\framework\dependencyinjection\factory\enginefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
 count = 1
 
@@ -2097,12 +2037,6 @@ count = 1
 [[issues]]
 file = "src/Framework/DependencyInjection/FrameworkExtension.php"
 code = "mixed-argument"
-message = 'Invalid argument type for argument #2 of `neu\framework\dependencyinjection\factory\command\http\server\clustercommandfactory::__construct`: expected `list<non-empty-string>|null`, but found `mixed`.'
-count = 1
-
-[[issues]]
-file = "src/Framework/DependencyInjection/FrameworkExtension.php"
-code = "mixed-argument"
 message = 'Invalid argument type for argument #2 of `neu\framework\dependencyinjection\factory\enginefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
 count = 1
 
@@ -2146,12 +2080,6 @@ count = 1
 file = "src/Framework/DependencyInjection/FrameworkExtension.php"
 code = "mixed-argument"
 message = 'Invalid argument type for argument #2 of `neu\framework\dependencyinjection\factory\middleware\xpoweredbymiddlewarefactory::__construct`: expected `bool|null`, but found `mixed`.'
-count = 1
-
-[[issues]]
-file = "src/Framework/DependencyInjection/FrameworkExtension.php"
-code = "mixed-argument"
-message = 'Invalid argument type for argument #3 of `neu\framework\dependencyinjection\factory\command\http\server\clustercommandfactory::__construct`: expected `list<non-empty-string>|null`, but found `mixed`.'
 count = 1
 
 [[issues]]
@@ -2234,18 +2162,6 @@ count = 1
 
 [[issues]]
 file = "src/Framework/DependencyInjection/FrameworkExtension.php"
-code = "mixed-argument"
-message = 'Invalid argument type for argument #8 of `neu\framework\dependencyinjection\factory\enginefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
-count = 1
-
-[[issues]]
-file = "src/Framework/DependencyInjection/FrameworkExtension.php"
-code = "mixed-argument"
-message = 'Invalid argument type for argument #9 of `neu\framework\dependencyinjection\factory\enginefactory::__construct`: expected `non-empty-string|null`, but found `mixed`.'
-count = 1
-
-[[issues]]
-file = "src/Framework/DependencyInjection/FrameworkExtension.php"
 code = "mixed-assignment"
 message = "Assigning `mixed` type to a variable may lead to unexpected behavior."
 count = 1
@@ -2254,7 +2170,7 @@ count = 1
 file = "src/Framework/DependencyInjection/FrameworkExtension.php"
 code = "mixed-assignment"
 message = "Assigning `nonnull` type to a variable may lead to unexpected behavior."
-count = 13
+count = 12
 
 [[issues]]
 file = "src/Framework/Middleware/CompressionMiddleware.php"

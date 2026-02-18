@@ -44,14 +44,7 @@ use Psr\Log\NullLogger;
  *     },
  *     http?: array{
  *         server?: array{
- *             start?: false|array<array-key, mixed>,
- *             cluster?: false|array{
- *                 watch?: array{
- *                     interval?: float,
- *                     directories?: list<non-empty-string>,
- *                     extensions?: list<non-empty-string>,
- *                 }
- *             }
+ *             start?: false|array<array-key, mixed>
  *         }
  *     }
  * }
@@ -119,8 +112,6 @@ use Psr\Log\NullLogger;
  *     engine?: array{
  *          application?: non-empty-string,
  *          server?: non-empty-string,
- *          cluster?: non-empty-string,
- *          cluster-worker?: non-empty-string,
  *          router-registry?: non-empty-string,
  *          route-collector?: non-empty-string,
  *          middleware-queue?: non-empty-string,
@@ -154,18 +145,6 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
             $registry->addDefinition(Definition::ofType(
                 Command\Http\Server\StartCommand::class,
                 new Factory\Command\Http\Server\StartCommandFactory(),
-            ));
-        }
-
-        $httpServerClusterCommandConfiguration = $configuration['commands']['http']['server']['cluster'] ?? [];
-        if (false !== $httpServerClusterCommandConfiguration) {
-            $registry->addDefinition(Definition::ofType(
-                Command\Http\Server\ClusterCommand::class,
-                new Factory\Command\Http\Server\ClusterCommandFactory(
-                    watchInterval: $httpServerClusterCommandConfiguration['watch']['interval'] ?? null,
-                    watchDirectories: $httpServerClusterCommandConfiguration['watch']['directories'] ?? null,
-                    watchExtensions: $httpServerClusterCommandConfiguration['watch']['extensions'] ?? null,
-                ),
             ));
         }
 
@@ -302,8 +281,6 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
             new Factory\EngineFactory(
                 application: $configuration['engine']['application'] ?? null,
                 server: $configuration['engine']['server'] ?? null,
-                cluster: $configuration['engine']['cluster'] ?? null,
-                clusterWorker: $configuration['engine']['cluster-worker'] ?? null,
                 routerRegistry: $configuration['engine']['router-registry'] ?? null,
                 routeCollector: $configuration['engine']['route-collector'] ?? null,
                 middlewareQueue: $configuration['engine']['middleware-queue'] ?? null,
@@ -351,16 +328,6 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
                 'http' => Type\optional(Type\shape([
                     'server' => Type\optional(Type\shape([
                         'start' => Type\optional(Type\union(Type\literal_scalar(false), Type\shape([]))),
-                        'cluster' => Type\optional(Type\union(
-                            Type\literal_scalar(false),
-                            Type\shape([
-                                'watch' => Type\optional(Type\shape([
-                                    'interval' => Type\optional(Type\float()),
-                                    'directories' => Type\optional(Type\vec(Type\non_empty_string())),
-                                    'extensions' => Type\optional(Type\vec(Type\non_empty_string())),
-                                ])),
-                            ]),
-                        )),
                     ])),
                 ])),
             ])),
@@ -485,8 +452,6 @@ final readonly class FrameworkExtension implements CompositeExtensionInterface
             'engine' => Type\optional(Type\shape([
                 'application' => Type\optional(Type\non_empty_string()),
                 'server' => Type\optional(Type\non_empty_string()),
-                'cluster' => Type\optional(Type\non_empty_string()),
-                'cluster-worker' => Type\optional(Type\non_empty_string()),
                 'router-registry' => Type\optional(Type\non_empty_string()),
                 'route-collector' => Type\optional(Type\non_empty_string()),
                 'middleware-queue' => Type\optional(Type\non_empty_string()),

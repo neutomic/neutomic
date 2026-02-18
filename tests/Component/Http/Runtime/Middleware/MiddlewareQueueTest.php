@@ -30,7 +30,6 @@ final class MiddlewareQueueTest extends TestCase
     protected function setUp(): void
     {
         $this->context = new Context(
-            workerId: null,
             client: $this->createMock(Client::class),
             sendInformationalResponse: static fn() => null,
         );

@@ -21,11 +21,6 @@ use Neu\Component\Http\Message\ResponseInterface;
 final readonly class Context
 {
     /**
-     * The worker ID of the context or null if the context is not worker-specific.
-     */
-    private ?int $workerId;
-
-    /**
      * The client of the context.
      */
     private Client $client;
@@ -40,25 +35,13 @@ final readonly class Context
     /**
      * Create a new context instance.
      *
-     * @param int|null $workerId The worker ID of the context or null if the context is not worker-specific.
      * @param Client $client The client of the context.
      * @param (Closure(ResponseInterface): void) $sendInformationalResponse The function to send an early informational response.
      */
-    public function __construct(?int $workerId, Client $client, Closure $sendInformationalResponse)
+    public function __construct(Client $client, Closure $sendInformationalResponse)
     {
-        $this->workerId = $workerId;
         $this->client = $client;
         $this->sendInformationalResponse = $sendInformationalResponse;
-    }
-
-    /**
-     * Get the worker ID of the context.
-     *
-     * @return int|null The worker ID of the context or null if the context is not worker-specific.
-     */
-    public function getWorkerId(): ?int
-    {
-        return $this->workerId;
     }
 
     /**
