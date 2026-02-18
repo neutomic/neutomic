@@ -49,20 +49,20 @@
     },
     "autoload": {
         "psr-4": {
-            "Neu\\": "src/"
+            "Neu\\": "framework/src/"
         },
         "files": [
-            "src/Component/Http/Message/Response/html.php",
-            "src/Component/Http/Message/Response/xml.php",
-            "src/Component/Http/Message/Response/text.php",
-            "src/Component/Http/Message/Response/json.php",
-            "src/Component/Http/Message/Response/redirect.php"
+            "framework/src/Component/Http/Message/Response/html.php",
+            "framework/src/Component/Http/Message/Response/xml.php",
+            "framework/src/Component/Http/Message/Response/text.php",
+            "framework/src/Component/Http/Message/Response/json.php",
+            "framework/src/Component/Http/Message/Response/redirect.php"
         ]
     },
     "autoload-dev": {
         "psr-4": {
-            "Neu\\Tests\\": "tests/",
-            "Neu\\Examples\\": "examples/"
+            "Neu\\Tests\\": "framework/tests/",
+            "Neu\\Examples\\": "framework/examples/"
         }
     },
     "minimum-stability": "dev",
