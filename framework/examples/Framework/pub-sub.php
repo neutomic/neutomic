@@ -34,7 +34,7 @@ use Psl\Env;
 use Psl\SecureRandom;
 use Throwable;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
 
 /** @psalm-suppress MissingThrowsDocblock */
 #[Route(name: 'pub', pattern: '/pub', methods: [Method::Post])]

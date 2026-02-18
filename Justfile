@@ -5,21 +5,21 @@ install:
     composer install
 
 fmt:
-    ./vendor/bin/mago --config framework/config/mago.toml fmt
+    ./vendor/bin/mago --workspace framework/ --config framework/config/mago.toml fmt
 
 fmt-check:
-    ./vendor/bin/mago --config framework/config/mago.toml fmt --check
+    ./vendor/bin/mago --workspace framework/ --config framework/config/mago.toml fmt --check
 
 lint:
-    ./vendor/bin/mago --config framework/config/mago.toml lint --sort
+    ./vendor/bin/mago --workspace framework/ --config framework/config/mago.toml lint --sort
 
 fix:
-    ./vendor/bin/mago --config framework/config/mago.toml analyze --fix --unsafe
-    ./vendor/bin/mago --config framework/config/mago.toml lint --fix --unsafe
-    ./vendor/bin/mago --config framework/config/mago.toml fmt
+    ./vendor/bin/mago --workspace framework/ --config framework/config/mago.toml analyze --fix --unsafe
+    ./vendor/bin/mago --workspace framework/ --config framework/config/mago.toml lint --fix --unsafe
+    ./vendor/bin/mago --workspace framework/ --config framework/config/mago.toml fmt
 
 analyze:
-    ./vendor/bin/mago --config framework/config/mago.toml analyze --sort
+    ./vendor/bin/mago --workspace framework/ --config framework/config/mago.toml analyze --sort
 
 typos:
     typos -c framework/config/typos.toml
@@ -32,7 +32,7 @@ coverage: test
 
 verify:
     typos -c framework/config/typos.toml
-    ./vendor/bin/mago --config framework/config/mago.toml fmt --check
-    ./vendor/bin/mago --config framework/config/mago.toml lint
-    ./vendor/bin/mago --config framework/config/mago.toml analyze
+    ./vendor/bin/mago --workspace framework/ --config framework/config/mago.toml fmt --check
+    ./vendor/bin/mago --workspace framework/ --config framework/config/mago.toml lint
+    ./vendor/bin/mago --workspace framework/ --config framework/config/mago.toml analyze
     XDEBUG_MODE=coverage php -dmemory_limit=-1 vendor/bin/phpunit -c framework/config/phpunit.xml.dist

@@ -80,16 +80,16 @@ enum Parser
             $token = $tokens->current();
             $tokens->next();
 
-            if ($token->type === TokenType::String) {
-                $buffer .= (string) $token->value;
-            } elseif ($token->type === TokenType::Equals) {
+            if ($token?->type === TokenType::String) {
+                $buffer .= (string) $token?->value;
+            } elseif ($token?->type === TokenType::Equals) {
                 if ('' === $buffer) {
                     // skip till next ampersand
                     while ($tokens->valid()) {
                         $token = $tokens->current();
                         $tokens->next();
 
-                        if ($token->type === TokenType::Ampersand) {
+                        if ($token?->type === TokenType::Ampersand) {
                             break;
                         }
                     }
@@ -114,17 +114,17 @@ enum Parser
                     $token = $tokens->current();
                     $tokens->next();
 
-                    if ($token->type === TokenType::Ampersand) {
+                    if ($token?->type === TokenType::Ampersand) {
                         break;
                     }
 
-                    $value .= urldecode($token->value);
+                    $value .= urldecode($token?->value);
                 }
 
                 /** @var non-empty-string $name */
                 $name = urldecode($field);
                 $fields[] = Field::create($name, [], Body::fromString(urldecode($value)));
-            } elseif ($token->type === TokenType::Ampersand) {
+            } elseif ($token?->type === TokenType::Ampersand) {
                 if ('' !== $buffer) {
                     if (count($fields) === $options->fieldCountLimit) {
                         throw new HttpException(
@@ -167,16 +167,16 @@ enum Parser
                 $token = $tokens->current();
                 $tokens->next();
 
-                if ($token->type === TokenType::String) {
-                    $buffer .= (string) $token->value;
-                } elseif ($token->type === TokenType::Equals) {
+                if ($token?->type === TokenType::String) {
+                    $buffer .= (string) $token?->value;
+                } elseif ($token?->type === TokenType::Equals) {
                     if ('' === $buffer) {
                         // skip till next ampersand
                         while ($tokens->valid()) {
                             $token = $tokens->current();
                             $tokens->next();
 
-                            if ($token->type === TokenType::Ampersand) {
+                            if ($token?->type === TokenType::Ampersand) {
                                 break;
                             }
                         }
@@ -207,14 +207,14 @@ enum Parser
                         $token = $tokens->current();
                         $tokens->next();
 
-                        if ($token->type === TokenType::Ampersand) {
+                        if ($token?->type === TokenType::Ampersand) {
                             $queue->complete();
                             $queue = null;
                             break;
                         }
 
                         try {
-                            $queue->push(urldecode($token->value));
+                            $queue->push(urldecode($token?->value));
                         } catch (DisposedException) {
                             // Ignore and continue consuming this field.
                         }
@@ -223,7 +223,7 @@ enum Parser
                     $queue?->complete();
                     $queue = null;
                     $future->await();
-                } elseif ($token->type === TokenType::Ampersand) {
+                } elseif ($token?->type === TokenType::Ampersand) {
                     if ('' !== $buffer) {
                         if ($fieldCount++ === $options->fieldCountLimit) {
                             throw new HttpException(

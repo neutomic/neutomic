@@ -32,7 +32,7 @@ use Psl\DateTime\Duration;
 use Psl\Env;
 use Psl\SecureRandom;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
 
 #[Route(name: 'redirect', pattern: '/', methods: [Method::Get])]
 final readonly class RedirectHandler implements HandlerInterface

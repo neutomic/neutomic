@@ -25,6 +25,7 @@ use Neu\Component\Http\Server\ServerInterface;
 use Neu\Framework\Plugin\PluginInterface;
 use Override;
 use Psl\Env;
+use Revolt\EventLoop;
 use Throwable;
 
 /**
@@ -126,6 +127,14 @@ final class Engine implements EngineInterface
         try {
             $server = $this->container->getTyped($this->serverServiceId, ServerInterface::class);
             $server->start();
+
+            $suspension = EventLoop::getSuspension();
+            EventLoop::onSignal(SIGINT, static function () use ($suspension): void {
+                $suspension->resume();
+            });
+
+            $suspension->suspend();
+
             $server->stop();
         } catch (Throwable $e) {
             throw new Exception\RuntimeException('Failed to run the engine in server mode: ' . $e->getMessage(), 0, $e);

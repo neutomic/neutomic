@@ -28,7 +28,7 @@ use Override;
 use Psl\Env;
 use Psl\SecureRandom;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
 
 #[Route(name: 'counter', pattern: '/', methods: [Method::Get])]
 final readonly class CounterHandler implements HandlerInterface

@@ -22,7 +22,7 @@ use Neu\Component\Console\Output\OutputInterface;
 use Neu\Component\DependencyInjection\ProjectMode;
 use Neu\Component\Http\Exception\ExceptionInterface;
 use Neu\Component\Http\Server\ServerInterface;
-use Override;
+use Override;use Revolt\EventLoop;use Revolt\EventLoop\UnsupportedFeatureException;
 
 #[Command(name: 'http:server:start', description: 'Starts the HTTP server in single-threaded mode, handling requests.')]
 final readonly class StartCommand implements CommandInterface
@@ -49,6 +49,14 @@ final readonly class StartCommand implements CommandInterface
         $this->server->start();
 
         $this->createSuccessBlock($output)->display('The server has started successfully.');
+        $this->createNoteBlock($output)->display('Press Ctrl+C to stop the server.');
+
+        $suspension = EventLoop::getSuspension();
+        EventLoop::onSignal(SIGINT, static function () use ($suspension): void {
+            $suspension->resume();
+        });
+
+        $suspension->suspend();
 
         $this->server->stop();
 

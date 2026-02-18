@@ -20,7 +20,7 @@ use Neu\Component\DependencyInjection\Project;
 use Psl\Env;
 use Psl\SecureRandom;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../../vendor/autoload.php';
 
 /* |----------------------------------------| */
 /* | Run the engine inside a closure        | */

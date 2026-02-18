@@ -189,7 +189,7 @@ final readonly class Uri implements UriInterface
             $parsedUrl['pass'] ?? null,
             $parsedUrl['host'] ?? null,
             $parsedUrl['port'] ?? null,
-            $parsedUrl['path'] ?? '',
+            $parsedUrl['path'],
             $parsedUrl['query'] ?? null,
             $parsedUrl['fragment'] ?? null,
         );

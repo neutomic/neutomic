@@ -18,7 +18,7 @@ use Neu\Component\Database\Database;
 use Psl\Env;
 use Psl\IO;
 
-require __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . '/../../../vendor/autoload.php';
 
 $config = Postgres\PostgresConfig::fromString('host=127.0.0.1 port=5432 user=main password=main');
 
