@@ -28,7 +28,6 @@ Look at the skeleton repository [neutomic/skeleton](https://github.com/neutomic/
 
 ## To Do
 
-- [x] Multithreading support
 - [x] Static file serving
 - [x] Middleware support
 - [x] Dependency injection
