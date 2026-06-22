@@ -307,7 +307,7 @@ final class Terminal
     private static function getDimensionsUsingStty(): array
     {
         try {
-            $sttyString = Shell\execute('stty -a | grep columns');
+            $sttyString = Shell\execute('stty', ['-a | grep columns']);
 
             if ($matches = Regex\first_match($sttyString, "/rows.(\d+);.columns.(\d+);/i")) {
                 // extract [w, h] from "rows h; columns w;"
