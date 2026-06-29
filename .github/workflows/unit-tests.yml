@@ -31,7 +31,7 @@ jobs:
           extensions: bcmath, mbstring, intl, sodium, json, pcov
 
       - name: "caching dependencies"
-        uses: "actions/cache@v6.0.0"
+        uses: "actions/cache@v6.1.0"
         with:
           path: |
             ~/.composer/cache
