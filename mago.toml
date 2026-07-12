@@ -1,0 +1,46 @@
+#:schema https://mago.carthage.software/1.43.0/schema.json
+# Welcome to Mago!
+# For full documentation, see https://mago.carthage.software/1.43.0/en/tools/overview/
+version = "1"
+php-version = "8.4.0"
+
+[source]
+workspace = "."
+paths = ["examples/", "src/", "tests/"]
+includes = ["vendor"]
+excludes = []
+
+[source.glob]
+literal-separator = true
+
+[formatter]
+print-width = 120
+tab-width = 4
+use-tabs = false
+
+[linter]
+integrations = ["psl", "symfony", "phpunit"]
+
+[linter.rules]
+ambiguous-function-call = { enabled = false }
+literal-named-argument = { enabled = false }
+halstead = { effort-threshold = 7000 }
+
+[analyzer]
+plugins = ["psl"]
+find-unused-definitions = true
+find-unused-expressions = true
+analyze-dead-code = true
+memoize-properties = true
+allow-possibly-undefined-array-keys = false
+check-throws = true
+unchecked-exceptions = ["Error", "LogicException"]
+unchecked-exception-classes = []
+check-missing-override = true
+find-unused-parameters = true
+strict-list-index-checks = true
+strict-array-index-existence = true
+allow-array-truthy-operand = false
+no-boolean-literal-comparison = true
+check-missing-type-hints = true
+register-super-globals = true

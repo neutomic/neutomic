@@ -15,17 +15,21 @@ coding-standard-check:                                                          
 	./vendor/bin/php-cs-fixer fix --config=config/.php_cs.dist.php --dry-run -vvv
 	./vendor/bin/phpcs --basepath=. --standard=config/.phpcs.xml
 
-static-analysis:                                                                ## run static analysis checks
-	./vendor/bin/psalm -c config/psalm.xml
+MAGO_FORMAT ?= rich
 
-uncached-static-analysis:                                                      ## run static analysis checks without cache
-	./vendor/bin/psalm -c config/psalm.xml --no-cache
+lint:                                                                           ## run linting checks
+	./vendor/bin/mago lint --reporting-format $(MAGO_FORMAT)
 
-type-coverage:                                                                  ## send static analysis type coverage metrics to https://shepherd.dev/
-	./vendor/bin/psalm -c config/psalm.xml --shepherd --stats
+lint-fix:                                                                       ## apply automated linting fixes
+	./vendor/bin/mago lint --fix
 
-security-analysis:                                                              ## run static analysis security checks
-	./vendor/bin/psalm -c config/psalm.xml --taint-analysis
+analyze:                                                                        ## run static analysis
+	./vendor/bin/mago analyze --reporting-format $(MAGO_FORMAT)
+
+analyze-fix:                                                                    ## apply automated analysis fixes
+	./vendor/bin/mago analyze --fix
+
+static-analysis: lint analyze                                                   ## run static analysis checks
 
 unit-tests:                                                                     ## run unit test suite
 	XDEBUG_MODE=coverage php vendor/bin/phpunit -c config/phpunit.xml.dist
@@ -33,4 +37,4 @@ unit-tests:                                                                     
 code-coverage: unit-tests                                                       ## generate and upload test coverage metrics to https://coveralls.io/
 	./vendor/bin/php-coveralls -x var/clover.xml -o var/coveralls-upload.json -v
 
-check: coding-standard-check static-analysis security-analysis unit-tests ## run quick checks for local development iterations
+check: coding-standard-check static-analysis unit-tests ## run quick checks for local development iterations
