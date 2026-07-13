@@ -32,6 +32,7 @@ final readonly class OptionsCommand implements CommandInterface
 {
     use TableFactoryTrait;
 
+    #[\Override]
     public function run(Input\InputInterface $input, Output\OutputInterface $output): int
     {
         $host = $input->getOption('host');

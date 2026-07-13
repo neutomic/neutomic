@@ -306,5 +306,6 @@ interface UriInterface extends Stringable
      *
      * @return string The URI as a string.
      */
+    #[\Override]
     public function __toString(): string;
 }

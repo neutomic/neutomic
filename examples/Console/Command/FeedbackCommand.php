@@ -25,6 +25,7 @@ final readonly class FeedbackCommand implements CommandInterface
 {
     use FeedbackFactoryTrait;
 
+    #[\Override]
     public function run(Input\InputInterface $input, Output\OutputInterface $output): int
     {
         // Progress bar feedback

@@ -24,6 +24,7 @@ use Neu\Component\Console\Output;
 ]))]
 final readonly class ArgumentsCommand implements CommandInterface
 {
+    #[\Override]
     public function run(Input\InputInterface $input, Output\OutputInterface $output): int
     {
         $name = $input->getArgument('name');

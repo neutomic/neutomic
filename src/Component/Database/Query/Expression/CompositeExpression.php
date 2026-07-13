@@ -81,6 +81,7 @@ final readonly class CompositeExpression implements CompositeExpressionInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __toString(): string
     {
         if ($this->count() === 1) {

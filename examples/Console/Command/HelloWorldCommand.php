@@ -19,6 +19,7 @@ use Neu\Component\Console\Output;
 
 final readonly class HelloWorldCommand implements CommandInterface
 {
+    #[\Override]
     public function run(Input\InputInterface $input, Output\OutputInterface $output): int
     {
         $output->writeLine('Hello World!');

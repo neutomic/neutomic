@@ -25,6 +25,7 @@ final readonly class ErrorCommand implements CommandInterface
     /**
      * @throws Exception
      */
+    #[\Override]
     public function run(Input\InputInterface $input, Output\OutputInterface $output): int
     {
         throw new Exception('I am not well');

@@ -22,6 +22,7 @@ final class UrlSafeCsrfTokenGeneratorTest extends TestCase
 {
     private UrlSafeCsrfTokenGenerator $generator;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->generator = new UrlSafeCsrfTokenGenerator();

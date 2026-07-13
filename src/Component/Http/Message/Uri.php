@@ -437,6 +437,7 @@ final readonly class Uri implements UriInterface
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __toString(): string
     {
         return $this->toString();

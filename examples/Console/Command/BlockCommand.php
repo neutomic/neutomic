@@ -24,6 +24,7 @@ final readonly class BlockCommand implements CommandInterface
 {
     use BlockFactoryTrait;
 
+    #[\Override]
     public function run(Input\InputInterface $input, Output\OutputInterface $output): int
     {
         $this->createSuccessBlock($output)->display('This is a success block');

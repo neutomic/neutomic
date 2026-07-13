@@ -89,6 +89,7 @@ final readonly class UpdateQuery extends AbstractWhereQuery implements UpdateQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __toString(): string
     {
         if ($this->sets === []) {

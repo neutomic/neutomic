@@ -22,6 +22,7 @@ use Psl\Async;
 #[Command('napping', 'A command that takes a quick nap.')]
 final readonly class NappingCommand implements CommandInterface
 {
+    #[\Override]
     public function run(Input\InputInterface $input, Output\OutputInterface $output): int
     {
         $output->writeLine('I got tired, I will take a quick nap for 5 seconds.');

@@ -22,6 +22,7 @@ use Psl\Async;
 #[Command('sleepy', 'A command that sleeps for 2 second.')]
 final readonly class SleepyCommand implements CommandInterface
 {
+    #[\Override]
     public function run(Input\InputInterface $input, Output\OutputInterface $output): int
     {
         $output->writeLine('I got sleepy, I will sleep for 2 seconds.');

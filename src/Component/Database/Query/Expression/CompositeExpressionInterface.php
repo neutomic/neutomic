@@ -34,6 +34,7 @@ interface CompositeExpressionInterface extends Countable, Stringable
      *
      * @return non-empty-string
      */
+    #[\Override]
     public function __toString(): string;
 
     /**

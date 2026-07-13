@@ -26,6 +26,7 @@ final readonly class ApplicationAwareCommand implements ApplicationAwareCommandI
 {
     use ApplicationAwareCommandTrait;
 
+    #[\Override]
     public function run(Input\InputInterface $input, Output\OutputInterface $output): int
     {
         $time = time();

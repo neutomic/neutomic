@@ -21,6 +21,7 @@ use Neu\Component\Console\Output;
 #[Command('hidden', 'I am hidden', hidden: true)]
 final readonly class HiddenCommand implements CommandInterface
 {
+    #[\Override]
     public function run(Input\InputInterface $input, Output\OutputInterface $output): int
     {
         $output->writeLine('<fg=yellow;bold>You discovered me!</>');

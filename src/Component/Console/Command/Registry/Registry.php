@@ -138,7 +138,7 @@ final class Registry implements RegistryInterface
         // remove hidden commands
         $alternatives = Vec\filter(
             $alternatives,
-            static fn (string $name): bool => !$configurations[$name]->hidden,
+            static fn (string $name): bool => !$configurations[$name]?->hidden,
         );
         if (!Iter\is_empty($alternatives)) {
             if (1 === Iter\count($alternatives)) {
