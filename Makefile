@@ -18,16 +18,16 @@ coding-standard-check:                                                          
 MAGO_FORMAT ?= rich
 
 lint:                                                                           ## run linting checks
-	./vendor/bin/mago lint --reporting-format $(MAGO_FORMAT)
+	./vendor/bin/mago --config config/mago.toml lint --reporting-format $(MAGO_FORMAT)
 
 lint-fix:                                                                       ## apply automated linting fixes
-	./vendor/bin/mago lint --fix
+	./vendor/bin/mago --config config/mago.toml lint --fix
 
 analyze:                                                                        ## run static analysis
-	./vendor/bin/mago analyze --reporting-format $(MAGO_FORMAT)
+	./vendor/bin/mago --config config/mago.toml analyze --reporting-format $(MAGO_FORMAT)
 
 analyze-fix:                                                                    ## apply automated analysis fixes
-	./vendor/bin/mago analyze --fix
+	./vendor/bin/mago --config config/mago.toml analyze --fix
 
 static-analysis: lint analyze                                                   ## run static analysis checks
 
