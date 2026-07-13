@@ -35,9 +35,7 @@ $updates = new Ref(0);
 $deletes = new Ref(0);
 
 for ($y = 0; $y < BATCH_COUNT; $y++) {
-    $name = static function (int $i, string $suffix = '') use ($y): string {
-        return $y . 'user' . $i . $suffix;
-    };
+    $name = static fn (int $i, string $suffix = '') => $y . 'user' . $i . $suffix;
 
     $promises[] = Async\run(static function () use ($connection, $inserts, $selects, $updates, $deletes, $y, $name) {
         IO\write_line('[INSERT][%d] started', $y);

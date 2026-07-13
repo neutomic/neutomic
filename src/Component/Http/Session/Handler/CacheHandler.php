@@ -58,7 +58,7 @@ final readonly class CacheHandler implements HandlerInterface
                 $id = $this->generateIdentifier();
             }
 
-            $this->store->update($id, static fn (): array => $session->all(), $ttl);
+            $this->store->update($id, $session->all(...), $ttl);
         } catch (CacheException | SecureRandomException $e) {
             throw new RuntimeException('An error occurred while writing the session.', previous: $e);
         }
