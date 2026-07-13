@@ -57,8 +57,9 @@ final class DirectoryLoader implements ResolverAwareLoaderInterface
             $document = new Document([]);
             $resolver = $this->getResolver();
             foreach (Vec\sort(Filesystem\read_directory($resource)) as $node) {
-                if (Filesystem\is_file($node)) {
-                    try {
+                if (!(Filesystem\is_file($node))) { continue; }
+
+try {
                         $loader = $resolver->resolve($node);
                     } catch (NoSupportiveLoaderException) {
                         continue;
@@ -80,7 +81,6 @@ final class DirectoryLoader implements ResolverAwareLoaderInterface
                             $loader->load($node),
                         ),
                     };
-                }
             }
         } catch (Filesystem\Exception\ExceptionInterface $previous) {
             throw new RuntimeException(

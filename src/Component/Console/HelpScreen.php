@@ -43,34 +43,34 @@ final class HelpScreen
      * The optional name of the application when not outputting a {@see HelpScreen}
      * for a specific {@see CommandInterface}.
      */
-    protected string $name = '';
+    private string $name = '';
 
     /**
      * The available commands configuration objects available.
      *
      * @var array<string, CommandConfiguration>
      */
-    protected array $commands;
+    private array $commands;
 
     /**
      * The current command configuration the {@see HelpScreen} refers to.
      */
-    protected null|CommandConfiguration $configuration = null;
+    private null|CommandConfiguration $configuration = null;
 
     /**
      * The available {@see Flag} objects accepted.
      */
-    protected FlagBag $flags;
+    private FlagBag $flags;
 
     /**
      * The available {@see Option} objects accepted.
      */
-    protected OptionBag $options;
+    private OptionBag $options;
 
     /**
      * The available {@see Argument} objects accepted.
      */
-    protected ArgumentBag $arguments;
+    private ArgumentBag $arguments;
 
     /**
      * Construct a new instance of the {@see HelpScreen}.
@@ -132,7 +132,7 @@ final class HelpScreen
      * either the name of the application (when not rendering for a specific
      * command) or the name of the command and its description.
      */
-    protected function renderHeading(): string
+    private function renderHeading(): string
     {
         $lines = [];
         if ($this->configuration !== null) {
@@ -165,7 +165,7 @@ final class HelpScreen
     /**
      * When rendering a for a specific command, build and return the usage section.
      */
-    protected function renderUsage(): string
+    private function renderUsage(): string
     {
         $usage = [];
         if ($this->configuration !== null) {
@@ -237,7 +237,7 @@ final class HelpScreen
      *
      * @param AbstractBag<T> $arguments
      */
-    protected function renderSection(AbstractBag $arguments): string
+    private function renderSection(AbstractBag $arguments): string
     {
         $entries = [];
         foreach ($arguments as $argument) {
@@ -280,7 +280,7 @@ final class HelpScreen
     /**
      * Build the list of available commands and their descriptions.
      */
-    protected function renderCommands(): string
+    private function renderCommands(): string
     {
         $this->commands = Dict\sort_by_key($this->commands);
 

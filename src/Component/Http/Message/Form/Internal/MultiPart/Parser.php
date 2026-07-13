@@ -116,11 +116,11 @@ enum Parser
         $content = $body->getContents();
 
         // RFC 7578, RFC 2046 Section 5.1.1
-        if (strncmp($content, "--$boundary\r\n", strlen($boundary) + 4) !== 0) {
+        if (strncmp($content, "--{$boundary}\r\n", strlen($boundary) + 4) !== 0) {
             return [];
         }
 
-        $entries = explode("\r\n--$boundary\r\n", $content, $options->fieldCountLimit);
+        $entries = explode("\r\n--{$boundary}\r\n", $content, $options->fieldCountLimit);
         $entries[0] = substr($entries[0] ?? "", strlen($boundary) + 4);
         $entries[count($entries) - 1] = substr(end($entries), 0, -strlen($boundary) - 8);
 
@@ -176,7 +176,7 @@ enum Parser
             }
         }
 
-        if (str_contains($entry, "--$boundary")) {
+        if (str_contains($entry, "--{$boundary}")) {
             throw new HttpException(
                 statusCode: StatusCode::PayloadTooLarge,
                 message: 'The number of fields in the form data exceeds the limit of ' . ((string) $options->fieldCountLimit) . '.',
@@ -201,7 +201,7 @@ enum Parser
             $buffer = "";
 
             // RFC 7578, RFC 2046 Section 5.1.1
-            $boundarySeparator = "--$boundary";
+            $boundarySeparator = "--{$boundary}";
             while (strlen($buffer) < strlen($boundarySeparator) + 4) {
                 $chunk = $body->getChunk();
 
@@ -217,7 +217,7 @@ enum Parser
                 throw new HttpException(StatusCode::BadRequest, message: 'Invalid boundary');
             }
 
-            $boundarySeparator = "\r\n$boundarySeparator";
+            $boundarySeparator = "\r\n{$boundarySeparator}";
             while (substr_compare($buffer, "--\r\n", $offset)) {
                 $offset += 2;
 

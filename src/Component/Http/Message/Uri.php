@@ -113,7 +113,7 @@ final readonly class Uri implements UriInterface
     public static function fromParts(
         null|string $scheme = null,
         null|string $user = null,
-        null|string $password = null,
+        #[\SensitiveParameter] null|string $password = null,
         null|string $host = null,
         null|int $port = null,
         string $path = '',
@@ -262,7 +262,7 @@ final readonly class Uri implements UriInterface
      * @inheritDoc
      */
     #[Override]
-    public function withUserInformation(null|string $user, null|string $password = null): self
+    public function withUserInformation(null|string $user, #[\SensitiveParameter] null|string $password = null): self
     {
         if (null === $user) {
             return new self($this->scheme, null, $this->host, $this->port, $this->path, $this->query, $this->fragment);
@@ -455,7 +455,7 @@ final readonly class Uri implements UriInterface
             return null;
         }
 
-        if ($port < 0 || $port > 65535) {
+        if ($port < 0 || $port > 65_535) {
             throw new InvalidArgumentException('The given port "' . ((string) $port) . '" is invalid.');
         }
 

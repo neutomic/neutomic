@@ -69,7 +69,7 @@ final class Flag extends Definition
         if ($this->stackable) {
             $value = $this->value ?? 0;
             /** @var positive-int $value */
-            $value = $value + 1;
+            $value += 1;
 
             $this->value = $value;
         }

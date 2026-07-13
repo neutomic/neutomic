@@ -123,9 +123,9 @@ final class LocalDriver extends AbstractDriver
     public function prune(): void
     {
         foreach ($this->cacheExpiration as $key => $time) {
-            if (time() >= $time) {
-                $this->delete($key);
-            }
+            if (time() < $time) { continue; }
+
+$this->delete($key);
         }
     }
 

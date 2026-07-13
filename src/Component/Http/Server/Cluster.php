@@ -94,7 +94,7 @@ final class Cluster implements ClusterInterface
 
         $this->watcher = $watcher = new ClusterWatcher([$this->entrypoint], $this->logger);
 
-        $workers = $workers ?? $this->workerCount;
+        $workers ??= $this->workerCount;
 
         $this->logger->notice('Starting cluster with {workers} workers...', ['workers' => $workers]);
 

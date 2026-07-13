@@ -181,9 +181,9 @@ final class Container implements ContainerInterface
         DisposedObjectException::guard($this);
 
         foreach ($this->definitions as $definition) {
-            if ($definition->isInstanceOf($type)) {
-                yield $definition->resolve($this);
-            }
+            if (!($definition->isInstanceOf($type))) { continue; }
+
+yield $definition->resolve($this);
         }
     }
 
@@ -196,9 +196,9 @@ final class Container implements ContainerInterface
         DisposedObjectException::guard($this);
 
         foreach ($this->definitions as $definition) {
-            if ($definition->hasAttribute($attribute)) {
-                yield $definition->resolve($this);
-            }
+            if (!($definition->hasAttribute($attribute))) { continue; }
+
+yield $definition->resolve($this);
         }
     }
 

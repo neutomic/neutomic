@@ -343,7 +343,7 @@ abstract class AbstractFeedback implements FeedbackInterface
     {
         return ((string)Math\floor($time / 60)) .
             ':' .
-            Str\pad_left(((string)($time % 60)), 2, '0');
+            Str\pad_left((string)($time % 60), 2, '0');
     }
 
     /**

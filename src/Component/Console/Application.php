@@ -340,13 +340,13 @@ final class Application implements ApplicationInterface
 
         if ($this->configuration->ansiFlagEnabled) {
             $input->addFlag(
-                (new Flag('ansi', description: 'Force enable ANSI output')),
+                new Flag('ansi', description: 'Force enable ANSI output'),
             );
         }
 
         if ($this->configuration->noAnsiFlagEnabled) {
             $input->addFlag(
-                (new Flag('no-ansi', description: 'Force disable ANSI output')),
+                new Flag('no-ansi', description: 'Force disable ANSI output'),
             );
         }
     }

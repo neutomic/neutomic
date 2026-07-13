@@ -41,7 +41,7 @@ final readonly class RedisDriverFactory implements FactoryInterface
      * @param null|int $database The database to select.
      * @param null|string $password The password to authenticate with.
      */
-    public function __construct(string $uri, null|int $timeout = null, null|int $database = null, null|string $password = null)
+    public function __construct(string $uri, null|int $timeout = null, null|int $database = null, #[\SensitiveParameter] null|string $password = null)
     {
         $this->uri = $uri;
         $this->timeout = $timeout;

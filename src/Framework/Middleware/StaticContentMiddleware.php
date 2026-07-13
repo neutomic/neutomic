@@ -31,7 +31,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Override;
 
-use const Psl\Filesystem;
+
 
 /**
  * Middleware to serve static content directly from the filesystem, based on the request URI.

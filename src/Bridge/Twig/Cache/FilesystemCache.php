@@ -61,7 +61,7 @@ final class FilesystemCache extends TwigFilesystemCache
         }
 
         File\write($key, $content);
-        File\changePermissions($key, 0666 & ~umask());
+        File\changePermissions($key, 0o666 & ~umask());
 
         if ($this->shouldForceBytecodeInvalidation && $this->canInvalidate) {
             @opcache_invalidate($key, true);
