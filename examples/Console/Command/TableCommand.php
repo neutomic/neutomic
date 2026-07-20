@@ -25,6 +25,7 @@ final readonly class TableCommand implements CommandInterface
 {
     use TableFactoryTrait;
 
+    #[\Override]
     public function run(Input\InputInterface $input, Output\OutputInterface $output): int
     {
         $headers = ['Name', 'Email', 'Password', 'Role'];

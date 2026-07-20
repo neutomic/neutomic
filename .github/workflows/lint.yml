@@ -1,12 +1,12 @@
-name: "security analysis"
+name: "lint"
 
 on:
   pull_request: ~
   push: ~
 
 jobs:
-  security-analysis:
-    name: "security analysis"
+  lint:
+    name: "lint"
     runs-on: "ubuntu-latest"
     steps:
       - name: "checkout"
@@ -16,13 +16,14 @@ jobs:
         uses: "shivammathur/setup-php@v2"
         with:
           php-version: "8.4"
-          ini-values: memory_limit=-1
-          tools: composer:v2, cs2pr
+          tools: composer:v2
           extensions: bcmath, mbstring, intl, sodium, json
 
       - name: "installing dependencies"
         run: |
           make install -j10 -O
 
-      - name: "running security analysis ( psalm )"
-        run: make security-analysis
+      - name: "running linter"
+        run: make lint
+        env:
+          MAGO_FORMAT: github

@@ -24,6 +24,7 @@ final readonly class UserInputCommand implements CommandInterface
 {
     use UserInputFactoryTrait;
 
+    #[\Override]
     public function run(Input\InputInterface $input, Output\OutputInterface $output): int
     {
         $confirmation = $this->createConfirmationUserInput($input, $output, 'n');

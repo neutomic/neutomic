@@ -19,6 +19,7 @@ final class OrderUpdatedEvent extends OrderEvent implements StoppableEventInterf
 {
     public bool $stopped = false;
 
+    #[\Override]
     public function isPropagationStopped(): bool
     {
         return $this->stopped;

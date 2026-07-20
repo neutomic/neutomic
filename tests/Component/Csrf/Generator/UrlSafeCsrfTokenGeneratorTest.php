@@ -22,6 +22,7 @@ final class UrlSafeCsrfTokenGeneratorTest extends TestCase
 {
     private UrlSafeCsrfTokenGenerator $generator;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->generator = new UrlSafeCsrfTokenGenerator();
@@ -32,7 +33,7 @@ final class UrlSafeCsrfTokenGeneratorTest extends TestCase
         $token = $this->generator->generate();
 
         // 32 bytes * (4/3) for base64 - padding
-        static::assertEquals(43, Byte\length($token));
+        static::assertSame(43, Byte\length($token));
     }
 
     public function testGenerateTokenIsUrlSafe(): void

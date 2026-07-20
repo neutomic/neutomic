@@ -31,6 +31,7 @@ use Neu\Component\Console\Output\OutputInterface;
 #[Command(name: 'database:migration:rollback', description: 'This is a namespaced command', enabled: false)]
 final readonly class NamespacedCommand extends AbstractCommand
 {
+    #[\Override]
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->createSectionBlock($this->output)

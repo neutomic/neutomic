@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Neu\Component\Cache\Driver;
 
 use Amp\File;
-use Generator;
+
 use Neu\Component\Cache\Exception\InvalidKeyException;
 use Neu\Component\Cache\Exception\RuntimeException;
 use Neu\Component\Cache\Exception\UnavailableItemException;

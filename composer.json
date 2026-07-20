@@ -44,8 +44,7 @@
         "squizlabs/php_codesniffer": "^3.9.2",
         "ext-zlib": "*",
         "amphp/redis": "^2.0",
-        "php-standard-library/psalm-plugin": "^2.3",
-        "vimeo/psalm": "^6.13"
+        "carthage-software/mago": "^1.43"
     },
     "conflict": {
         "twig/twig": "<3.10.3"

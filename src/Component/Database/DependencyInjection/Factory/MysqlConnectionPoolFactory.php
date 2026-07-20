@@ -116,7 +116,7 @@ final readonly class MysqlConnectionPoolFactory implements FactoryInterface
         string $host,
         null|int $port = null,
         null|string $user = null,
-        null|string $password = null,
+        #[\SensitiveParameter] null|string $password = null,
         null|string $database = null,
         null|string $charset = null,
         null|string $collate = null,

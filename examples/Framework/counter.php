@@ -37,9 +37,7 @@ final readonly class CounterHandler implements HandlerInterface
     public function handle(Context $context, RequestInterface $request): ResponseInterface
     {
         $session = $request->getSession();
-        $counter = (string) $session->update('counter', static function (null|int $value): int {
-            return null === $value ? 1 : $value + 1;
-        });
+        $counter = (string) $session->update('counter', static fn (null|int $value): int => null === $value ? 1 : $value + 1);
 
         return Response\text('Hello, World! You have visited this page ' . $counter . ' times.');
     }

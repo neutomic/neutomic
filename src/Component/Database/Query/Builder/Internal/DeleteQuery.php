@@ -68,6 +68,7 @@ final readonly class DeleteQuery extends AbstractWhereQuery implements DeleteQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __toString(): string
     {
         return 'DELETE FROM ' . $this->getTableSQL($this->table, $this->alias) . $this->getWhereSQL();

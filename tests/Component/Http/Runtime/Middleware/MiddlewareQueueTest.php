@@ -27,6 +27,7 @@ final class MiddlewareQueueTest extends TestCase
 {
     private Context $context;
 
+    #[\Override]
     protected function setUp(): void
     {
         $this->context = new Context(

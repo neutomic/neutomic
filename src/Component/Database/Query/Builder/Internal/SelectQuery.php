@@ -447,6 +447,7 @@ final readonly class SelectQuery extends AbstractWhereQuery implements SelectQue
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function __toString(): string
     {
         return 'SELECT ' . ($this->distinct ? 'DISTINCT ' : '') . Str\join($this->select, ', ')

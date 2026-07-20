@@ -110,9 +110,9 @@ final readonly class SessionCsrfTokenStorage implements CsrfTokenStorageInterfac
         $session = $this->getSession($request);
         /** @var non-empty-string $key */
         foreach ($session->all() as $key => $_) {
-            if (Str\starts_with($key, $this->prefix . ':')) {
-                $session->delete($key);
-            }
+            if (!(Str\starts_with($key, $this->prefix . ':'))) { continue; }
+
+$session->delete($key);
         }
     }
 

@@ -164,7 +164,7 @@ final readonly class SessionExtension implements ExtensionInterface
                             Type\literal_scalar('private-no-expire'),
                         ),
                         Type\backed_enum(CacheLimiter::class),
-                        static fn (string $value): CacheLimiter => CacheLimiter::from($value),
+                        CacheLimiter::from(...),
                     )
                 ),
             ])),

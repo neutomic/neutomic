@@ -255,7 +255,7 @@ final class UriTest extends TestCase
     {
         $uri = Uri::fromUrl('https://example.com:443');
 
-        static::assertSame(null, $uri->getPort());
+        static::assertNull($uri->getPort());
         static::assertSame('https://example.com', (string) $uri);
     }
 
@@ -263,6 +263,6 @@ final class UriTest extends TestCase
     {
         $uri = Uri::fromUrl('https://example.com');
 
-        static::assertSame(null, $uri->getPort());
+        static::assertNull($uri->getPort());
     }
 }

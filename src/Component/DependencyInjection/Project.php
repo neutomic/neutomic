@@ -316,10 +316,10 @@ final readonly class Project
         $normalizedPath = Str\Byte\trim_left($path, '/');
         $result = $this->directory . '/' . $normalizedPath;
         foreach ($map as $prefix => $directory) {
-            if (Str\Byte\starts_with($normalizedPath, $prefix)) {
-                $result = $directory . '/' . Str\Byte\trim_left(Str\Byte\strip_prefix($normalizedPath, $prefix), '/');
+            if (!(Str\Byte\starts_with($normalizedPath, $prefix))) { continue; }
+
+$result = $directory . '/' . Str\Byte\trim_left(Str\Byte\strip_prefix($normalizedPath, $prefix), '/');
                 break;
-            }
         }
 
         /** @var non-empty-string */

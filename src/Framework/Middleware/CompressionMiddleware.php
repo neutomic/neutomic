@@ -232,15 +232,15 @@ final readonly class CompressionMiddleware implements PrioritizedMiddlewareInter
         foreach (($request->getHeader('accept-encoding') ?? []) as $values) {
             $values = array_map("trim", explode(",", $values));
             foreach ($values as $value) {
-                if (preg_match(self::ENCODING_REGEX, $value, $matches)) {
-                    $quality = (float) ($matches[2] ?? 1);
+                if (!(preg_match(self::ENCODING_REGEX, $value, $matches))) { continue; }
+
+$quality = (float) ($matches[2] ?? 1);
                     if ($quality <= $weight) {
                         continue;
                     }
 
                     $weight = $quality;
                     $encoding = strtolower($matches[1]);
-                }
             }
         }
 

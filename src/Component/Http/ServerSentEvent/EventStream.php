@@ -65,7 +65,7 @@ final readonly class EventStream implements IteratorAggregate
     {
         $stream = new self($bufferSize);
 
-        $context->getClient()->onClose(static fn () => $stream->close());
+        $context->getClient()->onClose($stream->close(...));
 
         return $stream;
     }

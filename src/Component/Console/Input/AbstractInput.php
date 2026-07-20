@@ -214,8 +214,9 @@ abstract class AbstractInput implements InputInterface
         }
 
         foreach ($this->flags->getIterator() as $flag) {
-            if ($key === $flag->getNegativeAlias()) {
-                $flag->assign(0);
+            if ($key !== $flag->getNegativeAlias()) { continue; }
+
+$flag->assign(0);
 
                 $this->invalid = Vec\filter(
                     $this->invalid,
@@ -223,7 +224,6 @@ abstract class AbstractInput implements InputInterface
                 );
 
                 return true;
-            }
         }
 
         return false;
@@ -289,8 +289,9 @@ abstract class AbstractInput implements InputInterface
     private function parseArgument(array $input): bool
     {
         foreach ($this->arguments as $argument) {
-            if (!$argument->exists()) {
-                $argument->assign($input['raw']);
+            if ($argument->exists()) { continue; }
+
+$argument->assign($input['raw']);
 
                 $this->invalid = Vec\filter(
                     $this->invalid,
@@ -298,7 +299,6 @@ abstract class AbstractInput implements InputInterface
                 );
 
                 return true;
-            }
         }
 
         return false;

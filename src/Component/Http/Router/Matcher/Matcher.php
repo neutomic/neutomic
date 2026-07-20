@@ -174,9 +174,9 @@ final class Matcher implements MatcherInterface
             /** @var array<non-empty-string, non-empty-string> $data */
             $data = [];
             foreach ($matches as $name => $match) {
-                if (is_string($name) && $name !== '' && $match !== '') {
-                    $data[$name] = $match;
-                }
+                if (!(is_string($name) && $name !== '' && $match !== '')) { continue; }
+
+$data[$name] = $match;
             }
 
             $remaining = substr($path, strlen($matches[0]));

@@ -115,12 +115,12 @@ final readonly class Event
      */
     public function toString(): string
     {
-        $type = $this->type !== null ? "event: $this->type\n" : '';
-        $data = "data: $this->data\n";
-        $id = $this->id !== null ? "id: $this->id\n" : '';
-        $retry = $this->retry !== null ? "retry: $this->retry\n" : '';
+        $type = $this->type !== null ? "event: {$this->type}\n" : '';
+        $data = "data: {$this->data}\n";
+        $id = $this->id !== null ? "id: {$this->id}\n" : '';
+        $retry = $this->retry !== null ? "retry: {$this->retry}\n" : '';
 
-        return "$type$data$id$retry\n";
+        return "{$type}{$data}{$id}{$retry}\n";
     }
 
     /**

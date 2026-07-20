@@ -33,7 +33,7 @@ trait PackingTrait
     /**
      * The maximum value for a 32-bit unsigned integer.
      */
-    protected const int MAXIMUM_VALUE = 0xFFFFFFFF;
+    protected const int MAXIMUM_VALUE = 0xFFFF_FFFF;
 
     /**
      * The maximum length of a key.
@@ -116,7 +116,7 @@ trait PackingTrait
         }
 
         // Check if expiration is set to 'never expire' or if the current time is less than expiration
-        if ($data['expires'] === 0xFFFFFFFF || $data['expires'] > time()) {
+        if ($data['expires'] === 0xFFFF_FFFF || $data['expires'] > time()) {
             // Skip the key and read the content
             $content = substr($data['data'], $data['key_length']);
 

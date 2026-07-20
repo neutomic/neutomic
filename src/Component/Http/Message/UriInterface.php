@@ -110,7 +110,7 @@ interface UriInterface extends Stringable
      *
      * @throws InvalidArgumentException for invalid user or password.
      */
-    public function withUserInformation(null|string $user, null|string $password = null): self;
+    public function withUserInformation(null|string $user, #[\SensitiveParameter] null|string $password = null): self;
 
     /**
      * Retrieve the host component of the URI.
@@ -306,5 +306,6 @@ interface UriInterface extends Stringable
      *
      * @return string The URI as a string.
      */
+    #[\Override]
     public function __toString(): string;
 }

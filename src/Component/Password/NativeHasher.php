@@ -88,7 +88,7 @@ final readonly class NativeHasher implements HasherInterface
      * @inheritDoc
      */
     #[Override]
-    final public function hashPassword(#[SensitiveParameter] string $plainPassword): string
+     public function hashPassword(#[SensitiveParameter] string $plainPassword): string
     {
         if (Byte\length($plainPassword) > self::MAX_PASSWORD_LENGTH || Byte\contains($plainPassword, "\0")) {
             throw new Exception\InvalidArgumentException('The password is too long.');
@@ -109,7 +109,7 @@ final readonly class NativeHasher implements HasherInterface
      * @inheritDoc
      */
     #[Override]
-    final public function verifyPassword(string $hashedPassword, #[SensitiveParameter] string $plainPassword): bool
+     public function verifyPassword(#[\SensitiveParameter] string $hashedPassword, #[SensitiveParameter] string $plainPassword): bool
     {
         try {
             return Password\verify(
@@ -125,7 +125,7 @@ final readonly class NativeHasher implements HasherInterface
      * @inheritDoc
      */
     #[Override]
-    final public function passwordNeedsRehash(string $hashedPassword): bool
+     public function passwordNeedsRehash(#[\SensitiveParameter] string $hashedPassword): bool
     {
         return Password\needs_rehash(
             $hashedPassword,

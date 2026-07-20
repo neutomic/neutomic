@@ -101,14 +101,14 @@ final class Resolver implements ResolverInterface
     public function resolve(mixed $resource): LoaderInterface
     {
         foreach ($this->loaders as $loader) {
-            if ($loader->supports($resource)) {
-                if ($loader instanceof ResolverAwareLoaderInterface) {
+            if (!($loader->supports($resource))) { continue; }
+
+if ($loader instanceof ResolverAwareLoaderInterface) {
                     $loader->setResolver($this);
                 }
 
                 /** @var LoaderInterface<ResourceType> */
                 return $loader;
-            }
         }
 
         throw new NoSupportiveLoaderException(sprintf(

@@ -224,19 +224,19 @@ final class ContainerBuilder implements ContainerBuilderInterface
             }
 
             foreach ($this->registry->getInstanceOfProcessors() as $interface => $processors) {
-                if ($definition->isInstanceOf($interface)) {
-                    foreach ($processors as $processor) {
+                if (!($definition->isInstanceOf($interface))) { continue; }
+
+foreach ($processors as $processor) {
                         $definition->addProcessor($processor);
                     }
-                }
             }
 
             foreach ($this->registry->getAttributeProcessors() as $attribute => $processors) {
-                if ($definition->hasAttribute($attribute)) {
-                    foreach ($processors as $processor) {
+                if (!($definition->hasAttribute($attribute))) { continue; }
+
+foreach ($processors as $processor) {
                         $definition->addProcessor($processor);
                     }
-                }
             }
         }
 
@@ -256,9 +256,9 @@ final class ContainerBuilder implements ContainerBuilderInterface
     private function addCompositeExtensions(DocumentInterface $document): void
     {
         foreach ($this->extensions as $extension) {
-            if ($extension instanceof CompositeExtensionInterface) {
-                $this->addCompositeExtension($extension, $document);
-            }
+            if (!($extension instanceof CompositeExtensionInterface)) { continue; }
+
+$this->addCompositeExtension($extension, $document);
         }
     }
 
@@ -369,9 +369,9 @@ final class ContainerBuilder implements ContainerBuilderInterface
             }
 
             foreach ($placeholders as $placeholder => $replacement) {
-                if (str_contains($value, $placeholder)) {
-                    $value = str_replace($placeholder, $replacement, $value);
-                }
+                if (!(str_contains($value, $placeholder))) { continue; }
+
+$value = str_replace($placeholder, $replacement, $value);
             }
         });
 

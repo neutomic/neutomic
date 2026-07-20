@@ -26,7 +26,7 @@ final readonly class PlainHasher implements HasherInterface
      * @inheritDoc
      */
     #[Override]
-    final public function hashPassword(#[SensitiveParameter] string $plainPassword): string
+     public function hashPassword(#[SensitiveParameter] string $plainPassword): string
     {
         return $plainPassword;
     }
@@ -35,7 +35,7 @@ final readonly class PlainHasher implements HasherInterface
      * @inheritDoc
      */
     #[Override]
-    final public function verifyPassword(string $hashedPassword, #[SensitiveParameter] string $plainPassword): bool
+     public function verifyPassword(#[\SensitiveParameter] string $hashedPassword, #[SensitiveParameter] string $plainPassword): bool
     {
         return Hash\equals($hashedPassword, $plainPassword);
     }
@@ -44,7 +44,7 @@ final readonly class PlainHasher implements HasherInterface
      * @inheritDoc
      */
     #[Override]
-    final public function passwordNeedsRehash(string $hashedPassword): bool
+     public function passwordNeedsRehash(#[\SensitiveParameter] string $hashedPassword): bool
     {
         return false;
     }

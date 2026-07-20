@@ -21,6 +21,7 @@ use Neu\Component\Console\Output;
 #[Command('i-am-disabled', 'Disabled Command', enabled: false)]
 final readonly class DisabledCommand implements CommandInterface
 {
+    #[\Override]
     public function run(Input\InputInterface $input, Output\OutputInterface $output): int
     {
         $output->writeLine('<fg=red>This command is disabled, You should not see this message!</>');

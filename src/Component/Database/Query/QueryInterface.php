@@ -55,5 +55,6 @@ interface QueryInterface extends Stringable
      *
      * @return non-empty-string
      */
+    #[\Override]
     public function __toString(): string;
 }

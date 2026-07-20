@@ -42,6 +42,7 @@ final readonly class InsertQuery extends AbstractExecutableQuery implements Inse
      *
      * @throws LogicException If no values have been provided, or an inconsistent value is encountered.
      */
+    #[\Override]
     public function __toString(): string
     {
         $columns = null;

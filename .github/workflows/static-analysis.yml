@@ -18,8 +18,7 @@ jobs:
         uses: "shivammathur/setup-php@v2"
         with:
           php-version: "8.4"
-          ini-values: memory_limit=-1
-          tools: composer:v2, cs2pr
+          tools: composer:v2
           extensions: bcmath, mbstring, intl, sodium, json
 
       - name: "installing dependencies"
@@ -27,7 +26,6 @@ jobs:
           make install -j10 -O
 
       - name: "running static analysis"
-        run: make static-analysis
-
-      - name: "calculating type coverage"
-        run: make type-coverage
+        run: make analyze
+        env:
+          MAGO_FORMAT: github

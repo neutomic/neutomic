@@ -76,11 +76,11 @@ final class StyleStack
 
         $styles = Vec\reverse($styles);
         foreach ($styles as [$index, $stackedStyle]) {
-            if ($style->apply('') === $stackedStyle->apply('')) {
-                $this->styles = Vec\values(Dict\slice($this->styles, 0, $index));
+            if ($style->apply('') !== $stackedStyle->apply('')) { continue; }
+
+$this->styles = Vec\values(Dict\slice($this->styles, 0, $index));
 
                 return $stackedStyle;
-            }
         }
 
         throw new InvalidArgumentException(

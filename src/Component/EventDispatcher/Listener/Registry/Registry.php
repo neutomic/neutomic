@@ -109,11 +109,11 @@ final class Registry implements RegistryInterface
         $result = [];
         foreach ($priorities as $priority) {
             foreach ($this->listeners[$priority] as $event => $listeners) {
-                if ($name === $event || is_subclass_of($name, $event)) {
-                    foreach ($listeners as $listener) {
+                if (!($name === $event || is_subclass_of($name, $event))) { continue; }
+
+foreach ($listeners as $listener) {
                         $result[] = $listener;
                     }
-                }
             }
         }
 

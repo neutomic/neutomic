@@ -112,9 +112,7 @@ final class Registry implements RegistryInterface
     #[Override]
     public function getRoutes(): array
     {
-        return Vec\sort($this->routes, static function (Route $a, Route $b): int {
-            return $a->priority <=> $b->priority;
-        });
+        return Vec\sort($this->routes, static fn (Route $a, Route $b): int => $a->priority <=> $b->priority);
     }
 
     /**
